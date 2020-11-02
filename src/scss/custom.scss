@@ -1,2 +1,8 @@
-@import './colors';
-@import './buttons';
+/* make the customizations */
+$theme-colors: (
+	"dark": #06038D,
+	"primary": #0077C8
+);
+
+/* import bootstrap to set changes */
+@import "~bootstrap/scss/bootstrap";

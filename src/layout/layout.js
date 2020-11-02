@@ -6,9 +6,7 @@ import Main from 'layout/main';
 const Layout = () => {
   return (
     <>
-      <header>
-        <Navigation />
-      </header>
+      <Navigation />
       <main role="main">
         <Container fluid>
           <Main />
