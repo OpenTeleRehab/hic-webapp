@@ -35,7 +35,7 @@ const Main = () => {
   };
 
   PrivateRoute.propTypes = {
-    children: PropTypes.func
+    children: PropTypes.object
   };
 
   return (

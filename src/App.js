@@ -1,16 +1,20 @@
 import React from 'react';
-import Layout from 'layout/layout';
-import 'scss/app.scss';
+import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
+
+import Layout from 'layout/layout';
 import history from 'utils/history';
+import store from 'store';
+
+import 'scss/app.scss';
 
 const App = () => {
   return (
-    <div className="App">
+    <Provider store={store}>
       <Router history={history}>
         <Layout />
       </Router>
-    </div>
+    </Provider>
   );
 };
 
