@@ -1,9 +1,10 @@
 import React from 'react';
+import translate from 'utils/translate';
 
 const Home = () => {
   return (
     <>
-      HOME PAGE
+      {translate('home.page')}
     </>
   );
 };
