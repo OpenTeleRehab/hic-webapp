@@ -1,12 +1,16 @@
 import React from 'react';
-import translate from 'utils/translate';
+import PropTypes from 'prop-types';
 
-const Home = () => {
+const Home = ({ translate }) => {
   return (
     <>
-      {translate('home.page')}
+      {translate('home')}
     </>
   );
+};
+
+Home.propTypes = {
+  translate: PropTypes.func
 };
 
 export default Home;
