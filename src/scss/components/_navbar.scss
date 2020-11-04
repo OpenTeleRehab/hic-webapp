@@ -1,0 +1,48 @@
+.portal-name {
+	font-size: 14px;
+	line-height: 19px;
+	color: $white;
+	width: 60px;
+	text-transform: uppercase;
+}
+
+@include media-breakpoint-up(xl) {
+  .navbar-expand-xl {
+	padding: 0 1rem;
+	height: 70px;
+
+	.navbar-collapse {
+	  height: 100%;
+	}
+  }
+
+  #basic-navbar-nav {
+	.navbar-nav {
+	  height: 100%;
+	  .nav-link {
+		font-size: 18px;
+		line-height: 25px;
+		padding: 1.4rem 2.5rem;
+		border-radius: unset;
+		color: $white;
+		font-weight: $font-weight-bold;
+
+		&.active {
+		  background-color: theme-color('primary');
+		}
+	  }
+
+	  .show > .nav-link {
+		background: none;
+		outline: none;
+	  }
+	}
+  }
+
+  .btn-link {
+	color: $white;
+	&:hover {
+	  text-underline: none !important;
+	}
+  }
+}

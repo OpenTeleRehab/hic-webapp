@@ -1,3 +1,6 @@
-export const HOME = '/';
+export const DASHBOARD = '/';
 export const LOGIN = '/login';
-export const DASHBOARD = '/dashboard';
+export const ADMIN = '/admin';
+export const SERVICE_SETUP = '/service-setup';
+export const THERAPIST = '/therapist';
+export const CATEGORY = '/category';
