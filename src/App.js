@@ -4,7 +4,7 @@ import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { LocalizeProvider } from 'react-localize-redux';
 
-import Layout from 'layout/layout';
+import RouteSwitch from 'routes';
 import store from 'store';
 
 import 'scss/app.scss';
@@ -14,7 +14,7 @@ const App = () => {
     <Provider store={store}>
       <LocalizeProvider store={store}>
         <Router history={createBrowserHistory()}>
-          <Layout />
+          <RouteSwitch />
         </Router>
       </LocalizeProvider>
     </Provider>

@@ -5,24 +5,17 @@ import PropTypes from 'prop-types';
 import isAuthenticated from './isAuthenticated';
 import * as ROUTES from 'variables/routes';
 
-// if user is authenticated, renders the given component,
-// else redirects to the redirectPath
-
-const PrivateRoute = ({ component: Component, location, ...rest }) => {
-  const redirectPath = {
-    pathname: ROUTES.LOGIN,
-    state: { from: location }
-  };
-
+const PrivateRoute = ({ children, title, ...rest }) => {
   return (
     <Route
       {...rest}
       render={props => {
         return isAuthenticated()
-          ? <Component {...props} />
-          : <Redirect
-            to={redirectPath}
-          />;
+          ? children
+          : <Redirect to={{
+            pathname: ROUTES.LOGIN,
+            state: { from: props.location }
+          }} />;
       }
       }
     />
@@ -30,8 +23,9 @@ const PrivateRoute = ({ component: Component, location, ...rest }) => {
 };
 
 PrivateRoute.propTypes = {
-  component: PropTypes.any,
-  location: PropTypes.object
+  children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
+  location: PropTypes.object,
+  title: PropTypes.string
 };
 
 export default PrivateRoute;

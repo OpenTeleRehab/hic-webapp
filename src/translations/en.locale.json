@@ -1,4 +1,6 @@
 {
-  "home.page": "Home Page",
-  "dashboard.title": "Dashboard"
+  "home": "Home",
+  "login": "Login",
+  "dashboard": "Dashboard",
+  "notFoundPage": "404 page"
 }
