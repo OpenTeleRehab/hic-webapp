@@ -1,7 +1,7 @@
 import React from 'react';
 import Navigation from 'layout/navigation';
 import Container from 'react-bootstrap/Container';
-import Main from 'layout/main';
+import RouteComponent from 'routes';
 
 const Layout = () => {
   return (
@@ -9,7 +9,7 @@ const Layout = () => {
       <Navigation />
       <main role="main">
         <Container fluid>
-          <Main />
+          <RouteComponent />
         </Container>
       </main>
     </>
