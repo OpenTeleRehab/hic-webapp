@@ -1,4 +1,4 @@
-// import { User } from '../../services/user';
+import { User } from 'services/user';
 import { mutation } from './mutations';
 
 const handleError = err => {
@@ -8,8 +8,7 @@ const handleError = err => {
 // Actions
 export const userLoginRequest = payload => async dispatch => {
   try {
-    // const result = await dispatch(User.userLogin(payload));
-    const result = { userName: 'foo' };
+    const result = await dispatch(User.userLogin(payload));
     dispatch(mutation.setUserLoginDetail(result));
   } catch (err) {
     handleError(err);
