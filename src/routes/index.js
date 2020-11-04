@@ -4,8 +4,6 @@ import { Spinner } from 'react-bootstrap';
 
 import PageLayout from 'layout/layout';
 import PrivateRoute from 'routes/privateRoute';
-
-import LoginPage from 'views/Login';
 import DashboardPage from 'views/Dashboard';
 import NotFoundPage from 'views/NotFound';
 import AdminPage from 'views/Admin';
@@ -18,13 +16,6 @@ const PRIVATE = 'private';
 const PUBLIC = 'public';
 
 const routes = [
-  {
-    title: 'login',
-    path: ROUTES.LOGIN,
-    component: LoginPage,
-    exact: true,
-    type: PUBLIC
-  },
   {
     title: 'dashboard',
     path: ROUTES.DASHBOARD,

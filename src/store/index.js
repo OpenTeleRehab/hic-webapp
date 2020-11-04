@@ -7,7 +7,7 @@ import {
   localizeReducer
 } from 'react-localize-redux';
 
-import { user } from './user/reducer';
+import { user } from 'store/user/reducer';
 import en from 'translations/en.locale.json';
 
 export const rootReducer = {
