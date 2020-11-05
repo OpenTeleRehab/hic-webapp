@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 const Navigation = ({ translate }) => {
   return (
-    <Navbar bg="dark" variant="dark" expand="xl" sticky="top">
+    <Navbar bg="dark" variant="dark" expand="xl" sticky="top" className="main-nav">
       <Navbar.Brand>
         <Link to={ROUTES.DASHBOARD}>
           <img
@@ -19,7 +19,7 @@ const Navigation = ({ translate }) => {
       <span className="portal-name ml-3">
         {translate('portal.name')}
       </span>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Toggle aria-controls="basic-navbar-nav ml-auto" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto" variant="pills">
           <NavLink
