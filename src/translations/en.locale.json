@@ -1,4 +1,7 @@
 {
+  "common.cancel": "Cancel",
+  "common.create": "Create",
+
   "portal.name": "Admin Portal",
   "home": "Home",
   "login": "Login",
@@ -7,5 +10,7 @@
   "category": "Categories",
   "service_setup": "Services Setup",
   "therapist": "Therapists",
-  "admin": "Admins"
+  "admin": "Admins",
+  "admin.management": "Admin Management",
+  "admin.new": "New Admin"
 }
