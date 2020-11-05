@@ -1,13 +1,14 @@
 import React from 'react';
 import { Link, NavLink, withRouter } from 'react-router-dom';
-import { Navbar, Nav } from 'react-bootstrap';
+import { Navbar, Nav, Dropdown } from 'react-bootstrap';
 import * as ROUTES from 'variables/routes';
+import PropTypes from 'prop-types';
 
-const Navigation = () => {
+const Navigation = ({ translate }) => {
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
+    <Navbar bg="dark" variant="dark" expand="xl" sticky="top">
       <Navbar.Brand>
-        <Link to={ROUTES.HOME}>
+        <Link to={ROUTES.DASHBOARD}>
           <img
             src="/images/logo.png"
             className="d-inline-block align-top"
@@ -15,29 +16,73 @@ const Navigation = () => {
           />
         </Link>
       </Navbar.Brand>
+      <span className="portal-name ml-3">
+        {translate('portal.name')}
+      </span>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="mr-auto">
-          <NavLink
-            exact
-            to={ROUTES.HOME}
-            key='nav-home'
-            className="nav-link"
-          >
-            Home
-          </NavLink>
+        <Nav className="ml-auto" variant="pills">
           <NavLink
             exact
             to={ROUTES.DASHBOARD}
             key='nav-dashboard'
             className="nav-link"
           >
-            Dashboard
+            {translate('dashboard')}
           </NavLink>
+          <NavLink
+            exact
+            to={ROUTES.ADMIN}
+            key='nav-admin'
+            className="nav-link"
+          >
+            {translate('admin')}
+          </NavLink>
+          <NavLink
+            exact
+            to={ROUTES.THERAPIST}
+            key='nav-therapist'
+            className="nav-link"
+          >
+            {translate('therapist')}
+          </NavLink>
+          <NavLink
+            exact
+            to={ROUTES.SERVICE_SETUP}
+            key='nav-service-setup'
+            className="nav-link"
+          >
+            {translate('service_setup')}
+          </NavLink>
+          <NavLink
+            exact
+            to={ROUTES.CATEGORY}
+            key='nav-category'
+            className="nav-link"
+          >
+            {translate('category')}
+          </NavLink>
+
+          <Dropdown>
+            <Dropdown.Toggle variant="link" id="dropdown-basic">
+              Welcome Helen Nguyen <br/>
+              admin1@gamil.com
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Dropdown.Item href="#/action-1">Update profile</Dropdown.Item>
+              <Dropdown.Item href="#/action-2">Change password</Dropdown.Item>
+              <Dropdown.Item href="#/action-3">Log out</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </Nav>
       </Navbar.Collapse>
     </Navbar>
   );
+};
+
+Navigation.propTypes = {
+  translate: PropTypes.func
 };
 
 export default withRouter(Navigation);

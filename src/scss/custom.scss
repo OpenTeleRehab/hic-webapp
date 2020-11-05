@@ -1,8 +1,17 @@
 /* make the customizations */
+
+// Font
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+$font-family-base: Nunito, Arial, sans-serif;
+
+// Color
+$blue: #0077C8;
+
 $theme-colors: (
 	"dark": #06038D,
 	"primary": #0077C8
 );
+
 
 /* import bootstrap to set changes */
 @import "~bootstrap/scss/bootstrap";

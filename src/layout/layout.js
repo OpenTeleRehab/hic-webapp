@@ -16,7 +16,7 @@ const Layout = ({ component: Component, title }) => {
 
   return (
     <>
-      <Navigation />
+      <Navigation translate={translate} />
       <main role="main">
         <Container fluid>
           <Component translate={translate} />
