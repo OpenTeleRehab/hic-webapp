@@ -1,21 +1,21 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
-import isAuthenticated from './isAuthenticated';
-import * as ROUTES from 'variables/routes';
+import { useKeycloak } from '@react-keycloak/web';
 
 const PrivateRoute = ({ children, title, ...rest }) => {
+  const { keycloak } = useKeycloak();
+
   return (
     <Route
       {...rest}
-      render={props => {
-        return isAuthenticated()
-          ? children
-          : <Redirect to={{
-            pathname: ROUTES.LOGIN,
-            state: { from: props.location }
-          }} />;
+      render={() => {
+        if (keycloak.authenticated === false) {
+          console.log(keycloak.authenticated);
+          keycloak.login();
+          return;
+        }
+        return children;
       }
       }
     />

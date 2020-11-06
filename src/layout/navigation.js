@@ -1,10 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, NavLink, withRouter } from 'react-router-dom';
 import { Navbar, Nav, Dropdown } from 'react-bootstrap';
 import * as ROUTES from 'variables/routes';
 import PropTypes from 'prop-types';
+import Dialog from 'components/Dialog';
+import { useKeycloak } from '@react-keycloak/web';
 
 const Navigation = ({ translate }) => {
+  const { keycloak } = useKeycloak();
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const handleConfirm = () => {
+    if (keycloak.authenticated) {
+      keycloak.logout();
+    }
+  };
+
   return (
     <Navbar bg="dark" variant="dark" expand="xl" sticky="top" className="main-nav">
       <Navbar.Brand>
@@ -72,7 +85,17 @@ const Navigation = ({ translate }) => {
             <Dropdown.Menu>
               <Dropdown.Item href="#/action-1">Update profile</Dropdown.Item>
               <Dropdown.Item href="#/action-2">Change password</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">Log out</Dropdown.Item>
+              <Dropdown.Item onClick={handleShow}>{translate('logout')}</Dropdown.Item>
+              <Dialog
+                show={show}
+                title={translate('logout.confirmation')}
+                cancelLabel={translate('logout.cancel')}
+                onCancel={handleClose}
+                confirmLabel={translate('logout.confirm')}
+                onConfirm={handleConfirm}
+              >
+                <p>{translate('logout.message')}</p>
+              </Dialog>
             </Dropdown.Menu>
           </Dropdown>
         </Nav>

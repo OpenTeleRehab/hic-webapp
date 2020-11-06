@@ -12,5 +12,11 @@
   "therapist": "Therapists",
   "admin": "Admins",
   "admin.management": "Admin Management",
-  "admin.new": "New Admin"
+  "admin.new": "New Admin",
+
+  "logout": "Logout",
+  "logout.confirmation": "Logout Confirmation",
+  "logout.message": "Are you sure to logout?",
+  "logout.cancel": "No",
+  "logout.confirm": "Yes"
 }
