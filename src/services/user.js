@@ -1,10 +1,17 @@
-// import axios from 'utils/axios';
+import axios from 'utils/axios';
 
-export const userLogin = payload => {
-  // todo: request api via axios
-  return { userName: 'foo' };
+export const createUser = payload => {
+  return axios.post('/admin', payload)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
 };
 
 export const User = {
-  userLogin
+  createUser
 };

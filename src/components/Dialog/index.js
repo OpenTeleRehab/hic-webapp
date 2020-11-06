@@ -45,8 +45,8 @@ Dialog.propTypes = {
   title: PropTypes.string,
   onConfirm: PropTypes.func,
   onCancel: PropTypes.func,
-  confirmLabel: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
-  cancelLabel: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
+  confirmLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  cancelLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   children: PropTypes.oneOfType([PropTypes.func, PropTypes.node])
 };
 

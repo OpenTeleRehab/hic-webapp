@@ -1,6 +1,11 @@
 {
   "common.cancel": "Cancel",
   "common.create": "Create",
+  "common.email": "Email",
+  "common.first_name": "First name",
+  "common.last_name": "Last name",
+  "common.country": "Country",
+  "common.clinic": "Clinic",
 
   "portal.name": "Admin Portal",
   "home": "Home",
@@ -10,13 +15,29 @@
   "category": "Categories",
   "service_setup": "Services Setup",
   "therapist": "Therapists",
+  "global_admin": "Global Admin",
+  "country_admin": "Country Admin",
+  "clinic_admin": "Clinic Admin",
   "admin": "Admins",
   "admin.management": "Admin Management",
   "admin.new": "New Admin",
+  "admin.hint_message_global_admin": "Global admins can manage Global Admins/ Country Admin, create and upload the content (exercises and questionnaires).",
+  "admin.hint_message_country_admin": "Country admins manage therapist of a country.",
+  "admin.hint_message_clinic_admin": "Clinic admins manage therapist of a clinics.",
 
   "logout": "Logout",
   "logout.confirmation": "Logout Confirmation",
   "logout.message": "Are you sure to logout?",
   "logout.cancel": "No",
-  "logout.confirm": "Yes"
+  "logout.confirm": "Yes",
+
+  "placeholder.last_name": "Enter last name",
+  "placeholder.first_name": "Enter first name",
+  "placeholder.clinic": "Please select a clinic",
+  "placeholder.country": "Please select a country",
+  "placeholder.email": "Enter email",
+
+  "error.email": "Please fill in the email",
+  "error.country": "Please select a country",
+  "error.clinic": "Please select a clinic"
 }

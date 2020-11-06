@@ -1,4 +1,5 @@
 @import "~bootstrap/scss/bootstrap";
 @import './custom';
 
-@import './components/navbar';
+@import './components/navbar',
+		'./components/toast';
