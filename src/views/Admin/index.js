@@ -31,7 +31,7 @@ const Admin = ({ translate }) => {
 
       <CreateAdmin show={show} handleClose={handleClose} />
 
-      <Tabs defaultActiveKey="global-admin" transition={false} id="noanim-tab-example">
+      <Tabs defaultActiveKey="global-admin" transition={false} id="admin-tab">
         <Tab eventKey="global-admin" title="Global Admins">
           <GlobalAdmin />
         </Tab>
