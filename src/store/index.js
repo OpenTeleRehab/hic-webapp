@@ -7,12 +7,15 @@ import {
   localizeReducer
 } from 'react-localize-redux';
 
-import { user } from 'store/user/reducer';
+import { user } from 'store/user/reducers';
+import { notification } from 'store/notification/reducers';
+
 import en from 'translations/en.locale.json';
 
 export const rootReducer = {
   localize: localizeReducer,
-  user
+  user,
+  notification
 };
 
 const devTool =

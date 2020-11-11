@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
-import Navigation from 'layout/navigation';
 import Container from 'react-bootstrap/Container';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
+
+import Navigation from 'layout/navigation';
+import ToastNotification from 'components/ToastNotification';
 
 const Layout = ({ component: Component, title }) => {
   const localize = useSelector((state) => state.localize);
@@ -22,6 +24,8 @@ const Layout = ({ component: Component, title }) => {
           <Component translate={translate} />
         </Container>
       </main>
+
+      <ToastNotification />
     </>
   );
 };

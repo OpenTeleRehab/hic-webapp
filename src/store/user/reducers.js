@@ -1,4 +1,4 @@
-import { initialState } from './state';
+import { initialState } from './states';
 
 export const user = (state = initialState, action) => {
   switch (action.type) {
