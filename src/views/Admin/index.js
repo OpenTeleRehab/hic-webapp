@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
-import { Button, Nav } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { BsPlus } from 'react-icons/bs';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
+
+import GlobalAdmin from './TabContents/globalAdmin';
+import CountryAdmin from './TabContents/countryAdmin';
+import ClinicAdmin from './TabContents/clinicAdmin';
+import Therapist from './TabContents/therapist';
 
 import CreateAdmin from './create';
 import PropTypes from 'prop-types';
@@ -17,22 +24,28 @@ const Admin = ({ translate }) => {
         <h1>{translate('admin.management')}</h1>
         <div className="btn-toolbar mb-2 mb-md-0">
           <Button variant="primary" onClick={handleShow}>
-            <BsPlus size={20} className="mr-1" />
+            <BsPlus className="mr-1" />
             {translate('admin.new')}
           </Button>
         </div>
       </div>
 
-      <Nav variant="tabs" defaultActiveKey="/home">
-        <Nav.Item>
-          <Nav.Link eventKey="link-0">Global Admins</Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link eventKey="link-1">Country Admins</Nav.Link>
-        </Nav.Item>
-      </Nav>
-
       <CreateAdmin show={show} handleClose={handleClose} />
+
+      <Tabs defaultActiveKey="global-admin" transition={false} id="noanim-tab-example">
+        <Tab eventKey="global-admin" title="Global Admins">
+          <GlobalAdmin />
+        </Tab>
+        <Tab eventKey="country-admin" title="Country Admins">
+          <CountryAdmin />
+        </Tab>
+        <Tab eventKey="clinic-admin" title="Clinic Admins">
+          <ClinicAdmin />
+        </Tab>
+        <Tab eventKey="therapist" title="Therapists">
+          <Therapist />
+        </Tab>
+      </Tabs>
     </>
   );
 };

@@ -35,6 +35,9 @@ $toast-min-width: 200px;
 // Z-index
 $zindex-toast: 1080;
 
+// Font size
+$h1-font-size: 1.5rem;
+$headings-line-height: 1.5rem;
 
 /* import bootstrap to set changes */
-@import "~bootstrap/scss/bootstrap";
+@import '~bootstrap/scss/bootstrap';
