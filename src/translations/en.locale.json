@@ -15,9 +15,13 @@
   "category": "Categories",
   "service_setup": "Services Setup",
   "therapist": "Therapists",
+
   "global_admin": "Global Admin",
   "country_admin": "Country Admin",
   "clinic_admin": "Clinic Admin",
+  "therapist.management": "Therapist Management",
+  "therapist.new": "New Therapist",
+
   "admin": "Admins",
   "admin.management": "Admin Management",
   "admin.new": "New Admin",
@@ -39,5 +43,11 @@
 
   "error.email": "Please fill in the email",
   "error.country": "Please select a country",
-  "error.clinic": "Please select a clinic"
+  "error.clinic": "Please select a clinic",
+
+  "placeholder.limit_patient": "Enter Limit Patient",
+  "placeholder.birth_date": "Enter Birth Date",
+  "placeholder.institution": "Enter Institution",
+
+  "error.limit_patient": "Please Limit Patient"
 }
