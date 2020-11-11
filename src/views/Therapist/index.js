@@ -3,12 +3,24 @@ import { Button } from 'react-bootstrap';
 import { BsPlus } from 'react-icons/bs';
 import CreateTherapist from '../Therapist/create';
 import PropTypes from 'prop-types';
+import CustomTable from 'components/Table';
 
 const Therapist = ({ translate }) => {
   const [show, setShow] = useState(false);
 
+  const columns = [
+    { name: 'id', title: 'ID' },
+    { name: 'firstName', title: 'First Name' },
+    { name: 'lastName', title: 'Last Name' },
+    { name: 'email', title: 'Email' },
+    { name: 'status', title: 'Status' },
+    { name: 'lastLogin', title: 'Last Login' },
+    { name: 'action', title: 'Actions' }
+  ];
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
@@ -22,6 +34,8 @@ const Therapist = ({ translate }) => {
       </div>
 
       <CreateTherapist show={show} handleClose={handleClose} />
+
+      <CustomTable columns={columns} />
     </>
   );
 };
