@@ -7,7 +7,6 @@ import Tab from 'react-bootstrap/Tab';
 import GlobalAdmin from './TabContents/globalAdmin';
 import CountryAdmin from './TabContents/countryAdmin';
 import ClinicAdmin from './TabContents/clinicAdmin';
-import Therapist from './TabContents/therapist';
 
 import CreateAdmin from './create';
 import PropTypes from 'prop-types';
@@ -41,9 +40,6 @@ const Admin = ({ translate }) => {
         </Tab>
         <Tab eventKey="clinic-admin" title="Clinic Admins">
           <ClinicAdmin />
-        </Tab>
-        <Tab eventKey="therapist" title="Therapists">
-          <Therapist />
         </Tab>
       </Tabs>
     </>

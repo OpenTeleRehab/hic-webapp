@@ -1,5 +1,6 @@
 import React from 'react';
 import CustomTable from 'components/Table';
+
 export default ClinicAdmin => {
   const columns = [
     { name: 'id', title: 'ID' },
