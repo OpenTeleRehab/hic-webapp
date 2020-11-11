@@ -6,6 +6,11 @@
   "common.last_name": "Last name",
   "common.country": "Country",
   "common.clinic": "Clinic",
+  "common.edit_info": "Edit info",
+  "common.deactivate": "Deactivate",
+  "common.delete": "Delete",
+  "common.actions": "Actions",
+  "common.save": "Save",
 
   "portal.name": "Admin Portal",
   "home": "Home",
@@ -25,6 +30,7 @@
   "admin": "Admins",
   "admin.management": "Admin Management",
   "admin.new": "New Admin",
+  "admin.edit": "Edit Admin",
   "admin.hint_message_global_admin": "Global admins can manage Global Admins/ Country Admin, create and upload the content (exercises and questionnaires).",
   "admin.hint_message_country_admin": "Country admins manage therapist of a country.",
   "admin.hint_message_clinic_admin": "Clinic admins manage therapist of a clinics.",
@@ -40,14 +46,21 @@
   "placeholder.clinic": "Please select a clinic",
   "placeholder.country": "Please select a country",
   "placeholder.email": "Enter email",
-
-  "error.email": "Please fill in the email",
-  "error.country": "Please select a country",
-  "error.clinic": "Please select a clinic",
-
   "placeholder.limit_patient": "Enter Limit Patient",
   "placeholder.birth_date": "Enter Birth Date",
   "placeholder.institution": "Enter Institution",
 
-  "error.limit_patient": "Please Limit Patient"
+  "error.email": "Please fill in the email",
+  "error.country": "Please select a country",
+  "error.clinic": "Please select a clinic",
+  "error.limit_patient": "Please Limit Patient",
+
+  "error_message.email_exists": "Email already exists",
+
+  "success_message.user_add": "User has been added",
+  "success_message.user_update": "User has been updated",
+
+  "toast_title.new_admin_account": "New admin account",
+  "toast_title.edit_admin_account": "Edit admin account",
+  "toast_title.error_message": "Error message"
 }

@@ -2,9 +2,9 @@ import { initialState } from './states';
 
 export const user = (state = initialState, action) => {
   switch (action.type) {
-    case 'SET_USER_DETAIL': {
+    case 'GET_USERS_SUCCESS': {
       return Object.assign({}, state, {
-        userDetail: action.data
+        users: action.data
       });
     }
     default:

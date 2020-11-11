@@ -13,19 +13,16 @@ import {
 } from '@devexpress/dx-react-grid-bootstrap4';
 
 import '@devexpress/dx-react-grid-bootstrap4/dist/dx-react-grid-bootstrap4.css';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-const CustomTable = ({ columns }) => {
-  const users = useSelector(state => state.user.users);
-
+const CustomTable = ({ columns, rows }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
   const [pageSizes] = useState([5, 10, 15]);
 
   return (
     <Grid
-      rows={users}
+      rows={rows}
       columns={columns}>
       <SearchState />
       <FilteringState defaultFilters={[]} />
@@ -51,6 +48,7 @@ const CustomTable = ({ columns }) => {
 };
 
 CustomTable.propTypes = {
-  columns: PropTypes.func
+  columns: PropTypes.object,
+  rows: PropTypes.object
 };
 export default CustomTable;

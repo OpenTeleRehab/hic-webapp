@@ -36,7 +36,7 @@ const store = createStore(
 
 const languages = [{ name: 'English', code: 'en' }];
 const defaultLanguage = 'en';
-const onMissingTranslation = ({ defaultTranslation }) => defaultTranslation;
+const onMissingTranslation = ({ translationId }) => translationId;
 
 store.dispatch(initialize({
   languages,

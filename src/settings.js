@@ -1,5 +1,3 @@
-const settings = {
-  apiUrl: 'http://localhost:8082/api'
-};
+const settings = {};
 
 export default settings;

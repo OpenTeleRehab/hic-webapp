@@ -35,7 +35,7 @@ const Therapist = ({ translate }) => {
 
       <CreateTherapist show={show} handleClose={handleClose} />
 
-      <CustomTable columns={columns} />
+      <CustomTable columns={columns} rows={[]} />
     </>
   );
 };

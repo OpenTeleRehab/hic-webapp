@@ -2,5 +2,6 @@ export const initialState = {
   show: false,
   title: '',
   message: '',
-  color: 'success'
+  color: 'success',
+  messageParams: {}
 };
