@@ -1,0 +1,59 @@
+---
+
+- name: Login to nexus docker private repo
+  docker_login:
+    registry: '{{ hub_registry }}'
+    username: '{{ hub_user }}'
+    password: '{{ hub_pass }}'
+
+- name: Run npm install
+  shell: npm install
+  args:
+    chdir: '{{ workspace }}'
+
+- name: Run yarn build
+  shell: yarn build
+  args:
+    chdir: '{{ workspace }}'
+
+- name: Replace Dockerfile
+  template:
+    src: Dockerfile.j2
+    dest: '{{ workspace }}/Dockerfile'
+    mode: 0755
+
+- name: Build docker image
+  shell: 'docker build -t {{ project_name }}:latest .'
+  args:
+    chdir: '{{ workspace }}'
+  when: lookup('env', 'JENKINS_HOME')
+
+- name: Tag docker image to hub.web-essentials.co
+  shell: 'docker tag {{ project_name }}:latest {{ image_name }}:{{ item }}'
+  args:
+    chdir: '{{ workspace }}'
+  loop:
+    - '{{ version }}'
+    - latest
+  when: lookup('env', 'JENKINS_HOME')
+
+- name: Push docker image to hub.web-essentials.co
+  shell: 'docker push {{ image_name }}:{{ item }}'
+  args:
+    chdir: '{{ workspace }}'
+  loop:
+    - '{{ version }}'
+    - latest
+  when: lookup('env', 'JENKINS_HOME')
+
+- name: Create project directory
+  file:
+    path: '/var/tmp/{{ project_id }}'
+    state: directory
+    mode: 0755
+
+- name: Write build version to file
+  template:
+    src: ci-build-id.txt.j2
+    dest: '/var/tmp/{{ project_id }}/{{ project_name }}-build-id.txt'
+    mode: 0755

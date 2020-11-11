@@ -1,0 +1,10 @@
+---
+
+project_id:     'hiv-tra-20'
+project_name:   'admin-webapp'
+
+hub_registry:   'hub.web-essentials.co'
+hub_user:       'docker'
+hub_pass:       '{{ hub_pass_vault }}'
+image_name:     'hub.web-essentials.co/we/{{ project_id }}/{{ project_name }}'
+workspace:      '{{ lookup("env", "WORKSPACE") or lookup("env", "PWD") }}'

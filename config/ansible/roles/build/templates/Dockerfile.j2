@@ -1,0 +1,7 @@
+FROM nginx:1.19.3
+
+# Create app directory
+WORKDIR /usr/share/nginx/html
+
+# Compile source
+COPY build /usr/share/nginx/html
