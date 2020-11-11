@@ -12,6 +12,20 @@ export const createTherapist = payload => {
     });
 };
 
+const getTherapists = () => {
+  // todo: update api uri
+  return axios.get('/admin', { params: { admin_type: 'global_admin' } })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Therapist = {
-  createTherapist
+  createTherapist,
+  getTherapists
 };
