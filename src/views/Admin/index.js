@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import { BsPlus } from 'react-icons/bs';
 import Tabs from 'react-bootstrap/Tabs';
@@ -10,11 +10,32 @@ import ClinicAdmin from './TabContents/clinicAdmin';
 
 import CreateAdmin from './create';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { USER_GROUPS } from 'variables/user';
+import { getUsers } from 'store/user/actions';
 
 const Admin = ({ translate }) => {
-  const [show, setShow] = useState(false);
+  const dispatch = useDispatch();
 
-  const handleClose = () => setShow(false);
+  const [show, setShow] = useState(false);
+  const [type, setType] = useState(USER_GROUPS.GLOBAL_ADMIN);
+  const [editId, setEditId] = useState('');
+
+  const handleEdit = (id) => {
+    setEditId(id);
+    setShow(true);
+  };
+
+  useEffect(() => {
+    if (type) {
+      dispatch(getUsers({ admin_type: type }));
+    }
+  }, [type, dispatch]);
+
+  const handleClose = () => {
+    setEditId('');
+    setShow(false);
+  };
   const handleShow = () => setShow(true);
 
   return (
@@ -29,17 +50,17 @@ const Admin = ({ translate }) => {
         </div>
       </div>
 
-      <CreateAdmin show={show} handleClose={handleClose} />
+      <CreateAdmin show={show} handleClose={handleClose} editId={editId} setType={setType} />
 
-      <Tabs defaultActiveKey="global-admin" transition={false} id="admin-tab">
-        <Tab eventKey="global-admin" title="Global Admins">
-          <GlobalAdmin />
+      <Tabs activeKey={type} onSelect={(key) => setType(key)} transition={false} id="admin-tab">
+        <Tab eventKey={USER_GROUPS.GLOBAL_ADMIN} title="Global Admins">
+          <GlobalAdmin handleEdit={handleEdit} />
         </Tab>
-        <Tab eventKey="country-admin" title="Country Admins">
-          <CountryAdmin />
+        <Tab eventKey={USER_GROUPS.COUNTRY_ADMIN} title="Country Admins">
+          <CountryAdmin handleEdit={handleEdit} />
         </Tab>
-        <Tab eventKey="clinic-admin" title="Clinic Admins">
-          <ClinicAdmin />
+        <Tab eventKey={USER_GROUPS.CLINIC_ADMIN} title="Clinic Admins">
+          <ClinicAdmin handleEdit={handleEdit} />
         </Tab>
       </Tabs>
     </>

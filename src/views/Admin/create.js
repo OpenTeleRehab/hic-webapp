@@ -7,12 +7,13 @@ import PropTypes from 'prop-types';
 import validateEmail from 'utils/validateEmail';
 import { USER_GROUPS } from 'variables/user';
 
-import { createUser } from 'store/user/actions';
+import { createUser, updateUser } from 'store/user/actions';
 
-const CreateAdmin = ({ show, handleClose }) => {
+const CreateAdmin = ({ show, handleClose, editId, setType }) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const users = useSelector(state => state.user.users);
 
   const [hintMessage, setHintMessage] = useState('');
 
@@ -30,6 +31,22 @@ const CreateAdmin = ({ show, handleClose }) => {
   });
 
   useEffect(() => {
+    if (editId && users.length) {
+      const editingData = users.find(user => user.id === editId);
+      setFormFields({
+        type: editingData.type || USER_GROUPS.GLOBAL_ADMIN,
+        email: editingData.email || '',
+        first_name: editingData.first_name || '',
+        last_name: editingData.last_name || '',
+        country_id: editingData.country_id || '',
+        hospital_id: editingData.hospital_id || ''
+      });
+    } else {
+      resetData();
+    }
+  }, [editId, users]);
+
+  useEffect(() => {
     if (!show) {
       resetData();
     }
@@ -39,14 +56,17 @@ const CreateAdmin = ({ show, handleClose }) => {
     setErrorEmail(false);
     setErrorCountry(false);
     setErrorClinic(false);
-    setFormFields({
-      ...formFields,
-      email: '',
-      first_name: '',
-      last_name: '',
-      country_id: '',
-      hospital_id: ''
-    });
+
+    if (!editId) {
+      setFormFields({
+        ...formFields,
+        email: '',
+        first_name: '',
+        last_name: '',
+        country_id: '',
+        hospital_id: ''
+      });
+    }
 
     if (formFields.type === USER_GROUPS.GLOBAL_ADMIN) {
       setHintMessage(translate('admin.hint_message_global_admin'));
@@ -105,21 +125,33 @@ const CreateAdmin = ({ show, handleClose }) => {
     }
 
     if (canSave) {
-      dispatch(createUser(formFields))
-        .then(result => {
-          if (result) {
-            handleClose();
-          }
-        });
+      if (editId) {
+        dispatch(updateUser(editId, formFields))
+          .then(result => {
+            if (result) {
+              setType(formFields.type);
+              handleClose();
+            }
+          });
+      } else {
+        dispatch(createUser(formFields))
+          .then(result => {
+            if (result) {
+              setType(formFields.type);
+              handleClose();
+            }
+          });
+      }
     }
   };
 
   return (
     <Dialog
       show={show}
-      title={translate('admin.new')}
+      title={translate(editId ? 'admin.edit' : 'admin.new')}
       onCancel={handleClose}
       onConfirm={handleConfirm}
+      confirmLabel={editId ? translate('common.save') : translate('common.create')}
     >
       <Form>
         <Form.Group as={Row}>
@@ -128,10 +160,11 @@ const CreateAdmin = ({ show, handleClose }) => {
               name="type"
               onChange={handleChange}
               value={USER_GROUPS.GLOBAL_ADMIN}
-              defaultChecked
+              defaultChecked={formFields.type === USER_GROUPS.GLOBAL_ADMIN}
               type="radio"
               label={translate('global_admin')}
               id="formGlobalAdmin"
+              disabled={!!editId}
             />
           </Col>
           <Col xs={7} md={8}>
@@ -139,9 +172,11 @@ const CreateAdmin = ({ show, handleClose }) => {
               name="type"
               onChange={handleChange}
               value={USER_GROUPS.COUNTRY_ADMIN}
+              defaultChecked={formFields.type === USER_GROUPS.COUNTRY_ADMIN}
               type="radio"
               label={translate('country_admin')}
               id="formCountryAdmin"
+              disabled={!!editId}
 
             />
           </Col>
@@ -150,9 +185,11 @@ const CreateAdmin = ({ show, handleClose }) => {
               name="type"
               onChange={handleChange}
               value={USER_GROUPS.CLINIC_ADMIN}
+              defaultChecked={formFields.type === USER_GROUPS.CLINIC_ADMIN}
               type="radio"
               label={translate('clinic_admin')}
               id="formClinicAdmin"
+              disabled={!!editId}
             />
           </Col>
         </Form.Group>
@@ -169,6 +206,7 @@ const CreateAdmin = ({ show, handleClose }) => {
             placeholder={translate('placeholder.email')}
             value={formFields.email}
             isInvalid={errorEmail}
+            disabled={!!editId}
           />
           <Form.Control.Feedback type="invalid">
             {translate('error.email')}
@@ -244,7 +282,9 @@ const CreateAdmin = ({ show, handleClose }) => {
 
 CreateAdmin.propTypes = {
   show: PropTypes.bool,
-  handleClose: PropTypes.func
+  handleClose: PropTypes.func,
+  editId: PropTypes.number,
+  setType: PropTypes.func
 };
 
 export default CreateAdmin;
