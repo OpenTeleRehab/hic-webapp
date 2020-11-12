@@ -48,7 +48,7 @@ const CustomTable = ({ columns, rows }) => {
 };
 
 CustomTable.propTypes = {
-  columns: PropTypes.object,
-  rows: PropTypes.object
+  columns: PropTypes.array,
+  rows: PropTypes.array
 };
 export default CustomTable;

@@ -8,20 +8,21 @@ import {
 // Actions
 export const createTherapist = payload => async dispatch => {
   const data = await Therapist.createTherapist(payload);
-  if (data.therapist) {
+  if (data.success) {
     dispatch(mutation.createTherapistSuccess());
-    dispatch(showSuccessNotification('New admin account', data.message));
+    dispatch(getTherapists());
+    dispatch(showSuccessNotification('New therapist', data.message));
     return true;
   } else {
     dispatch(mutation.createTherapistFail());
-    dispatch(showErrorNotification('New admin account', data.message));
+    dispatch(showErrorNotification('New therapist', data.message));
     return false;
   }
 };
 
-export const getTherapists = payload => async dispatch => {
+export const getTherapists = () => async dispatch => {
   dispatch(mutation.getTherapistsRequest());
-  const data = await Therapist.getTherapists(payload);
+  const data = await Therapist.getTherapists();
   if (data.success) {
     dispatch(mutation.getTherapistsSuccess(data.data));
   } else {
