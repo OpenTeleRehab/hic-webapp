@@ -1,22 +1,36 @@
-import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Button, Dropdown, DropdownButton } from 'react-bootstrap';
 import { BsPlus } from 'react-icons/bs';
 import CreateTherapist from '../Therapist/create';
 import PropTypes from 'prop-types';
 import CustomTable from 'components/Table';
+import { getTherapists } from 'store/therapist/actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Therapist = ({ translate }) => {
-  const [show, setShow] = useState(false);
+  const dispatch = useDispatch();
+  const therapists = useSelector(state => state.therapist.therapists);
 
+  const [show, setShow] = useState(false);
   const columns = [
     { name: 'id', title: 'ID' },
-    { name: 'firstName', title: 'First Name' },
-    { name: 'lastName', title: 'Last Name' },
+    { name: 'first_name', title: 'First Name' },
+    { name: 'last_name', title: 'Last Name' },
     { name: 'email', title: 'Email' },
+    { name: 'date_of_birth', title: 'Date Of Birth' },
+    { name: 'age', title: 'Age' },
+    { name: 'country', title: 'Country' },
+    { name: 'institution', title: 'Institution' },
+    { name: 'ongoing', title: 'Ongoing/ Patient limit' },
+    { name: 'assigned_patients', title: 'Assigned Patients' },
     { name: 'status', title: 'Status' },
-    { name: 'lastLogin', title: 'Last Login' },
+    { name: 'last_login', title: 'Last Login' },
     { name: 'action', title: 'Actions' }
   ];
+
+  useEffect(() => {
+    dispatch(getTherapists());
+  }, [dispatch]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -35,7 +49,28 @@ const Therapist = ({ translate }) => {
 
       <CreateTherapist show={show} handleClose={handleClose} />
 
-      <CustomTable columns={columns} rows={[]} />
+      <CustomTable
+        columns={columns}
+        rows={therapists.map(user => {
+          const dropdown = (
+            <DropdownButton id="dropdown-basic-button" title={ translate('common.actions') }>
+              <Dropdown.Item onClick={() => console.log('click on edit')}>{ translate('common.edit_info') }</Dropdown.Item>
+              <Dropdown.Item href="#/action-2">{ translate('common.deactivate') }</Dropdown.Item>
+              <Dropdown.Item href="#/action-3">{ translate('common.delete') }</Dropdown.Item>
+            </DropdownButton>
+          );
+
+          return {
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            status: '',
+            last_login: '',
+            action: dropdown
+          };
+        })}
+      />
     </>
   );
 };
