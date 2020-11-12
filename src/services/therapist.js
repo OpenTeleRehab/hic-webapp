@@ -1,7 +1,9 @@
 import axios from 'utils/axios';
 
 export const createTherapist = payload => {
-  return axios.post('/therapist', payload)
+  // todo: update api uri
+  payload.type = 'therapist';
+  return axios.post('/admin', payload)
     .then(
       res => {
         return res.data;
@@ -14,7 +16,7 @@ export const createTherapist = payload => {
 
 const getTherapists = () => {
   // todo: update api uri
-  return axios.get('/admin', { params: { admin_type: 'global_admin' } })
+  return axios.get('/admin', { params: { admin_type: 'therapist' } })
     .then(
       res => {
         return res.data;

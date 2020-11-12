@@ -283,7 +283,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
 CreateAdmin.propTypes = {
   show: PropTypes.bool,
   handleClose: PropTypes.func,
-  editId: PropTypes.number,
+  editId: PropTypes.string,
   setType: PropTypes.func
 };
 

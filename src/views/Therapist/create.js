@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import validateEmail from 'utils/validateEmail';
+import { createTherapist } from 'store/therapist/actions';
 
 const CreateTherapist = ({ show, handleClose }) => {
   const localize = useSelector((state) => state.localize);
@@ -75,7 +76,7 @@ const CreateTherapist = ({ show, handleClose }) => {
     }
 
     if (canSave) {
-      dispatch(CreateTherapist(formFields))
+      dispatch(createTherapist(formFields))
         .then(result => {
           if (result) {
             handleClose();
