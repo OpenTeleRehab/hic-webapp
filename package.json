@@ -7,10 +7,10 @@
     "yarn": "1.22.x"
   },
   "dependencies": {
-    "@react-keycloak/web": "^3.4.0",
     "@devexpress/dx-react-core": "^2.7.3",
     "@devexpress/dx-react-grid": "^2.7.3",
     "@devexpress/dx-react-grid-bootstrap4": "^2.7.3",
+    "@react-keycloak/web": "^3.4.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -61,6 +61,12 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.21.4",
-    "eslint-plugin-standard": "^4.0.1"
+    "eslint-plugin-standard": "^4.0.1",
+    "husky": "^2.7.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
   }
 }
