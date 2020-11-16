@@ -9,6 +9,7 @@ import {
   TableColumnVisibility,
   SearchPanel,
   TableHeaderRow,
+  TableFixedColumns,
   PagingPanel
 } from '@devexpress/dx-react-grid-bootstrap4';
 
@@ -19,6 +20,10 @@ const CustomTable = ({ columns, rows }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
   const [pageSizes] = useState([5, 10, 15]);
+
+  const rightColumns = ['action'];
+  const tableColumnExtensions = [{ columnName: 'action', align: 'right', width: 120 }];
+  const tableColumnVisibilityColumnExtensions = [{ columnName: 'action', togglingEnabled: false }];
 
   return (
     <Grid
@@ -34,10 +39,11 @@ const CustomTable = ({ columns, rows }) => {
         onPageSizeChange={setPageSize}
       />
       <IntegratedPaging />
-      <Table />
+      <Table columnExtensions={tableColumnExtensions} />
       <TableHeaderRow />
       <TableFilterRow />
-      <TableColumnVisibility />
+      <TableFixedColumns rightColumns={rightColumns} />
+      <TableColumnVisibility columnExtensions={tableColumnVisibilityColumnExtensions} />
       <Toolbar />
       <SearchPanel />
       <ColumnChooser />
