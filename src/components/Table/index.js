@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { FilteringState, IntegratedFiltering, SearchState, PagingState, IntegratedPaging } from '@devexpress/dx-react-grid';
+import {
+  FilteringState,
+  IntegratedFiltering,
+  SearchState,
+  PagingState,
+  IntegratedPaging
+} from '@devexpress/dx-react-grid';
 import {
   Grid,
   Table,
@@ -12,15 +18,16 @@ import {
   TableFixedColumns,
   PagingPanel
 } from '@devexpress/dx-react-grid-bootstrap4';
-
-import '@devexpress/dx-react-grid-bootstrap4/dist/dx-react-grid-bootstrap4.css';
 import PropTypes from 'prop-types';
+
+import '@icon/open-iconic/open-iconic.css';
+import '@devexpress/dx-react-grid-bootstrap4/dist/dx-react-grid-bootstrap4.css';
 
 const CustomTable = ({ columns, rows }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
-  const [pageSizes] = useState([5, 10, 15]);
 
+  const pageSizes = [5, 10, 15];
   const rightColumns = ['action'];
   const tableColumnExtensions = [{ columnName: 'action', align: 'right', width: 120 }];
   const tableColumnVisibilityColumnExtensions = [{ columnName: 'action', togglingEnabled: false }];
@@ -47,8 +54,7 @@ const CustomTable = ({ columns, rows }) => {
       <Toolbar />
       <SearchPanel />
       <ColumnChooser />
-      <PagingPanel
-        pageSizes={pageSizes} />
+      <PagingPanel pageSizes={pageSizes} />
     </Grid>
   );
 };

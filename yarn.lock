@@ -1175,6 +1175,11 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
+"@icon/open-iconic@^1.1.1-alpha.3":
+  version "1.1.1-alpha.3"
+  resolved "https://registry.yarnpkg.com/@icon/open-iconic/-/open-iconic-1.1.1-alpha.3.tgz#a8d152dde849c9aeb483d211889103eeddd94b87"
+  integrity sha512-HSxHlHAHUS3XsyDW0ezUIrdQEdsu1doVvBfkABxU9a4dELBvS2pNZH1aZ745j15KRvN+xc6yRz7CSeSs/aSXSQ==
+
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/@jest/console/-/console-24.9.0.tgz#79b1bc06fb74a8cfb01cbdedf945584b1b9707f0"
