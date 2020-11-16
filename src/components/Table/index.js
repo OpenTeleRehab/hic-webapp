@@ -20,6 +20,8 @@ import {
 } from '@devexpress/dx-react-grid-bootstrap4';
 import PropTypes from 'prop-types';
 
+import ToggleButtonProps from 'components/Table/ColumnChooser/ToggleButtonProps';
+
 import '@icon/open-iconic/open-iconic.css';
 import '@devexpress/dx-react-grid-bootstrap4/dist/dx-react-grid-bootstrap4.css';
 
@@ -53,7 +55,7 @@ const CustomTable = ({ columns, rows }) => {
       <TableColumnVisibility columnExtensions={tableColumnVisibilityColumnExtensions} />
       <Toolbar />
       <SearchPanel />
-      <ColumnChooser />
+      <ColumnChooser toggleButtonComponent={ToggleButtonProps} />
       <PagingPanel pageSizes={pageSizes} />
     </Grid>
   );
