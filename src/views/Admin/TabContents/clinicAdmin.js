@@ -20,8 +20,10 @@ const ClinicAdmin = ({ handleEdit }) => {
     { name: 'action', title: 'Actions' }
   ];
   return (
-    <>
-      Country Admins manage therapist of a clinic
+    <div className="mt-3">
+      <p>
+        Country Admins manage therapist of a clinic
+      </p>
       <CustomTable
         columns={columns}
         rows={users.map(user => {
@@ -44,7 +46,7 @@ const ClinicAdmin = ({ handleEdit }) => {
           };
         })}
       />
-    </>
+    </div>
   );
 };
 

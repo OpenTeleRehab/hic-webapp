@@ -20,8 +20,10 @@ const CountryAdmin = ({ handleEdit }) => {
     { name: 'action', title: 'Actions' }
   ];
   return (
-    <>
-      Country Admins manage therapist of a country
+    <div className="mt-3">
+      <p>
+        Country Admins manage therapist of a country
+      </p>
       <CustomTable
         columns={columns}
         rows={users.map(user => {
@@ -44,7 +46,7 @@ const CountryAdmin = ({ handleEdit }) => {
           };
         })}
       />
-    </>
+    </div>
   );
 };
 

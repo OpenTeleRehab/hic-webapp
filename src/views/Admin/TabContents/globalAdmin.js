@@ -20,8 +20,10 @@ const GlobalAdmin = ({ handleEdit }) => {
     { name: 'action', title: 'Actions' }
   ];
   return (
-    <>
-      Global admins can manage Global Admin/ Country Admins, create and update the content (exercises and questionnairs).
+    <div className="mt-3">
+      <p>
+        Global admins can manage Global Admin/ Country Admins, create and update the content (exercises and questionnairs).
+      </p>
       <CustomTable
         columns={columns}
         rows={users.map(user => {
@@ -44,7 +46,7 @@ const GlobalAdmin = ({ handleEdit }) => {
           };
         })}
       />
-    </>
+    </div>
   );
 };
 

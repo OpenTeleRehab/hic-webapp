@@ -10,7 +10,6 @@ import {
   Grid,
   Table,
   TableFilterRow,
-  Toolbar,
   ColumnChooser,
   TableColumnVisibility,
   SearchPanel,
@@ -20,6 +19,7 @@ import {
 } from '@devexpress/dx-react-grid-bootstrap4';
 import PropTypes from 'prop-types';
 
+import Toolbar from 'components/Table/Toolbar';
 import ToggleButtonProps from 'components/Table/ColumnChooser/ToggleButtonProps';
 
 import '@icon/open-iconic/open-iconic.css';
