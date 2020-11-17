@@ -12,6 +12,7 @@
   "common.actions": "Actions",
   "common.save": "Save",
   "common.columns": "Columns",
+  "common.search.placeholder": "Search",
 
   "portal.name": "Admin Portal",
   "home": "Home",

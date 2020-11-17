@@ -4,7 +4,7 @@ import { MdViewColumn } from 'react-icons/md';
 import { Translate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 
-const ToggleButtonProps = ({ onToggle, buttonRef }) => (
+const ToggleButton = ({ onToggle, buttonRef }) => (
   <Button
     variant="outline-dark"
     onClick={onToggle}
@@ -15,9 +15,9 @@ const ToggleButtonProps = ({ onToggle, buttonRef }) => (
   </Button>
 );
 
-ToggleButtonProps.propTypes = {
+ToggleButton.propTypes = {
   onToggle: PropTypes.func.isRequired,
   buttonRef: PropTypes.func.isRequired
 };
 
-export default ToggleButtonProps;
+export default ToggleButton;

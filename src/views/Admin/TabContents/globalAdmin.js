@@ -28,10 +28,10 @@ const GlobalAdmin = ({ handleEdit }) => {
         columns={columns}
         rows={users.map(user => {
           const dropdown = (
-            <DropdownButton id="dropdown-basic-button" title={ translate('common.actions') }>
-              <Dropdown.Item onClick={() => handleEdit(user.id)}>{ translate('common.edit_info') }</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">{ translate('common.deactivate') }</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">{ translate('common.delete') }</Dropdown.Item>
+            <DropdownButton variant="outline-dark" id="dropdown-basic-button" title={translate('common.actions')}>
+              <Dropdown.Item onClick={() => handleEdit(user.id)}>{translate('common.edit_info')}</Dropdown.Item>
+              <Dropdown.Item href="#/action-2">{translate('common.deactivate')}</Dropdown.Item>
+              <Dropdown.Item href="#/action-3">{translate('common.delete')}</Dropdown.Item>
             </DropdownButton>
           );
 
