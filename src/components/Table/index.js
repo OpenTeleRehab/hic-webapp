@@ -20,7 +20,10 @@ import {
 import PropTypes from 'prop-types';
 
 import Toolbar from 'components/Table/Toolbar';
-import ToggleButtonProps from 'components/Table/ColumnChooser/ToggleButtonProps';
+import SearchInput from 'components/Table/SearchPanel/Input';
+import FilterToggle from 'components/Table/FilterToggle';
+import ToggleButton from 'components/Table/ColumnChooser/ToggleButton';
+// import PagingPanelContainer from 'components/Table/PagingPanel/Container';
 
 import '@icon/open-iconic/open-iconic.css';
 import '@devexpress/dx-react-grid-bootstrap4/dist/dx-react-grid-bootstrap4.css';
@@ -28,15 +31,19 @@ import '@devexpress/dx-react-grid-bootstrap4/dist/dx-react-grid-bootstrap4.css';
 const CustomTable = ({ columns, rows }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
+  const [showFilter, setShowFilter] = useState(false);
 
   const pageSizes = [5, 10, 15];
   const rightColumns = ['action'];
   const tableColumnExtensions = [{ columnName: 'action', align: 'right', width: 120 }];
   const tableColumnVisibilityColumnExtensions = [{ columnName: 'action', togglingEnabled: false }];
   const filteringStateColumnExtensions = [{ columnName: 'action', filteringEnabled: false }];
-  const TableHead = (props) => <Table.TableHead className="thead-light" {...props} />;
   const FilterRow = (props) => <Table.Row className="filter" {...props} />;
-  const FixedColumnCell = (props) => <TableFixedColumns.Cell {...props} showLeftDivider={false} style={{ backgroundColor: 'none' }} />;
+  const FixedColumnCell = (props) => <TableFixedColumns.Cell {...props} showLeftDivider={false} />;
+
+  const toggleFilter = () => {
+    setShowFilter(!showFilter);
+  };
 
   return (
     <Grid
@@ -52,14 +59,18 @@ const CustomTable = ({ columns, rows }) => {
         onPageSizeChange={setPageSize}
       />
       <IntegratedPaging />
-      <Table columnExtensions={tableColumnExtensions} headComponent={TableHead} />
+
+      <Table columnExtensions={tableColumnExtensions} />
       <TableHeaderRow />
-      <TableFilterRow rowComponent={FilterRow} />
+      {showFilter && <TableFilterRow rowComponent={FilterRow} />}
       <TableFixedColumns rightColumns={rightColumns} cellComponent={FixedColumnCell} />
       <TableColumnVisibility columnExtensions={tableColumnVisibilityColumnExtensions} />
+
       <Toolbar />
-      <SearchPanel />
-      <ColumnChooser toggleButtonComponent={ToggleButtonProps} />
+      <SearchPanel inputComponent={SearchInput} />
+      <FilterToggle onToggle={toggleFilter} showFilter={showFilter} />
+      <ColumnChooser toggleButtonComponent={ToggleButton} />
+
       <PagingPanel pageSizes={pageSizes} />
     </Grid>
   );

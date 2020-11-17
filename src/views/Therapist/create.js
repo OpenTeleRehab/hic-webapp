@@ -141,7 +141,7 @@ const CreateTherapist = ({ show, handleClose }) => {
             <Form.Control.Feedback type="invalid">
               {translate('error.limit_patient')}
             </Form.Control.Feedback>
-            <p className={'mt-1'}>Ongoing Patients: 13</p>
+            <p className="mt-1">Ongoing Patients: 13</p>
           </Form.Group>
         </Form.Row>
         <><hr /></>
@@ -173,7 +173,7 @@ const CreateTherapist = ({ show, handleClose }) => {
               onChange={handleChange}
               placeholder={translate('placeholder.birth_date')}
             />
-            <p className={'mt-1'}> Age: 38</p>
+            <p className="mt-1"> Age: 38</p>
           </Form.Group>
           <Form.Group as={Col} controlId="institution">
             <Form.Label>Institution</Form.Label>
