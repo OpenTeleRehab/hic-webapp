@@ -11,13 +11,17 @@ $blue: #0077C8;
 $teal: #EAF9F0;
 
 $primary: $blue;
+$secondary: #06038D;
 $danger: $red;
-$dark: #06038D;
+$light: #EBEBEB;
+$dark: #5C5C5C;
 
 $theme-colors: (
 	"primary": $primary,
+	"secondary": $secondary,
 	"success": $green,
 	"danger": $danger,
+	"light": $light,
 	"dark": $dark
 );
 

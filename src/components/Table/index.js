@@ -33,13 +33,17 @@ const CustomTable = ({ columns, rows }) => {
   const rightColumns = ['action'];
   const tableColumnExtensions = [{ columnName: 'action', align: 'right', width: 120 }];
   const tableColumnVisibilityColumnExtensions = [{ columnName: 'action', togglingEnabled: false }];
+  const filteringStateColumnExtensions = [{ columnName: 'action', filteringEnabled: false }];
+  const TableHead = (props) => <Table.TableHead className="thead-light" {...props} />;
+  const FilterRow = (props) => <Table.Row className="filter" {...props} />;
+  const FixedColumnCell = (props) => <TableFixedColumns.Cell {...props} showLeftDivider={false} style={{ backgroundColor: 'none' }} />;
 
   return (
     <Grid
       rows={rows}
       columns={columns}>
       <SearchState />
-      <FilteringState defaultFilters={[]} />
+      <FilteringState defaultFilters={[]} columnExtensions={filteringStateColumnExtensions} />
       <IntegratedFiltering />
       <PagingState
         currentPage={currentPage}
@@ -48,10 +52,10 @@ const CustomTable = ({ columns, rows }) => {
         onPageSizeChange={setPageSize}
       />
       <IntegratedPaging />
-      <Table columnExtensions={tableColumnExtensions} />
+      <Table columnExtensions={tableColumnExtensions} headComponent={TableHead} />
       <TableHeaderRow />
-      <TableFilterRow />
-      <TableFixedColumns rightColumns={rightColumns} />
+      <TableFilterRow rowComponent={FilterRow} />
+      <TableFixedColumns rightColumns={rightColumns} cellComponent={FixedColumnCell} />
       <TableColumnVisibility columnExtensions={tableColumnVisibilityColumnExtensions} />
       <Toolbar />
       <SearchPanel />

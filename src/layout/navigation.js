@@ -19,7 +19,7 @@ const Navigation = ({ translate }) => {
   };
 
   return (
-    <Navbar bg="dark" variant="dark" expand="xl" sticky="top" className="main-nav">
+    <Navbar bg="secondary" variant="dark" expand="xl" sticky="top" className="main-nav">
       <Navbar.Brand>
         <Link to={ROUTES.DASHBOARD}>
           <img
