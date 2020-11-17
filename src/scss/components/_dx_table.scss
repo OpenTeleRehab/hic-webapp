@@ -1,3 +1,7 @@
 .dx-g-bs4-table-cell {
 	overflow: visible;
 }
+
+.table tr.filter > th {
+	background-color: theme-color('dark');
+}
