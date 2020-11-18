@@ -20,6 +20,8 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorCountry, setErrorCountry] = useState(false);
   const [errorClinic, setErrorClinic] = useState(false);
+  const [errorFirstName, setErrorFirstName] = useState(false);
+  const [errorLastName, setErrorLastName] = useState(false);
 
   const [formFields, setFormFields] = useState({
     type: USER_GROUPS.GLOBAL_ADMIN,
@@ -56,6 +58,8 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
     setErrorEmail(false);
     setErrorCountry(false);
     setErrorClinic(false);
+    setErrorFirstName(false);
+    setErrorLastName(false);
 
     if (!editId) {
       setFormFields({
@@ -83,6 +87,8 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
     setErrorEmail(false);
     setErrorCountry(false);
     setErrorClinic(false);
+    setErrorFirstName(false);
+    setErrorLastName(false);
     setFormFields({
       type: USER_GROUPS.GLOBAL_ADMIN,
       email: '',
@@ -124,6 +130,19 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
       setErrorClinic(false);
     }
 
+    if (formFields.first_name === '') {
+      canSave = false;
+      setErrorFirstName(true);
+    } else {
+      setErrorFirstName(false);
+    }
+
+    if (formFields.last_name === '') {
+      canSave = false;
+      setErrorLastName(true);
+    } else {
+      setErrorLastName(false);
+    }
     if (canSave) {
       if (editId) {
         dispatch(updateUser(editId, formFields))
@@ -258,21 +277,31 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
         <Form.Row>
           <Form.Group as={Col} controlId="formFirstName">
             <Form.Label>{translate('common.first_name')}</Form.Label>
+            <span className="text-dark ml-1">*</span>
             <Form.Control
               name="first_name"
               onChange={handleChange}
               value={formFields.first_name}
               placeholder={translate('placeholder.first_name')}
+              isInvalid={errorFirstName}
             />
+            <Form.Control.Feedback type="invalid">
+              {translate('error.first_name')}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} controlId="formLastName">
             <Form.Label>{translate('common.last_name')}</Form.Label>
+            <span className="text-dark ml-1">*</span>
             <Form.Control
               name="last_name"
               onChange={handleChange}
               value={formFields.last_name}
               placeholder={translate('placeholder.last_name')}
+              isInvalid={errorLastName}
             />
+            <Form.Control.Feedback type="invalid">
+              {translate('error.first_name')}
+            </Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
       </Form>
