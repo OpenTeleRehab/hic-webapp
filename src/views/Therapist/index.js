@@ -53,7 +53,7 @@ const Therapist = ({ translate }) => {
         columns={columns}
         rows={therapists.map(user => {
           const dropdown = (
-            <DropdownButton variant="outline-dark" id="dropdown-basic-button" title={translate('common.actions')}>
+            <DropdownButton alignRight variant="outline-dark" id="dropdown-basic-button" title={translate('common.actions')}>
               <Dropdown.Item onClick={() => console.log('click on edit')}>{translate('common.edit_info')}</Dropdown.Item>
               <Dropdown.Item href="#/action-2">{translate('common.deactivate')}</Dropdown.Item>
               <Dropdown.Item href="#/action-3">{translate('common.delete')}</Dropdown.Item>
