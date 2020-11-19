@@ -275,20 +275,6 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
           </Form.Group>
         )}
         <Form.Row>
-          <Form.Group as={Col} controlId="formFirstName">
-            <Form.Label>{translate('common.first_name')}</Form.Label>
-            <span className="text-dark ml-1">*</span>
-            <Form.Control
-              name="first_name"
-              onChange={handleChange}
-              value={formFields.first_name}
-              placeholder={translate('placeholder.first_name')}
-              isInvalid={errorFirstName}
-            />
-            <Form.Control.Feedback type="invalid">
-              {translate('error.first_name')}
-            </Form.Control.Feedback>
-          </Form.Group>
           <Form.Group as={Col} controlId="formLastName">
             <Form.Label>{translate('common.last_name')}</Form.Label>
             <span className="text-dark ml-1">*</span>
@@ -298,6 +284,20 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
               value={formFields.last_name}
               placeholder={translate('placeholder.last_name')}
               isInvalid={errorLastName}
+            />
+            <Form.Control.Feedback type="invalid">
+              {translate('error.first_name')}
+            </Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group as={Col} controlId="formFirstName">
+            <Form.Label>{translate('common.first_name')}</Form.Label>
+            <span className="text-dark ml-1">*</span>
+            <Form.Control
+              name="first_name"
+              onChange={handleChange}
+              value={formFields.first_name}
+              placeholder={translate('placeholder.first_name')}
+              isInvalid={errorFirstName}
             />
             <Form.Control.Feedback type="invalid">
               {translate('error.first_name')}

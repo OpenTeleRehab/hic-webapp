@@ -21,6 +21,11 @@ const GlobalAdmin = ({ handleEdit }) => {
     { name: 'action', title: 'Actions' }
   ];
 
+  const columnExtensions = [
+    { columnName: 'last_name', wordWrapEnabled: true },
+    { columnName: 'first_name', wordWrapEnabled: true }
+  ];
+
   return (
     <div className="mt-3">
       <p>
@@ -28,9 +33,10 @@ const GlobalAdmin = ({ handleEdit }) => {
       </p>
       <CustomTable
         columns={columns}
+        columnExtensions={columnExtensions}
         rows={users.map(user => {
           const dropdown = (
-            <DropdownButton alignRight variant="outline-dark" id="dropdown-basic-button" title={translate('common.actions')}>
+            <DropdownButton alignRight variant="outline-dark" title={translate('common.actions')}>
               <Dropdown.Item onClick={() => handleEdit(user.id)}>{translate('common.edit_info')}</Dropdown.Item>
               <Dropdown.Item href="#/action-2">{translate('common.deactivate')}</Dropdown.Item>
               <Dropdown.Item href="#/action-3">{translate('common.delete')}</Dropdown.Item>
