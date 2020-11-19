@@ -10,6 +10,7 @@ import {
 import { user } from 'store/user/reducers';
 import { therapist } from 'store/therapist/reducers';
 import { notification } from 'store/notification/reducers';
+import { spinnerOverlay } from 'store/spinnerOverlay/reducers';
 
 import en from 'translations/en.locale.json';
 
@@ -17,7 +18,8 @@ export const rootReducer = {
   localize: localizeReducer,
   user,
   therapist,
-  notification
+  notification,
+  spinnerOverlay
 };
 
 const devTool =

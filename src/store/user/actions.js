@@ -6,6 +6,10 @@ import {
   showSuccessNotification
 } from 'store/notification/actions';
 
+import {
+  showSpinner
+} from 'store/spinnerOverlay/actions';
+
 // Actions
 export const createUser = payload => async dispatch => {
   dispatch(mutation.createUserRequest());
@@ -24,11 +28,15 @@ export const createUser = payload => async dispatch => {
 
 export const getUsers = payload => async dispatch => {
   dispatch(mutation.getUsersRequest());
+  dispatch(showSpinner(true));
   const data = await User.getUsers(payload);
   if (data.success) {
     dispatch(mutation.getUsersSuccess(data.data));
+    dispatch(showSpinner(false));
+    return data.info;
   } else {
     dispatch(mutation.getUsersFail());
+    dispatch(showSpinner(false));
     dispatch(showErrorNotification('toast_title.error_message', data.message));
   }
 };

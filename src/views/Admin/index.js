@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { BsPlus } from 'react-icons/bs';
 import Tabs from 'react-bootstrap/Tabs';
@@ -10,13 +10,9 @@ import ClinicAdmin from './TabContents/clinicAdmin';
 
 import CreateAdmin from './create';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import { USER_GROUPS } from 'variables/user';
-import { getUsers } from 'store/user/actions';
 
 const Admin = ({ translate }) => {
-  const dispatch = useDispatch();
-
   const [show, setShow] = useState(false);
   const [type, setType] = useState(USER_GROUPS.GLOBAL_ADMIN);
   const [editId, setEditId] = useState('');
@@ -25,12 +21,6 @@ const Admin = ({ translate }) => {
     setEditId(id);
     setShow(true);
   };
-
-  useEffect(() => {
-    if (type) {
-      dispatch(getUsers({ admin_type: type }));
-    }
-  }, [type, dispatch]);
 
   const handleClose = () => {
     setEditId('');
@@ -52,13 +42,13 @@ const Admin = ({ translate }) => {
 
       <Tabs activeKey={type} onSelect={(key) => setType(key)} transition={false} id="admin-tab">
         <Tab eventKey={USER_GROUPS.GLOBAL_ADMIN} title="Global Admins">
-          <GlobalAdmin handleEdit={handleEdit} />
+          <GlobalAdmin handleEdit={handleEdit} type={type} />
         </Tab>
         <Tab eventKey={USER_GROUPS.COUNTRY_ADMIN} title="Country Admins">
-          <CountryAdmin handleEdit={handleEdit} />
+          <CountryAdmin handleEdit={handleEdit} type={type} />
         </Tab>
         <Tab eventKey={USER_GROUPS.CLINIC_ADMIN} title="Clinic Admins">
-          <ClinicAdmin handleEdit={handleEdit} />
+          <ClinicAdmin handleEdit={handleEdit} type={type} />
         </Tab>
       </Tabs>
 
