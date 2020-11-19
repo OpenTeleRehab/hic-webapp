@@ -18,11 +18,9 @@ const Therapist = ({ translate }) => {
     { name: 'last_name', title: 'Last Name' },
     { name: 'first_name', title: 'First Name' },
     { name: 'email', title: 'Email' },
-    { name: 'date_of_birth', title: 'Date Of Birth' },
-    { name: 'age', title: 'Age' },
     { name: 'country', title: 'Country' },
-    { name: 'institution', title: 'Institution' },
-    { name: 'ongoing', title: 'Ongoing / Patient limit' },
+    { name: 'clinic', title: 'Clinic' },
+    { name: 'ongoing', title: 'Ongoing/ Patient limit' },
     { name: 'assigned_patients', title: 'Assigned Patients' },
     { name: 'status', title: 'Status' },
     { name: 'last_login', title: 'Last Login' },
@@ -70,7 +68,7 @@ const Therapist = ({ translate }) => {
           );
 
           return {
-            id: user.id,
+            id: user.identity,
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,

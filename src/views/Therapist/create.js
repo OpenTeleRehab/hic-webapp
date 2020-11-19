@@ -12,9 +12,16 @@ const CreateTherapist = ({ show, handleClose }) => {
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
 
+  const countries = useSelector(state => state.country.countries);
+  const clinics = useSelector(state => state.clinic.clinics);
+  const professions = useSelector(state => state.profession.professions);
+
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorCountry, setErrorCountry] = useState(false);
   const [errorLimitPatient, setErrorLimitPatient] = useState(false);
+  const [errorClinic, setErrorClinic] = useState(false);
+  const [errorLastName, setErrorLastName] = useState(false);
+  const [errorFirstName, setErrorFirstName] = useState(false);
 
   const [formFields, setFormFields] = useState({
     email: '',
@@ -22,7 +29,7 @@ const CreateTherapist = ({ show, handleClose }) => {
     last_name: '',
     country: '',
     limit_patient: '',
-    institution: ''
+    clinic: ''
   });
   useEffect(() => {
     if (!show) {
@@ -34,14 +41,14 @@ const CreateTherapist = ({ show, handleClose }) => {
     setErrorEmail(false);
     setErrorCountry(false);
     setErrorLimitPatient(false);
+    setErrorClinic(false);
     setFormFields({
       email: '',
       first_name: '',
       last_name: '',
       country: '',
       limit_patient: '',
-      birth_date: '',
-      institution: ''
+      clinic: ''
     });
   };
 
@@ -55,7 +62,6 @@ const CreateTherapist = ({ show, handleClose }) => {
 
     if (formFields.email === '' || !validateEmail(formFields.email)) {
       canSave = false;
-      console.log('test');
       setErrorEmail(true);
     } else {
       setErrorEmail(false);
@@ -66,6 +72,27 @@ const CreateTherapist = ({ show, handleClose }) => {
       setErrorCountry(true);
     } else {
       setErrorCountry(false);
+    }
+
+    if (formFields.first_name === '') {
+      canSave = false;
+      setErrorFirstName(true);
+    } else {
+      setErrorFirstName(false);
+    }
+
+    if (formFields.last_name === '') {
+      canSave = false;
+      setErrorLastName(true);
+    } else {
+      setErrorLastName(false);
+    }
+
+    if (formFields.clinic === '') {
+      canSave = false;
+      setErrorClinic(true);
+    } else {
+      setErrorClinic(false);
     }
 
     if (formFields.limit_patient === '') {
@@ -120,9 +147,9 @@ const CreateTherapist = ({ show, handleClose }) => {
               value={formFields.country}
             >
               <option value="">{translate('placeholder.country')}</option>
-              <option value="1">Cambodia</option>
-              <option value="2">Laos</option>
-              <option value="3">Vietnam</option>
+              {countries.map((country, index) => (
+                <option key={index} value={country.identity}>{country.name}</option>
+              ))}
             </Form.Control>
             <Form.Control.Feedback type="invalid">
               {translate('error.country')}
@@ -148,40 +175,82 @@ const CreateTherapist = ({ show, handleClose }) => {
         <Form.Row>
           <Form.Group as={Col} controlId="formFirstName">
             <Form.Label>{translate('common.first_name')}</Form.Label>
+            <span className="text-dark ml-1">*</span>
             <Form.Control
               name="first_name"
               onChange={handleChange}
+              isInvalid={errorFirstName}
               value={formFields.first_name}
               placeholder={translate('placeholder.first_name')}
             />
+            <Form.Control.Feedback type="invalid">
+              {translate('error.first_name')}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} controlId="formLastName">
             <Form.Label>{translate('common.last_name')}</Form.Label>
+            <span className="text-dark ml-1">*</span>
             <Form.Control
               name="last_name"
               onChange={handleChange}
+              isInvalid={errorLastName}
               value={formFields.last_name}
               placeholder={translate('placeholder.last_name')}
             />
+            <Form.Control.Feedback type="invalid">
+              {translate('error.last_name')}
+            </Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
+        <Form.Group controlId="formLanguage">
+          <Form.Label>Language</Form.Label>
+          <Form.Control
+            name="language"
+            onChange={handleChange}
+            as="select"
+            value={formFields.language}
+          >
+            <option value="">{translate('placeholder.language')}</option>
+            <option value="1">English</option>
+            <option value="2">Khmer</option>
+          </Form.Control>
+        </Form.Group>
         <Form.Row>
-          <Form.Group as={Col} controlId="dateOfBirth">
-            <Form.Label>Date Of Birth</Form.Label>
+          <Form.Group controlId="formProfession">
+            <Form.Label>Profession</Form.Label>
             <Form.Control
-              name="birth_date"
+              name="profession"
               onChange={handleChange}
-              placeholder={translate('placeholder.birth_date')}
-            />
-            <p className="mt-1"> Age: 38</p>
+              as="select"
+              value={formFields.profession}
+            >
+              <option value="">{translate('placeholder.profession')}</option>
+              {professions.map((profession, index) => (
+                <option key={index} value={profession.identity}>{profession.title}</option>
+              ))}
+            </Form.Control>
+            <Form.Control.Feedback type="invalid">
+              {translate('error.profession')}
+            </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group as={Col} controlId="institution">
-            <Form.Label>Institution</Form.Label>
+          <Form.Group controlId="clinic">
+            <Form.Label>Clinic</Form.Label>
+            <span className="text-dark ml-1">*</span>
             <Form.Control
-              name="institution"
+              name="clinic"
               onChange={handleChange}
-              placeholder="Enter Institution"
-            />
+              as="select"
+              isInvalid={errorClinic}
+              value={formFields.clinic}
+            >
+              <option value="">{translate('placeholder.clinic')}</option>
+              {clinics.map((clinic, index) => (
+                <option key={index} value={clinic.identity}>{clinic.name}</option>
+              ))}
+            </Form.Control>
+            <Form.Control.Feedback type="invalid">
+              {translate('error.clinic')}
+            </Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
       </Form>
