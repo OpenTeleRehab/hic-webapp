@@ -1,9 +1,11 @@
 import React from 'react';
-import CustomTable from 'components/Table';
 import { useSelector } from 'react-redux';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
+
+import CustomTable from 'components/Table';
+import EnabledStatus from 'components/EnabledStatus';
 
 const GlobalAdmin = ({ handleEdit }) => {
   const localize = useSelector((state) => state.localize);
@@ -11,14 +13,14 @@ const GlobalAdmin = ({ handleEdit }) => {
   const users = useSelector(state => state.user.users);
 
   const columns = [
-    { name: 'id', title: 'ID' },
-    { name: 'first_name', title: 'First Name' },
     { name: 'last_name', title: 'Last Name' },
+    { name: 'first_name', title: 'First Name' },
     { name: 'email', title: 'Email' },
     { name: 'status', title: 'Status' },
     { name: 'last_login', title: 'Last Login' },
     { name: 'action', title: 'Actions' }
   ];
+
   return (
     <div className="mt-3">
       <p>
@@ -36,11 +38,10 @@ const GlobalAdmin = ({ handleEdit }) => {
           );
 
           return {
-            id: user.id,
-            first_name: user.first_name,
             last_name: user.last_name,
+            first_name: user.first_name,
             email: user.email,
-            status: '',
+            status: <EnabledStatus enabled={user.enabled} />,
             last_login: '',
             action: dropdown
           };

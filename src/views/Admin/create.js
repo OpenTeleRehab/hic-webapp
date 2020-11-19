@@ -29,7 +29,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
     first_name: '',
     last_name: '',
     country_id: '',
-    hospital_id: ''
+    clinic_id: ''
   });
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
         first_name: editingData.first_name || '',
         last_name: editingData.last_name || '',
         country_id: editingData.country_id || '',
-        hospital_id: editingData.hospital_id || ''
+        clinic_id: editingData.clinic_id || ''
       });
     } else {
       resetData();
@@ -68,7 +68,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
         first_name: '',
         last_name: '',
         country_id: '',
-        hospital_id: ''
+        clinic_id: ''
       });
     }
 
@@ -95,7 +95,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
       first_name: '',
       last_name: '',
       country_id: '',
-      hospital_id: ''
+      clinic_id: ''
     });
   };
 
@@ -123,7 +123,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
       setErrorCountry(false);
     }
 
-    if (formFields.type === USER_GROUPS.CLINIC_ADMIN && formFields.hospital_id === '') {
+    if (formFields.type === USER_GROUPS.CLINIC_ADMIN && formFields.clinic_id === '') {
       canSave = false;
       setErrorClinic(true);
     } else {
@@ -258,11 +258,11 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
             <Form.Label>{translate('common.clinic')}</Form.Label>
             <span className="text-dark ml-1">*</span>
             <Form.Control
-              name="hospital_id"
+              name="clinic_id"
               onChange={handleChange}
               as="select"
               isInvalid={errorClinic}
-              value={formFields.hospital_id}
+              value={formFields.clinic_id}
             >
               <option value="">{translate('placeholder.clinic')}</option>
               <option value="1">Clinic A</option>
