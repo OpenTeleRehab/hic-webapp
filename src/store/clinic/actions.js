@@ -10,7 +10,7 @@ export const getClinics = () => async dispatch => {
   if (data.success) {
     dispatch(mutation.getClinicsSuccess(data.data));
   } else {
-    dispatch(mutation.getCountriesFail());
+    dispatch(mutation.getClinicsFail());
     dispatch(showErrorNotification('toast_title.error_message', data.message));
   }
 };
