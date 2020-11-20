@@ -31,25 +31,27 @@ const CountryAdmin = ({ handleEdit, type }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [searchValue, setSearchValue] = useState('');
+  const [filters, setFilters] = useState([]);
 
   useEffect(() => {
     setCurrentPage(0);
-  }, [pageSize, searchValue]);
+  }, [pageSize, searchValue, filters]);
 
   useEffect(() => {
     if (type === USER_GROUPS.COUNTRY_ADMIN) {
       dispatch(getUsers({
         search_value: searchValue,
+        filters: filters,
         admin_type: type,
         page_size: pageSize,
-        current_page: currentPage + 1
+        page: currentPage + 1
       })).then(result => {
         if (result) {
           setTotalCount(result.total_count);
         }
       });
     }
-  }, [currentPage, type, pageSize, searchValue, dispatch]);
+  }, [currentPage, type, pageSize, searchValue, filters, dispatch]);
 
   const columnExtensions = [
     { columnName: 'last_name', wordWrapEnabled: true },
@@ -68,6 +70,8 @@ const CountryAdmin = ({ handleEdit, type }) => {
         setCurrentPage={setCurrentPage}
         totalCount={totalCount}
         setSearchValue={setSearchValue}
+        setFilters={setFilters}
+        filters={filters}
         columns={columns}
         columnExtensions={columnExtensions}
         rows={users.map(user => {
@@ -84,8 +88,8 @@ const CountryAdmin = ({ handleEdit, type }) => {
             first_name: user.first_name,
             email: user.email,
             country: getCountryName(user.country_id, countries),
-            status: <EnabledStatus enabled={user.enabled} />,
-            last_login: '',
+            status: <EnabledStatus enabled={!!user.enabled} />,
+            last_login: user.last_login,
             action: dropdown
           };
         })}

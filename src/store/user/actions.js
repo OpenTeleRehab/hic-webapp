@@ -11,12 +11,13 @@ import {
 } from 'store/spinnerOverlay/actions';
 
 // Actions
-export const createUser = payload => async dispatch => {
+export const createUser = payload => async (dispatch, getState) => {
   dispatch(mutation.createUserRequest());
   const data = await User.createUser(payload);
   if (data.success) {
     dispatch(mutation.createUserSuccess());
-    dispatch(getUsers({ admin_type: payload.type }));
+    const filters = getState().user.filters;
+    dispatch(getUsers({ ...filters, admin_type: payload.type }));
     dispatch(showSuccessNotification('toast_title.new_admin_account', data.message));
     return true;
   } else {
@@ -31,7 +32,7 @@ export const getUsers = payload => async dispatch => {
   dispatch(showSpinner(true));
   const data = await User.getUsers(payload);
   if (data.success) {
-    dispatch(mutation.getUsersSuccess(data.data));
+    dispatch(mutation.getUsersSuccess(data.data, payload));
     dispatch(showSpinner(false));
     return data.info;
   } else {
@@ -41,12 +42,13 @@ export const getUsers = payload => async dispatch => {
   }
 };
 
-export const updateUser = (id, payload) => async dispatch => {
+export const updateUser = (id, payload) => async (dispatch, getState) => {
   dispatch(mutation.updateUserRequest());
   const data = await User.updateUser(id, payload);
   if (data.success) {
     dispatch(mutation.updateUserSuccess());
-    dispatch(getUsers({ admin_type: payload.type }));
+    const filters = getState().user.filters;
+    dispatch(getUsers({ ...filters, admin_type: payload.type }));
     dispatch(showSuccessNotification('toast_title.edit_admin_account', data.message));
     return true;
   } else {

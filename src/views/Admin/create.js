@@ -33,12 +33,6 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
   });
 
   useEffect(() => {
-    if (type !== formFields.type) {
-      setFormFields({ ...formFields, type });
-    }
-  }, [type, formFields]);
-
-  useEffect(() => {
     if (editId && users.length) {
       const editingData = users.find(user => user.id === editId);
       setFormFields({
