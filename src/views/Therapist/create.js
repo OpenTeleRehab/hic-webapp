@@ -15,6 +15,8 @@ const CreateTherapist = ({ show, handleClose }) => {
   const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
   const professions = useSelector(state => state.profession.professions);
+  const languages = useSelector(state => state.language.languages);
+  const defaultLimitedPatients = useSelector(state => state.defaultLimitedPatient.defaultLimitedPatients);
 
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorCountry, setErrorCountry] = useState(false);
@@ -35,6 +37,7 @@ const CreateTherapist = ({ show, handleClose }) => {
     if (!show) {
       resetData();
     }
+    // eslint-disable-next-line
   }, [show]);
 
   const resetData = () => {
@@ -47,7 +50,7 @@ const CreateTherapist = ({ show, handleClose }) => {
       first_name: '',
       last_name: '',
       country: '',
-      limit_patient: '',
+      limit_patient: defaultLimitedPatients.value,
       clinic: ''
     });
   };
@@ -136,7 +139,7 @@ const CreateTherapist = ({ show, handleClose }) => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Row>
-          <Form.Group controlId="formCountry">
+          <Form.Group as={Col} controlId="formCountry" className="mb-0">
             <Form.Label>{translate('common.country')}</Form.Label>
             <span className="text-dark ml-1">*</span>
             <Form.Control
@@ -155,7 +158,7 @@ const CreateTherapist = ({ show, handleClose }) => {
               {translate('error.country')}
             </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group as={Col} controlId="patient">
+          <Form.Group as={Col} controlId="patient" className="mb-0">
             <Form.Label>Patient Limit(Default:15)</Form.Label>
             <span className="text-dark ml-1">*</span>
             <Form.Control
@@ -173,20 +176,6 @@ const CreateTherapist = ({ show, handleClose }) => {
         </Form.Row>
         <><hr /></>
         <Form.Row>
-          <Form.Group as={Col} controlId="formFirstName">
-            <Form.Label>{translate('common.first_name')}</Form.Label>
-            <span className="text-dark ml-1">*</span>
-            <Form.Control
-              name="first_name"
-              onChange={handleChange}
-              isInvalid={errorFirstName}
-              value={formFields.first_name}
-              placeholder={translate('placeholder.first_name')}
-            />
-            <Form.Control.Feedback type="invalid">
-              {translate('error.first_name')}
-            </Form.Control.Feedback>
-          </Form.Group>
           <Form.Group as={Col} controlId="formLastName">
             <Form.Label>{translate('common.last_name')}</Form.Label>
             <span className="text-dark ml-1">*</span>
@@ -201,22 +190,23 @@ const CreateTherapist = ({ show, handleClose }) => {
               {translate('error.last_name')}
             </Form.Control.Feedback>
           </Form.Group>
+          <Form.Group as={Col} controlId="formFirstName">
+            <Form.Label>{translate('common.first_name')}</Form.Label>
+            <span className="text-dark ml-1">*</span>
+            <Form.Control
+              name="first_name"
+              onChange={handleChange}
+              isInvalid={errorFirstName}
+              value={formFields.first_name}
+              placeholder={translate('placeholder.first_name')}
+            />
+            <Form.Control.Feedback type="invalid">
+              {translate('error.first_name')}
+            </Form.Control.Feedback>
+          </Form.Group>
         </Form.Row>
-        <Form.Group controlId="formLanguage">
-          <Form.Label>Language</Form.Label>
-          <Form.Control
-            name="language"
-            onChange={handleChange}
-            as="select"
-            value={formFields.language}
-          >
-            <option value="">{translate('placeholder.language')}</option>
-            <option value="1">English</option>
-            <option value="2">Khmer</option>
-          </Form.Control>
-        </Form.Group>
         <Form.Row>
-          <Form.Group controlId="formProfession">
+          <Form.Group as={Col} controlId="formProfession">
             <Form.Label>Profession</Form.Label>
             <Form.Control
               name="profession"
@@ -233,7 +223,7 @@ const CreateTherapist = ({ show, handleClose }) => {
               {translate('error.profession')}
             </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group controlId="clinic">
+          <Form.Group as={Col} controlId="clinic">
             <Form.Label>Clinic</Form.Label>
             <span className="text-dark ml-1">*</span>
             <Form.Control
@@ -251,6 +241,22 @@ const CreateTherapist = ({ show, handleClose }) => {
             <Form.Control.Feedback type="invalid">
               {translate('error.clinic')}
             </Form.Control.Feedback>
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group controlId="formLanguage">
+            <Form.Label>Language </Form.Label>
+            <Form.Control
+              name="language"
+              onChange={handleChange}
+              as="select"
+              value={formFields.language}
+            >
+              <option value="">{translate('placeholder.language')}</option>
+              {languages.map((language, index) => (
+                <option key={index} value={language.id}>{language.name}</option>
+              ))}
+            </Form.Control>
           </Form.Group>
         </Form.Row>
       </Form>
