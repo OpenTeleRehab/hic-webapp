@@ -1,13 +1,16 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 
 import CustomTable from 'components/Table';
 import EnabledStatus from 'components/EnabledStatus';
+import { USER_GROUPS } from '../../../variables/user';
+import { getUsers } from '../../../store/user/actions';
 
-const ClinicAdmin = ({ handleEdit }) => {
+const ClinicAdmin = ({ handleEdit, type }) => {
+  const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const users = useSelector(state => state.user.users);
@@ -22,6 +25,29 @@ const ClinicAdmin = ({ handleEdit }) => {
     { name: 'last_login', title: 'Last Login' },
     { name: 'action', title: 'Actions' }
   ];
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [searchValue, setSearchValue] = useState('');
+
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [pageSize, searchValue]);
+
+  useEffect(() => {
+    if (type === USER_GROUPS.CLINIC_ADMIN) {
+      dispatch(getUsers({
+        search_value: searchValue,
+        admin_type: type,
+        page_size: pageSize,
+        current_page: currentPage + 1
+      })).then(result => {
+        if (result) {
+          setTotalCount(result.total_count);
+        }
+      });
+    }
+  }, [currentPage, type, pageSize, searchValue, dispatch]);
 
   const columnExtensions = [
     { columnName: 'last_name', wordWrapEnabled: true },
@@ -34,6 +60,12 @@ const ClinicAdmin = ({ handleEdit }) => {
         Country Admins manage therapist of a clinic
       </p>
       <CustomTable
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalCount={totalCount}
+        setSearchValue={setSearchValue}
         columns={columns}
         columnExtensions={columnExtensions}
         rows={users.map(user => {
@@ -62,7 +94,8 @@ const ClinicAdmin = ({ handleEdit }) => {
 };
 
 ClinicAdmin.propTypes = {
-  handleEdit: PropTypes.func
+  handleEdit: PropTypes.func,
+  type: PropTypes.string
 };
 
 export default ClinicAdmin;
