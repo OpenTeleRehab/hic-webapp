@@ -50,8 +50,6 @@ const Admin = ({ translate }) => {
         </div>
       </div>
 
-      <CreateAdmin show={show} handleClose={handleClose} editId={editId} setType={setType} />
-
       <Tabs activeKey={type} onSelect={(key) => setType(key)} transition={false} id="admin-tab">
         <Tab eventKey={USER_GROUPS.GLOBAL_ADMIN} title="Global Admins">
           <GlobalAdmin handleEdit={handleEdit} />
@@ -63,6 +61,8 @@ const Admin = ({ translate }) => {
           <ClinicAdmin handleEdit={handleEdit} />
         </Tab>
       </Tabs>
+
+      {show && <CreateAdmin show={show} handleClose={handleClose} editId={editId} setType={setType} type={type} />}
     </>
   );
 };

@@ -9,7 +9,7 @@ import { USER_GROUPS } from 'variables/user';
 
 import { createUser, updateUser } from 'store/user/actions';
 
-const CreateAdmin = ({ show, handleClose, editId, setType }) => {
+const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -24,13 +24,19 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
   const [errorLastName, setErrorLastName] = useState(false);
 
   const [formFields, setFormFields] = useState({
-    type: USER_GROUPS.GLOBAL_ADMIN,
+    type: type,
     email: '',
     first_name: '',
     last_name: '',
     country_id: '',
     clinic_id: ''
   });
+
+  useEffect(() => {
+    if (type !== formFields.type) {
+      setFormFields({ ...formFields, type });
+    }
+  }, [type, formFields]);
 
   useEffect(() => {
     if (editId && users.length) {
@@ -242,6 +248,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
               as="select"
               isInvalid={errorCountry}
               value={formFields.country_id}
+              disabled={!!editId}
             >
               <option value="">{translate('placeholder.country')}</option>
               <option value="1">Cambodia</option>
@@ -263,6 +270,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType }) => {
               as="select"
               isInvalid={errorClinic}
               value={formFields.clinic_id}
+              disabled={!!editId}
             >
               <option value="">{translate('placeholder.clinic')}</option>
               <option value="1">Clinic A</option>
@@ -313,7 +321,8 @@ CreateAdmin.propTypes = {
   show: PropTypes.bool,
   handleClose: PropTypes.func,
   editId: PropTypes.string,
-  setType: PropTypes.func
+  setType: PropTypes.func,
+  type: PropTypes.string
 };
 
 export default CreateAdmin;
