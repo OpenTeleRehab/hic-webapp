@@ -5,12 +5,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import CustomTable from 'components/Table';
+import EnabledStatus from 'components/EnabledStatus';
 import CreateTherapist from 'views/Therapist/create';
 import { getTherapists } from 'store/therapist/actions';
+import { getCountryName } from 'utils/country';
+import { getClinicName } from 'utils/clinic';
 
 const Therapist = ({ translate }) => {
   const dispatch = useDispatch();
   const therapists = useSelector(state => state.therapist.therapists);
+  const countries = useSelector(state => state.country.countries);
+  const clinics = useSelector(state => state.clinic.clinics);
 
   const [show, setShow] = useState(false);
   const columns = [
@@ -72,7 +77,9 @@ const Therapist = ({ translate }) => {
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,
-            status: '',
+            country: getCountryName(user.country_id, countries),
+            clinic: getClinicName(user.clinic_id, clinics),
+            status: <EnabledStatus enabled={user.enabled} />,
             last_login: '',
             action: dropdown
           };
