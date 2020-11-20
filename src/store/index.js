@@ -7,10 +7,17 @@ import {
   localizeReducer
 } from 'react-localize-redux';
 
+import { getCountries } from 'store/country/actions';
+import { getClinics } from 'store/clinic/actions';
+import { getProfessions } from 'store/profession/actions';
+
 import { user } from 'store/user/reducers';
 import { therapist } from 'store/therapist/reducers';
 import { notification } from 'store/notification/reducers';
 import { spinnerOverlay } from 'store/spinnerOverlay/reducers';
+import { country } from 'store/country/reducers';
+import { clinic } from 'store/clinic/reducers';
+import { profession } from 'store/profession/reducers';
 
 import en from 'translations/en.locale.json';
 
@@ -19,7 +26,10 @@ export const rootReducer = {
   user,
   therapist,
   notification,
-  spinnerOverlay
+  spinnerOverlay,
+  country,
+  clinic,
+  profession
 };
 
 const devTool =
@@ -50,5 +60,14 @@ store.dispatch(initialize({
 }));
 
 store.dispatch(addTranslationForLanguage(en, 'en'));
+
+// fetch countries
+store.dispatch(getCountries());
+
+// fetch clinics
+store.dispatch(getClinics());
+
+// fetch professions
+store.dispatch(getProfessions());
 
 export default store;
