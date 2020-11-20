@@ -1,4 +1,5 @@
 {
+  "common.welcome": "Welcome",
   "common.cancel": "Cancel",
   "common.create": "Create",
   "common.email": "Email",
@@ -20,7 +21,12 @@
   "common.clear": "Clear",
   "common.apply": "Apply",
   "common.timerange.placeholder": "Select Timerange",
+  "common.back": "Back",
+  "common.edit": "Edit",
 
+  "profile.current_password": "Current Passwords",
+  "profile.new_password": "New Passwords",
+  "profile.confirm_password": "Confirm New Passwords",
 
   "portal.name": "Admin Portal",
   "home": "Home",
@@ -30,6 +36,7 @@
   "category": "Categories",
   "service_setup": "Services Setup",
   "therapist": "Therapists",
+  "profile.change_password": "Change password",
 
   "global_admin": "Global Admin",
   "country_admin": "Country Admin",
@@ -45,12 +52,22 @@
   "admin.hint_message_global_admin": "Global admins can manage Global Admins/ Country Admin, create and upload the content (exercises and questionnaires).",
   "admin.hint_message_country_admin": "Country admins manage therapist of a country.",
   "admin.hint_message_clinic_admin": "Clinic admins manage therapist of a clinics.",
+  "admin.information": "Profile Information",
+  "admin.password": "Passwords",
+  "personal": "Personal",
+  "profile": "Profile",
 
+  "gender": "Gender",
+  "male": "Male",
+  "female": "Female",
+  "other": "Others",
   "logout": "Logout",
   "logout.confirmation": "Logout Confirmation",
   "logout.message": "Are you sure to logout?",
   "logout.cancel": "No",
   "logout.confirm": "Yes",
+  "profile.information": "Profile Information",
+  "profile.password": "Password",
 
   "placeholder.last_name": "Enter last name",
   "placeholder.first_name": "Enter first name",
@@ -60,21 +77,34 @@
   "placeholder.limit_patient": "Enter Limit Patient",
   "placeholder.profession": "Please select a profession",
   "placeholder.language": "Please select a language",
+  "placeholder.birth_date": "Enter Birth Date",
+  "placeholder.institution": "Enter Institution",
+  "placeholder.gender": "Please select a gender",
 
   "error.email": "Please fill in the email",
   "error.first_name": "Please fill first name",
   "error.last_name": "Please fill last name",
 
+  "error.gender": "Please select a gender",
   "error.country": "Please select a country",
   "error.clinic": "Please select a clinic",
   "error.limit_patient": "Please fill limit patient",
-
   "error_message.email_exists": "Email already exists",
+  "error_message.wrong_password": "Wrong old password",
+  "error_message.cannot_change_password": "Password is unable to change",
 
   "success_message.user_add": "User has been added",
   "success_message.user_update": "User has been updated",
+  "success_message.profile_update": "Update profile successfully",
+  "success_message.update_profile_success": "Profile Updated successfully.",
+  "success_message.change_password_success": "Password changed successfully!",
 
   "toast_title.new_admin_account": "New admin account",
   "toast_title.edit_admin_account": "Edit admin account",
-  "toast_title.error_message": "Error message"
+  "toast_title.error_message": "Error message",
+  "toast_title.change_password": "Change password",
+
+  "error.current_password": "Please fill in the current password",
+  "error.new_password": "Please fill in the new password",
+  "error.confirm_password": "Confirm new password does not match"
 }

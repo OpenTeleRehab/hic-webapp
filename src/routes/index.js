@@ -10,6 +10,7 @@ import AdminPage from 'views/Admin';
 import CategoryPage from 'views/Category';
 import ServiceSetupPage from 'views/ServiceSetup';
 import Therapist from 'views/Therapist';
+import ProfilePage from 'views/Profile';
 
 import * as ROUTES from 'variables/routes';
 const PRIVATE = 'private';
@@ -48,6 +49,20 @@ const routes = [
     title: 'category',
     path: ROUTES.CATEGORY,
     component: CategoryPage,
+    exact: true,
+    type: PRIVATE
+  },
+  {
+    title: 'profile',
+    path: ROUTES.PROFILE,
+    component: ProfilePage,
+    exact: true,
+    type: PRIVATE
+  },
+  {
+    title: 'avatar',
+    path: ROUTES.AVATAR,
+    component: ProfilePage,
     exact: true,
     type: PRIVATE
   },
