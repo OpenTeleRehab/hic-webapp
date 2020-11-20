@@ -6,14 +6,18 @@ import PropTypes from 'prop-types';
 
 import CustomTable from 'components/Table';
 import EnabledStatus from 'components/EnabledStatus';
-import { USER_GROUPS } from '../../../variables/user';
-import { getUsers } from '../../../store/user/actions';
+import { USER_GROUPS } from 'variables/user';
+import { getUsers } from 'store/user/actions';
+import { getCountryName } from 'utils/country';
+import { getClinicName } from 'utils/clinic';
 
 const ClinicAdmin = ({ handleEdit, type }) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const users = useSelector(state => state.user.users);
+  const countries = useSelector(state => state.country.countries);
+  const clinics = useSelector(state => state.clinic.clinics);
 
   const columns = [
     { name: 'last_name', title: 'Last Name' },
@@ -81,8 +85,8 @@ const ClinicAdmin = ({ handleEdit, type }) => {
             last_name: user.last_name,
             first_name: user.first_name,
             email: user.email,
-            country: user.country_id,
-            clinic: user.clinic_id,
+            country: getCountryName(user.country_id, countries),
+            clinic: getClinicName(user.clinic_id, clinics),
             status: <EnabledStatus enabled={user.enabled} />,
             last_login: '',
             action: dropdown
