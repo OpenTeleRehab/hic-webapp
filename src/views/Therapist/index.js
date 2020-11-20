@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Dropdown, DropdownButton } from 'react-bootstrap';
 import { BsPlus } from 'react-icons/bs';
-import CreateTherapist from '../Therapist/create';
-import PropTypes from 'prop-types';
-import CustomTable from 'components/Table';
-import { getTherapists } from 'store/therapist/actions';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import CustomTable from 'components/Table';
+import CreateTherapist from 'views/Therapist/create';
+import { getTherapists } from 'store/therapist/actions';
 
 const Therapist = ({ translate }) => {
   const dispatch = useDispatch();
@@ -14,18 +15,25 @@ const Therapist = ({ translate }) => {
   const [show, setShow] = useState(false);
   const columns = [
     { name: 'id', title: 'ID' },
-    { name: 'first_name', title: 'First Name' },
     { name: 'last_name', title: 'Last Name' },
+    { name: 'first_name', title: 'First Name' },
     { name: 'email', title: 'Email' },
     { name: 'date_of_birth', title: 'Date Of Birth' },
     { name: 'age', title: 'Age' },
     { name: 'country', title: 'Country' },
     { name: 'institution', title: 'Institution' },
-    { name: 'ongoing', title: 'Ongoing/ Patient limit' },
+    { name: 'ongoing', title: 'Ongoing / Patient limit' },
     { name: 'assigned_patients', title: 'Assigned Patients' },
     { name: 'status', title: 'Status' },
     { name: 'last_login', title: 'Last Login' },
     { name: 'action', title: 'Actions' }
+  ];
+
+  const columnExtensions = [
+    { columnName: 'last_name', wordWrapEnabled: true },
+    { columnName: 'first_name', wordWrapEnabled: true },
+    { columnName: 'ongoing', wordWrapEnabled: true },
+    { columnName: 'assigned_patients', wordWrapEnabled: true }
   ];
 
   useEffect(() => {
@@ -51,9 +59,10 @@ const Therapist = ({ translate }) => {
 
       <CustomTable
         columns={columns}
+        columnExtensions={columnExtensions}
         rows={therapists.map(user => {
           const dropdown = (
-            <DropdownButton alignRight variant="outline-dark" id="dropdown-basic-button" title={translate('common.actions')}>
+            <DropdownButton alignRight variant="outline-dark" title={translate('common.actions')}>
               <Dropdown.Item onClick={() => console.log('click on edit')}>{translate('common.edit_info')}</Dropdown.Item>
               <Dropdown.Item href="#/action-2">{translate('common.deactivate')}</Dropdown.Item>
               <Dropdown.Item href="#/action-3">{translate('common.delete')}</Dropdown.Item>
