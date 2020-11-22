@@ -4,6 +4,7 @@ import {
   showErrorNotification,
   showSuccessNotification
 } from 'store/notification/actions';
+import { showSpinner } from 'store/spinnerOverlay/actions';
 
 // Actions
 export const createTherapist = payload => async dispatch => {
@@ -35,13 +36,16 @@ export const updateTherapist = (id, payload) => async dispatch => {
   }
 };
 
-export const getTherapists = () => async dispatch => {
+export const getTherapists = payload => async dispatch => {
   dispatch(mutation.getTherapistsRequest());
-  const data = await Therapist.getTherapists();
+  dispatch(showSpinner(true));
+  const data = await Therapist.getTherapists(payload);
   if (data.success) {
     dispatch(mutation.getTherapistsSuccess(data.data));
+    dispatch(showSpinner(false));
   } else {
     dispatch(mutation.getTherapistsFail());
+    dispatch(showSpinner(false));
     dispatch(showErrorNotification('toast_title.error_message', data.message));
   }
 };

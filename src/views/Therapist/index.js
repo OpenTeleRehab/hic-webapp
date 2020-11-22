@@ -41,9 +41,26 @@ const Therapist = ({ translate }) => {
     { columnName: 'assigned_patients', wordWrapEnabled: true }
   ];
 
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [searchValue, setSearchValue] = useState('');
+
   useEffect(() => {
-    dispatch(getTherapists());
-  }, [dispatch]);
+    setCurrentPage(0);
+  }, [pageSize, searchValue]);
+
+  useEffect(() => {
+    dispatch(getTherapists({
+      search_value: searchValue,
+      page_size: pageSize,
+      page: currentPage + 1
+    })).then(result => {
+      if (result) {
+        setTotalCount(result.total_count);
+      }
+    });
+  }, [currentPage, pageSize, searchValue, dispatch]);
 
   const handleShow = () => setShow(true);
 
@@ -72,6 +89,12 @@ const Therapist = ({ translate }) => {
       {show && <CreateTherapist show={show} handleClose={handleClose} editId={editId} />}
 
       <CustomTable
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalCount={totalCount}
+        setSearchValue={setSearchValue}
         columns={columns}
         columnExtensions={columnExtensions}
         rows={therapists.map(user => {

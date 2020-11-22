@@ -24,8 +24,8 @@ const updateTherapist = (id, payload) => {
     });
 };
 
-const getTherapists = () => {
-  return axios.get('/therapist')
+const getTherapists = payload => {
+  return axios.get('/therapist', { params: payload })
     .then(
       res => {
         return res.data;
