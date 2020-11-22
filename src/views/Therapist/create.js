@@ -5,13 +5,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import validateEmail from 'utils/validateEmail';
-import { createTherapist } from 'store/therapist/actions';
+import { createTherapist, updateTherapist } from 'store/therapist/actions';
 
-const CreateTherapist = ({ show, handleClose }) => {
+const CreateTherapist = ({ show, handleClose, editId }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
 
+  const therapists = useSelector(state => state.therapist.therapists);
   const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
   const professions = useSelector(state => state.profession.professions);
@@ -54,6 +55,23 @@ const CreateTherapist = ({ show, handleClose }) => {
       clinic: ''
     });
   };
+
+  useEffect(() => {
+    if (editId && therapists.length) {
+      const editingData = therapists.find(user => user.id === editId);
+      setFormFields({
+        email: editingData.email || '',
+        first_name: editingData.first_name || '',
+        last_name: editingData.last_name || '',
+        country: editingData.country_id || '',
+        clinic: editingData.clinic_id || '',
+        limit_patient: editingData.limit_patient || ''
+      });
+    } else {
+      resetData();
+    }
+    // eslint-disable-next-line
+  }, [editId, therapists]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -106,21 +124,29 @@ const CreateTherapist = ({ show, handleClose }) => {
     }
 
     if (canSave) {
-      dispatch(createTherapist(formFields))
-        .then(result => {
+      if (editId) {
+        dispatch(updateTherapist(editId, formFields)).then(result => {
           if (result) {
             handleClose();
           }
         });
+      } else {
+        dispatch(createTherapist(formFields)).then(result => {
+          if (result) {
+            handleClose();
+          }
+        });
+      }
     }
   };
 
   return (
     <Dialog
       show={show}
-      title={translate('therapist.new')}
+      title={translate(editId ? 'admin.edit' : 'therapist.new')}
       onCancel={handleClose}
       onConfirm={handleConfirm}
+      confirmLabel={editId ? translate('common.save') : translate('common.create')}
     >
       <Form>
         <Form.Group controlId="formEmail">
@@ -133,6 +159,7 @@ const CreateTherapist = ({ show, handleClose }) => {
             placeholder={translate('placeholder.email')}
             isInvalid={errorEmail}
             value={formFields.email}
+            disabled={!!editId}
           />
           <Form.Control.Feedback type="invalid">
             {translate('error.email')}
@@ -148,6 +175,7 @@ const CreateTherapist = ({ show, handleClose }) => {
               as="select"
               isInvalid={errorCountry}
               value={formFields.country}
+              disabled={!!editId}
             >
               <option value="">{translate('placeholder.country')}</option>
               {countries.map((country, index) => (
@@ -174,7 +202,7 @@ const CreateTherapist = ({ show, handleClose }) => {
             <p className="mt-1">Ongoing Patients: 13</p>
           </Form.Group>
         </Form.Row>
-        <><hr /></>
+        <hr />
         <Form.Row>
           <Form.Group as={Col} controlId="formLastName">
             <Form.Label>{translate('common.last_name')}</Form.Label>
@@ -232,6 +260,7 @@ const CreateTherapist = ({ show, handleClose }) => {
               as="select"
               isInvalid={errorClinic}
               value={formFields.clinic}
+              disabled={!!editId}
             >
               <option value="">{translate('placeholder.clinic')}</option>
               {clinics.map((clinic, index) => (
@@ -266,7 +295,8 @@ const CreateTherapist = ({ show, handleClose }) => {
 
 CreateTherapist.propTypes = {
   show: PropTypes.bool,
-  handleClose: PropTypes.func
+  handleClose: PropTypes.func,
+  editId: PropTypes.string
 };
 
 export default CreateTherapist;

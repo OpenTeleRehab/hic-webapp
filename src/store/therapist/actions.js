@@ -20,6 +20,21 @@ export const createTherapist = payload => async dispatch => {
   }
 };
 
+export const updateTherapist = (id, payload) => async dispatch => {
+  dispatch(mutation.updateTherapistRequest());
+  const data = await Therapist.updateTherapist(id, payload);
+  if (data.success) {
+    dispatch(mutation.updateTherapistSuccess());
+    dispatch(getTherapists());
+    dispatch(showSuccessNotification('toast_title.edit_admin_account', data.message));
+    return true;
+  } else {
+    dispatch(mutation.updateTherapistFail());
+    dispatch(showErrorNotification('toast_title.edit_admin_account', data.message));
+    return false;
+  }
+};
+
 export const getTherapists = () => async dispatch => {
   dispatch(mutation.getTherapistsRequest());
   const data = await Therapist.getTherapists();

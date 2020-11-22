@@ -18,6 +18,8 @@ const Therapist = ({ translate }) => {
   const clinics = useSelector(state => state.clinic.clinics);
 
   const [show, setShow] = useState(false);
+  const [editId, setEditId] = useState('');
+
   const columns = [
     { name: 'id', title: 'ID' },
     { name: 'last_name', title: 'Last Name' },
@@ -43,8 +45,17 @@ const Therapist = ({ translate }) => {
     dispatch(getTherapists());
   }, [dispatch]);
 
-  const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const handleEdit = (id) => {
+    setEditId(id);
+    setShow(true);
+  };
+
+  const handleClose = () => {
+    setEditId('');
+    setShow(false);
+  };
 
   return (
     <>
@@ -58,7 +69,7 @@ const Therapist = ({ translate }) => {
         </div>
       </div>
 
-      <CreateTherapist show={show} handleClose={handleClose} />
+      {show && <CreateTherapist show={show} handleClose={handleClose} editId={editId} />}
 
       <CustomTable
         columns={columns}
@@ -66,7 +77,7 @@ const Therapist = ({ translate }) => {
         rows={therapists.map(user => {
           const dropdown = (
             <DropdownButton alignRight variant="outline-dark" title={translate('common.actions')}>
-              <Dropdown.Item onClick={() => console.log('click on edit')}>{translate('common.edit_info')}</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleEdit(user.id)}>{translate('common.edit_info')}</Dropdown.Item>
               <Dropdown.Item href="#/action-2">{translate('common.deactivate')}</Dropdown.Item>
               <Dropdown.Item href="#/action-3">{translate('common.delete')}</Dropdown.Item>
             </DropdownButton>

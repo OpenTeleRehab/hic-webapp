@@ -12,6 +12,18 @@ const createTherapist = payload => {
     });
 };
 
+const updateTherapist = (id, payload) => {
+  return axios.put(`/therapist/${id}`, payload)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const getTherapists = () => {
   return axios.get('/therapist')
     .then(
@@ -26,5 +38,6 @@ const getTherapists = () => {
 
 export const Therapist = {
   createTherapist,
+  updateTherapist,
   getTherapists
 };
