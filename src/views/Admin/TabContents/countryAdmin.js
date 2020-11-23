@@ -10,6 +10,8 @@ import EnabledStatus from 'components/EnabledStatus';
 import { USER_GROUPS } from 'variables/user';
 import { getUsers } from 'store/user/actions';
 import { getCountryName } from 'utils/country';
+import * as moment from 'moment';
+import settings from 'settings';
 
 const CountryAdmin = ({ handleEdit, type }) => {
   const dispatch = useDispatch();
@@ -89,7 +91,7 @@ const CountryAdmin = ({ handleEdit, type }) => {
             email: user.email,
             country: getCountryName(user.country_id, countries),
             status: <EnabledStatus enabled={!!user.enabled} />,
-            last_login: user.last_login,
+            last_login: moment(user.last_login).format(settings.date_format),
             action: dropdown
           };
         })}
