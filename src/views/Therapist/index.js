@@ -18,6 +18,8 @@ const Therapist = ({ translate }) => {
   const clinics = useSelector(state => state.clinic.clinics);
 
   const [show, setShow] = useState(false);
+  const [editId, setEditId] = useState('');
+
   const columns = [
     { name: 'id', title: 'ID' },
     { name: 'last_name', title: 'Last Name' },
@@ -39,12 +41,38 @@ const Therapist = ({ translate }) => {
     { columnName: 'assigned_patients', wordWrapEnabled: true }
   ];
 
-  useEffect(() => {
-    dispatch(getTherapists());
-  }, [dispatch]);
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [searchValue, setSearchValue] = useState('');
 
-  const handleClose = () => setShow(false);
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [pageSize, searchValue]);
+
+  useEffect(() => {
+    dispatch(getTherapists({
+      search_value: searchValue,
+      page_size: pageSize,
+      page: currentPage + 1
+    })).then(result => {
+      if (result) {
+        setTotalCount(result.total_count);
+      }
+    });
+  }, [currentPage, pageSize, searchValue, dispatch]);
+
   const handleShow = () => setShow(true);
+
+  const handleEdit = (id) => {
+    setEditId(id);
+    setShow(true);
+  };
+
+  const handleClose = () => {
+    setEditId('');
+    setShow(false);
+  };
 
   return (
     <>
@@ -58,15 +86,21 @@ const Therapist = ({ translate }) => {
         </div>
       </div>
 
-      <CreateTherapist show={show} handleClose={handleClose} />
+      {show && <CreateTherapist show={show} handleClose={handleClose} editId={editId} />}
 
       <CustomTable
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalCount={totalCount}
+        setSearchValue={setSearchValue}
         columns={columns}
         columnExtensions={columnExtensions}
         rows={therapists.map(user => {
           const dropdown = (
             <DropdownButton alignRight variant="outline-dark" title={translate('common.actions')}>
-              <Dropdown.Item onClick={() => console.log('click on edit')}>{translate('common.edit_info')}</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleEdit(user.id)}>{translate('common.edit_info')}</Dropdown.Item>
               <Dropdown.Item href="#/action-2">{translate('common.deactivate')}</Dropdown.Item>
               <Dropdown.Item href="#/action-3">{translate('common.delete')}</Dropdown.Item>
             </DropdownButton>
