@@ -21,6 +21,7 @@ import { clinic } from 'store/clinic/reducers';
 import { profession } from 'store/profession/reducers';
 import { language, defaultLimitedPatient } from 'store/setting/reducers';
 import en from 'translations/en.locale.json';
+import { auth } from 'store/auth/reducers';
 
 export const rootReducer = {
   localize: localizeReducer,
@@ -32,7 +33,8 @@ export const rootReducer = {
   clinic,
   profession,
   language,
-  defaultLimitedPatient
+  defaultLimitedPatient,
+  auth
 };
 
 const devTool =
