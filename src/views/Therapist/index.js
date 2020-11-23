@@ -100,6 +100,7 @@ const Therapist = ({ translate }) => {
         totalCount={totalCount}
         setSearchValue={setSearchValue}
         setFilters={setFilters}
+        filters={filters}
         columns={columns}
         columnExtensions={columnExtensions}
         rows={therapists.map(user => {

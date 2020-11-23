@@ -7,11 +7,12 @@ import {
 import { showSpinner } from 'store/spinnerOverlay/actions';
 
 // Actions
-export const createTherapist = payload => async dispatch => {
+export const createTherapist = payload => async (dispatch, getState) => {
   const data = await Therapist.createTherapist(payload);
   if (data.success) {
     dispatch(mutation.createTherapistSuccess());
-    dispatch(getTherapists());
+    const filters = getState().therapist.filters;
+    dispatch(getTherapists(filters));
     dispatch(showSuccessNotification('New therapist', data.message));
     return true;
   } else {
@@ -21,12 +22,13 @@ export const createTherapist = payload => async dispatch => {
   }
 };
 
-export const updateTherapist = (id, payload) => async dispatch => {
+export const updateTherapist = (id, payload) => async (dispatch, getState) => {
   dispatch(mutation.updateTherapistRequest());
   const data = await Therapist.updateTherapist(id, payload);
   if (data.success) {
     dispatch(mutation.updateTherapistSuccess());
-    dispatch(getTherapists());
+    const filters = getState().therapist.filters;
+    dispatch(getTherapists(filters));
     dispatch(showSuccessNotification('toast_title.edit_admin_account', data.message));
     return true;
   } else {
@@ -41,7 +43,7 @@ export const getTherapists = payload => async dispatch => {
   dispatch(showSpinner(true));
   const data = await Therapist.getTherapists(payload);
   if (data.success) {
-    dispatch(mutation.getTherapistsSuccess(data.data));
+    dispatch(mutation.getTherapistsSuccess(data.data, payload));
     dispatch(showSpinner(false));
   } else {
     dispatch(mutation.getTherapistsFail());
