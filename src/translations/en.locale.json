@@ -16,6 +16,10 @@
   "common.search.placeholder": "Search",
   "common.active": "Active",
   "common.inactive": "Inactive",
+  "common.all": "All",
+  "common.clear": "Clear",
+  "common.apply": "Apply",
+  "common.timerange.placeholder": "Select Timerange",
 
 
   "portal.name": "Admin Portal",
