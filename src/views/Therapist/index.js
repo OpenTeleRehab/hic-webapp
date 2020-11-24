@@ -10,6 +10,8 @@ import CreateTherapist from 'views/Therapist/create';
 import { getTherapists } from 'store/therapist/actions';
 import { getCountryName } from 'utils/country';
 import { getClinicName } from 'utils/clinic';
+import * as moment from 'moment';
+import settings from 'settings';
 
 const Therapist = ({ translate }) => {
   const dispatch = useDispatch();
@@ -27,7 +29,7 @@ const Therapist = ({ translate }) => {
     { name: 'email', title: 'Email' },
     { name: 'country', title: 'Country' },
     { name: 'clinic', title: 'Clinic' },
-    { name: 'ongoing', title: 'Ongoing/ Patient limit' },
+    { name: 'limit_patient', title: 'Ongoing/ Patient limit' },
     { name: 'assigned_patients', title: 'Assigned Patients' },
     { name: 'status', title: 'Status' },
     { name: 'last_login', title: 'Last Login' },
@@ -45,13 +47,15 @@ const Therapist = ({ translate }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [searchValue, setSearchValue] = useState('');
+  const [filters, setFilters] = useState([]);
 
   useEffect(() => {
     setCurrentPage(0);
-  }, [pageSize, searchValue]);
+  }, [pageSize, searchValue, filters]);
 
   useEffect(() => {
     dispatch(getTherapists({
+      filters,
       search_value: searchValue,
       page_size: pageSize,
       page: currentPage + 1
@@ -60,7 +64,7 @@ const Therapist = ({ translate }) => {
         setTotalCount(result.total_count);
       }
     });
-  }, [currentPage, pageSize, searchValue, dispatch]);
+  }, [currentPage, pageSize, searchValue, filters, dispatch]);
 
   const handleShow = () => setShow(true);
 
@@ -95,6 +99,8 @@ const Therapist = ({ translate }) => {
         setCurrentPage={setCurrentPage}
         totalCount={totalCount}
         setSearchValue={setSearchValue}
+        setFilters={setFilters}
+        filters={filters}
         columns={columns}
         columnExtensions={columnExtensions}
         rows={therapists.map(user => {
@@ -114,7 +120,7 @@ const Therapist = ({ translate }) => {
             country: getCountryName(user.country_id, countries),
             clinic: getClinicName(user.clinic_id, clinics),
             status: <EnabledStatus enabled={user.enabled} />,
-            last_login: '',
+            last_login: moment(user.last_login).format(settings.date_format),
             action: dropdown
           };
         })}

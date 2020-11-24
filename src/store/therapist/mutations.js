@@ -26,9 +26,10 @@ const getTherapistsRequest = () => ({
   type: 'GET_THERAPISTS_REQUEST'
 });
 
-const getTherapistsSuccess = (data) => ({
+const getTherapistsSuccess = (data, filters) => ({
   type: 'GET_THERAPISTS_SUCCESS',
-  data
+  data,
+  filters
 });
 
 const getTherapistsFail = () => ({

@@ -11,6 +11,8 @@ const FilterCell = (props) => {
     return <StatusFilterCell {...props} />;
   } else if (column.name === 'last_login') {
     return <DateRangeFilterCell {...props} />;
+  } else if (column.name === 'action') {
+    return <th className="dx-g-bs4-fixed-cell position-sticky" style={{ right: 0 }} />;
   }
   return <TableFilterRow.Cell {...props} />;
 };

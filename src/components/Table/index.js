@@ -44,7 +44,7 @@ const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, c
   const filteringStateColumnExtensions = [{ columnName: 'action', filteringEnabled: false }];
 
   const toggleFilter = () => {
-    if (filters.length) {
+    if (filters && filters.length) {
       setFilters([]);
     }
     setShowFilter(!showFilter);

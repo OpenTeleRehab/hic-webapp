@@ -10,6 +10,8 @@ import { USER_GROUPS } from 'variables/user';
 import { getUsers } from 'store/user/actions';
 import { getCountryName } from 'utils/country';
 import { getClinicName } from 'utils/clinic';
+import * as moment from 'moment';
+import settings from 'settings';
 
 const ClinicAdmin = ({ handleEdit, type }) => {
   const dispatch = useDispatch();
@@ -92,7 +94,7 @@ const ClinicAdmin = ({ handleEdit, type }) => {
             country: getCountryName(user.country_id, countries),
             clinic: getClinicName(user.clinic_id, clinics),
             status: <EnabledStatus enabled={!!user.enabled} />,
-            last_login: user.last_login,
+            last_login: moment(user.last_login).format(settings.date_format),
             action: dropdown
           };
         })}
