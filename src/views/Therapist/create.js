@@ -6,8 +6,15 @@ import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import validateEmail from 'utils/validateEmail';
 import { createTherapist, updateTherapist } from 'store/therapist/actions';
+import { useKeycloak } from '@react-keycloak/web';
+
+import { getCountryName } from 'utils/country';
+import { getClinicName } from 'utils/clinic';
+
+import { getProfile } from 'store/auth/actions';
 
 const CreateTherapist = ({ show, handleClose, editId }) => {
+  const { keycloak } = useKeycloak();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
@@ -15,6 +22,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
   const therapists = useSelector(state => state.therapist.therapists);
   const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
+
   const professions = useSelector(state => state.profession.professions);
   const languages = useSelector(state => state.language.languages);
   const defaultLimitedPatients = useSelector(state => state.defaultLimitedPatient.defaultLimitedPatients);
@@ -26,6 +34,9 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
   const [errorLastName, setErrorLastName] = useState(false);
   const [errorFirstName, setErrorFirstName] = useState(false);
 
+  const [isProfileLoaded, setIsProfileLoaded] = useState(false);
+  const { profile } = useSelector((state) => state.auth);
+
   const [formFields, setFormFields] = useState({
     email: '',
     first_name: '',
@@ -35,7 +46,12 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
     clinic: ''
   });
   useEffect(() => {
-    if (!show) {
+    if (show) {
+      if (!isProfileLoaded && keycloak.authenticated) {
+        dispatch(getProfile());
+        setIsProfileLoaded(true);
+      }
+    } else {
       resetData();
     }
     // eslint-disable-next-line
@@ -50,9 +66,9 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
       email: '',
       first_name: '',
       last_name: '',
-      country: '',
       limit_patient: defaultLimitedPatients.value,
-      clinic: ''
+      clinic: '',
+      country: ''
     });
   };
 
@@ -70,8 +86,12 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
     } else {
       resetData();
     }
+
+    if (profile !== undefined) {
+      setFormFields({ ...formFields, country: profile.country_id, clinic: profile.clinic_id });
+    }
     // eslint-disable-next-line
-  }, [editId, therapists]);
+  }, [editId, therapists, profile]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -114,6 +134,13 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
       setErrorClinic(true);
     } else {
       setErrorClinic(false);
+    }
+
+    if (formFields.country === '') {
+      canSave = false;
+      setErrorCountry(true);
+    } else {
+      setErrorCountry(false);
     }
 
     if (formFields.limit_patient === '') {
@@ -173,14 +200,13 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
               name="country"
               onChange={handleChange}
               as="select"
-              isInvalid={errorCountry}
               value={formFields.country}
               disabled={!!editId}
+              isInvalid={errorCountry}
             >
-              <option value="">{translate('placeholder.country')}</option>
-              {countries.map((country, index) => (
-                <option key={index} value={country.identity}>{country.name}</option>
-              ))}
+              { profile !== undefined && (
+                <option value={profile.country_id}>{getCountryName(profile.country_id, countries)}</option>
+              )}
             </Form.Control>
             <Form.Control.Feedback type="invalid">
               {translate('error.country')}
@@ -258,14 +284,13 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
               name="clinic"
               onChange={handleChange}
               as="select"
-              isInvalid={errorClinic}
               value={formFields.clinic}
               disabled={!!editId}
+              isInvalid={errorClinic}
             >
-              <option value="">{translate('placeholder.clinic')}</option>
-              {clinics.map((clinic, index) => (
-                <option key={index} value={clinic.identity}>{clinic.name}</option>
-              ))}
+              { profile !== undefined && (
+                <option value={profile.clinic_id}>{getClinicName(profile.clinic_id, clinics)}</option>
+              )}
             </Form.Control>
             <Form.Control.Feedback type="invalid">
               {translate('error.clinic')}

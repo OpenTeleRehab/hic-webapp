@@ -89,9 +89,7 @@ const Therapist = ({ translate }) => {
           </Button>
         </div>
       </div>
-
       {show && <CreateTherapist show={show} handleClose={handleClose} editId={editId} />}
-
       <CustomTable
         pageSize={pageSize}
         setPageSize={setPageSize}
