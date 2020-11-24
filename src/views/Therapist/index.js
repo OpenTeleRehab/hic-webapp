@@ -29,7 +29,7 @@ const Therapist = ({ translate }) => {
     { name: 'email', title: 'Email' },
     { name: 'country', title: 'Country' },
     { name: 'clinic', title: 'Clinic' },
-    { name: 'limit_patient', title: 'Ongoing/ Patient limit' },
+    { name: 'limit_patient', title: 'Ongoing / Patient limit' },
     { name: 'assigned_patients', title: 'Assigned Patients' },
     { name: 'status', title: 'Status' },
     { name: 'last_login', title: 'Last Login' },
@@ -39,7 +39,7 @@ const Therapist = ({ translate }) => {
   const columnExtensions = [
     { columnName: 'last_name', wordWrapEnabled: true },
     { columnName: 'first_name', wordWrapEnabled: true },
-    { columnName: 'ongoing', wordWrapEnabled: true },
+    { columnName: 'limit_patient', wordWrapEnabled: true },
     { columnName: 'assigned_patients', wordWrapEnabled: true }
   ];
 
