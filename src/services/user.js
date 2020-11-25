@@ -36,8 +36,34 @@ const updateUser = (id, payload) => {
     });
 };
 
+const getUserProfile = username => {
+  return axios.get(`/user/profile/${username}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const updateUserProfile = (id, payload) => {
+  return axios.put(`/user/update-information/${id}`, payload)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const User = {
   createUser,
   getUsers,
-  updateUser
+  updateUser,
+  getUserProfile,
+  updateUserProfile
 };
