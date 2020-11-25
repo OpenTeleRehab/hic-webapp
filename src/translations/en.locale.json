@@ -89,9 +89,6 @@
   "error.country": "Please select a country",
   "error.clinic": "Please select a clinic",
   "error.limit_patient": "Please fill limit patient",
-  "error_message.email_exists": "Email already exists",
-  "error_message.wrong_password": "Wrong old password",
-  "error_message.cannot_change_password": "Password is unable to change",
 
   "success_message.user_add": "User has been added",
   "success_message.user_update": "User has been updated",
@@ -106,5 +103,9 @@
 
   "error.current_password": "Please fill in the current password",
   "error.new_password": "Please fill in the new password",
-  "error.confirm_password": "Confirm new password does not match"
+  "error.confirm_password": "Confirm new password does not match",
+  "error_message.email_exists": "Email already exists",
+  "error_message.wrong_password": "Old password is not valid",
+  "error_message.cannot_change_password": "Password is unable to change",
+  "error.confirm_password_required": "Please fill in confirm new password"
 }

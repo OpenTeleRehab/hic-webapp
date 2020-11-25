@@ -252,6 +252,7 @@ const EdiInformation = ({ editId }) => {
           <button
             type="button"
             className="btn btn-outline-dark"
+            disabled={!formFields.current_password && !formFields.new_password && !formFields.confirm_password}
           >
             <NavLink
               exact

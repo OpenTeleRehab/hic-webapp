@@ -19,6 +19,7 @@ const Password = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [newPasswordError, setNewPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+  const [confirmPasswordNotMactchError, setConfirmPasswordNotMactchError] = useState(false);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -42,11 +43,17 @@ const Password = () => {
       setNewPasswordError(false);
     }
 
-    if (formFields.confirm_password !== formFields.new_password) {
-      canSave = false;
+    if (formFields.confirm_password === '') {
+      setConfirmPasswordNotMactchError(false);
       setConfirmPasswordError(true);
     } else {
       setConfirmPasswordError(false);
+      if (formFields.confirm_password !== formFields.new_password) {
+        canSave = false;
+        setConfirmPasswordNotMactchError(true);
+      } else {
+        setConfirmPasswordNotMactchError(false);
+      }
     }
 
     if (canSave) {
@@ -101,16 +108,20 @@ const Password = () => {
               type="password"
               name="confirm_password"
               onChange={handleChange}
-              isInvalid={confirmPasswordError}
+              isInvalid={confirmPasswordError || confirmPasswordNotMactchError}
             />
             <Form.Control.Feedback type="invalid">
-              {translate('error.confirm_password')}
+              {confirmPasswordError && translate('error.confirm_password_required')}
+              {confirmPasswordNotMactchError && translate('error.confirm_password')}
             </Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
 
         <Form.Row>
-          <Button onClick={handleSave}>
+          <Button
+            onClick={handleSave}
+            disabled={!formFields.current_password && !formFields.new_password && !formFields.confirm_password}
+          >
             {translate('common.save')}
           </Button>
           <Button
