@@ -288,7 +288,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
               isInvalid={errorLastName}
             />
             <Form.Control.Feedback type="invalid">
-              {translate('error.first_name')}
+              {translate('error.last_name')}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} controlId="formFirstName">
