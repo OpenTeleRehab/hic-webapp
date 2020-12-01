@@ -45,6 +45,10 @@
   "therapist.new": "New Therapist",
   "therapist.edit": "Edit Therapist",
 
+  "service_setup.exercises": "Exercises",
+  "service_setup.education_materials": "Education Materials",
+  "service_setup.questionnaires": "Questionnaires",
+
   "admin": "Admins",
   "admin.management": "Admin Management",
   "admin.new": "New Admin",
@@ -90,22 +94,23 @@
   "error.clinic": "Please select a clinic",
   "error.limit_patient": "Please fill limit patient",
 
+  "toast_title.new_admin_account": "New admin account",
+  "toast_title.edit_admin_account": "Edit admin account",
+  "toast_title.error_message": "Error message",
+  "toast_title.change_password": "Change password",
+  "error.confirm_password_required": "Please fill in confirm new password",
+  "error.current_password": "Please fill in the current password",
+  "error.new_password": "Please fill in the new password",
+  "error.confirm_password": "Confirm new password does not match",
+  "error_message.email_exists": "Email already exists",
+
   "success_message.user_add": "User has been added",
   "success_message.user_update": "User has been updated",
   "success_message.profile_update": "Update profile successfully",
   "success_message.update_profile_success": "Profile Updated successfully.",
   "success_message.change_password_success": "Password changed successfully!",
 
-  "toast_title.new_admin_account": "New admin account",
-  "toast_title.edit_admin_account": "Edit admin account",
-  "toast_title.error_message": "Error message",
-  "toast_title.change_password": "Change password",
-
-  "error.current_password": "Please fill in the current password",
-  "error.new_password": "Please fill in the new password",
-  "error.confirm_password": "Confirm new password does not match",
-  "error_message.email_exists": "Email already exists",
   "error_message.wrong_password": "Old password is not valid",
   "error_message.cannot_change_password": "Password is unable to change",
-  "error.confirm_password_required": "Please fill in confirm new password"
+  "error_message.user_add": "User cannot be created"
 }
