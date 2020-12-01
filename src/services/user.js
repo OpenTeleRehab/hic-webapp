@@ -1,7 +1,11 @@
-import axios from 'utils/axios';
+import customAxios from 'utils/axios';
+import axios from 'axios';
+
+window.getUserAxiosCancel = undefined;
+const CancelToken = axios.CancelToken;
 
 const createUser = payload => {
-  return axios.post('/admin', payload)
+  return customAxios.post('/admin', payload)
     .then(
       res => {
         return res.data;
@@ -13,19 +17,29 @@ const createUser = payload => {
 };
 
 const getUsers = payload => {
-  return axios.get('/admin', { params: payload })
-    .then(
-      res => {
-        return res.data;
-      }
-    )
-    .catch((e) => {
+  if (window.getUserAxiosCancel !== undefined) {
+    window.getUserAxiosCancel();
+  }
+  return customAxios.get('/admin', {
+    params: payload,
+    cancelToken: new CancelToken(function executor (c) {
+      window.getUserAxiosCancel = c;
+    })
+  }).then(
+    res => {
+      return res.data;
+    }
+  ).catch((e) => {
+    if (e.response && e.response.data) {
       return e.response.data;
-    });
+    } else {
+      return { success: false };
+    }
+  });
 };
 
 const updateUser = (id, payload) => {
-  return axios.put(`/admin/${id}`, payload)
+  return customAxios.put(`/admin/${id}`, payload)
     .then(
       res => {
         return res.data;
@@ -37,7 +51,7 @@ const updateUser = (id, payload) => {
 };
 
 const updateUserProfile = (id, payload) => {
-  return axios.put(`/user/update-information/${id}`, payload)
+  return customAxios.put(`/user/update-information/${id}`, payload)
     .then(
       res => {
         return res.data;

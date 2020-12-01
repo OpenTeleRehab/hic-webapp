@@ -41,7 +41,9 @@ export const getUsers = payload => async dispatch => {
   } else {
     dispatch(mutation.getUsersFail());
     dispatch(showSpinner(false));
-    dispatch(showErrorNotification('toast_title.error_message', data.message));
+    if (data.message) {
+      dispatch(showErrorNotification('toast_title.error_message', data.message));
+    }
   }
 };
 

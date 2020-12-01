@@ -48,6 +48,8 @@ export const getTherapists = payload => async dispatch => {
   } else {
     dispatch(mutation.getTherapistsFail());
     dispatch(showSpinner(false));
-    dispatch(showErrorNotification('toast_title.error_message', data.message));
+    if (data.message) {
+      dispatch(showErrorNotification('toast_title.error_message', data.message));
+    }
   }
 };
