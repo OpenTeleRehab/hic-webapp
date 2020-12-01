@@ -23,6 +23,7 @@
   "common.timerange.placeholder": "Select Timerange",
   "common.back": "Back",
   "common.edit": "Edit",
+  "common.new_content": "New Content",
 
   "profile.current_password": "Current Passwords",
   "profile.new_password": "New Passwords",
@@ -48,6 +49,23 @@
   "service_setup.exercises": "Exercises",
   "service_setup.education_materials": "Education Materials",
   "service_setup.questionnaires": "Questionnaires",
+
+  "exercise.create": "Add New Exercise",
+  "exercise.new": "New Exercise",
+  "exercise.single_upload": "Upload single exercise",
+  "exercise.bulk_upload": "Upload bulk exercises",
+  "exercise.media": "MEDIA",
+  "exercise.information": "INFORMATION",
+  "exercise.title": "Title",
+  "exercise.title.placeholder": "Enter title",
+  "exercise.title.required": "Please fill in the title",
+  "exercise.include_collecting_feedback": "Include collecting feedback (Reps, Sets, Pain level,.etc.)",
+
+  "education_material.create": "Add new Education Material",
+  "education_material.new": "New Education Material",
+
+  "questionnaire.create": "Add new Questionnaire",
+  "questionnaire.new": "New Questionnaire",
 
   "admin": "Admins",
   "admin.management": "Admin Management",

@@ -9,6 +9,9 @@ import NotFoundPage from 'views/NotFound';
 import AdminPage from 'views/Admin';
 import CategoryPage from 'views/Category';
 import ServiceSetupPage from 'views/ServiceSetup';
+import CreateExercise from 'views/ServiceSetup/Exercise/create';
+import CreateEducationMaterial from 'views/ServiceSetup/EducationMaterial/create';
+import CreateQuestionnaire from 'views/ServiceSetup/Questionnaire/create';
 import Therapist from 'views/Therapist';
 import ProfilePage from 'views/Profile';
 
@@ -42,6 +45,27 @@ const routes = [
     title: 'service_setup',
     path: ROUTES.SERVICE_SETUP,
     component: ServiceSetupPage,
+    exact: true,
+    type: PRIVATE
+  },
+  {
+    title: 'exercise.create',
+    path: ROUTES.EXERCISE_CREATE,
+    component: CreateExercise,
+    exact: true,
+    type: PRIVATE
+  },
+  {
+    title: 'education_material.create',
+    path: ROUTES.EDUCATION_MATERIAL_CREATE,
+    component: CreateEducationMaterial,
+    exact: true,
+    type: PRIVATE
+  },
+  {
+    title: 'questionnaire.create',
+    path: ROUTES.QUESTIONNAIRE_CREATE,
+    component: CreateQuestionnaire,
     exact: true,
     type: PRIVATE
   },

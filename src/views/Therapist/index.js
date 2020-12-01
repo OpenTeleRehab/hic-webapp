@@ -84,7 +84,7 @@ const Therapist = ({ translate }) => {
         <h1>{translate('therapist.management')}</h1>
         <div className="btn-toolbar mb-2 mb-md-0">
           <Button variant="primary" onClick={handleShow}>
-            <BsPlus className="mr-1" />
+            <BsPlus size={20} className="mr-1" />
             {translate('therapist.new')}
           </Button>
         </div>
