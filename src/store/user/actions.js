@@ -2,6 +2,7 @@ import { User } from 'services/user';
 import { Auth } from 'services/auth';
 import { mutation } from './mutations';
 import keycloak from 'utils/keycloak';
+import { getProfile } from 'store/auth/actions';
 
 import {
   showErrorNotification,
@@ -81,6 +82,7 @@ export const updateUserProfile = (id, payload) => async dispatch => {
     const data = await User.updateUserProfile(id, payload);
     if (data.success) {
       dispatch(mutation.updateUserProfileSuccess());
+      dispatch(getProfile());
       dispatch(showSuccessNotification('toast_title.new_admin_account', data.message));
       return true;
     } else {

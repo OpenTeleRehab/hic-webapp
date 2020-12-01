@@ -83,13 +83,7 @@ const routes = [
     exact: true,
     type: PRIVATE
   },
-  {
-    title: 'avatar',
-    path: ROUTES.AVATAR,
-    component: ProfilePage,
-    exact: true,
-    type: PRIVATE
-  },
+
   {
     title: 'not_found_page',
     path: '*',

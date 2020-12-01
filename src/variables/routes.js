@@ -12,4 +12,5 @@ export const QUESTIONNAIRE_CREATE = SERVICE_SETUP + '/questionnaire/create';
 export const THERAPIST = '/therapist';
 export const CATEGORY = '/category';
 export const PROFILE = '/profile';
-export const AVATAR = '/avatar';
+export const PROFILE_EDIT = '/profile#edit';
+export const PROFILE_PASSWORD = '/profile#password';
