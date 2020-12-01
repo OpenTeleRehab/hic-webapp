@@ -1,6 +1,8 @@
 export const DASHBOARD = '/';
 export const ADMIN = '/admin';
 export const SERVICE_SETUP = '/service-setup';
+export const SERVICE_SETUP_EDUCATION = '/service-setup#education';
+export const SERVICE_SETUP_QUESTIONNAIRE = '/service-setup#questionnaire';
 export const THERAPIST = '/therapist';
 export const CATEGORY = '/category';
 export const PROFILE = '/profile';
