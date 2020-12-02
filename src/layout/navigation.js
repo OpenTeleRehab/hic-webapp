@@ -95,7 +95,9 @@ const Navigation = ({ translate }) => {
                 {profile.email}
               </Dropdown.Toggle>
 
-              <Dropdown.Menu>
+              <Dropdown.Menu
+                alignRight={true}
+              >
                 <Dropdown.Item as={Link} to={ROUTES.PROFILE}>
                   {translate('profile')}
                 </Dropdown.Item>
