@@ -24,11 +24,27 @@ const createExercisesFail = () => ({
   type: 'CREATE_EXERCISES_FAIL'
 });
 
+const deleteExercisesRequest = () => ({
+  type: 'DELETE_EXERCISES_REQUEST'
+});
+
+const deleteExercisesSuccess = (data) => ({
+  type: 'DELETE_EXERCISES_SUCCESS',
+  data
+});
+
+const deleteExercisesFail = () => ({
+  type: 'DELETE_EXERCISES_FAIL'
+});
+
 export const mutation = {
   getExercisesFail,
   getExercisesRequest,
   getExercisesSuccess,
   createExercisesRequest,
   createExercisesSuccess,
-  createExercisesFail
+  createExercisesFail,
+  deleteExercisesRequest,
+  deleteExercisesSuccess,
+  deleteExercisesFail
 };

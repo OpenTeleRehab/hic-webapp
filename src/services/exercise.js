@@ -24,7 +24,20 @@ const createExercise = payload => {
     });
 };
 
+const deleteExercise = id => {
+  return axios.delete(`/exercise/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Exercise = {
   getExercises,
-  createExercise
+  createExercise,
+  deleteExercise
 };
