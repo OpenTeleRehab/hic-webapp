@@ -1,0 +1,14 @@
+.card-columns {
+	.exercise-card {
+		overflow: hidden;
+		height: 315px;
+
+		.card-img {
+			height: 177px;
+		}
+	}
+
+	@include media-breakpoint-up(lg) {
+		column-count: 4;
+	}
+}

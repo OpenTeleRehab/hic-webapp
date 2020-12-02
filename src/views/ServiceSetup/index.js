@@ -47,7 +47,7 @@ const ServiceSetup = ({ translate }) => {
         </div>
       </div>
 
-      <Nav variant="tabs" activeKey={view}>
+      <Nav variant="tabs" activeKey={view} className="mb-3">
         <Nav.Item>
           <Nav.Link as={Link} to={ROUTES.SERVICE_SETUP} eventKey={VIEW_EXERCISE}>
             {translate('service_setup.exercises')}
