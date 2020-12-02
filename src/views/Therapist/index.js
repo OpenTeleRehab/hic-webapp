@@ -13,6 +13,8 @@ import { getClinicName } from 'utils/clinic';
 import * as moment from 'moment';
 import settings from 'settings';
 
+let timer = null;
+
 const Therapist = ({ translate }) => {
   const dispatch = useDispatch();
   const therapists = useSelector(state => state.therapist.therapists);
@@ -64,7 +66,25 @@ const Therapist = ({ translate }) => {
         setTotalCount(result.total_count);
       }
     });
-  }, [currentPage, pageSize, searchValue, filters, dispatch]);
+    // eslint-disable-next-line
+  }, [currentPage, pageSize, dispatch]);
+
+  useEffect(() => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      dispatch(getTherapists({
+        filters,
+        search_value: searchValue,
+        page_size: pageSize,
+        page: currentPage + 1
+      })).then(result => {
+        if (result) {
+          setTotalCount(result.total_count);
+        }
+      });
+    }, 500);
+    // eslint-disable-next-line
+  }, [searchValue, filters]);
 
   const handleShow = () => setShow(true);
 

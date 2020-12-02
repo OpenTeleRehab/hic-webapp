@@ -11,6 +11,7 @@ import * as moment from 'moment';
 import CustomTable from 'components/Table';
 import EnabledStatus from 'components/EnabledStatus';
 
+let timer = null;
 const GlobalAdmin = ({ handleEdit, type }) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
@@ -49,7 +50,28 @@ const GlobalAdmin = ({ handleEdit, type }) => {
         }
       });
     }
-  }, [currentPage, type, pageSize, searchValue, filters, dispatch]);
+    // eslint-disable-next-line
+  }, [currentPage, type, pageSize, dispatch]);
+
+  useEffect(() => {
+    if (type === USER_GROUPS.GLOBAL_ADMIN) {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        dispatch(getUsers({
+          search_value: searchValue,
+          filters: filters,
+          admin_type: type,
+          page_size: pageSize,
+          page: currentPage + 1
+        })).then(result => {
+          if (result) {
+            setTotalCount(result.total_count);
+          }
+        });
+      }, 500);
+    }
+    // eslint-disable-next-line
+  }, [searchValue, filters]);
 
   const columnExtensions = [
     { columnName: 'last_name', wordWrapEnabled: true },

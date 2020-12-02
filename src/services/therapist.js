@@ -1,7 +1,11 @@
-import axios from 'utils/therapist-axios';
+import customAxios from 'utils/therapist-axios';
+import axios from 'axios';
+
+window.getUserAxiosCancel = undefined;
+const CancelToken = axios.CancelToken;
 
 const createTherapist = payload => {
-  return axios.post('/therapist', payload)
+  return customAxios.post('/therapist', payload)
     .then(
       res => {
         return res.data;
@@ -13,7 +17,7 @@ const createTherapist = payload => {
 };
 
 const updateTherapist = (id, payload) => {
-  return axios.put(`/therapist/${id}`, payload)
+  return customAxios.put(`/therapist/${id}`, payload)
     .then(
       res => {
         return res.data;
@@ -25,14 +29,26 @@ const updateTherapist = (id, payload) => {
 };
 
 const getTherapists = payload => {
-  return axios.get('/therapist', { params: payload })
+  if (window.getUserAxiosCancel !== undefined) {
+    window.getUserAxiosCancel();
+  }
+  return customAxios.get('/therapist', {
+    params: payload,
+    cancelToken: new CancelToken(function executor (c) {
+      window.getUserAxiosCancel = c;
+    })
+  })
     .then(
       res => {
         return res.data;
       }
     )
     .catch((e) => {
-      return e.response.data;
+      if (e.response && e.response.data) {
+        return e.response.data;
+      } else {
+        return { success: false };
+      }
     });
 };
 
