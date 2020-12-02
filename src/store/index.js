@@ -20,8 +20,10 @@ import { country } from 'store/country/reducers';
 import { clinic } from 'store/clinic/reducers';
 import { profession } from 'store/profession/reducers';
 import { language, defaultLimitedPatient } from 'store/setting/reducers';
-import en from 'translations/en.locale.json';
 import { auth } from 'store/auth/reducers';
+import { exercise } from 'store/exercise/reducers';
+
+import en from 'translations/en.locale.json';
 
 export const rootReducer = {
   localize: localizeReducer,
@@ -34,7 +36,8 @@ export const rootReducer = {
   profession,
   language,
   defaultLimitedPatient,
-  auth
+  auth,
+  exercise
 };
 
 const devTool =

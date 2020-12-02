@@ -2,13 +2,18 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 import { Button, Col, Form, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import * as ROUTES from 'variables/routes';
+import { createExercise } from 'store/exercise/actions';
 
 const CreateExercise = ({ translate }) => {
+  const dispatch = useDispatch();
+  const history = useHistory();
   const [formFields, setFormFields] = useState({
-    title: ''
+    title: '',
+    include_feedback: true
   });
 
   const [titleError, setTitleError] = useState(false);
@@ -16,6 +21,11 @@ const CreateExercise = ({ translate }) => {
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
+  };
+
+  const handleCheck = e => {
+    const { name, checked } = e.target;
+    setFormFields({ ...formFields, [name]: checked });
   };
 
   const handleSave = () => {
@@ -29,9 +39,16 @@ const CreateExercise = ({ translate }) => {
     }
 
     if (canSave) {
-      console.log('???');
+      dispatch(createExercise(formFields))
+        .then(result => {
+          if (result) {
+            history.push(ROUTES.SERVICE_SETUP);
+          }
+        });
     }
   };
+
+  console.log('===', formFields.include_feedback);
 
   return (
     <>
@@ -86,8 +103,10 @@ const CreateExercise = ({ translate }) => {
             </Form.Group>
             <Form.Group controlId="formIncludeFeedback">
               <Form.Check
+                name="include_feedback"
+                onChange={handleCheck}
+                value={true}
                 defaultChecked
-                value={1}
                 label={translate('exercise.include_collecting_feedback')}
               />
             </Form.Group>

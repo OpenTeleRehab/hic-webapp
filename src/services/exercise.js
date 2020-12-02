@@ -1,0 +1,30 @@
+import axios from 'utils/axios';
+
+const getExercises = () => {
+  return axios.get('/exercise')
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const createExercise = payload => {
+  return axios.post('/exercise', payload)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+export const Exercise = {
+  getExercises,
+  createExercise
+};

@@ -116,6 +116,7 @@
   "toast_title.edit_admin_account": "Edit admin account",
   "toast_title.error_message": "Error message",
   "toast_title.change_password": "Change password",
+  "toast_title.new_exercise": "New exercise",
   "error.confirm_password_required": "Please fill in confirm new password",
   "error.current_password": "Please fill in the current password",
   "error.new_password": "Please fill in the new password",
