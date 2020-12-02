@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Nav } from 'react-bootstrap';
+import { Nav, Dropdown } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -32,10 +32,18 @@ const ServiceSetup = ({ translate }) => {
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1>{translate('service_setup')}</h1>
         <div className="btn-toolbar mb-2 mb-md-0">
-          <Button variant="primary">
-            <BsPlus className="mr-1" />
-            {translate('admin.new')}
-          </Button>
+          <Dropdown>
+            <Dropdown.Toggle>
+              <BsPlus size={20} className="mr-1" />
+              {translate('common.new_content')}
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Dropdown.Item as={Link} to={ROUTES.EXERCISE_CREATE}>{translate('exercise.new')}</Dropdown.Item>
+              <Dropdown.Item as={Link} to={ROUTES.EDUCATION_MATERIAL_CREATE}>{translate('education_material.new')}</Dropdown.Item>
+              <Dropdown.Item as={Link} to={ROUTES.QUESTIONNAIRE_CREATE}>{translate('questionnaire.new')}</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
       </div>
 

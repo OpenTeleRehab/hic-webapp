@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 
-const Exersise = ({ translate }) => {
+const Exercise = ({ translate }) => {
   return (
     <>
       {translate('service_setup.exercises')}
@@ -10,8 +10,8 @@ const Exersise = ({ translate }) => {
   );
 };
 
-Exersise.propTypes = {
+Exercise.propTypes = {
   translate: PropTypes.func
 };
 
-export default withLocalize(Exersise);
+export default withLocalize(Exercise);

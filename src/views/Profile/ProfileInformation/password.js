@@ -73,7 +73,7 @@ const Password = () => {
   return (
     <>
       <Form className="mt-4">
-        <Form.Row >
+        <Form.Row>
           <Form.Group className="col-sm-4 md-4" controlId="formCurrentPassword">
             <Form.Label>{translate('profile.current_password')}</Form.Label>
             <Form.Control

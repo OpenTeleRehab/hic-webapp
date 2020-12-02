@@ -196,7 +196,6 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
               label={translate('country_admin')}
               id="formCountryAdmin"
               disabled={!!editId}
-
             />
           </Col>
           <Col xs={7} md={8}>
