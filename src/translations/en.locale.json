@@ -83,6 +83,7 @@
   "admin.password": "Passwords",
   "personal": "Personal",
   "profile": "Profile",
+  "profile.setting": "Settings",
 
   "gender": "Gender",
   "male": "Male",
@@ -128,7 +129,7 @@
   "error.confirm_password_required": "Please fill in confirm new password",
   "error.current_password": "Please fill in the current password",
   "error.new_password": "Please fill in the new password",
-  "error.confirm_password": "Confirm new password does not match",
+  "error.confirm_password": "Password does not match",
   "error_message.email_exists": "Email already exists",
 
   "success_message.user_add": "User has been added",
