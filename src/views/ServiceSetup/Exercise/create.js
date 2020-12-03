@@ -1,21 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 import { Button, Col, Form, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 import * as ROUTES from 'variables/routes';
+import { createExercise, updateExercise } from 'store/exercise/actions';
 
 const CreateExercise = ({ translate }) => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { id } = useParams();
+  const { exercises } = useSelector(state => state.exercise);
   const [formFields, setFormFields] = useState({
-    title: ''
+    title: '',
+    include_feedback: true
   });
-
   const [titleError, setTitleError] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      const exercise = exercises.find(exercise => exercise.id === parseInt(id));
+      if (exercise) {
+        setFormFields({
+          title: exercise.title,
+          include_feedback: exercise.include_feedback
+        });
+      }
+    }
+  }, [id, exercises]);
 
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
+  };
+
+  const handleCheck = e => {
+    const { name, checked } = e.target;
+    setFormFields({ ...formFields, [name]: checked });
   };
 
   const handleSave = () => {
@@ -29,40 +52,58 @@ const CreateExercise = ({ translate }) => {
     }
 
     if (canSave) {
-      console.log('???');
+      if (id) {
+        dispatch(updateExercise(id, formFields))
+          .then(result => {
+            if (result) {
+              history.push(ROUTES.SERVICE_SETUP);
+            }
+          });
+      } else {
+        dispatch(createExercise(formFields))
+          .then(result => {
+            if (result) {
+              history.push(ROUTES.SERVICE_SETUP);
+            }
+          });
+      }
     }
   };
 
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
-        <h1>{translate('exercise.create')}</h1>
+        <h1>{id ? translate('exercise.edit') : translate('exercise.create')}</h1>
       </div>
 
       <Form>
-        <Form.Group as={Row}>
-          <Col sm={4} lg={3} xl={2}>
-            <Form.Check
-              name="option"
-              // onChange={handleChange}
-              value={1}
-              defaultChecked
-              type="radio"
-              label={translate('exercise.single_upload')}
-              id="formSingleOption"
-            />
-          </Col>
-          <Col>
-            <Form.Check
-              name="option"
-              // onChange={handleChange}
-              value={2}
-              type="radio"
-              label={translate('exercise.bulk_upload')}
-              id="formBulkOption"
-            />
-          </Col>
-        </Form.Group>
+        {
+          !id && (
+            <Form.Group as={Row}>
+              <Col sm={4} lg={3} xl={2}>
+                <Form.Check
+                  name="option"
+                  // onChange={handleChange}
+                  value={1}
+                  defaultChecked
+                  type="radio"
+                  label={translate('exercise.single_upload')}
+                  id="formSingleOption"
+                />
+              </Col>
+              <Col>
+                <Form.Check
+                  name="option"
+                  // onChange={handleChange}
+                  value={2}
+                  type="radio"
+                  label={translate('exercise.bulk_upload')}
+                  id="formBulkOption"
+                />
+              </Col>
+            </Form.Group>
+          )
+        }
 
         <Row>
           <Col sm={4} xl={3}>
@@ -86,8 +127,10 @@ const CreateExercise = ({ translate }) => {
             </Form.Group>
             <Form.Group controlId="formIncludeFeedback">
               <Form.Check
+                name="include_feedback"
+                onChange={handleCheck}
+                value={true}
                 defaultChecked
-                value={1}
                 label={translate('exercise.include_collecting_feedback')}
               />
             </Form.Group>

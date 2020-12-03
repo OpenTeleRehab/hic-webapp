@@ -2,6 +2,8 @@
   "common.welcome": "Welcome",
   "common.cancel": "Cancel",
   "common.create": "Create",
+  "common.yes": "Yes",
+  "common.no": "No",
   "common.email": "Email",
   "common.first_name": "First name",
   "common.last_name": "Last name",
@@ -24,6 +26,7 @@
   "common.back": "Back",
   "common.edit": "Edit",
   "common.new_content": "New Content",
+  "common.delete_confirmation_message": "Are you sure want to delete this record?",
 
   "profile.current_password": "Current Passwords",
   "profile.new_password": "New Passwords",
@@ -51,6 +54,7 @@
   "service_setup.questionnaires": "Questionnaires",
 
   "exercise.create": "Add New Exercise",
+  "exercise.edit": "Edit Exercise",
   "exercise.new": "New Exercise",
   "exercise.single_upload": "Upload single exercise",
   "exercise.bulk_upload": "Upload bulk exercises",
@@ -60,6 +64,7 @@
   "exercise.title.placeholder": "Enter title",
   "exercise.title.required": "Please fill in the title",
   "exercise.include_collecting_feedback": "Include collecting feedback (Reps, Sets, Pain level,.etc.)",
+  "exercise.delete_confirmation_title": "Exercise deletion",
 
   "education_material.create": "Add new Education Material",
   "education_material.new": "New Education Material",
@@ -116,6 +121,10 @@
   "toast_title.edit_admin_account": "Edit admin account",
   "toast_title.error_message": "Error message",
   "toast_title.change_password": "Change password",
+  "toast_title.new_exercise": "New exercise",
+  "toast_title.update_exercise": "Update exercise",
+  "toast_title.delete_exercise": "Delete exercise",
+
   "error.confirm_password_required": "Please fill in confirm new password",
   "error.current_password": "Please fill in the current password",
   "error.new_password": "Please fill in the new password",
@@ -127,8 +136,12 @@
   "success_message.profile_update": "Update profile successfully",
   "success_message.update_profile_success": "Profile Updated successfully.",
   "success_message.change_password_success": "Password changed successfully!",
+  "success_message.exercise_create": "Exercise has been created!",
+  "success_message.exercise_delete": "Exercise has been deleted!",
 
   "error_message.wrong_password": "Old password is not valid",
   "error_message.cannot_change_password": "Password is unable to change",
-  "error_message.user_add": "User cannot be created"
+  "error_message.user_add": "User cannot be created",
+  "error_message.exercise_create": "Exercise cannot be created",
+  "error_message.exercise_delete": "Exercise cannot be deleted"
 }

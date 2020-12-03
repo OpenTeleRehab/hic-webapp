@@ -5,7 +5,7 @@ import { withLocalize } from 'react-localize-redux';
 const CreateEducationMaterial = ({ translate }) => {
   return (
     <>
-      {translate('service_setup.education_materials')} ???
+      {translate('education_material.create')}
     </>
   );
 };

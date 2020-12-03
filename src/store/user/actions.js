@@ -25,7 +25,7 @@ export const createUser = payload => async (dispatch, getState) => {
     return true;
   } else {
     dispatch(mutation.createUserFail());
-    dispatch(showErrorNotification('New admin account', data.message));
+    dispatch(showErrorNotification('toast_title.new_admin_account', data.message));
     return false;
   }
 };

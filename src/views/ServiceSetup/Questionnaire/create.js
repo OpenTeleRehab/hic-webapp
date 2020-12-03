@@ -5,7 +5,7 @@ import { withLocalize } from 'react-localize-redux';
 const CreateQuestionnaire = ({ translate }) => {
   return (
     <>
-      {translate('service_setup.questionnaires')} ???
+      {translate('questionnaire.create')}
     </>
   );
 };
