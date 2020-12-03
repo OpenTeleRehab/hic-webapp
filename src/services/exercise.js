@@ -24,6 +24,18 @@ const createExercise = payload => {
     });
 };
 
+const updateExercise = (id, payload) => {
+  return axios.put(`/exercise/${id}`, payload)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const deleteExercise = id => {
   return axios.delete(`/exercise/${id}`)
     .then(
@@ -39,5 +51,6 @@ const deleteExercise = id => {
 export const Exercise = {
   getExercises,
   createExercise,
+  updateExercise,
   deleteExercise
 };

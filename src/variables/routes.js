@@ -6,6 +6,7 @@ export const SERVICE_SETUP_EDUCATION = '/service-setup#education';
 export const SERVICE_SETUP_QUESTIONNAIRE = '/service-setup#questionnaire';
 
 export const EXERCISE_CREATE = SERVICE_SETUP + '/exercise/create';
+export const EXERCISE_EDIT = SERVICE_SETUP + '/exercise/edit/:id';
 export const EDUCATION_MATERIAL_CREATE = SERVICE_SETUP + '/education_material/create';
 export const QUESTIONNAIRE_CREATE = SERVICE_SETUP + '/questionnaire/create';
 

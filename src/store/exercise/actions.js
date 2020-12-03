@@ -28,6 +28,21 @@ export const createExercise = payload => async dispatch => {
   }
 };
 
+export const updateExercise = (id, payload) => async dispatch => {
+  dispatch(mutation.updateExercisesRequest());
+  const data = await Exercise.updateExercise(id, payload);
+  if (data.success) {
+    dispatch(mutation.updateExercisesSuccess());
+    dispatch(getExercises());
+    dispatch(showSuccessNotification('toast_title.update_exercise', data.message));
+    return true;
+  } else {
+    dispatch(mutation.updateExercisesFail());
+    dispatch(showErrorNotification('toast_title.update_exercise', data.message));
+    return false;
+  }
+};
+
 export const deleteExercise = id => async dispatch => {
   dispatch(mutation.deleteExercisesRequest());
   const data = await Exercise.deleteExercise(id);

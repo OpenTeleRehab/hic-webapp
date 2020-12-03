@@ -54,6 +54,7 @@
   "service_setup.questionnaires": "Questionnaires",
 
   "exercise.create": "Add New Exercise",
+  "exercise.edit": "Edit Exercise",
   "exercise.new": "New Exercise",
   "exercise.single_upload": "Upload single exercise",
   "exercise.bulk_upload": "Upload bulk exercises",
@@ -121,6 +122,7 @@
   "toast_title.error_message": "Error message",
   "toast_title.change_password": "Change password",
   "toast_title.new_exercise": "New exercise",
+  "toast_title.update_exercise": "Update exercise",
   "toast_title.delete_exercise": "Delete exercise",
 
   "error.confirm_password_required": "Please fill in confirm new password",

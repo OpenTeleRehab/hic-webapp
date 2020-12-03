@@ -11,9 +11,11 @@ import {
   Form
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import Dialog from 'components/Dialog';
 import { deleteExercise, getExercises } from 'store/exercise/actions';
+import * as ROUTES from 'variables/routes';
 
 const Exercise = ({ translate }) => {
   const dispatch = useDispatch();
@@ -85,8 +87,12 @@ const Exercise = ({ translate }) => {
               <Card key={exercise.id} className="exercise-card shadow-sm">
                 <div className="card-img bg-light">
                   <DropdownButton className="float-right" alignRight variant="outline-dark">
-                    <Dropdown.Item onClick={() => console.log('click!')}>Edit</Dropdown.Item>
-                    <Dropdown.Item disabled={!exercise.can_delete} onClick={() => handleDelete(exercise.id)}>Delete</Dropdown.Item>
+                    <Dropdown.Item as={Link} to={ROUTES.EXERCISE_EDIT.replace(':id', exercise.id)}>
+                      {translate('common.edit')}
+                    </Dropdown.Item>
+                    <Dropdown.Item disabled={!exercise.can_delete} onClick={() => handleDelete(exercise.id)}>
+                      {translate('common.delete')}
+                    </Dropdown.Item>
                   </DropdownButton>
                   <div className="d-none">TODO: Show image</div>
                 </div>
