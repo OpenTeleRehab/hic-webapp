@@ -6,7 +6,11 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import * as ROUTES from 'variables/routes';
-import { createExercise, updateExercise } from 'store/exercise/actions';
+import {
+  createExercise,
+  getExercises,
+  updateExercise
+} from 'store/exercise/actions';
 
 const CreateExercise = ({ translate }) => {
   const dispatch = useDispatch();
@@ -27,9 +31,11 @@ const CreateExercise = ({ translate }) => {
           title: exercise.title,
           include_feedback: exercise.include_feedback
         });
+      } else {
+        dispatch(getExercises());
       }
     }
-  }, [id, exercises]);
+  }, [id, exercises, dispatch]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -110,6 +116,12 @@ const CreateExercise = ({ translate }) => {
             <h4>{translate('exercise.media')}</h4>
           </Col>
           <Col sm={6} xl={4}>
+            <Form.Group controlId="formLanguage">
+              <Form.Label>Showing language version</Form.Label>
+              <Form.Control as="select">
+                <option>English (default)</option>
+              </Form.Control>
+            </Form.Group>
             <h4>{translate('exercise.information')}</h4>
             <Form.Group controlId="formTitle">
               <Form.Label>{translate('exercise.title')}</Form.Label>
