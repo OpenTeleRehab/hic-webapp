@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import Dialog from 'components/Dialog';
+import Pagination from 'components/Pagination';
 import { deleteExercise, getExercises } from 'store/exercise/actions';
 import * as ROUTES from 'variables/routes';
 
@@ -24,10 +25,20 @@ const Exercise = ({ translate }) => {
   const { exercises } = useSelector(state => state.exercise);
   const [deletedId, setDeletedId] = useState(null);
   const [show, setShow] = useState(false);
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
-    dispatch(getExercises());
-  }, [dispatch]);
+    dispatch(getExercises({
+      page_size: pageSize,
+      page: currentPage
+    })).then(result => {
+      if (result) {
+        setTotalCount(result.total_count);
+      }
+    });
+  }, [currentPage, pageSize, dispatch]);
 
   const handleDelete = (id) => {
     setDeletedId(id);
@@ -84,37 +95,54 @@ const Exercise = ({ translate }) => {
           </Card>
         </Col>
         <Col sm={9}>
-          <CardColumns>
-            { exercises.map(exercise => (
-              <Card key={exercise.id} className="exercise-card shadow-sm">
-                <div className="card-img bg-light">
-                  <div className="position-absolute w-100">
-                    <DropdownButton className="float-right action" alignRight variant="outline-dark">
-                      <Dropdown.Item as={Link} to={ROUTES.EXERCISE_EDIT.replace(':id', exercise.id)}>
-                        {translate('common.edit')}
-                      </Dropdown.Item>
-                      <Dropdown.Item disabled={!exercise.can_delete} onClick={() => handleDelete(exercise.id)}>
-                        {translate('common.delete')}
-                      </Dropdown.Item>
-                    </DropdownButton>
-                  </div>
-                  <img className="card-img"
-                    src="images/dummy/exercise.gif"
-                    alt="Exercise"
-                  />
-                </div>
-                <Card.Body>
-                  <Card.Title>
-                    <OverlayTrigger
-                      overlay={<Tooltip id="button-tooltip-2">{ exercise.title }</Tooltip>}
-                    >
-                      <h5 className="card-title">{ exercise.title }</h5>
-                    </OverlayTrigger>
-                  </Card.Title>
-                </Card.Body>
-              </Card>
-            ))}
-          </CardColumns>
+          { exercises.length === 0 && (
+            <div className="card h-100 d-flex justify-content-center align-items-center">
+              <big className="text-muted">{translate('common.no_data')}</big>
+            </div>
+          )}
+          { exercises.length > 0 && (
+            <>
+              <CardColumns>
+                { exercises.map(exercise => (
+                  <Card key={exercise.id} className="exercise-card shadow-sm">
+                    <div className="card-img bg-light">
+                      <div className="position-absolute w-100">
+                        <DropdownButton className="float-right action" alignRight variant="outline-dark">
+                          <Dropdown.Item as={Link} to={ROUTES.EXERCISE_EDIT.replace(':id', exercise.id)}>
+                            {translate('common.edit')}
+                          </Dropdown.Item>
+                          <Dropdown.Item disabled={!exercise.can_delete} onClick={() => handleDelete(exercise.id)}>
+                            {translate('common.delete')}
+                          </Dropdown.Item>
+                        </DropdownButton>
+                      </div>
+                      <img className="card-img"
+                           src="images/dummy/exercise.gif"
+                           alt="Exercise"
+                      />
+                    </div>
+                    <Card.Body>
+                      <Card.Title>
+                        <OverlayTrigger
+                          overlay={<Tooltip id="button-tooltip-2">{ exercise.title }</Tooltip>}
+                        >
+                          <h5 className="card-title">{ exercise.title }</h5>
+                        </OverlayTrigger>
+                      </Card.Title>
+                    </Card.Body>
+                  </Card>
+                ))}
+              </CardColumns>
+
+              <Pagination
+                totalCount={totalCount}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                pageSize={pageSize}
+                setPageSize={setPageSize}
+              />
+            </>
+          )}
         </Col>
       </Row>
 

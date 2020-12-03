@@ -2,9 +2,10 @@ const getExercisesRequest = () => ({
   type: 'GET_EXERCISES_REQUEST'
 });
 
-const getExercisesSuccess = (data) => ({
+const getExercisesSuccess = (data, filters) => ({
   type: 'GET_EXERCISES_SUCCESS',
-  data
+  data,
+  filters
 });
 
 const getExercisesFail = () => ({

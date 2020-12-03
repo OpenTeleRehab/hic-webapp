@@ -27,6 +27,9 @@
   "common.edit": "Edit",
   "common.new_content": "New Content",
   "common.delete_confirmation_message": "Are you sure want to delete this record?",
+  "common.no_data": "No Data",
+  "common.paginate.show_number_of_records": "Show ${recordStart} to ${recordEnd} of ${totalCount} items",
+  "common.paginate.per_page": "per page",
 
   "profile.current_password": "Current Passwords",
   "profile.new_password": "New Passwords",

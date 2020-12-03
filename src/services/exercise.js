@@ -1,7 +1,7 @@
 import axios from 'utils/axios';
 
-const getExercises = () => {
-  return axios.get('/exercise')
+const getExercises = payload => {
+  return axios.get('/exercise', { params: payload })
     .then(
       res => {
         return res.data;

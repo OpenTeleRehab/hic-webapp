@@ -45,6 +45,7 @@ export const getTherapists = payload => async dispatch => {
   if (data.success) {
     dispatch(mutation.getTherapistsSuccess(data.data, payload));
     dispatch(showSpinner(false));
+    return data.info;
   } else {
     dispatch(mutation.getTherapistsFail());
     dispatch(showSpinner(false));

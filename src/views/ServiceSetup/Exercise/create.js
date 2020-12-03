@@ -143,6 +143,7 @@ const CreateExercise = ({ translate }) => {
                 onChange={handleCheck}
                 value={true}
                 defaultChecked
+                checked={formFields.include_feedback}
                 label={translate('exercise.include_collecting_feedback')}
               />
             </Form.Group>
