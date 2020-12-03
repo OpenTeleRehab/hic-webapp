@@ -14,7 +14,8 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const users = useSelector(state => state.user.users);
-
+  const countries = useSelector(state => state.country.countries);
+  const clinics = useSelector(state => state.clinic.clinics);
   const [hintMessage, setHintMessage] = useState('');
 
   const [errorEmail, setErrorEmail] = useState(false);
@@ -244,9 +245,10 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
               disabled={!!editId}
             >
               <option value="">{translate('placeholder.country')}</option>
-              <option value="1">Cambodia</option>
-              <option value="2">Laos</option>
-              <option value="3">Vietnam</option>
+              {countries.map((country) => (
+                <option key={country.id} value={country.id}>{country.name}</option>
+              ))}
+
             </Form.Control>
             <Form.Control.Feedback type="invalid">
               {translate('error.country')}
@@ -266,9 +268,9 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
               disabled={!!editId}
             >
               <option value="">{translate('placeholder.clinic')}</option>
-              <option value="1">Clinic A</option>
-              <option value="2">Clinic B</option>
-              <option value="3">Clinic C</option>
+              {clinics.map((clinic) => (
+                <option key={clinic.id} value={clinic.id}>{clinic.name}</option>
+              ))}
             </Form.Control>
             <Form.Control.Feedback type="invalid">
               {translate('error.clinic')}
