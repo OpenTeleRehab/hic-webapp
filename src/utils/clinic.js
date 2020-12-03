@@ -1,8 +1,7 @@
 import _ from 'lodash';
 
-export const getClinicName = (identifier, clinics) => {
-  const identity = _.toInteger(identifier);
-  const clinic = _.findLast(clinics, { identity });
+export const getClinicName = (id, clinics) => {
+  const clinic = _.findLast(clinics, { id: parseInt(id, 10) });
 
   return clinic ? clinic.name : '';
 };

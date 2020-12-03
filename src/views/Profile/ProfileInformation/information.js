@@ -28,6 +28,7 @@ const Information = () => {
             <p>{profile.email}</p>
             <p>{getClinicName(profile.clinic_id, clinics)}</p>
             <p>{getCountryName(profile.country_id, countries)}</p>
+            <p className="text-capitalize">{profile.gender}</p>
 
             <div>
               <Button
