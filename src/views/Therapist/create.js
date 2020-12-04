@@ -8,8 +8,8 @@ import validateEmail from 'utils/validateEmail';
 import { createTherapist, updateTherapist } from 'store/therapist/actions';
 import { useKeycloak } from '@react-keycloak/web';
 
-import { getCountryName } from 'utils/country';
-import { getClinicName } from 'utils/clinic';
+import { getCountryName, getCountryIdentity } from 'utils/country';
+import { getClinicName, getClinicIdentity } from 'utils/clinic';
 
 import { getProfile } from 'store/auth/actions';
 
@@ -43,7 +43,9 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
     last_name: '',
     country: '',
     limit_patient: '',
-    clinic: ''
+    clinic: '',
+    clinic_identity: '',
+    country_identity: ''
   });
   useEffect(() => {
     if (show) {
@@ -85,10 +87,9 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
       });
     } else {
       resetData();
-    }
-
-    if (profile !== undefined) {
-      setFormFields({ ...formFields, country: profile.country_id, clinic: profile.clinic_id });
+      if (profile !== undefined) {
+        setFormFields({ ...formFields, country: profile.country_id, clinic: profile.clinic_id, country_identity: getCountryIdentity(profile.country_id, countries), clinic_identity: getClinicIdentity(profile.clinic_id, clinics) });
+      }
     }
     // eslint-disable-next-line
   }, [editId, therapists, profile]);
@@ -201,7 +202,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
               onChange={handleChange}
               as="select"
               value={formFields.country}
-              disabled={!!editId}
+              disabled
               isInvalid={errorCountry}
             >
               { profile !== undefined && (
@@ -285,7 +286,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
               onChange={handleChange}
               as="select"
               value={formFields.clinic}
-              disabled={!!editId}
+              disabled
               isInvalid={errorClinic}
             >
               { profile !== undefined && (
