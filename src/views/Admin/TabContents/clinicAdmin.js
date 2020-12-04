@@ -44,25 +44,22 @@ const ClinicAdmin = ({ handleEdit, type }) => {
 
   useEffect(() => {
     if (type === USER_GROUPS.CLINIC_ADMIN) {
-      dispatch(getUsers({
-        search_value: searchValue,
-        filters: filters,
-        admin_type: type,
-        page_size: pageSize,
-        page: currentPage + 1
-      })).then(result => {
-        if (result) {
-          setTotalCount(result.total_count);
-        }
-      });
-    }
-    // eslint-disable-next-line
-  }, [currentPage, type, pageSize, dispatch]);
-
-  useEffect(() => {
-    if (type === USER_GROUPS.CLINIC_ADMIN) {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
+      if (searchValue || filters.length) {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          dispatch(getUsers({
+            search_value: searchValue,
+            filters: filters,
+            admin_type: type,
+            page_size: pageSize,
+            page: currentPage + 1
+          })).then(result => {
+            if (result) {
+              setTotalCount(result.total_count);
+            }
+          });
+        }, 500);
+      } else {
         dispatch(getUsers({
           search_value: searchValue,
           filters: filters,
@@ -74,10 +71,9 @@ const ClinicAdmin = ({ handleEdit, type }) => {
             setTotalCount(result.total_count);
           }
         });
-      }, 500);
+      }
     }
-    // eslint-disable-next-line
-  }, [searchValue, filters]);
+  }, [currentPage, type, pageSize, searchValue, filters, dispatch]);
 
   const columnExtensions = [
     { columnName: 'last_name', wordWrapEnabled: true },
