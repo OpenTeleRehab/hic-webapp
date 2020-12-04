@@ -4,7 +4,6 @@ import { withLocalize } from 'react-localize-redux';
 import {
   Row,
   Col,
-  CardColumns,
   Card,
   Dropdown,
   DropdownButton,
@@ -25,7 +24,7 @@ const Exercise = ({ translate }) => {
   const { exercises } = useSelector(state => state.exercise);
   const [deletedId, setDeletedId] = useState(null);
   const [show, setShow] = useState(false);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
@@ -102,37 +101,39 @@ const Exercise = ({ translate }) => {
           )}
           { exercises.length > 0 && (
             <>
-              <CardColumns>
+              <Row>
                 { exercises.map(exercise => (
-                  <Card key={exercise.id} className="exercise-card shadow-sm">
-                    <div className="card-img bg-light">
-                      <div className="position-absolute w-100">
-                        <DropdownButton className="float-right action" alignRight variant="outline-dark">
-                          <Dropdown.Item as={Link} to={ROUTES.EXERCISE_EDIT.replace(':id', exercise.id)}>
-                            {translate('common.edit')}
-                          </Dropdown.Item>
-                          <Dropdown.Item disabled={!exercise.can_delete} onClick={() => handleDelete(exercise.id)}>
-                            {translate('common.delete')}
-                          </Dropdown.Item>
-                        </DropdownButton>
+                  <Col key={exercise.id} md={6} lg={3}>
+                    <Card className="exercise-card shadow-sm mb-4">
+                      <div className="card-img bg-light">
+                        <div className="position-absolute w-100">
+                          <DropdownButton className="float-right action" alignRight variant="outline-dark">
+                            <Dropdown.Item as={Link} to={ROUTES.EXERCISE_EDIT.replace(':id', exercise.id)}>
+                              {translate('common.edit')}
+                            </Dropdown.Item>
+                            <Dropdown.Item disabled={!exercise.can_delete} onClick={() => handleDelete(exercise.id)}>
+                              {translate('common.delete')}
+                            </Dropdown.Item>
+                          </DropdownButton>
+                        </div>
+                        <img className="card-img"
+                          src="images/dummy/exercise.gif"
+                          alt="Exercise"
+                        />
                       </div>
-                      <img className="card-img"
-                        src="images/dummy/exercise.gif"
-                        alt="Exercise"
-                      />
-                    </div>
-                    <Card.Body>
-                      <Card.Title>
-                        <OverlayTrigger
-                          overlay={<Tooltip id="button-tooltip-2">{ exercise.title }</Tooltip>}
-                        >
-                          <h5 className="card-title">{ exercise.title }</h5>
-                        </OverlayTrigger>
-                      </Card.Title>
-                    </Card.Body>
-                  </Card>
+                      <Card.Body>
+                        <Card.Title>
+                          <OverlayTrigger
+                            overlay={<Tooltip id="button-tooltip-2">{ exercise.title }</Tooltip>}
+                          >
+                            <h5 className="card-title">{ exercise.title }</h5>
+                          </OverlayTrigger>
+                        </Card.Title>
+                      </Card.Body>
+                    </Card>
+                  </Col>
                 ))}
-              </CardColumns>
+              </Row>
 
               <Pagination
                 totalCount={totalCount}
@@ -140,6 +141,7 @@ const Exercise = ({ translate }) => {
                 setCurrentPage={setCurrentPage}
                 pageSize={pageSize}
                 setPageSize={setPageSize}
+                pageSizes={[8, 16, 24, 32, 40]}
               />
             </>
           )}
