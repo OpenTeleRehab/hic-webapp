@@ -1,7 +1,19 @@
 import axios from 'utils/axios';
 
-const getExercises = () => {
-  return axios.get('/exercise')
+const getExercises = payload => {
+  return axios.get('/exercise', { params: payload })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const getExercise = id => {
+  return axios.get(`/exercise/${id}`)
     .then(
       res => {
         return res.data;
@@ -50,6 +62,7 @@ const deleteExercise = id => {
 
 export const Exercise = {
   getExercises,
+  getExercise,
   createExercise,
   updateExercise,
   deleteExercise

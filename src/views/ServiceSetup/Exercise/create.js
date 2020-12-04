@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as ROUTES from 'variables/routes';
 import {
   createExercise,
-  getExercises,
+  getExercise,
   updateExercise
 } from 'store/exercise/actions';
 
@@ -16,7 +16,7 @@ const CreateExercise = ({ translate }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id } = useParams();
-  const { exercises } = useSelector(state => state.exercise);
+  const { exercise } = useSelector(state => state.exercise);
   const [formFields, setFormFields] = useState({
     title: '',
     include_feedback: true
@@ -25,17 +25,18 @@ const CreateExercise = ({ translate }) => {
 
   useEffect(() => {
     if (id) {
-      const exercise = exercises.find(exercise => exercise.id === parseInt(id));
-      if (exercise) {
-        setFormFields({
-          title: exercise.title,
-          include_feedback: exercise.include_feedback
-        });
-      } else {
-        dispatch(getExercises());
-      }
+      dispatch(getExercise(id));
     }
-  }, [id, exercises, dispatch]);
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    if (exercise.id) {
+      setFormFields({
+        title: exercise.title,
+        include_feedback: exercise.include_feedback
+      });
+    }
+  }, [exercise]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -143,6 +144,7 @@ const CreateExercise = ({ translate }) => {
                 onChange={handleCheck}
                 value={true}
                 defaultChecked
+                checked={formFields.include_feedback}
                 label={translate('exercise.include_collecting_feedback')}
               />
             </Form.Group>
