@@ -6,6 +6,13 @@
 		.card-img {
 			height: 177px;
 		}
+
+		.card-title {
+			overflow: hidden;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 4;
+		}
 	}
 
 	@include media-breakpoint-up(lg) {

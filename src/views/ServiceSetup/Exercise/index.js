@@ -8,7 +8,9 @@ import {
   Card,
   Dropdown,
   DropdownButton,
-  Form
+  Form,
+  Tooltip,
+  OverlayTrigger
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -86,19 +88,28 @@ const Exercise = ({ translate }) => {
             { exercises.map(exercise => (
               <Card key={exercise.id} className="exercise-card shadow-sm">
                 <div className="card-img bg-light">
-                  <DropdownButton className="float-right" alignRight variant="outline-dark">
-                    <Dropdown.Item as={Link} to={ROUTES.EXERCISE_EDIT.replace(':id', exercise.id)}>
-                      {translate('common.edit')}
-                    </Dropdown.Item>
-                    <Dropdown.Item disabled={!exercise.can_delete} onClick={() => handleDelete(exercise.id)}>
-                      {translate('common.delete')}
-                    </Dropdown.Item>
-                  </DropdownButton>
-                  <div className="d-none">TODO: Show image</div>
+                  <div className="position-absolute w-100">
+                    <DropdownButton className="float-right action" alignRight variant="outline-dark">
+                      <Dropdown.Item as={Link} to={ROUTES.EXERCISE_EDIT.replace(':id', exercise.id)}>
+                        {translate('common.edit')}
+                      </Dropdown.Item>
+                      <Dropdown.Item disabled={!exercise.can_delete} onClick={() => handleDelete(exercise.id)}>
+                        {translate('common.delete')}
+                      </Dropdown.Item>
+                    </DropdownButton>
+                  </div>
+                  <img className="card-img"
+                    src="images/dummy/exercise.gif"
+                    alt="Exercise"
+                  />
                 </div>
                 <Card.Body>
                   <Card.Title>
-                    <h5>{exercise.title}</h5>
+                    <OverlayTrigger
+                      overlay={<Tooltip id="button-tooltip-2">{ exercise.title }</Tooltip>}
+                    >
+                      <h5 className="card-title">{ exercise.title }</h5>
+                    </OverlayTrigger>
                   </Card.Title>
                 </Card.Body>
               </Card>
