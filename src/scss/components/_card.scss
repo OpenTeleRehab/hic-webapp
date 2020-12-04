@@ -1,21 +1,15 @@
-.card-columns {
-	.exercise-card {
-		overflow: hidden;
-		height: 315px;
+.exercise-card {
+	overflow: hidden;
+	height: 315px;
 
-		.card-img {
-			height: 177px;
-		}
-
-		.card-title {
-			overflow: hidden;
-			display: -webkit-box;
-			-webkit-box-orient: vertical;
-			-webkit-line-clamp: 4;
-		}
+	.card-img {
+		height: 177px;
 	}
 
-	@include media-breakpoint-up(lg) {
-		column-count: 4;
+	.card-title {
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 4;
 	}
 }
