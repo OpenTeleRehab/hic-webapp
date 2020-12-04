@@ -18,6 +18,20 @@ export const getExercises = payload => async dispatch => {
   }
 };
 
+export const getExercise = id => async dispatch => {
+  dispatch(mutation.getExerciseRequest());
+  dispatch(showSpinner(true));
+  const data = await Exercise.getExercise(id);
+  if (data) {
+    dispatch(mutation.getExerciseSuccess(data.data));
+    dispatch(showSpinner(false));
+  } else {
+    dispatch(mutation.getExerciseFail());
+    dispatch(showSpinner(false));
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
+  }
+};
+
 export const createExercise = payload => async dispatch => {
   dispatch(mutation.createExercisesRequest());
   const data = await Exercise.createExercise(payload);

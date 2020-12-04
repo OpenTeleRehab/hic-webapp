@@ -1,4 +1,5 @@
 export const initialState = {
   filters: {},
-  exercises: []
+  exercises: [],
+  exercise: []
 };

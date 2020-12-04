@@ -12,6 +12,19 @@ const getExercisesFail = () => ({
   type: 'GET_EXERCISES_FAIL'
 });
 
+const getExerciseRequest = () => ({
+  type: 'GET_EXERCISE_REQUEST'
+});
+
+const getExerciseSuccess = (data) => ({
+  type: 'GET_EXERCISE_SUCCESS',
+  data
+});
+
+const getExerciseFail = () => ({
+  type: 'GET_EXERCISE_FAIL'
+});
+
 const createExercisesRequest = () => ({
   type: 'CREATE_EXERCISES_REQUEST'
 });
@@ -55,6 +68,9 @@ export const mutation = {
   getExercisesFail,
   getExercisesRequest,
   getExercisesSuccess,
+  getExerciseRequest,
+  getExerciseSuccess,
+  getExerciseFail,
   createExercisesRequest,
   createExercisesSuccess,
   createExercisesFail,

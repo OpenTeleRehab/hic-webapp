@@ -12,6 +12,18 @@ const getExercises = payload => {
     });
 };
 
+const getExercise = id => {
+  return axios.get(`/exercise/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const createExercise = payload => {
   return axios.post('/exercise', payload)
     .then(
@@ -50,6 +62,7 @@ const deleteExercise = id => {
 
 export const Exercise = {
   getExercises,
+  getExercise,
   createExercise,
   updateExercise,
   deleteExercise

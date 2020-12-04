@@ -117,8 +117,8 @@ const Exercise = ({ translate }) => {
                         </DropdownButton>
                       </div>
                       <img className="card-img"
-                           src="images/dummy/exercise.gif"
-                           alt="Exercise"
+                        src="images/dummy/exercise.gif"
+                        alt="Exercise"
                       />
                     </div>
                     <Card.Body>

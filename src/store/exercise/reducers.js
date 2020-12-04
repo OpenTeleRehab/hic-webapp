@@ -8,6 +8,11 @@ export const exercise = (state = initialState, action) => {
         filters: action.filters
       });
     }
+    case 'GET_EXERCISE_SUCCESS': {
+      return Object.assign({}, state, {
+        exercise: action.data
+      });
+    }
     default:
       return state;
   }
