@@ -13,3 +13,21 @@
 		-webkit-line-clamp: 4;
 	}
 }
+
+.exercise-media {
+	.upload-btn {
+		opacity: 0;
+		right: 0;
+		top: 0;
+	}
+
+	.remove-btn-wrapper {
+		right: 0;
+		top: -10px;
+		bottom: 0;
+	}
+
+	.remove-btn {
+		padding: 0px 5px;
+	}
+}

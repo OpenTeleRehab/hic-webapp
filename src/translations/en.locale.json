@@ -142,6 +142,7 @@
   "success_message.change_password_success": "Password changed successfully!",
   "success_message.exercise_create": "Exercise has been created!",
   "success_message.exercise_delete": "Exercise has been deleted!",
+  "success_message.exercise_update": "Exercise Updated successfully.",
 
   "error_message.wrong_password": "Old password is not valid",
   "error_message.cannot_change_password": "Password is unable to change",

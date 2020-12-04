@@ -22,6 +22,7 @@ const CreateExercise = ({ translate }) => {
     include_feedback: true
   });
   const [titleError, setTitleError] = useState(false);
+  const [mediaUploads, setMediaUploads] = useState([]);
 
   useEffect(() => {
     if (id) {
@@ -77,6 +78,31 @@ const CreateExercise = ({ translate }) => {
     }
   };
 
+  const handleFileChange = (e) => {
+    const files = e.target.files;
+    const fileObj = [];
+    fileObj.push(files);
+    let i;
+    for (i = 0; i < fileObj[0].length; i++) {
+      const reader = new FileReader();
+      reader.readAsDataURL(fileObj[0][i]);
+      const fileName = fileObj[0][i].name;
+      const fileSize = fileObj[0][i].size;
+      const fileType = fileObj[0][i].type;
+      reader.onloadend = () => {
+        mediaUploads.push({ url: reader.result, fileName: fileName, fileSize: fileSize, fileType: fileType });
+        setMediaUploads([...mediaUploads]);
+      };
+    }
+  };
+  const handleFileRemove = (index) => {
+    const mediaFiles = mediaUploads;
+    if (index !== -1) {
+      mediaFiles.splice(index, 1);
+      setMediaUploads([...mediaFiles]);
+    }
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
@@ -114,7 +140,42 @@ const CreateExercise = ({ translate }) => {
 
         <Row>
           <Col sm={4} xl={3}>
-            <h4>{translate('exercise.media')}</h4>
+            <div className="exercise-media ">
+              <h4>{translate('exercise.media')}</h4>
+              { mediaUploads.map((mediaUpload, index) => (
+                <div key={index} className="mb-2 position-relative w-75" >
+                  <div className="position-absolute remove-btn-wrapper">
+                    <Button type="button" className="bg-white rounded-circle btn-sm btn-outline-dark remove-btn" aria-label="Close" onClick={() => handleFileRemove(index)}>
+                      <span aria-hidden="true">&times;</span>
+                    </Button>
+                  </div>
+
+                  { mediaUpload.fileType === 'audio/mpeg' &&
+                    <div className="img-thumbnail w-100 pt-2">
+                      <audio controls className="w-100">
+                        <source src={mediaUpload.url} type="audio/ogg" />
+                      </audio>
+                    </div>
+                  }
+
+                  { (mediaUpload.fileType !== 'audio/mpeg' && mediaUpload.fileType !== 'video/mp4') &&
+                    <img src={mediaUpload.url} alt="..." className="w-100 img-thumbnail"/>
+                  }
+
+                  { mediaUpload.fileType === 'video/mp4' &&
+                    <video className="w-100 img-thumbnail" controls>
+                      <source src={mediaUpload.url} type="video/mp4" />
+                    </video>
+                  }
+
+                  <div>{mediaUpload.fileName} ({mediaUpload.fileSize})</div>
+                </div>
+              ))}
+              <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden" >
+                Upload Image
+                <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} multiple accept=".gif, .jpeg, .png, .mp3, .mp4"/>
+              </div>
+            </div>
           </Col>
           <Col sm={6} xl={4}>
             <Form.Group controlId="formLanguage">
