@@ -133,6 +133,8 @@
   "error.current_password": "Please fill in the current password",
   "error.new_password": "Please fill in the new password",
   "error.confirm_password": "Password does not match",
+  "error.new_password_validation": "Passwords must contain at least ${passwordLength} characters, including uppercase, lowercase letters and numbers.",
+  "error.new_password_validation_exist": "The new password can not be the same the current password",
   "error_message.email_exists": "Email already exists",
 
   "success_message.user_add": "User has been added",
@@ -148,4 +150,5 @@
   "error_message.user_add": "User cannot be created",
   "error_message.exercise_create": "Exercise cannot be created",
   "error_message.exercise_delete": "Exercise cannot be deleted"
+
 }

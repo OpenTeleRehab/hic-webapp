@@ -4,6 +4,9 @@ import { getTranslate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { updatePassword } from 'store/auth/actions';
+import validatePassword from '../../../utils/validatePassword';
+
+const passwordLength = 8;
 
 const Password = () => {
   const dispatch = useDispatch();
@@ -18,6 +21,8 @@ const Password = () => {
   });
   const [passwordError, setPasswordError] = useState(false);
   const [newPasswordError, setNewPasswordError] = useState(false);
+  const [newPasswordValidationError, setNewPasswordValidationError] = useState(false);
+  const [newPasswordValidationExist, setNewPasswordValidationExit] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [confirmPasswordNotMactchError, setConfirmPasswordNotMactchError] = useState(false);
 
@@ -28,7 +33,6 @@ const Password = () => {
 
   const handleSave = () => {
     let canSave = true;
-
     if (formFields.current_password === '') {
       canSave = false;
       setPasswordError(true);
@@ -36,13 +40,26 @@ const Password = () => {
       setPasswordError(false);
     }
 
-    if (formFields.new_password === '') {
+    if (formFields.current_password === formFields.new_password) {
       canSave = false;
-      setNewPasswordError(true);
+      setNewPasswordValidationError(false);
+      setNewPasswordValidationExit(true);
     } else {
-      setNewPasswordError(false);
+      setNewPasswordValidationExit(false);
+      if (formFields.new_password === '') {
+        canSave = false;
+        setNewPasswordValidationError(false);
+        setNewPasswordError(true);
+      } else {
+        setNewPasswordError(false);
+        if (!validatePassword(formFields.new_password)) {
+          canSave = false;
+          setNewPasswordValidationError(true);
+        } else {
+          setNewPasswordValidationError(false);
+        }
+      }
     }
-
     if (formFields.confirm_password === '') {
       setConfirmPasswordNotMactchError(false);
       setConfirmPasswordError(true);
@@ -55,7 +72,6 @@ const Password = () => {
         setConfirmPasswordNotMactchError(false);
       }
     }
-
     if (canSave) {
       dispatch(updatePassword(formFields))
         .then((result) => {
@@ -94,10 +110,12 @@ const Password = () => {
               type="password"
               name="new_password"
               onChange={handleChange}
-              isInvalid={newPasswordError}
+              isInvalid={newPasswordError || newPasswordValidationError || newPasswordValidationExist}
             />
             <Form.Control.Feedback type="invalid">
-              {translate('error.new_password')}
+              {newPasswordError && translate('error.new_password')}
+              {newPasswordValidationError && translate('error.new_password_validation', { passwordLength })}
+              {newPasswordValidationExist && translate('error.new_password_validation_exist')}
             </Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
