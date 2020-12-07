@@ -12,4 +12,22 @@
 		-webkit-box-orient: vertical;
 		-webkit-line-clamp: 4;
 	}
+
+	.action {
+		z-index: 1;
+	}
+}
+
+.exercise-media {
+	.upload-btn {
+		opacity: 0;
+		right: 0;
+		top: 0;
+	}
+
+	.remove-btn-wrapper {
+		right: -10px;
+		top: -10px;
+		bottom: 0;
+	}
 }

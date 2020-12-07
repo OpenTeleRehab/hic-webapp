@@ -1,4 +1,5 @@
 import axios from 'utils/axios';
+import _ from 'lodash';
 
 const getExercises = payload => {
   return axios.get('/exercise', { params: payload })
@@ -24,8 +25,19 @@ const getExercise = id => {
     });
 };
 
-const createExercise = payload => {
-  return axios.post('/exercise', payload)
+const createExercise = (payload, mediaUploads) => {
+  const formData = new FormData();
+  _.forIn(payload, (value, key) => {
+    formData.append(key, value);
+  });
+
+  _.forIn(mediaUploads, (value, key) => {
+    if (value.file) {
+      formData.append(key, value.file);
+    }
+  });
+
+  return axios.post('/exercise', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
     .then(
       res => {
         return res.data;
@@ -36,8 +48,23 @@ const createExercise = payload => {
     });
 };
 
-const updateExercise = (id, payload) => {
-  return axios.put(`/exercise/${id}`, payload)
+const updateExercise = (id, payload, mediaUploads) => {
+  const formData = new FormData();
+  _.forIn(payload, (value, key) => {
+    formData.append(key, value);
+  });
+
+  _.forIn(mediaUploads, (value, key) => {
+    if (value.file) {
+      formData.append(key, value.file);
+    } else {
+      formData.append('media_files[]', value.id);
+    }
+  });
+
+  return axios.post(`/exercise/${id}?_method=PUT`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
     .then(
       res => {
         return res.data;

@@ -60,7 +60,7 @@ const Exercise = ({ translate }) => {
   return (
     <>
       <Row>
-        <Col sm={3}>
+        <Col sm={5} md={4} lg={3}>
           <Card
             bg="info"
             text="white"
@@ -93,7 +93,7 @@ const Exercise = ({ translate }) => {
             </Card.Body>
           </Card>
         </Col>
-        <Col sm={9}>
+        <Col sm={7} md={8} lg={9}>
           { exercises.length === 0 && (
             <div className="card h-100 d-flex justify-content-center align-items-center">
               <big className="text-muted">{translate('common.no_data')}</big>
@@ -116,18 +116,40 @@ const Exercise = ({ translate }) => {
                             </Dropdown.Item>
                           </DropdownButton>
                         </div>
-                        <img className="card-img"
-                          src="images/dummy/exercise.gif"
-                          alt="Exercise"
-                        />
+                        {
+                          exercise.files.length > 0 && (
+                            (exercise.files[0].fileType === 'audio/mpeg' &&
+                              <div className="w-100">
+                                <audio controls className="w-100">
+                                  <source src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} type="audio/ogg" />
+                                </audio>
+                              </div>
+                            ) ||
+                            (exercise.files[0].fileType === 'video/mp4' &&
+                              <video controls className="w-100 h-100">
+                                <source src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} type="video/mp4" />
+                              </video>
+                            ) ||
+                            ((exercise.files[0].fileType !== 'audio/mpeg' && exercise.files[0].fileType !== 'video/mp4') &&
+                              <img className="card-img" src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} alt="Exercise"
+                              />
+                            )
+                          )
+                        }
                       </div>
                       <Card.Body>
                         <Card.Title>
-                          <OverlayTrigger
-                            overlay={<Tooltip id="button-tooltip-2">{ exercise.title }</Tooltip>}
-                          >
-                            <h5 className="card-title">{ exercise.title }</h5>
-                          </OverlayTrigger>
+                          {
+                            exercise.title.length <= 50
+                              ? <h5 className="card-title">{ exercise.title }</h5>
+                              : (
+                                <OverlayTrigger
+                                  overlay={<Tooltip id="button-tooltip-2">{ exercise.title }</Tooltip>}
+                                >
+                                  <h5 className="card-title">{ exercise.title }</h5>
+                                </OverlayTrigger>
+                              )
+                          }
                         </Card.Title>
                       </Card.Body>
                     </Card>
