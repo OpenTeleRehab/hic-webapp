@@ -12,6 +12,10 @@
 		-webkit-box-orient: vertical;
 		-webkit-line-clamp: 4;
 	}
+
+	.action {
+		z-index: 1;
+	}
 }
 
 .exercise-media {
@@ -22,12 +26,8 @@
 	}
 
 	.remove-btn-wrapper {
-		right: 0;
+		right: -10px;
 		top: -10px;
 		bottom: 0;
-	}
-
-	.remove-btn {
-		padding: 0px 5px;
 	}
 }

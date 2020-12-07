@@ -68,6 +68,7 @@
   "exercise.title.required": "Please fill in the title",
   "exercise.include_collecting_feedback": "Include collecting feedback (Reps, Sets, Pain level,.etc.)",
   "exercise.delete_confirmation_title": "Exercise deletion",
+  "exercise.media_upload.required": "Please upload the image",
 
   "education_material.create": "Add new Education Material",
   "education_material.new": "New Education Material",

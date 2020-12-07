@@ -4,6 +4,7 @@ import { withLocalize } from 'react-localize-redux';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { BsUpload, BsXCircle } from 'react-icons/bs';
 
 import * as ROUTES from 'variables/routes';
 import {
@@ -23,6 +24,7 @@ const CreateExercise = ({ translate }) => {
   });
   const [titleError, setTitleError] = useState(false);
   const [mediaUploads, setMediaUploads] = useState([]);
+  const [mediaUploadsError, setMediaUploadsError] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -31,13 +33,14 @@ const CreateExercise = ({ translate }) => {
   }, [id, dispatch]);
 
   useEffect(() => {
-    if (exercise.id) {
+    if (id && exercise.id) {
       setFormFields({
         title: exercise.title,
         include_feedback: exercise.include_feedback
       });
+      setMediaUploads(exercise.files);
     }
-  }, [exercise]);
+  }, [id, exercise]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -59,16 +62,23 @@ const CreateExercise = ({ translate }) => {
       setTitleError(false);
     }
 
+    if (mediaUploads.length === 0) {
+      canSave = false;
+      setMediaUploadsError(true);
+    } else {
+      setMediaUploadsError(false);
+    }
+
     if (canSave) {
       if (id) {
-        dispatch(updateExercise(id, formFields))
+        dispatch(updateExercise(id, formFields, mediaUploads))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
             }
           });
       } else {
-        dispatch(createExercise(formFields))
+        dispatch(createExercise(formFields, mediaUploads))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
@@ -84,13 +94,14 @@ const CreateExercise = ({ translate }) => {
     fileObj.push(files);
     let i;
     for (i = 0; i < fileObj[0].length; i++) {
+      const file = fileObj[0][i];
+      const fileName = file.name;
+      const fileSize = Math.round((file.size / 1024), 2);
+      const fileType = file.type;
       const reader = new FileReader();
-      reader.readAsDataURL(fileObj[0][i]);
-      const fileName = fileObj[0][i].name;
-      const fileSize = fileObj[0][i].size;
-      const fileType = fileObj[0][i].type;
+      reader.readAsDataURL(file);
       reader.onloadend = () => {
-        mediaUploads.push({ url: reader.result, fileName: fileName, fileSize: fileSize, fileType: fileType });
+        mediaUploads.push({ url: reader.result, fileName, fileSize, fileType, file });
         setMediaUploads([...mediaUploads]);
       };
     }
@@ -145,36 +156,36 @@ const CreateExercise = ({ translate }) => {
               { mediaUploads.map((mediaUpload, index) => (
                 <div key={index} className="mb-2 position-relative w-75" >
                   <div className="position-absolute remove-btn-wrapper">
-                    <Button type="button" className="bg-white rounded-circle btn-sm btn-outline-dark remove-btn" aria-label="Close" onClick={() => handleFileRemove(index)}>
-                      <span aria-hidden="true">&times;</span>
-                    </Button>
+                    <BsXCircle size={20} onClick={() => handleFileRemove(index)}/>
                   </div>
 
                   { mediaUpload.fileType === 'audio/mpeg' &&
                     <div className="img-thumbnail w-100 pt-2">
                       <audio controls className="w-100">
-                        <source src={mediaUpload.url} type="audio/ogg" />
+                        <source src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} type="audio/ogg" />
                       </audio>
                     </div>
                   }
 
                   { (mediaUpload.fileType !== 'audio/mpeg' && mediaUpload.fileType !== 'video/mp4') &&
-                    <img src={mediaUpload.url} alt="..." className="w-100 img-thumbnail"/>
+                    <img src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} alt="..." className="w-100 img-thumbnail"/>
                   }
 
                   { mediaUpload.fileType === 'video/mp4' &&
                     <video className="w-100 img-thumbnail" controls>
-                      <source src={mediaUpload.url} type="video/mp4" />
+                      <source src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} type="video/mp4" />
                     </video>
                   }
-
-                  <div>{mediaUpload.fileName} ({mediaUpload.fileSize})</div>
+                  <div>{mediaUpload.fileName} {mediaUpload.fileSize ? ('(' + mediaUpload.fileSize + 'kB )') : ''}</div>
                 </div>
               ))}
               <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden" >
-                Upload Image
-                <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} multiple accept=".gif, .jpeg, .png, .mp3, .mp4"/>
+                <BsUpload size={15}/> Upload Image
+                <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} multiple accept=".gif, .jpeg, .png, .mp3, .mp4" />
               </div>
+              { mediaUploadsError &&
+                <div className="text-danger">{translate('exercise.media_upload.required')}</div>
+              }
             </div>
           </Col>
           <Col sm={6} xl={4}>

@@ -32,9 +32,9 @@ export const getExercise = id => async dispatch => {
   }
 };
 
-export const createExercise = payload => async dispatch => {
+export const createExercise = (payload, mediaUploads) => async dispatch => {
   dispatch(mutation.createExercisesRequest());
-  const data = await Exercise.createExercise(payload);
+  const data = await Exercise.createExercise(payload, mediaUploads);
   if (data.success) {
     dispatch(mutation.createExercisesSuccess());
     dispatch(getExercises());
@@ -47,9 +47,9 @@ export const createExercise = payload => async dispatch => {
   }
 };
 
-export const updateExercise = (id, payload) => async dispatch => {
+export const updateExercise = (id, payload, mediaUploads) => async dispatch => {
   dispatch(mutation.updateExercisesRequest());
-  const data = await Exercise.updateExercise(id, payload);
+  const data = await Exercise.updateExercise(id, payload, mediaUploads);
   if (data.success) {
     dispatch(mutation.updateExercisesSuccess());
     dispatch(getExercises());
