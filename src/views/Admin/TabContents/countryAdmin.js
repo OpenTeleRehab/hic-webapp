@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { getTranslate } from 'react-localize-redux';
-import { DropdownButton, Dropdown } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
 import CustomTable from 'components/Table';
@@ -12,13 +10,12 @@ import { getUsers } from 'store/user/actions';
 import { getCountryName } from 'utils/country';
 import * as moment from 'moment';
 import settings from 'settings';
+import { DeleteAction, EditAction } from 'components/ActionIcons';
 
 let timer = null;
 
 const CountryAdmin = ({ handleEdit, type }) => {
   const dispatch = useDispatch();
-  const localize = useSelector((state) => state.localize);
-  const translate = getTranslate(localize);
   const users = useSelector(state => state.user.users);
   const countries = useSelector(state => state.country.countries);
 
@@ -96,12 +93,11 @@ const CountryAdmin = ({ handleEdit, type }) => {
         columns={columns}
         columnExtensions={columnExtensions}
         rows={users.map(user => {
-          const dropdown = (
-            <DropdownButton alignRight variant="outline-dark" title={translate('common.actions')}>
-              <Dropdown.Item onClick={() => handleEdit(user.id)}>{translate('common.edit_info')}</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">{translate('common.deactivate')}</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">{translate('common.delete')}</Dropdown.Item>
-            </DropdownButton>
+          const action = (
+            <>
+              <EditAction onClick={() => handleEdit(user.id)} />
+              <DeleteAction className="ml-1" disabled />
+            </>
           );
 
           return {
@@ -111,7 +107,7 @@ const CountryAdmin = ({ handleEdit, type }) => {
             country: getCountryName(user.country_id, countries),
             status: <EnabledStatus enabled={!!user.enabled} />,
             last_login: moment(user.last_login).format(settings.date_format),
-            action: dropdown
+            action
           };
         })}
       />

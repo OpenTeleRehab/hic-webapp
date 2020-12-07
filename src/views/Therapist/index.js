@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { BsPlus } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import CustomTable from 'components/Table';
 import EnabledStatus from 'components/EnabledStatus';
+import { EditAction, DeleteAction } from 'components/ActionIcons';
 import CreateTherapist from 'views/Therapist/create';
 import { getTherapists } from 'store/therapist/actions';
 import { getCountryName } from 'utils/country';
@@ -120,12 +121,11 @@ const Therapist = ({ translate }) => {
         columns={columns}
         columnExtensions={columnExtensions}
         rows={therapists.map(user => {
-          const dropdown = (
-            <DropdownButton alignRight variant="outline-dark" title={translate('common.actions')}>
-              <Dropdown.Item onClick={() => handleEdit(user.id)}>{translate('common.edit_info')}</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">{translate('common.deactivate')}</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">{translate('common.delete')}</Dropdown.Item>
-            </DropdownButton>
+          const action = (
+            <>
+              <EditAction onClick={() => handleEdit(user.id)} />
+              <DeleteAction className="ml-1" disabled />
+            </>
           );
 
           return {
@@ -137,7 +137,7 @@ const Therapist = ({ translate }) => {
             clinic: getClinicName(user.clinic_id, clinics),
             status: <EnabledStatus enabled={user.enabled} />,
             last_login: moment(user.last_login).format(settings.date_format),
-            action: dropdown
+            action
           };
         })}
       />
