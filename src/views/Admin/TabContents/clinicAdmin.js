@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { DropdownButton, Dropdown } from 'react-bootstrap';
-import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 
 import CustomTable from 'components/Table';
 import EnabledStatus from 'components/EnabledStatus';
+import { EditAction, DeleteAction } from 'components/ActionIcons';
 import { USER_GROUPS } from 'variables/user';
 import { getUsers } from 'store/user/actions';
 import { getCountryName } from 'utils/country';
@@ -16,8 +15,6 @@ import settings from 'settings';
 let timer = null;
 const ClinicAdmin = ({ handleEdit, type }) => {
   const dispatch = useDispatch();
-  const localize = useSelector((state) => state.localize);
-  const translate = getTranslate(localize);
   const users = useSelector(state => state.user.users);
   const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
@@ -97,12 +94,11 @@ const ClinicAdmin = ({ handleEdit, type }) => {
         columns={columns}
         columnExtensions={columnExtensions}
         rows={users.map(user => {
-          const dropdown = (
-            <DropdownButton alignRight variant="outline-dark" title={translate('common.actions')}>
-              <Dropdown.Item onClick={() => handleEdit(user.id)}>{translate('common.edit_info')}</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">{translate('common.deactivate')}</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">{translate('common.delete')}</Dropdown.Item>
-            </DropdownButton>
+          const action = (
+            <>
+              <EditAction onClick={() => handleEdit(user.id)} />
+              <DeleteAction className="ml-1" disabled />
+            </>
           );
 
           return {
@@ -113,7 +109,7 @@ const ClinicAdmin = ({ handleEdit, type }) => {
             clinic: getClinicName(user.clinic_id, clinics),
             status: <EnabledStatus enabled={!!user.enabled} />,
             last_login: moment(user.last_login).format(settings.date_format),
-            action: dropdown
+            action
           };
         })}
       />
