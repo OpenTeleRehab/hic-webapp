@@ -5,12 +5,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import validateEmail from 'utils/validateEmail';
-import { USER_GROUPS } from 'variables/user';
+import { USER_GROUPS, USER_ROLES } from 'variables/user';
 
 import { createUser, updateUser } from 'store/user/actions';
+import { useKeycloak } from '@react-keycloak/web';
 
 const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
   const dispatch = useDispatch();
+  const { keycloak } = useKeycloak();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const users = useSelector(state => state.user.users);
@@ -44,16 +46,8 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
         country_id: editingData.country_id || '',
         clinic_id: editingData.clinic_id || ''
       });
-    } else {
-      resetData();
     }
   }, [editId, users]);
-
-  useEffect(() => {
-    if (!show) {
-      resetData();
-    }
-  }, [show]);
 
   useEffect(() => {
     setErrorEmail(false);
@@ -80,25 +74,8 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
     } else {
       setHintMessage(translate('admin.hint_message_clinic_admin'));
     }
-
     // eslint-disable-next-line
   }, [formFields.type]);
-
-  const resetData = () => {
-    setErrorEmail(false);
-    setErrorCountry(false);
-    setErrorClinic(false);
-    setErrorFirstName(false);
-    setErrorLastName(false);
-    setFormFields({
-      type: USER_GROUPS.GLOBAL_ADMIN,
-      email: '',
-      first_name: '',
-      last_name: '',
-      country_id: '',
-      clinic_id: ''
-    });
-  };
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -175,42 +152,48 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
     >
       <Form>
         <Form.Group as={Row}>
-          <Col xs={5} md={4}>
-            <Form.Check
-              name="type"
-              onChange={handleChange}
-              value={USER_GROUPS.GLOBAL_ADMIN}
-              defaultChecked={formFields.type === USER_GROUPS.GLOBAL_ADMIN}
-              type="radio"
-              label={translate('global_admin')}
-              id="formGlobalAdmin"
-              disabled={!!editId}
-            />
-          </Col>
-          <Col xs={7} md={8}>
-            <Form.Check
-              name="type"
-              onChange={handleChange}
-              value={USER_GROUPS.COUNTRY_ADMIN}
-              defaultChecked={formFields.type === USER_GROUPS.COUNTRY_ADMIN}
-              type="radio"
-              label={translate('country_admin')}
-              id="formCountryAdmin"
-              disabled={!!editId}
-            />
-          </Col>
-          <Col xs={7} md={8}>
-            <Form.Check
-              name="type"
-              onChange={handleChange}
-              value={USER_GROUPS.CLINIC_ADMIN}
-              defaultChecked={formFields.type === USER_GROUPS.CLINIC_ADMIN}
-              type="radio"
-              label={translate('clinic_admin')}
-              id="formClinicAdmin"
-              disabled={!!editId}
-            />
-          </Col>
+          { keycloak.hasRealmRole(USER_ROLES.MANAGE_GLOBAL_ADMIN) && (
+            <Col xs={5} md={4}>
+              <Form.Check
+                name="type"
+                onChange={handleChange}
+                value={USER_GROUPS.GLOBAL_ADMIN}
+                defaultChecked={formFields.type === USER_GROUPS.GLOBAL_ADMIN}
+                type="radio"
+                label={translate('global_admin')}
+                id="formGlobalAdmin"
+                disabled={!!editId}
+              />
+            </Col>
+          )}
+          { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY_ADMIN) && (
+            <Col xs={7} md={8}>
+              <Form.Check
+                name="type"
+                onChange={handleChange}
+                value={USER_GROUPS.COUNTRY_ADMIN}
+                defaultChecked={formFields.type === USER_GROUPS.COUNTRY_ADMIN}
+                type="radio"
+                label={translate('country_admin')}
+                id="formCountryAdmin"
+                disabled={!!editId}
+              />
+            </Col>
+          )}
+          { keycloak.hasRealmRole(USER_ROLES.MANAGE_CLINIC_ADMIN) && (
+            <Col xs={7} md={8}>
+              <Form.Check
+                name="type"
+                onChange={handleChange}
+                value={USER_GROUPS.CLINIC_ADMIN}
+                defaultChecked={formFields.type === USER_GROUPS.CLINIC_ADMIN}
+                type="radio"
+                label={translate('clinic_admin')}
+                id="formClinicAdmin"
+                disabled={!!editId}
+              />
+            </Col>
+          )}
         </Form.Group>
         <p className="text-muted font-italic">
           { hintMessage }

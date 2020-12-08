@@ -16,6 +16,7 @@ import Therapist from 'views/Therapist';
 import ProfilePage from 'views/Profile';
 
 import * as ROUTES from 'variables/routes';
+import { USER_ROLES } from 'variables/user';
 const PRIVATE = 'private';
 const PUBLIC = 'public';
 
@@ -32,21 +33,28 @@ const routes = [
     path: ROUTES.ADMIN,
     component: AdminPage,
     exact: true,
-    type: PRIVATE
+    type: PRIVATE,
+    roles: [
+      USER_ROLES.MANAGE_GLOBAL_ADMIN,
+      USER_ROLES.MANAGE_COUNTRY_ADMIN,
+      USER_ROLES.MANAGE_CLINIC_ADMIN
+    ]
   },
   {
     title: 'therapist',
     path: ROUTES.THERAPIST,
     component: Therapist,
     exact: true,
-    type: PRIVATE
+    type: PRIVATE,
+    roles: [USER_ROLES.MANAGE_THERAPIST]
   },
   {
     title: 'service_setup',
     path: ROUTES.SERVICE_SETUP,
     component: ServiceSetupPage,
     exact: true,
-    type: PRIVATE
+    type: PRIVATE,
+    roles: [USER_ROLES.SETUP_EXERCISE]
   },
   {
     title: 'exercise.create',
@@ -81,7 +89,8 @@ const routes = [
     path: ROUTES.CATEGORY,
     component: CategoryPage,
     exact: true,
-    type: PRIVATE
+    type: PRIVATE,
+    roles: [USER_ROLES.SETUP_CATEGORY]
   },
   {
     title: 'profile',
@@ -100,13 +109,13 @@ const routes = [
 ];
 
 const RouteSwitch = () => {
-  const routeComponents = routes.map(({ path, component, exact, type, title }, key) => {
+  const routeComponents = routes.map(({ path, component, exact, type, title, roles }, key) => {
     return type === PUBLIC ? (
       <Route exact={!!exact} path={path} key={key}>
         <PageLayout component={component} title={title} />
       </Route>
     ) : (
-      <PrivateRoute exact={!!exact} path={path} key={key}>
+      <PrivateRoute exact={!!exact} path={path} key={key} roles={roles}>
         <PageLayout component={component} title={title} />
       </PrivateRoute>
     );

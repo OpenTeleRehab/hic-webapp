@@ -6,7 +6,45 @@ import PropTypes from 'prop-types';
 import Dialog from 'components/Dialog';
 import { useKeycloak } from '@react-keycloak/web';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { getProfile } from 'store/auth/actions';
+import { USER_ROLES } from 'variables/user';
+
+const navItems = [
+  {
+    label: 'dashboard',
+    to: ROUTES.DASHBOARD,
+    exact: true
+  },
+  {
+    label: 'admin',
+    to: ROUTES.ADMIN,
+    exact: true,
+    roles: [
+      USER_ROLES.MANAGE_GLOBAL_ADMIN,
+      USER_ROLES.MANAGE_COUNTRY_ADMIN,
+      USER_ROLES.MANAGE_CLINIC_ADMIN
+    ]
+  },
+  {
+    label: 'therapist',
+    to: ROUTES.THERAPIST,
+    exact: true,
+    roles: [USER_ROLES.MANAGE_THERAPIST]
+  },
+  {
+    label: 'service_setup',
+    to: ROUTES.SERVICE_SETUP,
+    exact: false,
+    roles: [USER_ROLES.SETUP_EXERCISE]
+  },
+  {
+    label: 'category',
+    to: ROUTES.CATEGORY,
+    exact: true,
+    roles: [USER_ROLES.SETUP_CATEGORY]
+  }
+];
 
 const Navigation = ({ translate }) => {
   const dispatch = useDispatch();
@@ -45,45 +83,30 @@ const Navigation = ({ translate }) => {
       <Navbar.Toggle aria-controls="basic-navbar-nav ml-auto" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto" variant="pills">
-          <NavLink
-            exact
-            to={ROUTES.DASHBOARD}
-            key='nav-dashboard'
-            className="nav-link"
-          >
-            {translate('dashboard')}
-          </NavLink>
-          <NavLink
-            exact
-            to={ROUTES.ADMIN}
-            key='nav-admin'
-            className="nav-link"
-          >
-            {translate('admin')}
-          </NavLink>
-          <NavLink
-            exact
-            to={ROUTES.THERAPIST}
-            key='nav-therapist'
-            className="nav-link"
-          >
-            {translate('therapist')}
-          </NavLink>
-          <NavLink
-            to={ROUTES.SERVICE_SETUP}
-            key='nav-service-setup'
-            className="nav-link"
-          >
-            {translate('service_setup')}
-          </NavLink>
-          <NavLink
-            exact
-            to={ROUTES.CATEGORY}
-            key='nav-category'
-            className="nav-link"
-          >
-            {translate('category')}
-          </NavLink>
+          {
+            navItems.map(({ label, to, exact, roles }, key) => {
+              if (roles) {
+                const role = roles.find(role => {
+                  return keycloak.hasRealmRole(role);
+                });
+
+                if (!role) {
+                  return null;
+                }
+              }
+
+              return (
+                <NavLink
+                  to={to}
+                  exact={exact}
+                  key={key}
+                  className="nav-link"
+                >
+                  {translate(label)}
+                </NavLink>
+              );
+            })
+          }
 
           { profile !== undefined && (
             <Dropdown>
