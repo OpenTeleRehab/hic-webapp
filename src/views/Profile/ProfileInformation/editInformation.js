@@ -28,7 +28,6 @@ const EdiInformation = ({ editId }) => {
     country_id: '',
     clinic_id: ''
   });
-
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
@@ -166,7 +165,7 @@ const EdiInformation = ({ editId }) => {
               >
                 <option value="">{translate('placeholder.country')}</option>
                 {countries.map((country, index) => (
-                  <option key={index} value={country.identity}>{country.name}</option>
+                  <option key={index} value={country.id}>{country.name}</option>
                 ))}
               </Form.Control>
               <Form.Control.Feedback type="invalid">
@@ -189,7 +188,7 @@ const EdiInformation = ({ editId }) => {
               >
                 <option value="">{translate('placeholder.clinic')}</option>
                 {clinics.map((clinic, index) => (
-                  <option key={index} value={clinic.identity}>{clinic.name}</option>
+                  <option key={index} value={clinic.id}>{clinic.name}</option>
                 ))}
               </Form.Control>
               <Form.Control.Feedback type="invalid">
