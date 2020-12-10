@@ -30,6 +30,8 @@
   "common.no_data": "No Data",
   "common.paginate.show_number_of_records": "Show ${recordStart} to ${recordEnd} of ${totalCount} items",
   "common.paginate.per_page": "per page",
+  "common.limit_treatment": "Treatment Limit(Default:15)",
+  "common.on_going.treatment": "On-going Treatments: 13",
 
   "profile.current_password": "Current Passwords",
   "profile.new_password": "New Passwords",
