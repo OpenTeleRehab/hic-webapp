@@ -131,7 +131,7 @@ const Exercise = ({ translate }) => {
                               </video>
                             ) ||
                             ((exercise.files[0].fileType !== 'audio/mpeg' && exercise.files[0].fileType !== 'video/mp4') &&
-                              <img className="card-img" src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} alt="Exercise"
+                              <img className="img-fluid mx-auto d-block" src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} alt="Exercise"
                               />
                             )
                           )
