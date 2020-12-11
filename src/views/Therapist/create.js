@@ -214,7 +214,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} controlId="patient" className="mb-0">
-            <Form.Label>Patient Limit(Default:15)</Form.Label>
+            <Form.Label>{translate('common.limit_treatment')}</Form.Label>
             <span className="text-dark ml-1">*</span>
             <Form.Control
               name="limit_patient"
@@ -226,7 +226,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
             <Form.Control.Feedback type="invalid">
               {translate('error.limit_patient')}
             </Form.Control.Feedback>
-            <p className="mt-1">Ongoing Patients: 13</p>
+            <p className="mt-1">{translate('common.on_going.treatment')}</p>
           </Form.Group>
         </Form.Row>
         <hr />

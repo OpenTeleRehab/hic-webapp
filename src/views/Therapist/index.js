@@ -32,7 +32,7 @@ const Therapist = ({ translate }) => {
     { name: 'email', title: 'Email' },
     { name: 'country', title: 'Country' },
     { name: 'clinic', title: 'Clinic' },
-    { name: 'limit_patient', title: 'Ongoing / Patient limit' },
+    { name: 'limit_patient', title: 'On-going Treatment Limit' },
     { name: 'assigned_patients', title: 'Assigned Patients' },
     { name: 'status', title: 'Status' },
     { name: 'last_login', title: 'Last Login' },
