@@ -25,6 +25,7 @@ const CreateExercise = ({ translate }) => {
   const [titleError, setTitleError] = useState(false);
   const [mediaUploads, setMediaUploads] = useState([]);
   const [mediaUploadsError, setMediaUploadsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -70,11 +71,13 @@ const CreateExercise = ({ translate }) => {
     }
 
     if (canSave) {
+      setIsLoading(true);
       if (id) {
         dispatch(updateExercise(id, formFields, mediaUploads))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
+              setIsLoading(false);
             }
           });
       } else {
@@ -82,6 +85,7 @@ const CreateExercise = ({ translate }) => {
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
+              setIsLoading(false);
             }
           });
       }
@@ -230,8 +234,10 @@ const CreateExercise = ({ translate }) => {
             </Form.Group>
 
             <Form.Group>
+
               <Button
                 onClick={handleSave}
+                disabled={isLoading}
               >
                 {translate('common.save')}
               </Button>
