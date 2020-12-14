@@ -52,6 +52,7 @@ export const updateUser = (id, payload) => async (dispatch, getState) => {
   const data = await User.updateUser(id, payload);
   if (data.success) {
     dispatch(mutation.updateUserSuccess());
+    dispatch(getProfile());
     const filters = getState().user.filters;
     dispatch(getUsers({ ...filters, admin_type: payload.type }));
     dispatch(showSuccessNotification('toast_title.edit_admin_account', data.message));
