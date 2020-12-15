@@ -47,6 +47,13 @@
   "therapist": "Therapists",
   "profile.change_password": "Change password",
 
+  "setting": "Settings",
+  "setting.countries": "Countries",
+  "setting.translations": "Translations",
+  "setting.system_limits": "System Limits",
+  "setting.clinics": "Clinics",
+  "setting.professions": "Professions",
+
   "global_admin": "Global Admin",
   "country_admin": "Country Admin",
   "clinic_admin": "Clinic Admin",

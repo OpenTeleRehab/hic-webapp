@@ -8,6 +8,7 @@ import DashboardPage from 'views/Dashboard';
 import NotFoundPage from 'views/NotFound';
 import AdminPage from 'views/Admin';
 import CategoryPage from 'views/Category';
+import Setting from 'views/Setting';
 import ServiceSetupPage from 'views/ServiceSetup';
 import CreateExercise from 'views/ServiceSetup/Exercise/create';
 import CreateEducationMaterial from 'views/ServiceSetup/EducationMaterial/create';
@@ -16,7 +17,7 @@ import Therapist from 'views/Therapist';
 import ProfilePage from 'views/Profile';
 
 import * as ROUTES from 'variables/routes';
-import { USER_ROLES } from 'variables/user';
+import { USER_ROLES, SETTING_ROLES } from 'variables/user';
 const PRIVATE = 'private';
 const PUBLIC = 'public';
 
@@ -91,6 +92,14 @@ const routes = [
     exact: true,
     type: PRIVATE,
     roles: [USER_ROLES.SETUP_CATEGORY]
+  },
+  {
+    title: 'setting',
+    path: ROUTES.SETTING,
+    component: Setting,
+    exact: true,
+    type: PRIVATE,
+    roles: SETTING_ROLES
   },
   {
     title: 'profile',

@@ -18,9 +18,9 @@ const ServiceSetup = ({ translate }) => {
   const [view, setView] = useState(VIEW_EXERCISE);
 
   useEffect(() => {
-    if (hash.includes('#education')) {
+    if (hash.includes('#' + VIEW_EDUCATION)) {
       setView(VIEW_EDUCATION);
-    } else if (hash.includes('#questionnaire')) {
+    } else if (hash.includes('#' + VIEW_QUESTIONNAIRE)) {
       setView(VIEW_QUESTIONNAIRE);
     } else {
       setView(VIEW_EXERCISE);
