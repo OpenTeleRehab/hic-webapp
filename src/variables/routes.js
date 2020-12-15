@@ -12,6 +12,13 @@ export const QUESTIONNAIRE_CREATE = SERVICE_SETUP + '/questionnaire/create';
 
 export const THERAPIST = '/therapist';
 export const CATEGORY = '/category';
+
+export const SETTING = '/setting';
+export const SETTING_TRANSLATIONS = SETTING + '#translation';
+export const SETTING_SYSTEM_LIMIT = SETTING + '#system_limit';
+export const SETTING_CLINIC = SETTING + '#clinic';
+export const SETTING_PROFESSION = SETTING + '#profession';
+
 export const PROFILE = '/profile';
-export const PROFILE_EDIT = '/profile#edit';
-export const PROFILE_PASSWORD = '/profile#password';
+export const PROFILE_EDIT = PROFILE + '#edit';
+export const PROFILE_PASSWORD = PROFILE + '#password';

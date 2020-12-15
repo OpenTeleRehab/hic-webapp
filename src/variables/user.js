@@ -27,5 +27,18 @@ export const USER_ROLES = {
   VIEW_GOAL_PROGRESS: 'view_goal_progress',
   INPUT_GOAL_PROGRESS: 'input_goal_progress',
   MESSAGE_CALL_BETWEEN_THERAPIST_PATIENT: 'message_call_between_therapist_patient',
-  VIEW_EDIT_OWN_PROFILE: 'view_edit_own_profile'
+  VIEW_EDIT_OWN_PROFILE: 'view_edit_own_profile',
+  MANAGE_COUNTRY: 'manage_country',
+  MANAGE_TRANSLATION: 'manage_translation',
+  MANAGE_SYSTEM_LIMIT: 'manage_system_limit',
+  MANAGE_CLINIC: 'manage_clinic',
+  MANAGE_PROFESSION: 'manage_profession'
 };
+
+export const SETTING_ROLES = [
+  USER_ROLES.MANAGE_COUNTRY,
+  USER_ROLES.MANAGE_TRANSLATION,
+  USER_ROLES.MANAGE_SYSTEM_LIMIT,
+  USER_ROLES.MANAGE_CLINIC,
+  USER_ROLES.MANAGE_PROFESSION
+];

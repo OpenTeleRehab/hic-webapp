@@ -8,7 +8,7 @@ import { useKeycloak } from '@react-keycloak/web';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { getProfile } from 'store/auth/actions';
-import { USER_ROLES } from 'variables/user';
+import { USER_ROLES, SETTING_ROLES } from 'variables/user';
 
 const navItems = [
   {
@@ -43,6 +43,12 @@ const navItems = [
     to: ROUTES.CATEGORY,
     exact: true,
     roles: [USER_ROLES.SETUP_CATEGORY]
+  },
+  {
+    label: 'setting',
+    to: ROUTES.SETTING,
+    exact: true,
+    roles: SETTING_ROLES
   }
 ];
 
