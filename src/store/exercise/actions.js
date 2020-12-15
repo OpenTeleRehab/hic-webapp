@@ -5,15 +5,12 @@ import { showSpinner } from 'store/spinnerOverlay/actions';
 
 export const getExercises = payload => async dispatch => {
   dispatch(mutation.getExercisesRequest());
-  dispatch(showSpinner(true));
   const data = await Exercise.getExercises(payload);
   if (data.success) {
     dispatch(mutation.getExercisesSuccess(data.data, payload));
-    dispatch(showSpinner(false));
     return data.info;
   } else {
     dispatch(mutation.getExercisesFail());
-    dispatch(showSpinner(false));
     dispatch(showErrorNotification('toast_title.error_message', data.message));
   }
 };
