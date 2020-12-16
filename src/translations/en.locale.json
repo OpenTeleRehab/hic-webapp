@@ -32,6 +32,9 @@
   "common.paginate.per_page": "per page",
   "common.limit_treatment": "Treatment Limit(Default:15)",
   "common.on_going.treatment": "On-going Treatments: 13",
+  "common.global_admin": "Global Admin",
+  "common.country_admin": "Country Admin",
+  "common.clinic_admin": "Clinic Admin",
 
   "profile.current_password": "Current Passwords",
   "profile.new_password": "New Passwords",

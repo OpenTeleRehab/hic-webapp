@@ -71,6 +71,9 @@ const Navigation = ({ translate }) => {
       keycloak.logout();
     }
   };
+  const handleShowRole = (role) => {
+    return translate(`common.${role}`);
+  };
 
   return (
     <Navbar bg="primary" variant="dark" expand="xl" sticky="top" className="main-nav">
@@ -119,7 +122,7 @@ const Navigation = ({ translate }) => {
               <Dropdown.Toggle variant="link" id="dropdown-basic">
                 {translate('common.welcome')} {profile.last_name} {profile.first_name}
                 <br/>
-                {profile.email}
+                {handleShowRole(profile.type)}
               </Dropdown.Toggle>
 
               <Dropdown.Menu
