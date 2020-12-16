@@ -184,5 +184,23 @@
   "error_message.country_exists": "Country already exist",
 
   "success_message.country_add": "Country has been created!",
-  "toast_title.new_country": "New country"
+  "toast_title.new_country": "New country",
+
+  "clinic.new": "New Clinic",
+  "clinic.province": "Province",
+  "clinic.name": "Name",
+  "clinic.region": "Region",
+  "clinic.city": "City",
+  "clinic.country.iso_code": "Country's iso code",
+
+  "placeholder.clinic.name": "Enter name",
+  "placeholder.clinic.region": "Enter region",
+  "placeholder.clinic.province": "Enter province",
+  "placeholder.clinic.city": "Enter city",
+
+  "error.clinic.region": "Please fill in region",
+  "error.clinic.city": "Please fill in city",
+
+  "toast_title.new_clinic": "New clinic",
+  "success_message.clinic_add": "Clinic has been created!"
 }

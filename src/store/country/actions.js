@@ -22,10 +22,11 @@ export const createCountry = payload => async (dispatch) => {
   const data = await Country.createCountry(payload);
   if (data.success) {
     dispatch(mutation.createCountrySuccess());
+    dispatch(getCountries());
     dispatch(showSuccessNotification('toast_title.new_country', data.message));
     return true;
   } else {
-    dispatch(mutation.createContryFail());
+    dispatch(mutation.createCountryFail());
     dispatch(showErrorNotification('toast_title.new_country', data.message));
     return false;
   }
