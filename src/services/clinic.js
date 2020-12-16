@@ -12,6 +12,19 @@ const getClinics = () => {
     });
 };
 
+const createClinic = payload => {
+  return axios.post('/clinic', payload)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Clinic = {
-  getClinics
+  getClinics,
+  createClinic
 };

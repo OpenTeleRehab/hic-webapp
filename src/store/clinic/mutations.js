@@ -11,8 +11,23 @@ const getClinicsFail = () => ({
   type: 'GET_CLINICS_FAIL'
 });
 
+const createClinicRequest = () => ({
+  type: 'CREATE_CLINIC_REQUEST'
+});
+
+const createClinicSuccess = () => ({
+  type: 'CREATE_CLINIC_SUCCESS'
+});
+
+const createClinicFail = () => ({
+  type: 'CREATE_CLINIC_FAIL'
+});
+
 export const mutation = {
   getClinicsFail,
   getClinicsRequest,
-  getClinicsSuccess
+  getClinicsSuccess,
+  createClinicRequest,
+  createClinicSuccess,
+  createClinicFail
 };

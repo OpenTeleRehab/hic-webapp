@@ -15,6 +15,7 @@ import { USER_ROLES, SETTING_ROLES } from 'variables/user';
 import { BsPlus } from 'react-icons/bs/index';
 import { Button } from 'react-bootstrap/esm/index';
 import CreateCountry from 'views/Setting/Country/create';
+import CreateClinic from 'views/Setting/Clinic/create';
 
 const VIEW_COUNTRY = 'country';
 const VIEW_TRANSLATION = 'translation';
@@ -66,6 +67,7 @@ const Setting = ({ translate }) => {
       </div>
 
       {show && view === VIEW_COUNTRY && <CreateCountry show={show} handleClose={handleClose} />}
+      {show && view === VIEW_CLINIC && <CreateClinic show={show} handleClose={handleClose} />}
       <Nav variant="tabs" activeKey={view} className="mb-3">
         { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY) && (
           <Nav.Item>

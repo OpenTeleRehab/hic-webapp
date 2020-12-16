@@ -19,7 +19,7 @@ const createCountrySuccess = () => ({
   type: 'CREATE_COUNTRY_SUCCESS'
 });
 
-const createContryFail = () => ({
+const createCountryFail = () => ({
   type: 'CREATE_COUNTRY_FAIL'
 });
 
@@ -29,5 +29,5 @@ export const mutation = {
   getCountriesSuccess,
   createCountryRequest,
   createCountrySuccess,
-  createContryFail
+  createCountryFail
 };
