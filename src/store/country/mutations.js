@@ -11,8 +11,23 @@ const getCountriesFail = () => ({
   type: 'GET_COUNTRIES_FAIL'
 });
 
+const createCountryRequest = () => ({
+  type: 'CREATE_COUNTRY_REQUEST'
+});
+
+const createCountrySuccess = () => ({
+  type: 'CREATE_COUNTRY_SUCCESS'
+});
+
+const createContryFail = () => ({
+  type: 'CREATE_COUNTRY_FAIL'
+});
+
 export const mutation = {
   getCountriesFail,
   getCountriesRequest,
-  getCountriesSuccess
+  getCountriesSuccess,
+  createCountryRequest,
+  createCountrySuccess,
+  createContryFail
 };
