@@ -164,6 +164,25 @@
   "error_message.cannot_change_password": "Password is unable to change",
   "error_message.user_add": "User cannot be created",
   "error_message.exercise_create": "Exercise cannot be created",
-  "error_message.exercise_delete": "Exercise cannot be deleted"
+  "error_message.exercise_delete": "Exercise cannot be deleted",
 
+  "country.new": "New Country",
+  "country.name": "Name",
+  "country.iso_code": "ISO Code",
+  "country.phone_code": "Phone Code",
+
+  "placeholder.country.name": "Enter name",
+  "placeholder.country.iso_code": "Enter iso code",
+  "placeholder.country.phone_code": "Enter phone code",
+
+  "error.country.iso_code": "Please fill in iso code",
+  "error.country.name": "Please fill in name",
+  "error.country.phone_code": "Please fill in phone code",
+  "error.country.phone_code.format": "Phone code must be in 3 digits",
+  "error.country.iso_code.format": "Iso code must be in 2 digits",
+
+  "error_message.country_exists": "Country already exist",
+
+  "success_message.country_add": "Country has been created!",
+  "toast_title.new_country": "New country"
 }

@@ -12,6 +12,9 @@ import Profession from 'views/Setting/Profession';
 
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES, SETTING_ROLES } from 'variables/user';
+import { BsPlus } from 'react-icons/bs/index';
+import { Button } from 'react-bootstrap/esm/index';
+import CreateCountry from 'views/Setting/Country/create';
 
 const VIEW_COUNTRY = 'country';
 const VIEW_TRANSLATION = 'translation';
@@ -23,6 +26,7 @@ const Setting = ({ translate }) => {
   const { keycloak } = useKeycloak();
   const { hash } = useLocation();
   const [view, setView] = useState(undefined);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     if (hash.includes('#' + VIEW_TRANSLATION)) {
@@ -43,12 +47,25 @@ const Setting = ({ translate }) => {
     }
   }, [hash, keycloak]);
 
+  const handleShow = () => setShow(true);
+
+  const handleClose = () => {
+    setShow(false);
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1>{translate('setting')}</h1>
+        <div className="btn-toolbar mb-2 mb-md-0">
+          <Button variant="primary" onClick={handleShow}>
+            <BsPlus size={20} className="mr-1" />
+            { view === VIEW_COUNTRY ? translate('country.new') : view === VIEW_CLINIC ? translate('clinic.new') : 'New' }
+          </Button>
+        </div>
       </div>
 
+      {show && view === VIEW_COUNTRY && <CreateCountry show={show} handleClose={handleClose} />}
       <Nav variant="tabs" activeKey={view} className="mb-3">
         { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY) && (
           <Nav.Item>
