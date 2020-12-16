@@ -135,7 +135,7 @@ const Exercise = ({ translate }) => {
                     <Card className="exercise-card shadow-sm mb-4">
                       <div className="card-img bg-light">
                         <div className="position-absolute w-100">
-                          <DropdownButton className="float-right action" alignRight variant="outline-dark">
+                          <DropdownButton title="" className="float-right action" alignRight variant="outline-dark">
                             <Dropdown.Item as={Link} to={ROUTES.EXERCISE_EDIT.replace(':id', exercise.id)}>
                               {translate('common.edit')}
                             </Dropdown.Item>
