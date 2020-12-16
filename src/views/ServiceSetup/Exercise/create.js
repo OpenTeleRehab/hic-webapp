@@ -20,7 +20,8 @@ const CreateExercise = ({ translate }) => {
   const { exercise } = useSelector(state => state.exercise);
   const [formFields, setFormFields] = useState({
     title: '',
-    include_feedback: true
+    include_feedback: true,
+    get_pain_level: ''
   });
   const [titleError, setTitleError] = useState(false);
   const [mediaUploads, setMediaUploads] = useState([]);
@@ -37,7 +38,8 @@ const CreateExercise = ({ translate }) => {
     if (id && exercise.id) {
       setFormFields({
         title: exercise.title,
-        include_feedback: exercise.include_feedback
+        include_feedback: exercise.include_feedback,
+        get_pain_level: exercise.get_pain_level
       });
       setMediaUploads(exercise.files);
     }
@@ -219,9 +221,17 @@ const CreateExercise = ({ translate }) => {
                 name="include_feedback"
                 onChange={handleCheck}
                 value={true}
-                defaultChecked
                 checked={formFields.include_feedback}
                 label={translate('exercise.include_collecting_feedback')}
+              />
+            </Form.Group>
+            <Form.Group controlId="formGetPainLevel">
+              <Form.Check
+                name="get_pain_level"
+                onChange={handleCheck}
+                value={true}
+                checked={formFields.get_pain_level}
+                label={translate('exercise.get_pain_level_feedback')}
               />
             </Form.Group>
             <Form.Group controlId="exampleForm.ControlTextarea1">
@@ -234,7 +244,6 @@ const CreateExercise = ({ translate }) => {
             </Form.Group>
 
             <Form.Group>
-
               <Button
                 onClick={handleSave}
                 disabled={isLoading}
