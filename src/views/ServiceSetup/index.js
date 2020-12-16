@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Nav, Dropdown } from 'react-bootstrap';
+import { Nav, Button } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -32,18 +32,26 @@ const ServiceSetup = ({ translate }) => {
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1>{translate('service_setup')}</h1>
         <div className="btn-toolbar mb-2 mb-md-0">
-          <Dropdown>
-            <Dropdown.Toggle>
-              <BsPlus size={20} className="mr-1" />
-              {translate('common.new_content')}
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu>
-              <Dropdown.Item as={Link} to={ROUTES.EXERCISE_CREATE}>{translate('exercise.new')}</Dropdown.Item>
-              <Dropdown.Item as={Link} to={ROUTES.EDUCATION_MATERIAL_CREATE}>{translate('education_material.new')}</Dropdown.Item>
-              <Dropdown.Item as={Link} to={ROUTES.QUESTIONNAIRE_CREATE}>{translate('questionnaire.new')}</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+          <div className="btn-toolbar mb-2 mb-md-0">
+            {view === VIEW_EXERCISE
+              ? <Button
+                as={Link} to={ROUTES.EXERCISE_CREATE}>
+                <BsPlus size={20} className="mr-1" />
+                {translate('common.new_content')}
+              </Button>
+              : view === VIEW_EDUCATION
+                ? <Button
+                  as={Link} to={ROUTES.EDUCATION_MATERIAL_CREATE}>
+                  <BsPlus size={20} className="mr-1" />
+                  {translate('common.new_content')}
+                </Button>
+                : <Button
+                  as={Link} to={ROUTES.QUESTIONNAIRE_CREATE}>
+                  <BsPlus size={20} className="mr-1" />
+                  {translate('common.new_content')}
+                </Button>
+            }
+          </div>
         </div>
       </div>
 
