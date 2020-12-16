@@ -9,27 +9,34 @@ import {
   DropdownButton,
   Form,
   Tooltip,
-  OverlayTrigger
+  OverlayTrigger,
+  Button
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { BsSearch, BsX } from 'react-icons/bs';
 
 import Dialog from 'components/Dialog';
 import Pagination from 'components/Pagination';
 import { deleteExercise, getExercises } from 'store/exercise/actions';
 import * as ROUTES from 'variables/routes';
+import Spinner from 'react-bootstrap/Spinner';
 
 const Exercise = ({ translate }) => {
   const dispatch = useDispatch();
-  const { exercises } = useSelector(state => state.exercise);
+  const { loading, exercises } = useSelector(state => state.exercise);
   const [deletedId, setDeletedId] = useState(null);
   const [show, setShow] = useState(false);
   const [pageSize, setPageSize] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+  const [formFields, setFormFields] = useState({
+    search_value: ''
+  });
 
   useEffect(() => {
     dispatch(getExercises({
+      filter: formFields,
       page_size: pageSize,
       page: currentPage
     })).then(result => {
@@ -37,7 +44,16 @@ const Exercise = ({ translate }) => {
         setTotalCount(result.total_count);
       }
     });
-  }, [currentPage, pageSize, dispatch]);
+  }, [formFields, currentPage, pageSize, dispatch]);
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setFormFields({ ...formFields, [name]: value });
+  };
+
+  const handleClearSearch = () => {
+    setFormFields({ ...formFields, search_value: '' });
+  };
 
   const handleDelete = (id) => {
     setDeletedId(id);
@@ -61,31 +77,43 @@ const Exercise = ({ translate }) => {
     <>
       <Row>
         <Col sm={5} md={4} lg={3}>
-          <Card
-            bg="info"
-            text="white"
-          >
+          <Card bg="info">
             <Card.Header>
-              <Form.Control placeholder="Search exercise" />
+              <Form.Group className="search-box-with-icon">
+                <BsSearch className="search-icon" />
+                <Button
+                  variant="light"
+                  className="clear-btn"
+                  onClick={handleClearSearch}
+                >
+                  <BsX size={18} />
+                </Button>
+                <Form.Control
+                  name="search_value"
+                  value={formFields.search_value}
+                  onChange={handleChange}
+                  placeholder={translate('exercise.search')}
+                />
+              </Form.Group>
             </Card.Header>
             <Card.Body>
               <Form.Group>
                 <Form.Label>Category</Form.Label>
-                <Form.Control as="select">
+                <Form.Control as="select" disabled>
                   <option>Category Item</option>
                   <option>Category Item</option>
                 </Form.Control>
               </Form.Group>
               <Form.Group>
                 <Form.Label>Category</Form.Label>
-                <Form.Control as="select">
+                <Form.Control as="select" disabled>
                   <option>Category Item</option>
                   <option>Category Item</option>
                 </Form.Control>
               </Form.Group>
               <Form.Group>
                 <Form.Label>Category</Form.Label>
-                <Form.Control as="select">
+                <Form.Control as="select" disabled>
                   <option>Category Item</option>
                   <option>Category Item</option>
                 </Form.Control>
@@ -107,7 +135,7 @@ const Exercise = ({ translate }) => {
                     <Card className="exercise-card shadow-sm mb-4">
                       <div className="card-img bg-light">
                         <div className="position-absolute w-100">
-                          <DropdownButton className="float-right action" alignRight variant="outline-dark">
+                          <DropdownButton title="" className="float-right action" alignRight variant="outline-dark">
                             <Dropdown.Item as={Link} to={ROUTES.EXERCISE_EDIT.replace(':id', exercise.id)}>
                               {translate('common.edit')}
                             </Dropdown.Item>
@@ -167,6 +195,8 @@ const Exercise = ({ translate }) => {
               />
             </>
           )}
+
+          { loading && <Spinner className="loading-icon" animation="border" variant="primary" /> }
         </Col>
       </Row>
 

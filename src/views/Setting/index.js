@@ -11,7 +11,7 @@ import Clinic from 'views/Setting/Clinic';
 import Profession from 'views/Setting/Profession';
 
 import * as ROUTES from 'variables/routes';
-import { USER_ROLES } from 'variables/user';
+import { USER_ROLES, SETTING_ROLES } from 'variables/user';
 
 const VIEW_COUNTRY = 'country';
 const VIEW_TRANSLATION = 'translation';
@@ -34,9 +34,14 @@ const Setting = ({ translate }) => {
     } else if (hash.includes('#' + VIEW_PROFESSION)) {
       setView(VIEW_PROFESSION);
     } else {
-      setView(VIEW_COUNTRY);
+      for (const role of SETTING_ROLES) {
+        if (keycloak.hasRealmRole(role)) {
+          setView(role.replace('manage_', ''));
+          break;
+        }
+      }
     }
-  }, [hash]);
+  }, [hash, keycloak]);
 
   return (
     <>
