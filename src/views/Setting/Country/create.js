@@ -58,7 +58,7 @@ const CreateCountry = ({ show, handleClose }) => {
       setErrorName(false);
     }
 
-    if (formFields.iso_code === '') {
+    if (formFields.iso_code === '' || formFields.iso_code.length !== settings.isoCodeLength) {
       canSave = false;
       setErrorIsoCode(true);
     } else {
@@ -116,9 +116,9 @@ const CreateCountry = ({ show, handleClose }) => {
               placeholder={translate('placeholder.country.iso_code')}
               isInvalid={errorIsoCode}
               value={formFields.iso_code}
-              maxLength={settings.isoCodeMaxLength} />
+            />
             <Form.Control.Feedback type="invalid">
-              {translate('error.country.iso_code')}
+              { errorIsoCode && formFields.iso_code === '' ? translate('error.country.iso_code') : translate('error.country.iso_code.format') }
             </Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
