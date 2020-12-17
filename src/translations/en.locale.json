@@ -204,5 +204,7 @@
   "error.clinic.city": "Please fill in city",
 
   "toast_title.new_clinic": "New clinic",
-  "success_message.clinic_add": "Clinic has been created!"
+  "success_message.clinic_add": "Clinic has been created!",
+
+  "setting.translations.platform": "Platform"
 }
