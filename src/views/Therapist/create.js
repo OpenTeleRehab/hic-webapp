@@ -83,7 +83,9 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
         last_name: editingData.last_name || '',
         country: editingData.country_id || '',
         clinic: editingData.clinic_id || '',
-        limit_patient: editingData.limit_patient || ''
+        limit_patient: editingData.limit_patient || '',
+        language: editingData.language_id || '',
+        profession: editingData.profession_id || ''
       });
     } else {
       resetData();
@@ -271,7 +273,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
             >
               <option value="">{translate('placeholder.profession')}</option>
               {professions.map((profession, index) => (
-                <option key={index} value={profession.identity}>{profession.title}</option>
+                <option key={index} value={profession.id}>{profession.title}</option>
               ))}
             </Form.Control>
             <Form.Control.Feedback type="invalid">
