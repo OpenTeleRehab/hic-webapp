@@ -14,6 +14,7 @@ const EdiInformation = ({ editId }) => {
   const history = useHistory();
   const { profile } = useSelector((state) => state.auth);
   const countries = useSelector(state => state.country.countries);
+  const languages = useSelector(state => state.language.languages);
   const clinics = useSelector(state => state.clinic.clinics);
 
   const [errorLastName, setErrorLastName] = useState(false);
@@ -26,7 +27,8 @@ const EdiInformation = ({ editId }) => {
     email: '',
     gender: '',
     country_id: '',
-    clinic_id: ''
+    clinic_id: '',
+    language_id: ''
   });
   const handleChange = e => {
     const { name, value } = e.target;
@@ -73,7 +75,8 @@ const EdiInformation = ({ editId }) => {
         first_name: profile.first_name,
         last_name: profile.last_name,
         country_id: profile.country_id || '',
-        clinic_id: profile.clinic_id || ''
+        clinic_id: profile.clinic_id || '',
+        language_id: profile.language_id || ''
       });
     }
   }, [profile]);
@@ -149,6 +152,22 @@ const EdiInformation = ({ editId }) => {
               <option value="other">{translate(('other'))}</option>
             </Form.Control>
 
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group className="col-sm-4 md-4" controlId="formLanguage">
+            <Form.Label>{translate('common.language')}</Form.Label>
+            <Form.Control
+              name="language_id"
+              as="select"
+              onChange={handleChange}
+              value={formFields.language_id}
+            >
+              <option value="">{translate('placeholder.language')}</option>
+              {languages.map((language, index) => (
+                <option key={index} value={language.id}>{language.name}</option>
+              ))}
+            </Form.Control>
           </Form.Group>
         </Form.Row>
 

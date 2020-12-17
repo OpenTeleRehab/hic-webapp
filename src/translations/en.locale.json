@@ -35,6 +35,7 @@
   "common.global_admin": "Global Admin",
   "common.country_admin": "Country Admin",
   "common.clinic_admin": "Clinic Admin",
+  "common.language": "Language",
 
   "profile.current_password": "Current Passwords",
   "profile.new_password": "New Passwords",
