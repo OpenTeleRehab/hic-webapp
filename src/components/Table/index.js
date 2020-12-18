@@ -3,7 +3,8 @@ import {
   FilteringState,
   SearchState,
   PagingState,
-  CustomPaging
+  CustomPaging,
+  EditingState
 } from '@devexpress/dx-react-grid';
 import {
   Grid,
@@ -14,7 +15,9 @@ import {
   SearchPanel,
   TableHeaderRow,
   TableFixedColumns,
-  PagingPanel
+  PagingPanel,
+  TableEditRow,
+  TableEditColumn
 } from '@devexpress/dx-react-grid-bootstrap4';
 import PropTypes from 'prop-types';
 import { getTranslate } from 'react-localize-redux';
@@ -32,7 +35,7 @@ import { useSelector } from 'react-redux';
 const FilterRow = (props) => <Table.Row className="filter" {...props} />;
 const FixedColumnCell = (props) => <TableFixedColumns.Cell {...props} showLeftDivider={false} />;
 
-const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, currentPage, setCurrentPage, totalCount, setSearchValue, setFilters, filters }) => {
+const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, currentPage, setCurrentPage, totalCount, setSearchValue, setFilters, filters, showInlineEdited, editingStateColumnExtensions }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const [showFilter, setShowFilter] = useState(false);
@@ -50,6 +53,10 @@ const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, c
     setShowFilter(!showFilter);
   };
 
+  const commitChanges = ({ added, changed, deleted }) => {
+
+  };
+
   return (
     <Grid
       rows={rows}
@@ -65,9 +72,15 @@ const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, c
       <CustomPaging
         totalCount={totalCount}
       />
+      <EditingState
+        onCommitChanges={commitChanges}
+        columnExtensions={editingStateColumnExtensions}
+      />
 
       <Table columnExtensions={tableColumnExtensions} />
       <TableHeaderRow />
+      <TableEditRow />
+      {showInlineEdited && <TableEditColumn showEditCommand /> }
       {showFilter && <TableFilterRow rowComponent={FilterRow} cellComponent={FilterCells} messages={{ filterPlaceholder: translate('common.search.placeholder') }} />}
       <TableFixedColumns rightColumns={rightColumns} cellComponent={FixedColumnCell} />
       <TableColumnVisibility columnExtensions={tableColumnVisibilityColumnExtensions} />
@@ -92,7 +105,9 @@ CustomTable.propTypes = {
   totalCount: PropTypes.number,
   setSearchValue: PropTypes.func,
   setFilters: PropTypes.func,
-  filters: PropTypes.array
+  filters: PropTypes.array,
+  showInlineEdited: PropTypes.bool,
+  editingStateColumnExtensions: PropTypes.array
 };
 
 CustomTable.defaultProps = {
