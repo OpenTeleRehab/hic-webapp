@@ -32,7 +32,8 @@ export const USER_ROLES = {
   MANAGE_TRANSLATION: 'manage_translation',
   MANAGE_SYSTEM_LIMIT: 'manage_system_limit',
   MANAGE_CLINIC: 'manage_clinic',
-  MANAGE_PROFESSION: 'manage_profession'
+  MANAGE_PROFESSION: 'manage_profession',
+  MANAGE_LANGUAGE: 'manage_language'
 };
 
 export const SETTING_ROLES = [
