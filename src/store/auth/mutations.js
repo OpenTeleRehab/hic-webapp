@@ -24,11 +24,26 @@ const updatePasswordFail = () => ({
   type: 'UPDATE_PASSWORD_FAIL'
 });
 
+const updateUserProfileFail = () => ({
+  type: 'UPDATE_USER_FAIL'
+});
+
+const updateUserProfileRequest = () => ({
+  type: 'UPDATE_USER_REQUEST'
+});
+
+const updateUserProfileSuccess = () => ({
+  type: 'UPDATE_USER_SUCCESS'
+});
+
 export const mutation = {
   getProfileRequest,
   getProfileSuccess,
   getProfileFail,
   updatePasswordRequest,
   updatePasswordSuccess,
-  updatePasswordFail
+  updatePasswordFail,
+  updateUserProfileRequest,
+  updateUserProfileSuccess,
+  updateUserProfileFail
 };
