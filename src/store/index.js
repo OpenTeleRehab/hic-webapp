@@ -9,7 +9,8 @@ import {
 import { getCountries } from 'store/country/actions';
 import { getClinics } from 'store/clinic/actions';
 import { getProfessions } from 'store/profession/actions';
-import { getLanguages, getDefaultLimitedPatients } from 'store/setting/actions';
+import { getDefaultLimitedPatients } from 'store/setting/actions';
+import { getLanguages } from 'store/language/actions';
 
 import { user } from 'store/user/reducers';
 import { therapist } from 'store/therapist/reducers';
@@ -18,7 +19,8 @@ import { spinnerOverlay } from 'store/spinnerOverlay/reducers';
 import { country } from 'store/country/reducers';
 import { clinic } from 'store/clinic/reducers';
 import { profession } from 'store/profession/reducers';
-import { language, defaultLimitedPatient } from 'store/setting/reducers';
+import { defaultLimitedPatient } from 'store/setting/reducers';
+import { language } from 'store/language/reducers';
 import { auth } from 'store/auth/reducers';
 import { exercise } from 'store/exercise/reducers';
 import { localization } from 'store/localization/reducers';

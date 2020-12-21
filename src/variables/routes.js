@@ -18,6 +18,7 @@ export const SETTING_TRANSLATIONS = SETTING + '#translation';
 export const SETTING_SYSTEM_LIMIT = SETTING + '#system_limit';
 export const SETTING_CLINIC = SETTING + '#clinic';
 export const SETTING_PROFESSION = SETTING + '#profession';
+export const SETTING_LANGUAGE = SETTING + '#language';
 
 export const PROFILE = '/profile';
 export const PROFILE_EDIT = PROFILE + '#edit';

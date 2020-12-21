@@ -9,6 +9,7 @@ import Translation from 'views/Setting/Translation';
 import SystemLimit from 'views/Setting/SystemLimit';
 import Clinic from 'views/Setting/Clinic';
 import Profession from 'views/Setting/Profession';
+import Language from 'views/Setting/Language';
 
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES, SETTING_ROLES } from 'variables/user';
@@ -16,12 +17,14 @@ import { BsPlus } from 'react-icons/bs/index';
 import { Button } from 'react-bootstrap/esm/index';
 import CreateCountry from 'views/Setting/Country/create';
 import CreateClinic from 'views/Setting/Clinic/create';
+import CreateLanguage from 'views/Setting/Language/create';
 
 const VIEW_COUNTRY = 'country';
 const VIEW_TRANSLATION = 'translation';
 const VIEW_SYSTEM_LIMIT = 'system_limit';
 const VIEW_CLINIC = 'clinic';
 const VIEW_PROFESSION = 'profession';
+const VIEW_LANGUAGE = 'language';
 
 const Setting = ({ translate }) => {
   const { keycloak } = useKeycloak();
@@ -38,6 +41,8 @@ const Setting = ({ translate }) => {
       setView(VIEW_CLINIC);
     } else if (hash.includes('#' + VIEW_PROFESSION)) {
       setView(VIEW_PROFESSION);
+    } else if (hash.includes('#' + VIEW_LANGUAGE)) {
+      setView(VIEW_LANGUAGE);
     } else {
       for (const role of SETTING_ROLES) {
         if (keycloak.hasRealmRole(role)) {
@@ -61,18 +66,26 @@ const Setting = ({ translate }) => {
         <div className="btn-toolbar mb-2 mb-md-0">
           <Button variant="primary" onClick={handleShow}>
             <BsPlus size={20} className="mr-1" />
-            { view === VIEW_COUNTRY ? translate('country.new') : view === VIEW_CLINIC ? translate('clinic.new') : 'New' }
+            { view === VIEW_COUNTRY ? translate('country.new') : view === VIEW_CLINIC ? translate('clinic.new') : view === VIEW_LANGUAGE ? translate('language.new') : 'New' }
           </Button>
         </div>
       </div>
 
       {show && view === VIEW_COUNTRY && <CreateCountry show={show} handleClose={handleClose} />}
       {show && view === VIEW_CLINIC && <CreateClinic show={show} handleClose={handleClose} />}
+      {show && view === VIEW_LANGUAGE && <CreateLanguage show={show} handleClose={handleClose} />}
       <Nav variant="tabs" activeKey={view} className="mb-3">
         { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY) && (
           <Nav.Item>
             <Nav.Link as={Link} to={ROUTES.SETTING} eventKey={VIEW_COUNTRY}>
               {translate('setting.countries')}
+            </Nav.Link>
+          </Nav.Item>
+        )}
+        { keycloak.hasRealmRole(USER_ROLES.MANAGE_LANGUAGE) && (
+          <Nav.Item>
+            <Nav.Link as={Link} to={ROUTES.SETTING_LANGUAGE} eventKey={VIEW_LANGUAGE}>
+              {translate('setting.languages')}
             </Nav.Link>
           </Nav.Item>
         )}
@@ -107,6 +120,7 @@ const Setting = ({ translate }) => {
       </Nav>
 
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY) && view === VIEW_COUNTRY && <Country /> }
+      { keycloak.hasRealmRole(USER_ROLES.MANAGE_LANGUAGE) && view === VIEW_LANGUAGE && <Language /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_TRANSLATION) && view === VIEW_TRANSLATION && <Translation /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_SYSTEM_LIMIT) && view === VIEW_SYSTEM_LIMIT && <SystemLimit /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_CLINIC) && view === VIEW_CLINIC && <Clinic /> }

@@ -84,7 +84,7 @@ const CreateClinic = ({ show, handleClose }) => {
     >
       <Form>
         <Form.Row>
-          <Form.Group as={Col} controlId="patient">
+          <Form.Group as={Col} controlId="countryIso">
             <Form.Label>{translate('clinic.country.iso_code')}: {formFields.country_iso}</Form.Label>
           </Form.Group>
         </Form.Row>
