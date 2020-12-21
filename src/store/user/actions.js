@@ -12,6 +12,7 @@ import {
 import {
   showSpinner
 } from 'store/spinnerOverlay/actions';
+import { getTranslations } from '../translation/actions';
 
 // Actions
 export const createUser = payload => async (dispatch, getState) => {
@@ -85,6 +86,7 @@ export const updateUserProfile = (id, payload) => async dispatch => {
     const data = await User.updateUserProfile(id, payload);
     if (data.success) {
       dispatch(mutation.updateUserProfileSuccess());
+      dispatch(getTranslations());
       dispatch(getProfile());
       dispatch(showSuccessNotification('toast_title.new_admin_account', data.message));
       return true;
