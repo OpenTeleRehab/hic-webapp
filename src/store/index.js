@@ -2,7 +2,6 @@ import { combineReducers, createStore, applyMiddleware, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { renderToStaticMarkup } from 'react-dom/server';
 import {
-  addTranslationForLanguage,
   initialize,
   localizeReducer
 } from 'react-localize-redux';
@@ -23,7 +22,7 @@ import { language, defaultLimitedPatient } from 'store/setting/reducers';
 import { auth } from 'store/auth/reducers';
 import { exercise } from 'store/exercise/reducers';
 
-import en from 'translations/en.locale.json';
+import { getTranslations } from './translation/actions';
 
 export const rootReducer = {
   localize: localizeReducer,
@@ -57,7 +56,6 @@ const store = createStore(
 const languages = [{ name: 'English', code: 'en' }];
 const defaultLanguage = 'en';
 const onMissingTranslation = ({ translationId }) => translationId;
-
 store.dispatch(initialize({
   languages,
   options: {
@@ -67,7 +65,7 @@ store.dispatch(initialize({
   }
 }));
 
-store.dispatch(addTranslationForLanguage(en, 'en'));
+store.dispatch(getTranslations());
 
 // fetch countries
 store.dispatch(getCountries());
