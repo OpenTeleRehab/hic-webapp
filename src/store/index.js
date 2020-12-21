@@ -21,6 +21,7 @@ import { profession } from 'store/profession/reducers';
 import { language, defaultLimitedPatient } from 'store/setting/reducers';
 import { auth } from 'store/auth/reducers';
 import { exercise } from 'store/exercise/reducers';
+import { localization } from 'store/localization/reducers';
 
 import { getTranslations } from './translation/actions';
 
@@ -36,7 +37,8 @@ export const rootReducer = {
   language,
   defaultLimitedPatient,
   auth,
-  exercise
+  exercise,
+  localization
 };
 
 const devTool =

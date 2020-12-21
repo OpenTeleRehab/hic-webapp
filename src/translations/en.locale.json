@@ -206,5 +206,6 @@
   "toast_title.new_clinic": "New clinic",
   "success_message.clinic_add": "Clinic has been created!",
 
-  "setting.translations.platform": "Platform"
+  "setting.translations.platform": "Platform",
+  "placeholder.setting.translations.platform": "Please select a platform"
 }

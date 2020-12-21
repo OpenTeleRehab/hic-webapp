@@ -1,34 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import CustomTable from 'components/Table';
+import { useSelector, useDispatch } from 'react-redux';
+import { Form } from 'react-bootstrap';
 
+import CustomTable from 'components/Table';
+import settings from 'settings';
+import { getLocalizations } from 'store/localization/actions';
+
+let timer = null;
 const SystemLimit = ({ translate }) => {
+  const localizations = useSelector(state => state.localization.localizations);
+
   const columns = [
     { name: 'key', title: 'Key' },
-    { name: 'en', title: 'English' },
-    { name: 'km', title: 'Khmer' }
+    { name: 'value', title: 'English' }
   ];
 
   const [showInlineEdited] = useState(true);
-
-  const translations = [
-    {
-      key: 'common.user',
-      en: 'User',
-      km: 'អ្នកប្រើប្រាស់'
-    },
-    {
-      key: 'common.first_name',
-      en: 'First Name',
-      km: 'នាម'
-    },
-    {
-      key: 'common.last_name',
-      en: 'Last Name',
-      km: 'នាមត្រកូល'
-    }
-  ];
 
   const [editingStateColumnExtensions] = useState([
     { columnName: 'key', editingEnabled: false }
@@ -37,15 +26,65 @@ const SystemLimit = ({ translate }) => {
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
   const [searchValue, setSearchValue] = useState('');
+  const [filterValue, setFilterValue] = useState(settings.platforms.options[0].value);
   const [filters, setFilters] = useState([]);
+  const dispatch = useDispatch();
+  const [formFields, setFormFields] = useState({
+    platform: ''
+  });
 
   useEffect(() => {
     setCurrentPage(0);
-  }, [pageSize, searchValue, filters]);
+    setFilterValue(formFields.platform);
+  }, [pageSize, searchValue, filters, filterValue, formFields]);
+
+  useEffect(() => {
+    if (searchValue || filters.length) {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        dispatch(getLocalizations({
+          search_value: searchValue,
+          filter_value: filterValue,
+          filters: filters,
+          page_size: pageSize,
+          page: currentPage + 1
+        }));
+      }, 500);
+    } else {
+      dispatch(getLocalizations({
+        search_value: searchValue,
+        filter_value: filterValue,
+        filters: filters,
+        page_size: pageSize,
+        page: currentPage + 1
+      }));
+    }
+  }, [currentPage, pageSize, searchValue, filters, filterValue, dispatch]);
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setFormFields({ ...formFields, [name]: value });
+  };
 
   return (
     <>
-      {translate('setting.translations.platform')}
+      <Form>
+        <Form.Row>
+          <Form.Group controlId="formEmail" className="col-md-4">
+            <Form.Label>{translate('setting.translations.platform')}</Form.Label>
+            <Form.Control
+              name="platform"
+              as="select"
+              value={formFields.platform}
+              onChange={handleChange}
+            >
+              {settings.platforms.options.map((platform, index) => (
+                <option key={index} value={platform.value}>{platform.text}</option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+        </Form.Row>
+      </Form>
       <CustomTable
         pageSize={pageSize}
         setPageSize={setPageSize}
@@ -57,12 +96,10 @@ const SystemLimit = ({ translate }) => {
         columns={columns}
         showInlineEdited={showInlineEdited}
         editingStateColumnExtensions={editingStateColumnExtensions}
-
-        rows={translations.map(translation => {
+        rows={localizations.map(localization => {
           return {
-            key: translation.key,
-            en: translation.en,
-            km: translation.km
+            key: localization.key,
+            value: localization.value
           };
         })}
       />
