@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import {
+  Button,
+  Col,
+  Form,
+  OverlayTrigger,
+  Row,
+  Tooltip,
+  Card
+} from 'react-bootstrap';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { BsUpload, BsXCircle } from 'react-icons/bs';
+import { BsUpload, BsXCircle, BsX, BsPlus } from 'react-icons/bs';
 
 import * as ROUTES from 'variables/routes';
 import {
@@ -17,16 +25,21 @@ const CreateExercise = ({ translate }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id } = useParams();
+
   const { exercise } = useSelector(state => state.exercise);
   const [formFields, setFormFields] = useState({
     title: '',
     include_feedback: true,
     get_pain_level: ''
   });
+  const [inputFields, setInputFields] = useState([]);
+
   const [titleError, setTitleError] = useState(false);
   const [mediaUploads, setMediaUploads] = useState([]);
   const [mediaUploadsError, setMediaUploadsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [inputFieldError, setInputFieldError] = useState([]);
+  const [inputDescriptionError, setInputDescriptionError] = useState([]);
 
   useEffect(() => {
     if (id) {
@@ -55,6 +68,22 @@ const CreateExercise = ({ translate }) => {
     setFormFields({ ...formFields, [name]: checked });
   };
 
+  const handleChangeInput = (index, e) => {
+    const values = [...inputFields];
+    values[index][e.target.name] = e.target.value;
+    setInputFields(values);
+  };
+
+  const handleRemoveFields = (index) => {
+    const values = [...inputFields];
+    values.splice(index, 1);
+    setInputFields(values);
+  };
+
+  const handleAddFields = () => {
+    setInputFields([...inputFields, { field: '', description: '' }]);
+  };
+
   const handleSave = () => {
     let canSave = true;
 
@@ -71,6 +100,26 @@ const CreateExercise = ({ translate }) => {
     } else {
       setMediaUploadsError(false);
     }
+
+    const errorInputFields = [];
+    const errorDescriptionFields = [];
+    for (let i = 0; i < inputFields.length; i++) {
+      if (inputFields[i].field === '') {
+        canSave = false;
+        errorInputFields.push(true);
+      } else {
+        errorInputFields.push(false);
+      }
+
+      if (inputFields[i].description === '') {
+        canSave = false;
+        errorDescriptionFields.push(true);
+      } else {
+        errorDescriptionFields.push(false);
+      }
+    }
+    setInputFieldError(errorInputFields);
+    setInputDescriptionError(errorDescriptionFields);
 
     if (canSave) {
       setIsLoading(true);
@@ -234,13 +283,62 @@ const CreateExercise = ({ translate }) => {
                 label={translate('exercise.get_pain_level_feedback')}
               />
             </Form.Group>
-            <Form.Group controlId="exampleForm.ControlTextarea1">
-              <Form.Label>Aim</Form.Label>
-              <Form.Control as="textarea" rows={3} disabled />
-            </Form.Group>
-            <Form.Group controlId="exampleForm.ControlTextarea1">
-              <Form.Label>Instruction</Form.Label>
-              <Form.Control as="textarea" rows={3} disabled />
+
+            {
+              inputFields.map((inputField, index) => (
+                <Card key={index} className="bg-light mb-3 additional-field">
+                  <Card.Body>
+                    <div className="remove-btn-container">
+                      <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{translate('common.remove')}</Tooltip>}>
+                        <Button
+                          variant="outline-danger"
+                          className="btn-remove"
+                          onClick={() => handleRemoveFields(index)}
+                        >
+                          <BsX size={20} />
+                        </Button>
+                      </OverlayTrigger>
+                    </div>
+                    <Form.Group controlId={`formLabel${index}`}>
+                      <Form.Label>{translate('exercise.additional_field.label')}</Form.Label>
+                      <Form.Control
+                        name="field"
+                        placeholder={translate('exercise.additional_field.placeholder.label')}
+                        value={inputField.field}
+                        onChange={e => handleChangeInput(index, e)}
+                        isInvalid={inputFieldError[index]}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {translate('exercise.field.required')}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group controlId={`formDescription${index}`}>
+                      <Form.Label>{translate('exercise.additional_field.description')}</Form.Label>
+                      <Form.Control
+                        name="description"
+                        as="textarea" rows={3}
+                        placeholder={translate('exercise.additional_field.placeholder.description')}
+                        value={inputField.description}
+                        onChange={event => handleChangeInput(index, event)}
+                        isInvalid={inputDescriptionError[index]}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {translate('exercise.description.required')}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Card.Body>
+                </Card>
+              ))
+            }
+
+            <Form.Group>
+              <Button
+                variant="link"
+                onClick={handleAddFields}
+                className="p-0"
+              >
+                <BsPlus size={20} /> {translate('exercise.additional_field.add_more_field')}
+              </Button>
             </Form.Group>
 
             <Form.Group>
