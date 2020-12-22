@@ -55,6 +55,7 @@ const CreateExercise = ({ translate }) => {
         get_pain_level: exercise.get_pain_level
       });
       setMediaUploads(exercise.files);
+      setInputFields(exercise.additional_fields || []);
     }
   }, [id, exercise]);
 
@@ -124,7 +125,7 @@ const CreateExercise = ({ translate }) => {
     if (canSave) {
       setIsLoading(true);
       if (id) {
-        dispatch(updateExercise(id, formFields, mediaUploads))
+        dispatch(updateExercise(id, { ...formFields, additional_fields: JSON.stringify(inputFields) }, mediaUploads))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
@@ -132,7 +133,7 @@ const CreateExercise = ({ translate }) => {
             }
           });
       } else {
-        dispatch(createExercise(formFields, mediaUploads))
+        dispatch(createExercise({ ...formFields, additional_fields: JSON.stringify(inputFields) }, mediaUploads))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
