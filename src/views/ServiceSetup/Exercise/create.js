@@ -39,7 +39,7 @@ const CreateExercise = ({ translate }) => {
   const [mediaUploadsError, setMediaUploadsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [inputFieldError, setInputFieldError] = useState([]);
-  const [inputDescriptionError, setInputDescriptionError] = useState([]);
+  const [inputValueError, setInputValueError] = useState([]);
 
   useEffect(() => {
     if (id) {
@@ -82,7 +82,7 @@ const CreateExercise = ({ translate }) => {
   };
 
   const handleAddFields = () => {
-    setInputFields([...inputFields, { field: '', description: '' }]);
+    setInputFields([...inputFields, { field: '', value: '' }]);
   };
 
   const handleSave = () => {
@@ -103,7 +103,7 @@ const CreateExercise = ({ translate }) => {
     }
 
     const errorInputFields = [];
-    const errorDescriptionFields = [];
+    const errorValueFields = [];
     for (let i = 0; i < inputFields.length; i++) {
       if (inputFields[i].field === '') {
         canSave = false;
@@ -112,15 +112,15 @@ const CreateExercise = ({ translate }) => {
         errorInputFields.push(false);
       }
 
-      if (inputFields[i].description === '') {
+      if (inputFields[i].value === '') {
         canSave = false;
-        errorDescriptionFields.push(true);
+        errorValueFields.push(true);
       } else {
-        errorDescriptionFields.push(false);
+        errorValueFields.push(false);
       }
     }
     setInputFieldError(errorInputFields);
-    setInputDescriptionError(errorDescriptionFields);
+    setInputValueError(errorValueFields);
 
     if (canSave) {
       setIsLoading(true);
@@ -310,21 +310,21 @@ const CreateExercise = ({ translate }) => {
                         isInvalid={inputFieldError[index]}
                       />
                       <Form.Control.Feedback type="invalid">
-                        {translate('exercise.field.required')}
+                        {translate('exercise.additional_field.label.required')}
                       </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId={`formDescription${index}`}>
-                      <Form.Label>{translate('exercise.additional_field.description')}</Form.Label>
+                    <Form.Group controlId={`formValue${index}`}>
+                      <Form.Label>{translate('exercise.additional_field.value')}</Form.Label>
                       <Form.Control
-                        name="description"
+                        name="value"
                         as="textarea" rows={3}
-                        placeholder={translate('exercise.additional_field.placeholder.description')}
-                        value={inputField.description}
+                        placeholder={translate('exercise.additional_field.placeholder.value')}
+                        value={inputField.value}
                         onChange={event => handleChangeInput(index, event)}
-                        isInvalid={inputDescriptionError[index]}
+                        isInvalid={inputValueError[index]}
                       />
                       <Form.Control.Feedback type="invalid">
-                        {translate('exercise.description.required')}
+                        {translate('exercise.additional_field.value.required')}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Card.Body>
