@@ -11,6 +11,7 @@ import { getCountryName } from 'utils/country';
 import { getClinicName } from 'utils/clinic';
 import * as moment from 'moment';
 import settings from 'settings';
+import { getTranslate } from 'react-localize-redux';
 
 let timer = null;
 const ClinicAdmin = ({ handleEdit, type }) => {
@@ -18,16 +19,18 @@ const ClinicAdmin = ({ handleEdit, type }) => {
   const users = useSelector(state => state.user.users);
   const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
 
   const columns = [
-    { name: 'last_name', title: 'Last Name' },
-    { name: 'first_name', title: 'First Name' },
-    { name: 'email', title: 'Email' },
-    { name: 'country', title: 'Country' },
-    { name: 'clinic', title: 'Clinic' },
-    { name: 'status', title: 'Status' },
-    { name: 'last_login', title: 'Last Login' },
-    { name: 'action', title: 'Actions' }
+    { name: 'last_name', title: translate('common.last_name') },
+    { name: 'first_name', title: translate('common.first_name') },
+    { name: 'email', title: translate('common.email') },
+    { name: 'country', title: translate('common.country') },
+    { name: 'clinic', title: translate('common.clinic') },
+    { name: 'status', title: translate('common.status') },
+    { name: 'last_login', title: translate('common.last_login') },
+    { name: 'action', title: translate('common.action') }
   ];
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
@@ -80,7 +83,7 @@ const ClinicAdmin = ({ handleEdit, type }) => {
   return (
     <div className="mt-3">
       <p>
-        Country Admins manage therapist of a clinic
+        {translate('common.clinic_admin.management')}
       </p>
       <CustomTable
         pageSize={pageSize}

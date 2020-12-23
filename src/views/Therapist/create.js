@@ -264,7 +264,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
         </Form.Row>
         <Form.Row>
           <Form.Group as={Col} controlId="formProfession">
-            <Form.Label>Profession</Form.Label>
+            <Form.Label>{translate('common.profession')}</Form.Label>
             <Form.Control
               name="profession"
               onChange={handleChange}
@@ -281,7 +281,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} controlId="clinic">
-            <Form.Label>Clinic</Form.Label>
+            <Form.Label>{translate('common.clinic')}</Form.Label>
             <span className="text-dark ml-1">*</span>
             <Form.Control
               name="clinic"
@@ -302,7 +302,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
         </Form.Row>
         <Form.Row>
           <Form.Group controlId="formLanguage">
-            <Form.Label>Language </Form.Label>
+            <Form.Label>{translate('common.language')}</Form.Label>
             <Form.Control
               name="language"
               onChange={handleChange}

@@ -16,12 +16,12 @@ const Country = ({ translate }) => {
   const languages = useSelector(state => state.language.languages);
 
   const [columns] = useState([
-    { name: 'id', title: 'ID' },
-    { name: 'name', title: 'Name' },
-    { name: 'iso_code', title: 'ISO Code' },
-    { name: 'phone_code', title: 'Phone Code' },
-    { name: 'language', title: 'Language' },
-    { name: 'action', title: 'Action' }
+    { name: 'id', title: translate('common.id') },
+    { name: 'name', title: translate('common.name') },
+    { name: 'iso_code', title: translate('common.iso_code') },
+    { name: 'phone_code', title: translate('common.phone_code') },
+    { name: 'language', title: translate('common.language') },
+    { name: 'action', title: translate('common.action') }
   ]);
 
   return (

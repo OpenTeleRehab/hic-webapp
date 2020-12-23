@@ -98,24 +98,24 @@ const Exercise = ({ translate }) => {
             </Card.Header>
             <Card.Body>
               <Form.Group>
-                <Form.Label>Category</Form.Label>
+                <Form.Label>{translate('common.category')}</Form.Label>
                 <Form.Control as="select" disabled>
-                  <option>Category Item</option>
-                  <option>Category Item</option>
+                  <option>{translate('placeholder.category_item')}</option>
+                  <option>{translate('placeholder.category_item')}</option>
                 </Form.Control>
               </Form.Group>
               <Form.Group>
-                <Form.Label>Category</Form.Label>
+                <Form.Label>{translate('common.category')}</Form.Label>
                 <Form.Control as="select" disabled>
-                  <option>Category Item</option>
-                  <option>Category Item</option>
+                  <option>{translate('placeholder.category_item')}</option>
+                  <option>{translate('placeholder.category_item')}</option>
                 </Form.Control>
               </Form.Group>
               <Form.Group>
-                <Form.Label>Category</Form.Label>
+                <Form.Label>{translate('common.category')}</Form.Label>
                 <Form.Control as="select" disabled>
-                  <option>Category Item</option>
-                  <option>Category Item</option>
+                  <option>{translate('placeholder.category_item')}</option>
+                  <option>{translate('placeholder.category_item')}</option>
                 </Form.Control>
               </Form.Group>
             </Card.Body>

@@ -140,7 +140,7 @@ const CreateCountry = ({ show, handleClose }) => {
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} controlId="formLanguage">
-            <Form.Label>Language </Form.Label>
+            <Form.Label>{translate('common.language')}</Form.Label>
             <Form.Control
               name="language"
               onChange={handleChange}

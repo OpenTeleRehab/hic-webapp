@@ -13,8 +13,8 @@ const SystemLimit = ({ translate }) => {
   const localizations = useSelector(state => state.localization.localizations);
 
   const columns = [
-    { name: 'key', title: 'Key' },
-    { name: 'value', title: 'English' }
+    { name: 'key', title: translate('common.key') },
+    { name: 'value', title: translate('common.english') }
   ];
 
   const [showInlineEdited] = useState(true);

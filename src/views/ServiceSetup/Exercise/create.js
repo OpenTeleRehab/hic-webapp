@@ -246,9 +246,9 @@ const CreateExercise = ({ translate }) => {
           </Col>
           <Col sm={6} xl={4}>
             <Form.Group controlId="formLanguage">
-              <Form.Label>Showing language version</Form.Label>
+              <Form.Label>{translate('common.show_language.version')}</Form.Label>
               <Form.Control as="select">
-                <option>English (default)</option>
+                <option>{translate('placeholder.default_language')}</option>
               </Form.Control>
             </Form.Group>
             <h4>{translate('exercise.information')}</h4>
