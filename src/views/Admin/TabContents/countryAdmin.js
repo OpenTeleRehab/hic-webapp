@@ -11,6 +11,7 @@ import { getCountryName } from 'utils/country';
 import * as moment from 'moment';
 import settings from 'settings';
 import { DeleteAction, EditAction } from 'components/ActionIcons';
+import { getTranslate } from 'react-localize-redux';
 
 let timer = null;
 
@@ -18,15 +19,17 @@ const CountryAdmin = ({ handleEdit, type }) => {
   const dispatch = useDispatch();
   const users = useSelector(state => state.user.users);
   const countries = useSelector(state => state.country.countries);
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
 
   const columns = [
-    { name: 'last_name', title: 'Last Name' },
-    { name: 'first_name', title: 'First Name' },
-    { name: 'email', title: 'Email' },
-    { name: 'country', title: 'Country' },
-    { name: 'status', title: 'Status' },
-    { name: 'last_login', title: 'Last Login' },
-    { name: 'action', title: 'Actions' }
+    { name: 'last_name', title: translate('common.last_name') },
+    { name: 'first_name', title: translate('common.first_name') },
+    { name: 'email', title: translate('common.email') },
+    { name: 'country', title: translate('common.country') },
+    { name: 'status', title: translate('common.status') },
+    { name: 'last_login', title: translate('common.last_login') },
+    { name: 'action', title: translate('common.action') }
   ];
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
@@ -79,7 +82,7 @@ const CountryAdmin = ({ handleEdit, type }) => {
   return (
     <div className="mt-3">
       <p>
-        Country Admins manage therapist of a country
+        {translate('common.country_admin.management')}
       </p>
       <CustomTable
         pageSize={pageSize}

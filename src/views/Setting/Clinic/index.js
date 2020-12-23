@@ -16,13 +16,13 @@ const Clinic = ({ translate }) => {
   const countries = useSelector(state => state.country.countries);
 
   const [columns] = useState([
-    { name: 'id', title: 'ID' },
-    { name: 'name', title: 'Name' },
-    { name: 'country_iso', title: 'Country ISO code' },
-    { name: 'region', title: 'Region / State' },
-    { name: 'province', title: 'Province' },
-    { name: 'city', title: 'City' },
-    { name: 'action', title: 'Action' }
+    { name: 'id', title: translate('common.id') },
+    { name: 'name', title: translate('common.name') },
+    { name: 'country_iso', title: translate('common.country.iso_code') },
+    { name: 'region', title: translate('common.region.state') },
+    { name: 'province', title: translate('common.province') },
+    { name: 'city', title: translate('common.city') },
+    { name: 'action', title: translate('common.action') }
   ]);
 
   return (

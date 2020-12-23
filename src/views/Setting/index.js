@@ -66,7 +66,7 @@ const Setting = ({ translate }) => {
         <div className="btn-toolbar mb-2 mb-md-0">
           <Button variant="primary" onClick={handleShow}>
             <BsPlus size={20} className="mr-1" />
-            { view === VIEW_COUNTRY ? translate('country.new') : view === VIEW_CLINIC ? translate('clinic.new') : view === VIEW_LANGUAGE ? translate('language.new') : 'New' }
+            { view === VIEW_COUNTRY ? translate('country.new') : view === VIEW_CLINIC ? translate('clinic.new') : view === VIEW_LANGUAGE ? translate('language.new') : translate('translation.new') }
           </Button>
         </div>
       </div>

@@ -52,17 +52,17 @@ const Admin = ({ translate }) => {
 
       <Tabs activeKey={type} onSelect={(key) => setType(key)} transition={false}>
         { keycloak.hasRealmRole(USER_ROLES.MANAGE_GLOBAL_ADMIN) && (
-          <Tab eventKey={USER_GROUPS.GLOBAL_ADMIN} title="Global Admins">
+          <Tab eventKey={USER_GROUPS.GLOBAL_ADMIN} title={translate('global_admin')}>
             <GlobalAdmin handleEdit={handleEdit} type={type} />
           </Tab>
         )}
         { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY_ADMIN) && (
-          <Tab eventKey={USER_GROUPS.COUNTRY_ADMIN} title="Country Admins">
+          <Tab eventKey={USER_GROUPS.COUNTRY_ADMIN} title={translate('country_admin')}>
             <CountryAdmin handleEdit={handleEdit} type={type} />
           </Tab>
         )}
         { keycloak.hasRealmRole(USER_ROLES.MANAGE_CLINIC_ADMIN) && (
-          <Tab eventKey={USER_GROUPS.CLINIC_ADMIN} title="Clinic Admins">
+          <Tab eventKey={USER_GROUPS.CLINIC_ADMIN} title={translate('clinic_admin')}>
             <ClinicAdmin handleEdit={handleEdit} type={type} />
           </Tab>
         )}

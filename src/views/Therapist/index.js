@@ -26,17 +26,17 @@ const Therapist = ({ translate }) => {
   const [editId, setEditId] = useState('');
 
   const columns = [
-    { name: 'id', title: 'ID' },
-    { name: 'last_name', title: 'Last Name' },
-    { name: 'first_name', title: 'First Name' },
-    { name: 'email', title: 'Email' },
-    { name: 'country', title: 'Country' },
-    { name: 'clinic', title: 'Clinic' },
-    { name: 'limit_patient', title: 'On-going Treatment Limit' },
-    { name: 'assigned_patients', title: 'Assigned Patients' },
-    { name: 'status', title: 'Status' },
-    { name: 'last_login', title: 'Last Login' },
-    { name: 'action', title: 'Actions' }
+    { name: 'id', title: translate('common.id') },
+    { name: 'last_name', title: translate('common.last_name') },
+    { name: 'first_name', title: translate('common.first_name') },
+    { name: 'email', title: translate('common.email') },
+    { name: 'country', title: translate('common.country') },
+    { name: 'clinic', title: translate('common.clinic') },
+    { name: 'limit_patient', title: translate('common.on_going.treatment_let') },
+    { name: 'assigned_patients', title: translate('common.assign_patient') },
+    { name: 'status', title: translate('common.status') },
+    { name: 'last_login', title: translate('common.last_login') },
+    { name: 'action', title: translate('common.action') }
   ];
 
   const columnExtensions = [

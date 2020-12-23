@@ -14,10 +14,10 @@ const Language = ({ translate }) => {
   const languages = useSelector(state => state.language.languages);
 
   const [columns] = useState([
-    { name: 'id', title: 'ID' },
-    { name: 'name', title: 'Name' },
-    { name: 'code', title: 'Code' },
-    { name: 'action', title: 'Action' }
+    { name: 'id', title: translate('common.id') },
+    { name: 'name', title: translate('common.name') },
+    { name: 'code', title: translate('common.code') },
+    { name: 'action', title: translate('common.action') }
   ]);
 
   return (

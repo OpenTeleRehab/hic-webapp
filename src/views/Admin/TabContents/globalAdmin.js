@@ -9,19 +9,22 @@ import * as moment from 'moment';
 import CustomTable from 'components/Table';
 import EnabledStatus from 'components/EnabledStatus';
 import { DeleteAction, EditAction } from 'components/ActionIcons';
+import { getTranslate } from 'react-localize-redux';
 
 let timer = null;
 const GlobalAdmin = ({ handleEdit, type }) => {
   const dispatch = useDispatch();
   const users = useSelector(state => state.user.users);
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
 
   const columns = [
-    { name: 'last_name', title: 'Last Name' },
-    { name: 'first_name', title: 'First Name' },
-    { name: 'email', title: 'Email' },
-    { name: 'status', title: 'Status' },
-    { name: 'last_login', title: 'Last Login' },
-    { name: 'action', title: 'Actions' }
+    { name: 'last_name', title: translate('common.last_name') },
+    { name: 'first_name', title: translate('common.first_name') },
+    { name: 'email', title: translate('common.email') },
+    { name: 'status', title: translate('common.status') },
+    { name: 'last_login', title: translate('common.last_login') },
+    { name: 'action', title: translate('common.action') }
   ];
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
@@ -74,7 +77,7 @@ const GlobalAdmin = ({ handleEdit, type }) => {
   return (
     <div className="mt-3">
       <p>
-        Global admins can manage Global Admin/ Country Admins, create and update the content (exercises and questionnairs).
+        {translate('common.global_admin.management')}
       </p>
       <CustomTable
         pageSize={pageSize}
