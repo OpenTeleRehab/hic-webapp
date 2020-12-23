@@ -36,30 +36,6 @@ const updateUserFail = () => ({
   type: 'UPDATE_USER_FAIL'
 });
 
-const getUserProfileRequest = (data) => ({
-  type: 'GET_USERS_REQUEST'
-});
-
-const getUserProfileSuccess = (data) => ({
-  type: 'CREATE_USER_SUCCESS'
-});
-
-const getUserProfileFail = (data) => ({
-  type: 'GET_USERS_FAIL'
-});
-
-const updateUserProfileFail = () => ({
-  type: 'UPDATE_USER_FAIL'
-});
-
-const updateUserProfileRequest = () => ({
-  type: 'UPDATE_USER_REQUEST'
-});
-
-const updateUserProfileSuccess = () => ({
-  type: 'UPDATE_USER_SUCCESS'
-});
-
 export const mutation = {
   createUserRequest,
   createUserSuccess,
@@ -69,12 +45,5 @@ export const mutation = {
   getUsersFail,
   updateUserRequest,
   updateUserSuccess,
-  updateUserFail,
-  getUserProfileRequest,
-  getUserProfileSuccess,
-  getUserProfileFail,
-  updateUserProfileRequest,
-  updateUserProfileSuccess,
-  updateUserProfileFail
-
+  updateUserFail
 };

@@ -50,21 +50,8 @@ const updateUser = (id, payload) => {
     });
 };
 
-const updateUserProfile = (id, payload) => {
-  return customAxios.put(`/user/update-information/${id}`, payload)
-    .then(
-      res => {
-        return res.data;
-      }
-    )
-    .catch((e) => {
-      return e.response.data;
-    });
-};
-
 export const User = {
   createUser,
   getUsers,
-  updateUser,
-  updateUserProfile
+  updateUser
 };

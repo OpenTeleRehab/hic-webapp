@@ -4,7 +4,7 @@ import { getTranslate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import { updateUserProfile } from 'store/user/actions';
+import { updateUserProfile } from 'store/auth/actions';
 import { USER_GROUPS } from 'variables/user';
 
 const EdiInformation = ({ editId }) => {
@@ -58,7 +58,7 @@ const EdiInformation = ({ editId }) => {
     }
 
     if (canSave) {
-      dispatch(updateUserProfile(profile.id, formFields))
+      dispatch(updateUserProfile(formFields))
         .then((result) => {
           if (result) {
             history.goBack();
