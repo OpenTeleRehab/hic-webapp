@@ -17,6 +17,19 @@ const getLocalizations = payload => {
     });
 };
 
+const updateLocalization = (id, payload) => {
+  return axios.put(`/translation/${id}`, payload)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Localization = {
-  getLocalizations
+  getLocalizations,
+  updateLocalization
 };

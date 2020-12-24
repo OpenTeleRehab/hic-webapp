@@ -1,4 +1,5 @@
 export const initialState = {
   localizations: [],
-  filters: {}
+  filters: {},
+  loading: false
 };
