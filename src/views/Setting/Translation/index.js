@@ -44,12 +44,11 @@ const Translation = ({ translate }) => {
   };
 
   const commitChanges = ({ changed }) => {
-    let changedRows;
-
-    if (changed) {
-      changedRows = localizations.map((row, index) => (changed[index] ? { ...row, ...changed[index] } : row));
-      dispatch(updateLocalization(changedRows[editingRowIds].id, changedRows[editingRowIds])).then(result => {
-      });
+    if (changed && editingRowIds) {
+      const changedRows = localizations.map((row, index) => (changed[index] ? { ...row, ...changed[index] } : row));
+      console.log(changedRows);
+      console.log(changedRows[editingRowIds]);
+      dispatch(updateLocalization(changedRows[editingRowIds].id, Object.values(changed)[0]));
     }
   };
 
@@ -105,7 +104,7 @@ const Translation = ({ translate }) => {
             en: localization.en
           };
           languages.forEach(lang => {
-            data[lang.code] = localization[lang.code];
+            data[lang.code] = localization[lang.code] || '';
           });
           return data;
         })}

@@ -24,11 +24,11 @@ export const updateLocalization = (id, payload) => async (dispatch, getState) =>
     dispatch(mutation.updateLocalizationSuccess());
     const filters = getState().localization.filters;
     dispatch(getLocalizations({ ...filters }));
-    dispatch(showSuccessNotification('toast_title.edit_localization', data.message));
+    dispatch(showSuccessNotification('toast_title.update_localization', data.message));
     return true;
   } else {
     dispatch(mutation.updateLocalizationFail());
-    dispatch(showErrorNotification('toast_title.edit_localization', data.message));
+    dispatch(showErrorNotification('toast_title.update_localization', data.message));
     return false;
   }
 };
