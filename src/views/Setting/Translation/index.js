@@ -6,65 +6,64 @@ import { Form } from 'react-bootstrap';
 
 import CustomTable from 'components/Table';
 import settings from 'settings';
-import { getLocalizations } from 'store/localization/actions';
+import { getLocalizations, updateLocalization } from 'store/localization/actions';
+import Spinner from 'react-bootstrap/Spinner';
 
-let timer = null;
-const SystemLimit = ({ translate }) => {
-  const localizations = useSelector(state => state.localization.localizations);
-
-  const columns = [
-    { name: 'key', title: translate('common.key') },
-    { name: 'value', title: translate('common.english') }
-  ];
-
+const Translation = ({ translate }) => {
+  const dispatch = useDispatch();
+  const { localizations, loading } = useSelector(state => state.localization);
+  const languages = useSelector(state => state.language.languages);
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [filterPlatform, setFilterPlatform] = useState(settings.platforms.options[0].value);
+  const [filterValue, setFilterValue] = useState('');
+  const [filters, setFilters] = useState([]);
+  const [editingRowIds, setEditingRowIds] = useState([]);
   const [showInlineEdited] = useState(true);
-
   const [editingStateColumnExtensions] = useState([
     { columnName: 'key', editingEnabled: false }
   ]);
 
-  const [pageSize, setPageSize] = useState(10);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [searchValue, setSearchValue] = useState('');
-  const [filterValue, setFilterValue] = useState(settings.platforms.options[0].value);
-  const [filters, setFilters] = useState([]);
-  const dispatch = useDispatch();
-  const [formFields, setFormFields] = useState({
-    platform: ''
-  });
-
   useEffect(() => {
-    setCurrentPage(0);
-    setFilterValue(formFields.platform);
-  }, [pageSize, searchValue, filters, filterValue, formFields]);
-
-  useEffect(() => {
-    if (searchValue || filters.length) {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        dispatch(getLocalizations({
-          search_value: searchValue,
-          filter_value: filterValue,
-          filters: filters,
-          page_size: pageSize,
-          page: currentPage + 1
-        }));
-      }, 500);
-    } else {
-      dispatch(getLocalizations({
-        search_value: searchValue,
-        filter_value: filterValue,
-        filters: filters,
-        page_size: pageSize,
-        page: currentPage + 1
-      }));
-    }
-  }, [currentPage, pageSize, searchValue, filters, filterValue, dispatch]);
+    dispatch(getLocalizations({
+      filter_value: filterValue,
+      filter_platform: filterPlatform,
+      filters: filters,
+      page_size: pageSize,
+      page: currentPage
+    })).then(result => {
+      if (result) {
+        setTotalCount(result.total_count);
+      }
+    });
+  }, [currentPage, pageSize, filterValue, filters, filterPlatform, dispatch]);
 
   const handleChange = e => {
-    const { name, value } = e.target;
-    setFormFields({ ...formFields, [name]: value });
+    setFilterPlatform(e.target.value);
   };
+
+  const commitChanges = ({ changed }) => {
+    let changedRows;
+
+    if (changed) {
+      changedRows = localizations.map((row, index) => (changed[index] ? { ...row, ...changed[index] } : row));
+      dispatch(updateLocalization(changedRows[editingRowIds].id, changedRows[editingRowIds])).then(result => {
+      });
+    }
+  };
+
+  const columns = [
+    { name: 'key', title: translate('common.key') },
+    { name: 'en', title: translate('common.english') }
+  ];
+
+  languages.forEach(lang => {
+    if (lang.code === 'en') {
+      languages.splice(lang.code, 1);
+    }
+    columns.push({ name: lang.code, title: lang.name });
+  });
 
   return (
     <>
@@ -75,7 +74,7 @@ const SystemLimit = ({ translate }) => {
             <Form.Control
               name="platform"
               as="select"
-              value={formFields.platform}
+              value={filterPlatform}
               onChange={handleChange}
             >
               {settings.platforms.options.map((platform, index) => (
@@ -86,29 +85,38 @@ const SystemLimit = ({ translate }) => {
         </Form.Row>
       </Form>
       <CustomTable
+        totalCount={totalCount}
         pageSize={pageSize}
         setPageSize={setPageSize}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        setSearchValue={setSearchValue}
+        setSearchValue={setFilterValue}
         setFilters={setFilters}
         filters={filters}
         columns={columns}
         showInlineEdited={showInlineEdited}
         editingStateColumnExtensions={editingStateColumnExtensions}
+        commitChanges={commitChanges}
+        editingRowIds={editingRowIds}
+        setEditingRowIds={setEditingRowIds}
         rows={localizations.map(localization => {
-          return {
+          const data = {
             key: localization.key,
-            value: localization.value
+            en: localization.en
           };
+          languages.forEach(lang => {
+            data[lang.code] = localization[lang.code];
+          });
+          return data;
         })}
       />
+      { loading && <Spinner className="loading-icon" animation="border" variant="primary" /> }
     </>
   );
 };
 
-SystemLimit.propTypes = {
+Translation.propTypes = {
   translate: PropTypes.func
 };
 
-export default withLocalize(SystemLimit);
+export default withLocalize(Translation);

@@ -12,8 +12,23 @@ const getLocalizationFail = () => ({
   type: 'GET_LOCALIZATIONS_FAIL'
 });
 
+const updateLocalizationRequest = () => ({
+  type: 'UPDATE_LOCALIZATION_REQUEST'
+});
+
+const updateLocalizationSuccess = () => ({
+  type: 'UPDATE_LOCALIZATION_SUCCESS'
+});
+
+const updateLocalizationFail = () => ({
+  type: 'UPDATE_LOCALIZATION_FAIL'
+});
+
 export const mutation = {
   getLocalizationRequest,
   getLocalizationSuccess,
-  getLocalizationFail
+  getLocalizationFail,
+  updateLocalizationRequest,
+  updateLocalizationSuccess,
+  updateLocalizationFail
 };

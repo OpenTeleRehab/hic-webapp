@@ -35,7 +35,7 @@ import { useSelector } from 'react-redux';
 const FilterRow = (props) => <Table.Row className="filter" {...props} />;
 const FixedColumnCell = (props) => <TableFixedColumns.Cell {...props} showLeftDivider={false} />;
 
-const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, currentPage, setCurrentPage, totalCount, setSearchValue, setFilters, filters, showInlineEdited, editingStateColumnExtensions }) => {
+const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, currentPage, setCurrentPage, totalCount, setSearchValue, setFilters, filters, showInlineEdited, editingStateColumnExtensions, commitChanges, editingRowIds, setEditingRowIds }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const [showFilter, setShowFilter] = useState(false);
@@ -51,10 +51,6 @@ const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, c
       setFilters([]);
     }
     setShowFilter(!showFilter);
-  };
-
-  const commitChanges = ({ added, changed, deleted }) => {
-
   };
 
   return (
@@ -75,6 +71,8 @@ const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, c
       <EditingState
         onCommitChanges={commitChanges}
         columnExtensions={editingStateColumnExtensions}
+        editingRowIds={editingRowIds}
+        onEditingRowIdsChange={setEditingRowIds}
       />
 
       <Table columnExtensions={tableColumnExtensions} />
@@ -107,7 +105,10 @@ CustomTable.propTypes = {
   setFilters: PropTypes.func,
   filters: PropTypes.array,
   showInlineEdited: PropTypes.bool,
-  editingStateColumnExtensions: PropTypes.array
+  editingStateColumnExtensions: PropTypes.array,
+  commitChanges: PropTypes.func,
+  editingRowIds: PropTypes.array,
+  setEditingRowIds: PropTypes.func
 };
 
 CustomTable.defaultProps = {
