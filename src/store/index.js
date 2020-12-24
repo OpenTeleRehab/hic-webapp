@@ -6,12 +6,6 @@ import {
   localizeReducer
 } from 'react-localize-redux';
 
-import { getCountries } from 'store/country/actions';
-import { getClinics } from 'store/clinic/actions';
-import { getProfessions } from 'store/profession/actions';
-import { getDefaultLimitedPatients } from 'store/setting/actions';
-import { getLanguages } from 'store/language/actions';
-
 import { user } from 'store/user/reducers';
 import { therapist } from 'store/therapist/reducers';
 import { notification } from 'store/notification/reducers';
@@ -24,8 +18,6 @@ import { language } from 'store/language/reducers';
 import { auth } from 'store/auth/reducers';
 import { exercise } from 'store/exercise/reducers';
 import { localization } from 'store/localization/reducers';
-
-import { getTranslations } from './translation/actions';
 
 export const rootReducer = {
   localize: localizeReducer,
@@ -68,22 +60,5 @@ store.dispatch(initialize({
     onMissingTranslation
   }
 }));
-
-store.dispatch(getTranslations());
-
-// fetch countries
-store.dispatch(getCountries());
-
-// fetch clinics
-store.dispatch(getClinics());
-
-// fetch professions
-store.dispatch(getProfessions());
-
-// fetch languages
-store.dispatch(getLanguages());
-
-// fetch default limited patients
-store.dispatch(getDefaultLimitedPatients());
 
 export default store;

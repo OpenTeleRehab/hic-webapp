@@ -5,7 +5,7 @@ import { getTranslations } from 'store/translation/actions';
 
 // Actions
 export const getProfile = () => async dispatch => {
-  dispatch(mutation.getProfileRequest(true));
+  dispatch(mutation.getProfileRequest());
   const data = await Auth.getProfile();
   if (data) {
     dispatch(mutation.getProfileSuccess(data.data));
