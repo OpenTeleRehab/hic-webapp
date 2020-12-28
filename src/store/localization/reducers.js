@@ -16,7 +16,7 @@ export const localization = (state = initialState, action) => {
     }
     case 'GET_LOCALIZATIONS_FAIL': {
       return Object.assign({}, state, {
-        loading: true
+        loading: false
       });
     }
     default:
