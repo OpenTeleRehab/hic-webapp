@@ -302,6 +302,7 @@ const CreateExercise = ({ translate }) => {
                     </div>
                     <Form.Group controlId={`formLabel${index}`}>
                       <Form.Label>{translate('exercise.additional_field.label')}</Form.Label>
+                      <span className="text-dark ml-1">*</span>
                       <Form.Control
                         name="field"
                         placeholder={translate('exercise.additional_field.placeholder.label')}
@@ -315,6 +316,7 @@ const CreateExercise = ({ translate }) => {
                     </Form.Group>
                     <Form.Group controlId={`formValue${index}`}>
                       <Form.Label>{translate('exercise.additional_field.value')}</Form.Label>
+                      <span className="text-dark ml-1">*</span>
                       <Form.Control
                         name="value"
                         as="textarea" rows={3}
