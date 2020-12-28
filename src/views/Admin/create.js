@@ -25,6 +25,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
   const [errorClinic, setErrorClinic] = useState(false);
   const [errorFirstName, setErrorFirstName] = useState(false);
   const [errorLastName, setErrorLastName] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [formFields, setFormFields] = useState({
     type: type,
@@ -122,12 +123,14 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
       setErrorLastName(false);
     }
     if (canSave) {
+      setIsLoading(true);
       if (editId) {
         dispatch(updateUser(editId, formFields))
           .then(result => {
             if (result) {
               setType(formFields.type);
               handleClose();
+              setIsLoading(false);
             }
           });
       } else {
@@ -136,6 +139,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
             if (result) {
               setType(formFields.type);
               handleClose();
+              setIsLoading(false);
             }
           });
       }
@@ -149,6 +153,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
       onCancel={handleClose}
       onConfirm={handleConfirm}
       confirmLabel={editId ? translate('common.save') : translate('common.create')}
+      disabled={isLoading}
     >
       <Form>
         <Form.Group as={Row}>

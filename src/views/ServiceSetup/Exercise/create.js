@@ -354,6 +354,7 @@ const CreateExercise = ({ translate }) => {
                 variant="outline-dark"
                 as={Link}
                 to={ROUTES.SERVICE_SETUP}
+                disabled={isLoading}
               >
                 {translate('common.cancel')}
               </Button>
