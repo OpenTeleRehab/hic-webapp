@@ -31,3 +31,18 @@ export const createCountry = payload => async (dispatch) => {
     return false;
   }
 };
+
+export const updateCountry = (id, payload) => async (dispatch) => {
+  dispatch(mutation.updateCountryRequest());
+  const data = await Country.updateCountry(id, payload);
+  if (data.success) {
+    dispatch(mutation.updateCountrySuccess());
+    dispatch(getCountries());
+    dispatch(showSuccessNotification('toast_title.edit_country', data.message));
+    return true;
+  } else {
+    dispatch(mutation.updateCountryFail());
+    dispatch(showErrorNotification('toast_title.edit_country', data.message));
+    return false;
+  }
+};

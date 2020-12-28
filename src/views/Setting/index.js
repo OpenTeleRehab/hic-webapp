@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Nav } from 'react-bootstrap';
+import { Button, Nav } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
+import { BsPlus } from 'react-icons/bs';
 import { useKeycloak } from '@react-keycloak/web';
 import PropTypes from 'prop-types';
 
@@ -13,8 +14,6 @@ import Language from 'views/Setting/Language';
 
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES, SETTING_ROLES } from 'variables/user';
-import { BsPlus } from 'react-icons/bs/index';
-import { Button } from 'react-bootstrap/esm/index';
 import CreateCountry from 'views/Setting/Country/create';
 import CreateClinic from 'views/Setting/Clinic/create';
 import CreateLanguage from 'views/Setting/Language/create';
@@ -31,6 +30,8 @@ const Setting = ({ translate }) => {
   const { hash } = useLocation();
   const [view, setView] = useState(undefined);
   const [show, setShow] = useState(false);
+
+  const [editId, setEditId] = useState('');
 
   useEffect(() => {
     if (hash.includes('#' + VIEW_TRANSLATION)) {
@@ -53,9 +54,17 @@ const Setting = ({ translate }) => {
     }
   }, [hash, keycloak]);
 
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    setShow(true);
+  };
+
+  const handleEdit = (id) => {
+    setEditId(id);
+    setShow(true);
+  };
 
   const handleClose = () => {
+    setEditId('');
     setShow(false);
   };
 
@@ -63,17 +72,25 @@ const Setting = ({ translate }) => {
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1>{translate('setting')}</h1>
-        <div className="btn-toolbar mb-2 mb-md-0">
-          <Button variant="primary" onClick={handleShow}>
-            <BsPlus size={20} className="mr-1" />
-            { view === VIEW_COUNTRY ? translate('country.new') : view === VIEW_CLINIC ? translate('clinic.new') : view === VIEW_LANGUAGE ? translate('language.new') : translate('translation.new') }
-          </Button>
-        </div>
+        {[VIEW_COUNTRY, VIEW_LANGUAGE, VIEW_CLINIC].map(v => {
+          if (v === view) {
+            return (
+              <div className="btn-toolbar mb-2 mb-md-0">
+                <Button variant="primary" onClick={handleShow}>
+                  <BsPlus size={20} className="mr-1" />
+                  { translate(`${view}.new`) }
+                </Button>
+              </div>
+            );
+          }
+          return null;
+        })}
       </div>
 
-      {show && view === VIEW_COUNTRY && <CreateCountry show={show} handleClose={handleClose} />}
+      {show && view === VIEW_COUNTRY && <CreateCountry show={show} editId={editId} handleClose={handleClose} />}
       {show && view === VIEW_CLINIC && <CreateClinic show={show} handleClose={handleClose} />}
       {show && view === VIEW_LANGUAGE && <CreateLanguage show={show} handleClose={handleClose} />}
+
       <Nav variant="tabs" activeKey={view} className="mb-3">
         { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY) && (
           <Nav.Item>
@@ -119,7 +136,7 @@ const Setting = ({ translate }) => {
         )}
       </Nav>
 
-      { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY) && view === VIEW_COUNTRY && <Country /> }
+      { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY) && view === VIEW_COUNTRY && <Country handleRowEdit={handleEdit} /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_LANGUAGE) && view === VIEW_LANGUAGE && <Language /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_TRANSLATION) && view === VIEW_TRANSLATION && <Translation /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_SYSTEM_LIMIT) && view === VIEW_SYSTEM_LIMIT && <SystemLimit /> }

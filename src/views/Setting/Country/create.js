@@ -4,10 +4,11 @@ import Dialog from 'components/Dialog';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
-import { createCountry } from 'store/country/actions';
+import { createCountry, updateCountry } from 'store/country/actions';
 import settings from 'settings';
+import { getLanguageName } from 'utils/language';
 
-const CreateCountry = ({ show, handleClose }) => {
+const CreateCountry = ({ show, editId, handleClose }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const CreateCountry = ({ show, handleClose }) => {
   const [errorPhoneCode, setErrorPhoneCode] = useState(false);
   const [errorName, setErrorName] = useState(false);
   const languages = useSelector(state => state.language.languages);
+  const countries = useSelector(state => state.country.countries);
 
   const [formFields, setFormFields] = useState({
     name: '',
@@ -25,23 +27,16 @@ const CreateCountry = ({ show, handleClose }) => {
   });
 
   useEffect(() => {
-    if (!show) {
-      resetData();
+    if (editId && countries.length) {
+      const country = countries.find(country => country.id === editId);
+      setFormFields({
+        name: country.name,
+        iso_code: country.iso_code,
+        phone_code: country.phone_code,
+        language: getLanguageName(country.language_id, languages)
+      });
     }
-    // eslint-disable-next-line
-  }, [show]);
-
-  const resetData = () => {
-    setErrorIsoCode(false);
-    setErrorName(false);
-    setErrorPhoneCode(false);
-    setFormFields({
-      name: '',
-      iso_code: '',
-      phone_code: '',
-      language: ''
-    });
-  };
+  }, [editId, countries, languages]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -73,21 +68,29 @@ const CreateCountry = ({ show, handleClose }) => {
     }
 
     if (canSave) {
-      dispatch(createCountry(formFields)).then(result => {
-        if (result) {
-          handleClose();
-        }
-      });
+      if (editId) {
+        dispatch(updateCountry(editId, formFields)).then(result => {
+          if (result) {
+            handleClose();
+          }
+        });
+      } else {
+        dispatch(createCountry(formFields)).then(result => {
+          if (result) {
+            handleClose();
+          }
+        });
+      }
     }
   };
 
   return (
     <Dialog
       show={show}
-      title={translate('country.new')}
+      title={translate(editId ? 'country.edit' : 'country.new')}
       onCancel={handleClose}
       onConfirm={handleConfirm}
-      confirmLabel={translate('common.create')}
+      confirmLabel={editId ? translate('common.save') : translate('common.create')}
     >
       <Form>
         <Form.Row>
@@ -161,6 +164,7 @@ const CreateCountry = ({ show, handleClose }) => {
 
 CreateCountry.propTypes = {
   show: PropTypes.bool,
+  editId: PropTypes.string,
   handleClose: PropTypes.func
 };
 
