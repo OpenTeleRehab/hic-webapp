@@ -11,7 +11,7 @@ import {
 import { EditAction, DeleteAction } from 'components/ActionIcons';
 import { getLanguageName } from 'utils/language';
 
-const Country = ({ translate }) => {
+const Country = ({ translate, handleRowEdit }) => {
   const countries = useSelector(state => state.country.countries);
   const languages = useSelector(state => state.language.languages);
 
@@ -30,7 +30,7 @@ const Country = ({ translate }) => {
         rows={countries.map(country => {
           const action = (
             <>
-              <EditAction disabled />
+              <EditAction onClick={() => handleRowEdit(country.id)} />
               <DeleteAction className="ml-1" disabled />
             </>
           );
@@ -52,7 +52,8 @@ const Country = ({ translate }) => {
 };
 
 Country.propTypes = {
-  translate: PropTypes.func
+  translate: PropTypes.func,
+  handleRowEdit: PropTypes.func
 };
 
 export default withLocalize(Country);

@@ -24,7 +24,20 @@ const createCountry = payload => {
     });
 };
 
+const updateCountry = (id, payload) => {
+  return axios.put(`/country/${id}`, payload)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Country = {
   getCountries,
-  createCountry
+  createCountry,
+  updateCountry
 };
