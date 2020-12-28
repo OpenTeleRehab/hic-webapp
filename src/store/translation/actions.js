@@ -13,6 +13,7 @@ export const getTranslations = () => async dispatch => {
     });
     dispatch(addTranslationForLanguage(messages, 'en'));
     dispatch(mutation.getTranslationsSuccess());
+    return true;
   } else {
     dispatch(mutation.getTranslationsFail());
   }

@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, NavLink, withRouter } from 'react-router-dom';
 import { Navbar, Nav, Dropdown } from 'react-bootstrap';
 import * as ROUTES from 'variables/routes';
 import PropTypes from 'prop-types';
 import Dialog from 'components/Dialog';
 import { useKeycloak } from '@react-keycloak/web';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { getProfile } from 'store/auth/actions';
 import { USER_ROLES, SETTING_ROLES } from 'variables/user';
 
 const navItems = [
@@ -53,16 +52,9 @@ const navItems = [
 ];
 
 const Navigation = ({ translate }) => {
-  const dispatch = useDispatch();
   const { keycloak } = useKeycloak();
   const [show, setShow] = useState(false);
   const { profile } = useSelector((state) => state.auth);
-
-  useEffect(() => {
-    if (!profile && keycloak.authenticated) {
-      dispatch(getProfile());
-    }
-  }, [profile, dispatch, keycloak.authenticated]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
