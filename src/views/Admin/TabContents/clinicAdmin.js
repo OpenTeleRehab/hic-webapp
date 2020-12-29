@@ -44,22 +44,8 @@ const ClinicAdmin = ({ handleEdit, type }) => {
 
   useEffect(() => {
     if (type === USER_GROUPS.CLINIC_ADMIN) {
-      if (searchValue || filters.length) {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-          dispatch(getUsers({
-            search_value: searchValue,
-            filters: filters,
-            admin_type: type,
-            page_size: pageSize,
-            page: currentPage + 1
-          })).then(result => {
-            if (result) {
-              setTotalCount(result.total_count);
-            }
-          });
-        }, 500);
-      } else {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
         dispatch(getUsers({
           search_value: searchValue,
           filters: filters,
@@ -71,7 +57,7 @@ const ClinicAdmin = ({ handleEdit, type }) => {
             setTotalCount(result.total_count);
           }
         });
-      }
+      }, 500);
     }
   }, [currentPage, type, pageSize, searchValue, filters, dispatch]);
 
