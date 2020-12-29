@@ -130,8 +130,8 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
             if (result) {
               setType(formFields.type);
               handleClose();
-              setIsLoading(false);
             }
+            setIsLoading(false);
           });
       } else {
         dispatch(createUser(formFields))
@@ -139,8 +139,8 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
             if (result) {
               setType(formFields.type);
               handleClose();
-              setIsLoading(false);
             }
+            setIsLoading(false);
           });
       }
     }
