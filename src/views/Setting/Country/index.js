@@ -1,13 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 import { useSelector } from 'react-redux';
-import {
-  Grid,
-  Table,
-  TableHeaderRow
-} from '@devexpress/dx-react-grid-bootstrap4';
 
+import BasicTable from 'components/Table/basic';
 import { EditAction, DeleteAction } from 'components/ActionIcons';
 import { getLanguageName } from 'utils/language';
 
@@ -15,18 +11,18 @@ const Country = ({ translate, handleRowEdit }) => {
   const countries = useSelector(state => state.country.countries);
   const languages = useSelector(state => state.language.languages);
 
-  const [columns] = useState([
+  const columns = [
     { name: 'id', title: translate('common.id') },
     { name: 'name', title: translate('common.name') },
     { name: 'iso_code', title: translate('common.iso_code') },
     { name: 'phone_code', title: translate('common.phone_code') },
     { name: 'language', title: translate('common.language') },
     { name: 'action', title: translate('common.action') }
-  ]);
+  ];
 
   return (
     <div className="card">
-      <Grid
+      <BasicTable
         rows={countries.map(country => {
           const action = (
             <>
@@ -43,10 +39,8 @@ const Country = ({ translate, handleRowEdit }) => {
             action
           };
         })}
-        columns={columns}>
-        <Table />
-        <TableHeaderRow />
-      </Grid>
+        columns={columns}
+      />
     </div>
   );
 };

@@ -2,12 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 import { useSelector } from 'react-redux';
-import {
-  Grid,
-  Table,
-  TableHeaderRow
-} from '@devexpress/dx-react-grid-bootstrap4';
 
+import BasicTable from 'components/Table/basic';
 import { EditAction, DeleteAction } from 'components/ActionIcons';
 
 const Language = ({ translate }) => {
@@ -22,7 +18,7 @@ const Language = ({ translate }) => {
 
   return (
     <div className="card">
-      <Grid
+      <BasicTable
         rows={languages.map(language => {
           const action = (
             <>
@@ -37,10 +33,8 @@ const Language = ({ translate }) => {
             action
           };
         })}
-        columns={columns}>
-        <Table />
-        <TableHeaderRow />
-      </Grid>
+        columns={columns}
+      />
     </div>
   );
 };
