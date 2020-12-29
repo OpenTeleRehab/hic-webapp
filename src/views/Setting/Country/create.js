@@ -6,7 +6,6 @@ import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import { createCountry, updateCountry } from 'store/country/actions';
 import settings from 'settings';
-import { getLanguageName } from 'utils/language';
 
 const CreateCountry = ({ show, editId, handleClose }) => {
   const localize = useSelector((state) => state.localize);
@@ -33,7 +32,7 @@ const CreateCountry = ({ show, editId, handleClose }) => {
         name: country.name,
         iso_code: country.iso_code,
         phone_code: country.phone_code,
-        language: getLanguageName(country.language_id, languages)
+        language: country.language_id
       });
     }
   }, [editId, countries, languages]);
