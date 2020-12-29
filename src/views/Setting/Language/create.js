@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Col, Form } from 'react-bootstrap';
 import Dialog from 'components/Dialog';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
-import { createLanguage } from 'store/language/actions';
+import { createLanguage, updateLanguage } from 'store/language/actions';
 import settings from 'settings';
 
-const CreateLanguage = ({ show, handleClose }) => {
+const CreateLanguage = ({ show, editId, handleClose }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
 
+  const languages = useSelector(state => state.language.languages);
   const [errorName, setErrorName] = useState(false);
   const [errorCode, setErrorCode] = useState(false);
 
@@ -19,6 +20,16 @@ const CreateLanguage = ({ show, handleClose }) => {
     name: '',
     code: ''
   });
+
+  useEffect(() => {
+    if (editId && languages.length) {
+      const language = languages.find(language => language.id === editId);
+      setFormFields({
+        name: language.name,
+        code: language.code
+      });
+    }
+  }, [editId, languages]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -43,21 +54,29 @@ const CreateLanguage = ({ show, handleClose }) => {
     }
 
     if (canSave) {
-      dispatch(createLanguage(formFields)).then(result => {
-        if (result) {
-          handleClose();
-        }
-      });
+      if (editId) {
+        dispatch(updateLanguage(editId, formFields)).then(result => {
+          if (result) {
+            handleClose();
+          }
+        });
+      } else {
+        dispatch(createLanguage(formFields)).then(result => {
+          if (result) {
+            handleClose();
+          }
+        });
+      }
     }
   };
 
   return (
     <Dialog
       show={show}
-      title={translate('language.new')}
+      title={translate(editId ? 'language.edit' : 'language.new')}
       onCancel={handleClose}
       onConfirm={handleConfirm}
-      confirmLabel={translate('common.create')}
+      confirmLabel={editId ? translate('common.save') : translate('common.create')}
     >
       <Form>
         <Form.Row>
@@ -100,6 +119,7 @@ const CreateLanguage = ({ show, handleClose }) => {
 
 CreateLanguage.propTypes = {
   show: PropTypes.bool,
+  editId: PropTypes.string,
   handleClose: PropTypes.func
 };
 

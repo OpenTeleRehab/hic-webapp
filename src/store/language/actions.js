@@ -31,3 +31,18 @@ export const createLanguage = payload => async (dispatch) => {
     return false;
   }
 };
+
+export const updateLanguage = (id, payload) => async (dispatch) => {
+  dispatch(mutation.updateLanguageRequest());
+  const data = await Language.updateLanguage(id, payload);
+  if (data.success) {
+    dispatch(mutation.updateLanguageSuccess());
+    dispatch((getLanguages()));
+    dispatch(showSuccessNotification('toast_title.edit_language', data.message));
+    return true;
+  } else {
+    dispatch(mutation.updateLanguageFail());
+    dispatch(showErrorNotification('toast_title.edit_language', data.message));
+    return false;
+  }
+};

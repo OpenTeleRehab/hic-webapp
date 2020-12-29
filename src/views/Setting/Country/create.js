@@ -35,7 +35,7 @@ const CreateCountry = ({ show, editId, handleClose }) => {
         language: country.language_id
       });
     }
-  }, [editId, countries, languages]);
+  }, [editId, countries]);
 
   const handleChange = e => {
     const { name, value } = e.target;

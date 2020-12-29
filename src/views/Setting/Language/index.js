@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import BasicTable from 'components/Table/basic';
 import { EditAction, DeleteAction } from 'components/ActionIcons';
 
-const Language = ({ translate }) => {
+const Language = ({ translate, handleRowEdit }) => {
   const languages = useSelector(state => state.language.languages);
 
   const [columns] = useState([
@@ -22,7 +22,7 @@ const Language = ({ translate }) => {
         rows={languages.map(language => {
           const action = (
             <>
-              <EditAction disabled />
+              <EditAction onClick={() => handleRowEdit(language.id)} />
               <DeleteAction className="ml-1" disabled />
             </>
           );
@@ -40,7 +40,8 @@ const Language = ({ translate }) => {
 };
 
 Language.propTypes = {
-  translate: PropTypes.func
+  translate: PropTypes.func,
+  handleRowEdit: PropTypes.func
 };
 
 export default withLocalize(Language);

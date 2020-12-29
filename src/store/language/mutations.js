@@ -23,11 +23,26 @@ const createLanguageFail = () => ({
   type: 'CREATE_LANGUAGE_FAIL'
 });
 
+const updateLanguageRequest = () => ({
+  type: 'UPDATE_LANGUAGE_REQUEST'
+});
+
+const updateLanguageSuccess = () => ({
+  type: 'UPDATE_LANGUAGE_SUCCESS'
+});
+
+const updateLanguageFail = () => ({
+  type: 'UPDATE_LANGUAGE_FAIL'
+});
+
 export const mutation = {
   getLanguagesRequest,
   getLanguagesSuccess,
   getLanguagesFail,
   createLanguageFail,
   createLanguageRequest,
-  createLanguageSuccess
+  createLanguageSuccess,
+  updateLanguageRequest,
+  updateLanguageSuccess,
+  updateLanguageFail
 };
