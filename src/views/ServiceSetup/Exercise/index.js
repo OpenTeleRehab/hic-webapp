@@ -22,6 +22,7 @@ import { deleteExercise, getExercises } from 'store/exercise/actions';
 import * as ROUTES from 'variables/routes';
 import Spinner from 'react-bootstrap/Spinner';
 
+let timer = null;
 const Exercise = ({ translate }) => {
   const dispatch = useDispatch();
   const { loading, exercises } = useSelector(state => state.exercise);
@@ -35,15 +36,18 @@ const Exercise = ({ translate }) => {
   });
 
   useEffect(() => {
-    dispatch(getExercises({
-      filter: formFields,
-      page_size: pageSize,
-      page: currentPage
-    })).then(result => {
-      if (result) {
-        setTotalCount(result.total_count);
-      }
-    });
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      dispatch(getExercises({
+        filter: formFields,
+        page_size: pageSize,
+        page: currentPage
+      })).then(result => {
+        if (result) {
+          setTotalCount(result.total_count);
+        }
+      });
+    }, 500);
   }, [formFields, currentPage, pageSize, dispatch]);
 
   const handleChange = e => {
