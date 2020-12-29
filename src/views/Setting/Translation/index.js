@@ -17,7 +17,7 @@ const Translation = ({ translate }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [filterPlatform, setFilterPlatform] = useState(settings.platforms.options[0].value);
-  const [filterValue, setFilterValue] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const [filters, setFilters] = useState([]);
   const [editingRowIds, setEditingRowIds] = useState([]);
   const [showInlineEdited] = useState(true);
@@ -27,7 +27,7 @@ const Translation = ({ translate }) => {
 
   useEffect(() => {
     dispatch(getLocalizations({
-      filter_value: filterValue,
+      search_value: searchValue,
       filter_platform: filterPlatform,
       filters: filters,
       page_size: pageSize,
@@ -37,7 +37,7 @@ const Translation = ({ translate }) => {
         setTotalCount(result.total_count);
       }
     });
-  }, [currentPage, pageSize, filterValue, filters, filterPlatform, dispatch]);
+  }, [currentPage, pageSize, searchValue, filters, filterPlatform, dispatch]);
 
   const handleChange = e => {
     setFilterPlatform(e.target.value);
@@ -46,8 +46,6 @@ const Translation = ({ translate }) => {
   const commitChanges = ({ changed }) => {
     if (changed && editingRowIds) {
       const changedRows = localizations.map((row, index) => (changed[index] ? { ...row, ...changed[index] } : row));
-      console.log(changedRows);
-      console.log(changedRows[editingRowIds]);
       dispatch(updateLocalization(changedRows[editingRowIds].id, Object.values(changed)[0]));
     }
   };
@@ -89,7 +87,7 @@ const Translation = ({ translate }) => {
         setPageSize={setPageSize}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        setSearchValue={setFilterValue}
+        setSearchValue={setSearchValue}
         setFilters={setFilters}
         filters={filters}
         columns={columns}
