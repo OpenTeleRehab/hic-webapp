@@ -9,6 +9,7 @@ import settings from 'settings';
 import { getLocalizations, updateLocalization } from 'store/localization/actions';
 import Spinner from 'react-bootstrap/Spinner';
 
+let timer = null;
 const Translation = ({ translate }) => {
   const dispatch = useDispatch();
   const { localizations, loading } = useSelector(state => state.localization);
@@ -26,17 +27,20 @@ const Translation = ({ translate }) => {
   ]);
 
   useEffect(() => {
-    dispatch(getLocalizations({
-      search_value: searchValue,
-      filter_platform: filterPlatform,
-      filters: filters,
-      page_size: pageSize,
-      page: currentPage
-    })).then(result => {
-      if (result) {
-        setTotalCount(result.total_count);
-      }
-    });
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      dispatch(getLocalizations({
+        search_value: searchValue,
+        filter_platform: filterPlatform,
+        filters: filters,
+        page_size: pageSize,
+        page: currentPage
+      })).then(result => {
+        if (result) {
+          setTotalCount(result.total_count);
+        }
+      });
+    }, 500);
   }, [currentPage, pageSize, searchValue, filters, filterPlatform, dispatch]);
 
   const handleChange = e => {
