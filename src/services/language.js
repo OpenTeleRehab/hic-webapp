@@ -24,7 +24,20 @@ const createLanguage = payload => {
     });
 };
 
+const updateLanguage = (id, payload) => {
+  return axios.put(`/language/${id}`, payload)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Language = {
   getLanguage,
-  createLanguage
+  createLanguage,
+  updateLanguage
 };

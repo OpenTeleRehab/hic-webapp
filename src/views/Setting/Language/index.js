@@ -2,15 +2,11 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 import { useSelector } from 'react-redux';
-import {
-  Grid,
-  Table,
-  TableHeaderRow
-} from '@devexpress/dx-react-grid-bootstrap4';
 
+import BasicTable from 'components/Table/basic';
 import { EditAction, DeleteAction } from 'components/ActionIcons';
 
-const Language = ({ translate }) => {
+const Language = ({ translate, handleRowEdit }) => {
   const languages = useSelector(state => state.language.languages);
 
   const [columns] = useState([
@@ -22,11 +18,11 @@ const Language = ({ translate }) => {
 
   return (
     <div className="card">
-      <Grid
+      <BasicTable
         rows={languages.map(language => {
           const action = (
             <>
-              <EditAction disabled />
+              <EditAction onClick={() => handleRowEdit(language.id)} />
               <DeleteAction className="ml-1" disabled />
             </>
           );
@@ -37,16 +33,15 @@ const Language = ({ translate }) => {
             action
           };
         })}
-        columns={columns}>
-        <Table />
-        <TableHeaderRow />
-      </Grid>
+        columns={columns}
+      />
     </div>
   );
 };
 
 Language.propTypes = {
-  translate: PropTypes.func
+  translate: PropTypes.func,
+  handleRowEdit: PropTypes.func
 };
 
 export default withLocalize(Language);

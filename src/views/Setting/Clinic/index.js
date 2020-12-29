@@ -2,12 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 import { useSelector } from 'react-redux';
-import {
-  Grid,
-  Table,
-  TableHeaderRow
-} from '@devexpress/dx-react-grid-bootstrap4';
 
+import BasicTable from 'components/Table/basic';
 import { EditAction, DeleteAction } from 'components/ActionIcons';
 import { getCountryISO } from 'utils/country';
 
@@ -27,7 +23,7 @@ const Clinic = ({ translate }) => {
 
   return (
     <div className="card">
-      <Grid
+      <BasicTable
         rows={clinics.map(clinic => {
           const action = (
             <>
@@ -45,10 +41,8 @@ const Clinic = ({ translate }) => {
             action
           };
         })}
-        columns={columns}>
-        <Table />
-        <TableHeaderRow />
-      </Grid>
+        columns={columns}
+      />
     </div>
   );
 };
