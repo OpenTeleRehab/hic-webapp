@@ -13,8 +13,9 @@ const getExercises = payload => {
     });
 };
 
-const getExercise = id => {
-  return axios.get(`/exercise/${id}`)
+const getExercise = (id, lanuage) => {
+  const langParam = lanuage ? `?lang=${lanuage}` : '';
+  return axios.get(`/exercise/${id}` + langParam)
     .then(
       res => {
         return res.data;

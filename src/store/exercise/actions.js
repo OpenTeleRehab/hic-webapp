@@ -15,10 +15,10 @@ export const getExercises = payload => async dispatch => {
   }
 };
 
-export const getExercise = id => async dispatch => {
+export const getExercise = (id, lanuage) => async dispatch => {
   dispatch(mutation.getExerciseRequest());
   dispatch(showSpinner(true));
-  const data = await Exercise.getExercise(id);
+  const data = await Exercise.getExercise(id, lanuage);
   if (data) {
     dispatch(mutation.getExerciseSuccess(data.data));
     dispatch(showSpinner(false));
