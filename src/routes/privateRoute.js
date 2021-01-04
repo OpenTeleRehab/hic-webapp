@@ -13,7 +13,6 @@ const PrivateRoute = ({ children, title, roles, ...rest }) => {
       {...rest}
       render={() => {
         if (keycloak.authenticated === false) {
-          console.log(keycloak.authenticated);
           keycloak.login();
           return;
         }
@@ -29,8 +28,7 @@ const PrivateRoute = ({ children, title, roles, ...rest }) => {
         }
 
         return children;
-      }
-      }
+      }}
     />
   );
 };

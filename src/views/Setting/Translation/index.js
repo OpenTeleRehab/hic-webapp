@@ -55,14 +55,10 @@ const Translation = ({ translate }) => {
   };
 
   const columns = [
-    { name: 'key', title: translate('common.key') },
-    { name: 'en', title: translate('common.english') }
+    { name: 'key', title: translate('common.key') }
   ];
 
   languages.forEach(lang => {
-    if (lang.code === 'en') {
-      languages.splice(lang.code, 1);
-    }
     columns.push({ name: lang.code, title: lang.name });
   });
 
@@ -102,8 +98,7 @@ const Translation = ({ translate }) => {
         setEditingRowIds={setEditingRowIds}
         rows={localizations.map(localization => {
           const data = {
-            key: localization.key,
-            en: localization.en
+            key: localization.key
           };
           languages.forEach(lang => {
             data[lang.code] = localization[lang.code] || '';

@@ -26,7 +26,9 @@ const CreateExercise = ({ translate }) => {
   const history = useHistory();
   const { id } = useParams();
 
+  const languages = useSelector(state => state.language.languages);
   const { exercise } = useSelector(state => state.exercise);
+  const [lanuage, setLanuge] = useState('');
   const [formFields, setFormFields] = useState({
     title: '',
     include_feedback: true,
@@ -43,9 +45,9 @@ const CreateExercise = ({ translate }) => {
 
   useEffect(() => {
     if (id) {
-      dispatch(getExercise(id));
+      dispatch(getExercise(id, lanuage));
     }
-  }, [id, dispatch]);
+  }, [id, lanuage, dispatch]);
 
   useEffect(() => {
     if (id && exercise.id) {
@@ -58,6 +60,11 @@ const CreateExercise = ({ translate }) => {
       setInputFields(exercise.additional_fields || []);
     }
   }, [id, exercise]);
+
+  const handleLanguageChange = e => {
+    const { value } = e.target;
+    setLanuge(value);
+  };
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -125,7 +132,7 @@ const CreateExercise = ({ translate }) => {
     if (canSave) {
       setIsLoading(true);
       if (id) {
-        dispatch(updateExercise(id, { ...formFields, additional_fields: JSON.stringify(inputFields) }, mediaUploads))
+        dispatch(updateExercise(id, { ...formFields, additional_fields: JSON.stringify(inputFields), lang: lanuage }, mediaUploads))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
@@ -133,7 +140,7 @@ const CreateExercise = ({ translate }) => {
             }
           });
       } else {
-        dispatch(createExercise({ ...formFields, additional_fields: JSON.stringify(inputFields) }, mediaUploads))
+        dispatch(createExercise({ ...formFields, additional_fields: JSON.stringify(inputFields), lang: lanuage }, mediaUploads))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
@@ -247,8 +254,12 @@ const CreateExercise = ({ translate }) => {
           <Col sm={6} xl={4}>
             <Form.Group controlId="formLanguage">
               <Form.Label>{translate('common.show_language.version')}</Form.Label>
-              <Form.Control as="select">
-                <option>{translate('placeholder.default_language')}</option>
+              <Form.Control as="select" onChange={handleLanguageChange}>
+                {languages.map((language, index) => (
+                  <option key={index} value={language.id}>
+                    {language.name} {language.code === language.fallback && `(${translate('common.default')})`}
+                  </option>
+                ))}
               </Form.Control>
             </Form.Group>
             <h4>{translate('exercise.information')}</h4>
