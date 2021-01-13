@@ -26,9 +26,11 @@ const CreateExercise = ({ translate }) => {
   const history = useHistory();
   const { id } = useParams();
 
-  const languages = useSelector(state => state.language.languages);
-  const { exercise } = useSelector(state => state.exercise);
-  const [lanuage, setLanuge] = useState('');
+  const { profile } = useSelector((state) => state.auth);
+  const { languages } = useSelector(state => state.language);
+  const { exercise, filters } = useSelector(state => state.exercise);
+
+  const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
     title: '',
     include_feedback: true,
@@ -44,10 +46,18 @@ const CreateExercise = ({ translate }) => {
   const [inputValueError, setInputValueError] = useState([]);
 
   useEffect(() => {
-    if (id) {
-      dispatch(getExercise(id, lanuage));
+    if (filters && filters.lang) {
+      setLanguage(filters.lang);
+    } else if (profile && profile.language_id) {
+      setLanguage(profile.language_id);
     }
-  }, [id, lanuage, dispatch]);
+  }, [filters, profile]);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getExercise(id, language));
+    }
+  }, [id, language, dispatch]);
 
   useEffect(() => {
     if (id && exercise.id) {
@@ -63,7 +73,7 @@ const CreateExercise = ({ translate }) => {
 
   const handleLanguageChange = e => {
     const { value } = e.target;
-    setLanuge(value);
+    setLanguage(value);
   };
 
   const handleChange = e => {
@@ -132,7 +142,7 @@ const CreateExercise = ({ translate }) => {
     if (canSave) {
       setIsLoading(true);
       if (id) {
-        dispatch(updateExercise(id, { ...formFields, additional_fields: JSON.stringify(inputFields), lang: lanuage }, mediaUploads))
+        dispatch(updateExercise(id, { ...formFields, additional_fields: JSON.stringify(inputFields), lang: language }, mediaUploads))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
@@ -140,7 +150,7 @@ const CreateExercise = ({ translate }) => {
             }
           });
       } else {
-        dispatch(createExercise({ ...formFields, additional_fields: JSON.stringify(inputFields), lang: lanuage }, mediaUploads))
+        dispatch(createExercise({ ...formFields, additional_fields: JSON.stringify(inputFields), lang: language }, mediaUploads))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
@@ -254,7 +264,7 @@ const CreateExercise = ({ translate }) => {
           <Col sm={6} xl={4}>
             <Form.Group controlId="formLanguage">
               <Form.Label>{translate('common.show_language.version')}</Form.Label>
-              <Form.Control as="select" onChange={handleLanguageChange}>
+              <Form.Control as="select" value={id ? language : ''} onChange={handleLanguageChange} disabled={!id}>
                 {languages.map((language, index) => (
                   <option key={index} value={language.id}>
                     {language.name} {language.code === language.fallback && `(${translate('common.default')})`}
