@@ -25,20 +25,33 @@ import Spinner from 'react-bootstrap/Spinner';
 let timer = null;
 const Exercise = ({ translate }) => {
   const dispatch = useDispatch();
-  const { loading, exercises } = useSelector(state => state.exercise);
+  const { loading, exercises, filters } = useSelector(state => state.exercise);
+  const { profile } = useSelector((state) => state.auth);
+  const { languages } = useSelector(state => state.language);
+
   const [deletedId, setDeletedId] = useState(null);
   const [show, setShow] = useState(false);
   const [pageSize, setPageSize] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+  const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
     search_value: ''
   });
 
   useEffect(() => {
+    if (filters && filters.lang) {
+      setLanguage(filters.lang);
+    } else if (profile && profile.language_id) {
+      setLanguage(profile.language_id);
+    }
+  }, [filters, profile]);
+
+  useEffect(() => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       dispatch(getExercises({
+        lang: language,
         filter: formFields,
         page_size: pageSize,
         page: currentPage
@@ -48,11 +61,16 @@ const Exercise = ({ translate }) => {
         }
       });
     }, 500);
-  }, [formFields, currentPage, pageSize, dispatch]);
+  }, [language, formFields, currentPage, pageSize, dispatch]);
 
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
+  };
+
+  const handleLanguageChange = e => {
+    const { value } = e.target;
+    setLanguage(value);
   };
 
   const handleClearSearch = () => {
@@ -120,6 +138,16 @@ const Exercise = ({ translate }) => {
                 <Form.Control as="select" disabled>
                   <option>{translate('placeholder.category_item')}</option>
                   <option>{translate('placeholder.category_item')}</option>
+                </Form.Control>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>{translate('common.language')}</Form.Label>
+                <Form.Control as="select" value={language} onChange={handleLanguageChange}>
+                  {languages.map((language, index) => (
+                    <option key={index} value={language.id}>
+                      {language.name} {language.code === language.fallback && `(${translate('common.default')})`}
+                    </option>
+                  ))}
                 </Form.Control>
               </Form.Group>
             </Card.Body>
