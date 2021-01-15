@@ -18,6 +18,7 @@ import { language } from 'store/language/reducers';
 import { auth } from 'store/auth/reducers';
 import { exercise } from 'store/exercise/reducers';
 import { localization } from 'store/localization/reducers';
+import { termAndCondition } from 'store/termAndCondition/reducers';
 
 export const rootReducer = {
   localize: localizeReducer,
@@ -32,7 +33,8 @@ export const rootReducer = {
   defaultLimitedPatient,
   auth,
   exercise,
-  localization
+  localization,
+  termAndCondition
 };
 
 const devTool =
