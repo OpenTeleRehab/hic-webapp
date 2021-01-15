@@ -12,7 +12,8 @@ const Dialog = (props) => {
     cancelLabel,
     confirmLabel,
     disabled,
-    children
+    children,
+    ...rest
   } = props;
 
   return (
@@ -20,6 +21,7 @@ const Dialog = (props) => {
       show={show}
       onHide={onCancel}
       backdrop="static"
+      {...rest}
     >
       <Modal.Header closeButton>
         <Modal.Title>{title}</Modal.Title>

@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 
 import Country from 'views/Setting/Country';
 import Translation from 'views/Setting/Translation';
+import TermAndCondition from 'views/Setting/TermAndCondition';
 import SystemLimit from 'views/Setting/SystemLimit';
 import Clinic from 'views/Setting/Clinic';
 import Profession from 'views/Setting/Profession';
@@ -17,9 +18,11 @@ import { USER_ROLES, SETTING_ROLES } from 'variables/user';
 import CreateCountry from 'views/Setting/Country/create';
 import CreateClinic from 'views/Setting/Clinic/create';
 import CreateLanguage from 'views/Setting/Language/create';
+import CreateTermAndCondition from 'views/Setting/TermAndCondition/create';
 
 const VIEW_COUNTRY = 'country';
 const VIEW_TRANSLATION = 'translation';
+const VIEW_TERM_AND_CONDITION = 'term_and_condition';
 const VIEW_SYSTEM_LIMIT = 'system_limit';
 const VIEW_CLINIC = 'clinic';
 const VIEW_PROFESSION = 'profession';
@@ -36,6 +39,8 @@ const Setting = ({ translate }) => {
   useEffect(() => {
     if (hash.includes('#' + VIEW_TRANSLATION)) {
       setView(VIEW_TRANSLATION);
+    } else if (hash.includes('#' + VIEW_TERM_AND_CONDITION)) {
+      setView(VIEW_TERM_AND_CONDITION);
     } else if (hash.includes('#' + VIEW_SYSTEM_LIMIT)) {
       setView(VIEW_SYSTEM_LIMIT);
     } else if (hash.includes('#' + VIEW_CLINIC)) {
@@ -72,7 +77,7 @@ const Setting = ({ translate }) => {
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1>{translate('setting')}</h1>
-        {[VIEW_COUNTRY, VIEW_LANGUAGE, VIEW_CLINIC].map(v => {
+        {[VIEW_COUNTRY, VIEW_LANGUAGE, VIEW_TERM_AND_CONDITION, VIEW_CLINIC].map(v => {
           if (v === view) {
             return (
               <div className="btn-toolbar mb-2 mb-md-0">
@@ -89,6 +94,7 @@ const Setting = ({ translate }) => {
 
       {show && view === VIEW_COUNTRY && <CreateCountry show={show} editId={editId} handleClose={handleClose} />}
       {show && view === VIEW_LANGUAGE && <CreateLanguage show={show} editId={editId} handleClose={handleClose} />}
+      {show && view === VIEW_TERM_AND_CONDITION && <CreateTermAndCondition show={show} editId={editId} handleClose={handleClose} />}
       {show && view === VIEW_CLINIC && <CreateClinic show={show} handleClose={handleClose} />}
 
       <Nav variant="tabs" activeKey={view} className="mb-3">
@@ -110,6 +116,13 @@ const Setting = ({ translate }) => {
           <Nav.Item>
             <Nav.Link as={Link} to={ROUTES.SETTING_TRANSLATIONS} eventKey={VIEW_TRANSLATION}>
               {translate('setting.translations')}
+            </Nav.Link>
+          </Nav.Item>
+        )}
+        { keycloak.hasRealmRole(USER_ROLES.MANAGE_SYSTEM_LIMIT) && (
+          <Nav.Item>
+            <Nav.Link as={Link} to={ROUTES.SETTING_TERM_AND_CONDITION} eventKey={VIEW_TERM_AND_CONDITION}>
+              {translate('setting.term_and_conditions')}
             </Nav.Link>
           </Nav.Item>
         )}
@@ -139,6 +152,7 @@ const Setting = ({ translate }) => {
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY) && view === VIEW_COUNTRY && <Country handleRowEdit={handleEdit} /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_LANGUAGE) && view === VIEW_LANGUAGE && <Language handleRowEdit={handleEdit} /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_TRANSLATION) && view === VIEW_TRANSLATION && <Translation /> }
+      { keycloak.hasRealmRole(USER_ROLES.MANAGE_SYSTEM_LIMIT) && view === VIEW_TERM_AND_CONDITION && <TermAndCondition handleRowEdit={handleEdit} /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_SYSTEM_LIMIT) && view === VIEW_SYSTEM_LIMIT && <SystemLimit /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_CLINIC) && view === VIEW_CLINIC && <Clinic /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_PROFESSION) && view === VIEW_PROFESSION && <Profession /> }
