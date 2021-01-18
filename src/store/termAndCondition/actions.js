@@ -23,11 +23,11 @@ export const createTermAndCondition = payload => async (dispatch) => {
   if (data.success) {
     dispatch(mutation.createTermAndConditionSuccess());
     dispatch(getTermAndConditions());
-    dispatch(showSuccessNotification('toast_title.new_country', data.message));
+    dispatch(showSuccessNotification('toast_title.new_term_and_condition', data.message));
     return true;
   } else {
     dispatch(mutation.createTermAndConditionFail());
-    dispatch(showErrorNotification('toast_title.new_country', data.message));
+    dispatch(showErrorNotification('toast_title.new_term_and_condition', data.message));
     return false;
   }
 };
@@ -38,11 +38,26 @@ export const updateTermAndCondition = (id, payload) => async (dispatch) => {
   if (data.success) {
     dispatch(mutation.updateTermAndConditionSuccess());
     dispatch(getTermAndConditions());
-    dispatch(showSuccessNotification('toast_title.edit_country', data.message));
+    dispatch(showSuccessNotification('toast_title.edit_term_and_condition', data.message));
     return true;
   } else {
     dispatch(mutation.updateTermAndConditionFail());
-    dispatch(showErrorNotification('toast_title.edit_country', data.message));
+    dispatch(showErrorNotification('toast_title.edit_term_and_condition', data.message));
+    return false;
+  }
+};
+
+export const publishTermAndCondition = id => async (dispatch) => {
+  // dispatch(mutation.updateTermAndConditionRequest());
+  const data = await TermAndCondition.publishTermAndCondition(id);
+  if (data.success) {
+    // dispatch(mutation.updateTermAndConditionSuccess());
+    dispatch(getTermAndConditions());
+    dispatch(showSuccessNotification('toast_title.publish_term_and_condition', data.message));
+    return true;
+  } else {
+    dispatch(mutation.updateTermAndConditionFail());
+    dispatch(showErrorNotification('toast_title.publish_term_and_condition', data.message));
     return false;
   }
 };

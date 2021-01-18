@@ -36,8 +36,21 @@ const updateTermAndCondition = (id, payload) => {
     });
 };
 
+const publishTermAndCondition = id => {
+  return axios.post(`/term-condition/publish/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const TermAndCondition = {
   getTermAndConditions,
   createTermAndCondition,
-  updateTermAndCondition
+  updateTermAndCondition,
+  publishTermAndCondition
 };
