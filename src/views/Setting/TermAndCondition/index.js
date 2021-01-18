@@ -1,10 +1,14 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import BasicTable from '../../../components/Table/basic';
-import { DeleteAction, EditAction } from '../../../components/ActionIcons';
+import * as moment from 'moment';
+
+import settings from 'settings';
+import BasicTable from 'components/Table/basic';
+import { DeleteAction, EditAction, PublishAction } from 'components/ActionIcons';
 import { useDispatch, useSelector } from 'react-redux';
-import { getTermAndConditions } from '../../../store/termAndCondition/actions';
+import { getTermAndConditions, publishTermAndCondition } from 'store/termAndCondition/actions';
+import { Badge } from 'react-bootstrap';
 
 const TermAndCondition = ({ translate, handleRowEdit }) => {
   const dispatch = useDispatch();
@@ -22,21 +26,37 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
     dispatch(getTermAndConditions());
   }, [dispatch]);
 
+  const handlePublish = (id) => {
+    dispatch(publishTermAndCondition(id));
+  };
+
   return (
     <div className="card">
       <BasicTable
         rows={termAndConditions.map(term => {
+          const publishedDate = term.published_date;
           const action = (
             <>
+              <PublishAction onClick={() => handlePublish(term.id)} disabled={publishedDate} />
               <EditAction onClick={() => handleRowEdit(term.id)} />
               <DeleteAction className="ml-1" disabled />
             </>
           );
+          const status = publishedDate ? (
+            <Badge pill variant="success">
+              {translate('term_and_condition.status_published')}
+            </Badge>
+          ) : (
+            <Badge pill variant="warning">
+              {translate('term_and_condition.status_draft')}
+            </Badge>
+          );
+
           return {
             version: term.version,
             content: term.content,
-            status: '',
-            published_date: term.published_date,
+            status: status,
+            published_date: publishedDate ? moment(publishedDate).format(settings.date_format) : '',
             action
           };
         })}
