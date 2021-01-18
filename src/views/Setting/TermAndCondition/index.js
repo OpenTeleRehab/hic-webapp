@@ -1,18 +1,22 @@
-import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { withLocalize } from 'react-localize-redux';
+import { Badge } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import * as moment from 'moment';
 
 import settings from 'settings';
 import BasicTable from 'components/Table/basic';
 import { DeleteAction, EditAction, PublishAction } from 'components/ActionIcons';
-import { useDispatch, useSelector } from 'react-redux';
 import { getTermAndConditions, publishTermAndCondition } from 'store/termAndCondition/actions';
-import { Badge } from 'react-bootstrap';
+import Dialog from 'components/Dialog';
 
 const TermAndCondition = ({ translate, handleRowEdit }) => {
   const dispatch = useDispatch();
   const { termAndConditions } = useSelector(state => state.termAndCondition);
+
+  const [showPublishedDialog, setShowPublishedDialog] = useState(false);
+  const [publishedId, setPublishedId] = useState(null);
 
   const columns = [
     { name: 'version', title: translate('term_and_condition.version') },
@@ -27,7 +31,21 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
   }, [dispatch]);
 
   const handlePublish = (id) => {
-    dispatch(publishTermAndCondition(id));
+    setPublishedId(id);
+    setShowPublishedDialog(true);
+  };
+
+  const handlePublishedDialogConfirm = () => {
+    dispatch(publishTermAndCondition(publishedId)).then(result => {
+      if (result) {
+        handlePublishedDialogClose();
+      }
+    });
+  };
+
+  const handlePublishedDialogClose = () => {
+    setPublishedId(null);
+    setShowPublishedDialog(false);
   };
 
   return (
@@ -38,7 +56,7 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
           const action = (
             <>
               <PublishAction onClick={() => handlePublish(term.id)} disabled={publishedDate} />
-              <EditAction onClick={() => handleRowEdit(term.id)} />
+              <EditAction className="ml-1" onClick={() => handleRowEdit(term.id)} />
               <DeleteAction className="ml-1" disabled />
             </>
           );
@@ -62,6 +80,17 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
         })}
         columns={columns}
       />
+
+      <Dialog
+        show={showPublishedDialog}
+        title={translate('term_and_condition.publish_confirmation_title')}
+        cancelLabel={translate('common.no')}
+        onCancel={handlePublishedDialogClose}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handlePublishedDialogConfirm}
+      >
+        <p>{translate('term_and_condition.publish_confirmation_message')}</p>
+      </Dialog>
     </div>
   );
 };
