@@ -59,7 +59,8 @@ const CreateCountry = ({ show, editId, handleClose }) => {
       setErrorIsoCode(false);
     }
 
-    if (formFields.phone_code === '') {
+    const pattern = new RegExp(/^[0-9\b]+$/);
+    if (formFields.phone_code === '' || !pattern.test(formFields.phone_code)) {
       canSave = false;
       setErrorPhoneCode(true);
     } else {
@@ -138,7 +139,7 @@ const CreateCountry = ({ show, editId, handleClose }) => {
               maxLength={settings.phoneCodeMaxLength}
             />
             <Form.Control.Feedback type="invalid">
-              {translate('error.country.phone_code')}
+              { errorPhoneCode && formFields.phone_code === '' ? translate('error.country.phone_code') : translate('error.country.phone_code.format') }
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} controlId="formLanguage">
