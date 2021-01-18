@@ -34,7 +34,7 @@ const Translation = ({ translate }) => {
         filter_platform: filterPlatform,
         filters: filters,
         page_size: pageSize,
-        page: currentPage
+        page: currentPage + 1
       })).then(result => {
         if (result) {
           setTotalCount(result.total_count);
