@@ -9,6 +9,7 @@ import settings from 'settings';
 import BasicTable from 'components/Table/basic';
 import { DeleteAction, EditAction, PublishAction } from 'components/ActionIcons';
 import { getTermAndConditions, publishTermAndCondition } from 'store/termAndCondition/actions';
+import { STATUS_VARIANTS } from 'variables/termAndCondition';
 import Dialog from 'components/Dialog';
 
 const TermAndCondition = ({ translate, handleRowEdit }) => {
@@ -56,20 +57,15 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
           const action = (
             <>
               <PublishAction onClick={() => handlePublish(term.id)} disabled={publishedDate} />
-              <EditAction className="ml-1" onClick={() => handleRowEdit(term.id)} />
+              <EditAction className="ml-1" onClick={() => handleRowEdit(term.id)} disabled={publishedDate} />
               <DeleteAction className="ml-1" disabled />
             </>
           );
-          const status = publishedDate ? (
-            <Badge pill variant="success">
-              {translate('term_and_condition.status_published')}
-            </Badge>
-          ) : (
-            <Badge pill variant="warning">
-              {translate('term_and_condition.status_draft')}
+          const status = term.status && (
+            <Badge pill variant={STATUS_VARIANTS[term.status]}>
+              {translate('term_and_condition.status_' + term.status)}
             </Badge>
           );
-
           return {
             version: term.version,
             content: term.content,
