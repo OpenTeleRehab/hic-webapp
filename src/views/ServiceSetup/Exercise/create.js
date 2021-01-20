@@ -55,7 +55,7 @@ const CreateExercise = ({ translate }) => {
     sets: '',
     reps: ''
   });
-  const [inputFields, setInputFields] = useState([]);
+  const [additionalFields, setAdditionalFields] = useState([]);
 
   const [titleError, setTitleError] = useState(false);
   const [setsError, setSetsError] = useState(false);
@@ -93,7 +93,7 @@ const CreateExercise = ({ translate }) => {
   }, [categoryTreeData]);
 
   useEffect(() => {
-    if (id && language) {
+    if (id) {
       dispatch(getExercise(id, language));
     }
   }, [id, language, dispatch]);
@@ -109,8 +109,8 @@ const CreateExercise = ({ translate }) => {
         sets: exercise.sets,
         reps: exercise.reps
       });
+      setAdditionalFields(exercise.additional_fields);
       setMediaUploads(exercise.files);
-      setInputFields(exercise.additional_fields || []);
       if (categoryTreeData.length) {
         const rootCategoryStructure = {};
         categoryTreeData.forEach(category => {
@@ -142,19 +142,24 @@ const CreateExercise = ({ translate }) => {
   };
 
   const handleChangeInput = (index, e) => {
-    const values = [...inputFields];
+    const values = [...additionalFields];
     values[index][e.target.name] = e.target.value;
-    setInputFields(values);
+    setAdditionalFields(values);
   };
 
   const handleRemoveFields = (index) => {
-    const values = [...inputFields];
+    const values = [...additionalFields];
     values.splice(index, 1);
-    setInputFields(values);
+    setAdditionalFields(values);
   };
 
   const handleAddFields = () => {
-    setInputFields([...inputFields, { field: '', value: '' }]);
+    setAdditionalFields([...additionalFields, { field: '', value: '' }]);
+  };
+
+  const enableButtons = () => {
+    const languageObj = languages.find(item => item.id === parseInt(language, 10));
+    return languageObj && languageObj.code === languageObj.fallback;
   };
 
   const handleSave = () => {
@@ -176,15 +181,15 @@ const CreateExercise = ({ translate }) => {
 
     const errorInputFields = [];
     const errorValueFields = [];
-    for (let i = 0; i < inputFields.length; i++) {
-      if (inputFields[i].field === '') {
+    for (let i = 0; i < additionalFields.length; i++) {
+      if (additionalFields[i].field === '') {
         canSave = false;
         errorInputFields.push(true);
       } else {
         errorInputFields.push(false);
       }
 
-      if (inputFields[i].value === '') {
+      if (additionalFields[i].value === '') {
         canSave = false;
         errorValueFields.push(true);
       } else {
@@ -225,7 +230,7 @@ const CreateExercise = ({ translate }) => {
         sets: formFields.show_sets_reps ? formFields.sets : 0,
         reps: formFields.show_sets_reps ? formFields.reps : 0,
         include_feedback: formFields.show_sets_reps && formFields.include_feedback,
-        additional_fields: JSON.stringify(inputFields),
+        additional_fields: JSON.stringify(additionalFields),
         categories: serializedSelectedCats,
         lang: language
       };
@@ -481,27 +486,29 @@ const CreateExercise = ({ translate }) => {
             </Accordion>
 
             {
-              inputFields.map((inputField, index) => (
+              additionalFields.map((additionalField, index) => (
                 <Card key={index} className="bg-light mb-3 additional-field">
                   <Card.Body>
-                    <div className="remove-btn-container">
-                      <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{translate('common.remove')}</Tooltip>}>
-                        <Button
-                          variant="outline-danger"
-                          className="btn-remove"
-                          onClick={() => handleRemoveFields(index)}
-                        >
-                          <BsX size={20} />
-                        </Button>
-                      </OverlayTrigger>
-                    </div>
+                    {enableButtons() &&
+                      <div className="remove-btn-container">
+                        <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{translate('common.remove')}</Tooltip>}>
+                          <Button
+                            variant="outline-danger"
+                            className="btn-remove"
+                            onClick={() => handleRemoveFields(index)}
+                          >
+                            <BsX size={20} />
+                          </Button>
+                        </OverlayTrigger>
+                      </div>
+                    }
                     <Form.Group controlId={`formLabel${index}`}>
                       <Form.Label>{translate('exercise.additional_field.label')}</Form.Label>
                       <span className="text-dark ml-1">*</span>
                       <Form.Control
                         name="field"
                         placeholder={translate('exercise.additional_field.placeholder.label')}
-                        value={inputField.field}
+                        value={additionalField.field}
                         onChange={e => handleChangeInput(index, e)}
                         isInvalid={inputFieldError[index]}
                       />
@@ -517,7 +524,7 @@ const CreateExercise = ({ translate }) => {
                         as="textarea"
                         rows={3}
                         placeholder={translate('exercise.additional_field.placeholder.value')}
-                        value={inputField.value}
+                        value={additionalField.value}
                         onChange={event => handleChangeInput(index, event)}
                         isInvalid={inputValueError[index]}
                       />
@@ -530,6 +537,7 @@ const CreateExercise = ({ translate }) => {
               ))
             }
 
+            { enableButtons() &&
             <Form.Group>
               <Button
                 variant="link"
@@ -539,6 +547,7 @@ const CreateExercise = ({ translate }) => {
                 <BsPlus size={20} /> {translate('exercise.additional_field.add_more_field')}
               </Button>
             </Form.Group>
+            }
 
             <Form.Group>
               <Button

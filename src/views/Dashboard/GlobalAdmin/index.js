@@ -52,7 +52,7 @@ const GlobalAdminDashboard = () => {
     if (!_.isEmpty(globalAdminData) && countries.length) {
       const labels = [];
       const data = [];
-      countries.map(country => {
+      countries.forEach(country => {
         labels.push(country.name);
         const numberByCountry = globalAdminData.therapistData.data.therapistsByCountry.find(item => item.country_id === country.id);
         data.push(numberByCountry ? numberByCountry.total : 0);
