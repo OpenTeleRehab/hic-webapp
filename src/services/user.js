@@ -50,8 +50,21 @@ const updateUser = (id, payload) => {
     });
 };
 
+const deleteUser = (id, payload) => {
+  return customAxios.delete(`/admin/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const User = {
   createUser,
   getUsers,
-  updateUser
+  updateUser,
+  deleteUser
 };
