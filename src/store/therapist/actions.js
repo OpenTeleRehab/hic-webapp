@@ -54,3 +54,31 @@ export const getTherapists = payload => async dispatch => {
     }
   }
 };
+
+export const deleteTherapistUser = (id, type) => async (dispatch, getState) => {
+  dispatch(mutation.deleteTherapistsRequest());
+  const data = await Therapist.deleteTherapistUser(id);
+  if (data.success) {
+    dispatch(mutation.deleteTherapistsSuccess());
+    const filters = getState().therapist.filters;
+    dispatch(getTherapists(filters));
+    dispatch(showSuccessNotification('toast_title.delete_therapist_account', data.message));
+    return true;
+  } else {
+    dispatch(mutation.deleteTherapistsFail());
+    dispatch(showErrorNotification('toast_title.delete_therapist_account', data.message));
+    return false;
+  }
+};
+
+export const getPatients = payload => async (dispatch, getState) => {
+  dispatch(mutation.getPatientRequest());
+  const data = await Therapist.getPatients(payload);
+  if (data.success) {
+    dispatch(mutation.getPatientSuccess(data.data));
+    return data.info;
+  } else {
+    dispatch(mutation.getPatientFail());
+    return false;
+  }
+};

@@ -36,6 +36,31 @@ const getTherapistsFail = () => ({
   type: 'GET_THERAPISTS_FAIL'
 });
 
+const deleteTherapistsRequest = () => ({
+  type: 'DELETE_THERAPISTS_REQUEST'
+});
+
+const deleteTherapistsSuccess = () => ({
+  type: 'DELETE_THERAPISTS_SUCCESS'
+});
+
+const deleteTherapistsFail = () => ({
+  type: 'DELETE_THERAPISTS_FAIL'
+});
+
+const getPatientRequest = () => ({
+  type: 'GET_PATIENT_REQUEST'
+});
+
+const getPatientSuccess = (data) => ({
+  type: 'GET_PATIENT_SUCCESS',
+  data
+});
+
+const getPatientFail = () => ({
+  type: 'GET_PATIENT_FAIL'
+});
+
 export const mutation = {
   createTherapistRequest,
   createTherapistSuccess,
@@ -45,5 +70,11 @@ export const mutation = {
   updateTherapistFail,
   getTherapistsRequest,
   getTherapistsSuccess,
-  getTherapistsFail
+  getTherapistsFail,
+  deleteTherapistsRequest,
+  deleteTherapistsSuccess,
+  deleteTherapistsFail,
+  getPatientRequest,
+  getPatientSuccess,
+  getPatientFail
 };

@@ -8,17 +8,21 @@ import CustomTable from 'components/Table';
 import EnabledStatus from 'components/EnabledStatus';
 import { EditAction, DeleteAction } from 'components/ActionIcons';
 import CreateTherapist from 'views/Therapist/create';
-import { getTherapists } from 'store/therapist/actions';
+import { getTherapists, deleteTherapistUser, getPatients } from 'store/therapist/actions';
 import { getCountryName } from 'utils/country';
 import { getClinicName } from 'utils/clinic';
 import * as moment from 'moment';
 import settings from 'settings';
+import Dialog from 'components/Dialog';
+
+import { getPatient } from 'utils/patient';
 
 let timer = null;
 
 const Therapist = ({ translate }) => {
   const dispatch = useDispatch();
   const therapists = useSelector(state => state.therapist.therapists);
+  const patients = useSelector(state => state.patient.patients);
   const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
 
@@ -51,6 +55,8 @@ const Therapist = ({ translate }) => {
   const [totalCount, setTotalCount] = useState(0);
   const [searchValue, setSearchValue] = useState('');
   const [filters, setFilters] = useState([]);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [id, setId] = useState(null);
 
   useEffect(() => {
     setCurrentPage(0);
@@ -84,6 +90,31 @@ const Therapist = ({ translate }) => {
     setShow(false);
   };
 
+  const handleDelete = (id) => {
+    setId(id);
+    setShowDeleteDialog(true);
+  };
+
+  const handleDeleteDialogClose = () => {
+    setId(null);
+    setShowDeleteDialog(false);
+  };
+
+  const handleDeleteDialogConfirm = () => {
+    dispatch(deleteTherapistUser(id)).then(result => {
+      if (result) {
+        handleDeleteDialogClose();
+      }
+    });
+  };
+
+  useEffect(() => {
+    dispatch(getPatients({
+      page_size: pageSize,
+      page: currentPage + 1
+    }));
+  }, [currentPage, pageSize, dispatch]);
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
@@ -111,7 +142,7 @@ const Therapist = ({ translate }) => {
           const action = (
             <>
               <EditAction onClick={() => handleEdit(user.id)} />
-              <DeleteAction className="ml-1" disabled />
+              <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={!!getPatient(user.id, patients) }/>
             </>
           );
 
@@ -128,6 +159,16 @@ const Therapist = ({ translate }) => {
           };
         })}
       />
+      <Dialog
+        show={showDeleteDialog}
+        title={translate('therapist.delete_confirmation_title')}
+        cancelLabel={translate('common.no')}
+        onCancel={handleDeleteDialogClose}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handleDeleteDialogConfirm}
+      >
+        <p>{translate('common.delete_confirmation_message')}</p>
+      </Dialog>
     </>
   );
 };

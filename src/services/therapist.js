@@ -1,4 +1,5 @@
 import customAxios from 'utils/therapist-axios';
+import patientAxios from 'utils/patient-axios';
 import axios from 'axios';
 
 window.getUserAxiosCancel = undefined;
@@ -52,8 +53,36 @@ const getTherapists = payload => {
     });
 };
 
+const deleteTherapistUser = (id) => {
+  return customAxios.delete(`/therapist/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const getPatients = payload => {
+  return patientAxios.get('/patient', {
+    params: payload
+  })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Therapist = {
   createTherapist,
   updateTherapist,
-  getTherapists
+  getTherapists,
+  deleteTherapistUser,
+  getPatients
 };
