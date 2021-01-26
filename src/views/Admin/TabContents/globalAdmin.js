@@ -87,7 +87,7 @@ const GlobalAdmin = ({ handleEdit, handleDelete, type }) => {
 
           return {
             last_name: user.last_name,
-            first_name: user.first_name + ' ' + user.id,
+            first_name: user.first_name,
             email: user.email,
             status: <EnabledStatus enabled={!!user.enabled} />,
             last_login: moment(user.last_login).format(settings.date_format),
