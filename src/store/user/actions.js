@@ -60,7 +60,7 @@ export const updateUser = (id, payload) => async (dispatch, getState) => {
   }
 };
 
-export const deleteUser = (id, type) => async (dispatch, getState) => {
+export const deleteUser = (id) => async (dispatch, getState) => {
   dispatch(mutation.deleteUserRequest());
   const data = await User.deleteUser(id);
   if (data.success) {
