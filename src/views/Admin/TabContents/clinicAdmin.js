@@ -14,7 +14,7 @@ import settings from 'settings';
 import { getTranslate } from 'react-localize-redux';
 
 let timer = null;
-const ClinicAdmin = ({ handleEdit, type }) => {
+const ClinicAdmin = ({ handleEdit, handleDelete, type }) => {
   const dispatch = useDispatch();
   const users = useSelector(state => state.user.users);
   const countries = useSelector(state => state.country.countries);
@@ -86,7 +86,7 @@ const ClinicAdmin = ({ handleEdit, type }) => {
           const action = (
             <>
               <EditAction onClick={() => handleEdit(user.id)} />
-              <DeleteAction className="ml-1" disabled />
+              <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} />
             </>
           );
 
@@ -108,7 +108,8 @@ const ClinicAdmin = ({ handleEdit, type }) => {
 
 ClinicAdmin.propTypes = {
   handleEdit: PropTypes.func,
-  type: PropTypes.string
+  type: PropTypes.string,
+  handleDelete: PropTypes.func
 };
 
 export default ClinicAdmin;

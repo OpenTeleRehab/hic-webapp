@@ -12,11 +12,12 @@ import { DeleteAction, EditAction } from 'components/ActionIcons';
 import { getTranslate } from 'react-localize-redux';
 
 let timer = null;
-const GlobalAdmin = ({ handleEdit, type }) => {
+const GlobalAdmin = ({ handleEdit, handleDelete, type }) => {
   const dispatch = useDispatch();
   const users = useSelector(state => state.user.users);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const { profile } = useSelector((state) => state.auth);
 
   const columns = [
     { name: 'last_name', title: translate('common.last_name') },
@@ -80,7 +81,7 @@ const GlobalAdmin = ({ handleEdit, type }) => {
           const action = (
             <>
               <EditAction onClick={() => handleEdit(user.id)} />
-              <DeleteAction className="ml-1" disabled />
+              <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={parseInt(user.id) === parseInt(profile.id)} />
             </>
           );
 
@@ -100,7 +101,8 @@ const GlobalAdmin = ({ handleEdit, type }) => {
 
 GlobalAdmin.propTypes = {
   handleEdit: PropTypes.func,
-  type: PropTypes.string
+  type: PropTypes.string,
+  handleDelete: PropTypes.func
 };
 
 export default GlobalAdmin;

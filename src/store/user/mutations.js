@@ -36,6 +36,18 @@ const updateUserFail = () => ({
   type: 'UPDATE_USER_FAIL'
 });
 
+const deleteUserRequest = () => ({
+  type: 'DELETE_USER_REQUEST'
+});
+
+const deleteUserSuccess = () => ({
+  type: 'DELETE_USER_SUCCESS'
+});
+
+const deleteUserFail = () => ({
+  type: 'DELETE_USER_FAIL'
+});
+
 export const mutation = {
   createUserRequest,
   createUserSuccess,
@@ -45,5 +57,8 @@ export const mutation = {
   getUsersFail,
   updateUserRequest,
   updateUserSuccess,
-  updateUserFail
+  updateUserFail,
+  deleteUserRequest,
+  deleteUserSuccess,
+  deleteUserFail
 };

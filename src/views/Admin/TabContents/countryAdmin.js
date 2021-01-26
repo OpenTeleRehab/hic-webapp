@@ -15,7 +15,7 @@ import { getTranslate } from 'react-localize-redux';
 
 let timer = null;
 
-const CountryAdmin = ({ handleEdit, type }) => {
+const CountryAdmin = ({ handleEdit, handleDelete, type }) => {
   const dispatch = useDispatch();
   const users = useSelector(state => state.user.users);
   const countries = useSelector(state => state.country.countries);
@@ -85,7 +85,7 @@ const CountryAdmin = ({ handleEdit, type }) => {
           const action = (
             <>
               <EditAction onClick={() => handleEdit(user.id)} />
-              <DeleteAction className="ml-1" disabled />
+              <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} />
             </>
           );
 
@@ -106,7 +106,8 @@ const CountryAdmin = ({ handleEdit, type }) => {
 
 CountryAdmin.propTypes = {
   handleEdit: PropTypes.func,
-  type: PropTypes.string
+  type: PropTypes.string,
+  handleDelete: PropTypes.func
 };
 
 export default CountryAdmin;
