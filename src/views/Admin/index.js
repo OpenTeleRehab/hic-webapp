@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Button, Tabs, Tab } from 'react-bootstrap';
 import { BsPlus } from 'react-icons/bs';
 import { useKeycloak } from '@react-keycloak/web';
-import { deleteUser } from 'store/user/actions';
+import { deleteUser, updateUserStatus } from 'store/user/actions';
 
 import GlobalAdmin from './TabContents/globalAdmin';
 import CountryAdmin from './TabContents/countryAdmin';
@@ -20,7 +20,12 @@ const Admin = ({ translate }) => {
   const [type, setType] = useState(undefined);
   const [editId, setEditId] = useState('');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showSwitchStatusDialog, setShowSwitchStatusDialog] = useState(false);
   const [id, setId] = useState(null);
+  const [formFields, setFormFields] = useState({
+    enabled: 0,
+    type: undefined
+  });
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -62,6 +67,25 @@ const Admin = ({ translate }) => {
     });
   };
 
+  const handleSwitchStatus = (id, enabled) => {
+    setId(id);
+    setFormFields({ ...formFields, enabled: enabled, type: type });
+    setShowSwitchStatusDialog(true);
+  };
+
+  const handleSwitchStatusDialogClose = () => {
+    setId(null);
+    setShowSwitchStatusDialog(false);
+  };
+
+  const handleSwitchStatusDialogConfirm = () => {
+    dispatch(updateUserStatus(id, formFields)).then(result => {
+      if (result) {
+        handleSwitchStatusDialogClose();
+      }
+    });
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
@@ -77,12 +101,12 @@ const Admin = ({ translate }) => {
       <Tabs activeKey={type} onSelect={(key) => setType(key)} transition={false}>
         { keycloak.hasRealmRole(USER_ROLES.MANAGE_GLOBAL_ADMIN) && (
           <Tab eventKey={USER_GROUPS.GLOBAL_ADMIN} title={translate('global_admin')}>
-            <GlobalAdmin handleEdit={handleEdit} type={type} handleDelete={handleDelete} />
+            <GlobalAdmin handleEdit={handleEdit} type={type} handleDelete={handleDelete} handleSwitchStatus={handleSwitchStatus} />
           </Tab>
         )}
         { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY_ADMIN) && (
           <Tab eventKey={USER_GROUPS.COUNTRY_ADMIN} title={translate('country_admin')}>
-            <CountryAdmin handleEdit={handleEdit} type={type} handleDelete={handleDelete} />
+            <CountryAdmin handleEdit={handleEdit} type={type} handleDelete={handleDelete} handleSwitchStatus={handleSwitchStatus} />
           </Tab>
         )}
         { keycloak.hasRealmRole(USER_ROLES.MANAGE_CLINIC_ADMIN) && (
@@ -102,6 +126,16 @@ const Admin = ({ translate }) => {
         onConfirm={handleDeleteDialogConfirm}
       >
         <p>{translate('common.delete_confirmation_message')}</p>
+      </Dialog>
+      <Dialog
+        show={showSwitchStatusDialog}
+        title={translate('user.switchStatus_confirmation_title')}
+        cancelLabel={translate('common.no')}
+        onCancel={handleSwitchStatusDialogClose}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handleSwitchStatusDialogConfirm}
+      >
+        <p>{translate('common.switchStatus_confirmation_message')}</p>
       </Dialog>
     </>
   );

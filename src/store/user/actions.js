@@ -60,6 +60,22 @@ export const updateUser = (id, payload) => async (dispatch, getState) => {
   }
 };
 
+export const updateUserStatus = (id, payload) => async (dispatch, getState) => {
+  dispatch(mutation.updateUserRequest());
+  const data = await User.updateUserStatus(id, payload);
+  if (data.success) {
+    dispatch(mutation.updateUserStatusSuccess());
+    const filters = getState().user.filters;
+    dispatch(getUsers({ ...filters, admin_type: payload.type }));
+    dispatch(showSuccessNotification('toast_title.edit_admin_account', data.message));
+    return true;
+  } else {
+    dispatch(mutation.updateUserStatusFail());
+    dispatch(showErrorNotification('toast_title.edit_admin_account', data.message));
+    return false;
+  }
+};
+
 export const deleteUser = (id, type) => async (dispatch, getState) => {
   dispatch(mutation.deleteUserRequest());
   const data = await User.deleteUser(id);
