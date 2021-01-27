@@ -7,7 +7,7 @@ import {
 } from 'react-localize-redux';
 
 import { user } from 'store/user/reducers';
-import { therapist } from 'store/therapist/reducers';
+import { therapist, patient } from 'store/therapist/reducers';
 import { notification } from 'store/notification/reducers';
 import { spinnerOverlay } from 'store/spinnerOverlay/reducers';
 import { country } from 'store/country/reducers';
@@ -34,7 +34,8 @@ export const rootReducer = {
   auth,
   exercise,
   localization,
-  termAndCondition
+  termAndCondition,
+  patient
 };
 
 const devTool =
