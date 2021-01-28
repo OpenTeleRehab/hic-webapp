@@ -10,12 +10,12 @@ import { getUsers } from 'store/user/actions';
 import { getCountryName } from 'utils/country';
 import * as moment from 'moment';
 import settings from 'settings';
-import { DeleteAction, EditAction } from 'components/ActionIcons';
+import { DeleteAction, EditAction, EnabledAction, DisabledAction } from 'components/ActionIcons';
 import { getTranslate } from 'react-localize-redux';
 
 let timer = null;
 
-const CountryAdmin = ({ handleEdit, handleDelete, type }) => {
+const CountryAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) => {
   const dispatch = useDispatch();
   const users = useSelector(state => state.user.users);
   const countries = useSelector(state => state.country.countries);
@@ -84,6 +84,10 @@ const CountryAdmin = ({ handleEdit, handleDelete, type }) => {
         rows={users.map(user => {
           const action = (
             <>
+              {user.enabled
+                ? <EnabledAction onClick={() => handleSwitchStatus(user.id, 0)} />
+                : <DisabledAction onClick={() => handleSwitchStatus(user.id, 1)} />
+              }
               <EditAction onClick={() => handleEdit(user.id)} />
               <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} />
             </>
@@ -107,7 +111,8 @@ const CountryAdmin = ({ handleEdit, handleDelete, type }) => {
 CountryAdmin.propTypes = {
   handleEdit: PropTypes.func,
   type: PropTypes.string,
-  handleDelete: PropTypes.func
+  handleDelete: PropTypes.func,
+  handleSwitchStatus: PropTypes.func
 };
 
 export default CountryAdmin;
