@@ -29,6 +29,18 @@ const updateTherapist = (id, payload) => {
     });
 };
 
+const updateTherapistStatus = (id, payload) => {
+  return customAxios.post(`/therapist/updateStatus/${id}`, payload)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const getTherapists = payload => {
   if (window.getUserAxiosCancel !== undefined) {
     window.getUserAxiosCancel();
@@ -84,5 +96,6 @@ export const Therapist = {
   updateTherapist,
   getTherapists,
   deleteTherapistUser,
-  getPatients
+  getPatients,
+  updateTherapistStatus
 };

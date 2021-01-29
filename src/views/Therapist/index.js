@@ -6,9 +6,9 @@ import PropTypes from 'prop-types';
 
 import CustomTable from 'components/Table';
 import EnabledStatus from 'components/EnabledStatus';
-import { EditAction, DeleteAction } from 'components/ActionIcons';
+import { DeleteAction, EditAction, EnabledAction, DisabledAction } from 'components/ActionIcons';
 import CreateTherapist from 'views/Therapist/create';
-import { getTherapists, deleteTherapistUser, getPatients } from 'store/therapist/actions';
+import { getTherapists, deleteTherapistUser, getPatients, updateTherapistStatus } from 'store/therapist/actions';
 import { getCountryName } from 'utils/country';
 import { getClinicName } from 'utils/clinic';
 import * as moment from 'moment';
@@ -28,6 +28,10 @@ const Therapist = ({ translate }) => {
 
   const [show, setShow] = useState(false);
   const [editId, setEditId] = useState('');
+
+  const [formFields, setFormFields] = useState({
+    enabled: 0
+  });
 
   const columns = [
     { name: 'id', title: translate('common.id') },
@@ -56,6 +60,7 @@ const Therapist = ({ translate }) => {
   const [searchValue, setSearchValue] = useState('');
   const [filters, setFilters] = useState([]);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showSwitchStatusDialog, setShowSwitchStatusDialog] = useState(false);
   const [id, setId] = useState(null);
 
   useEffect(() => {
@@ -108,6 +113,25 @@ const Therapist = ({ translate }) => {
     });
   };
 
+  const handleSwitchStatus = (id, enabled) => {
+    setId(id);
+    setFormFields({ ...formFields, enabled: enabled });
+    setShowSwitchStatusDialog(true);
+  };
+
+  const handleSwitchStatusDialogClose = () => {
+    setId(null);
+    setShowSwitchStatusDialog(false);
+  };
+
+  const handleSwitchStatusDialogConfirm = () => {
+    dispatch(updateTherapistStatus(id, formFields)).then(result => {
+      if (result) {
+        handleSwitchStatusDialogClose();
+      }
+    });
+  };
+
   useEffect(() => {
     dispatch(getPatients({
       page_size: pageSize,
@@ -141,13 +165,17 @@ const Therapist = ({ translate }) => {
         rows={therapists.map(user => {
           const action = (
             <>
+              {user.enabled
+                ? <EnabledAction onClick={() => handleSwitchStatus(user.id, 0)} disabled={!!getPatient(user.id, patients)}/>
+                : <DisabledAction onClick={() => handleSwitchStatus(user.id, 1)} disabled={!!getPatient(user.id, patients)} />
+              }
               <EditAction onClick={() => handleEdit(user.id)} />
               <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={!!getPatient(user.id, patients) }/>
             </>
           );
 
           return {
-            id: user.identity,
+            id: user.id,
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,
@@ -168,6 +196,16 @@ const Therapist = ({ translate }) => {
         onConfirm={handleDeleteDialogConfirm}
       >
         <p>{translate('common.delete_confirmation_message')}</p>
+      </Dialog>
+      <Dialog
+        show={showSwitchStatusDialog}
+        title={translate('user.switchStatus_confirmation_title')}
+        cancelLabel={translate('common.no')}
+        onCancel={handleSwitchStatusDialogClose}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handleSwitchStatusDialogConfirm}
+      >
+        <p>{translate('common.switchStatus_confirmation_message')}</p>
       </Dialog>
     </>
   );
