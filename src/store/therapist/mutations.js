@@ -22,6 +22,18 @@ const updateTherapistFail = () => ({
   type: 'UPDATE_THERAPIST_FAIL'
 });
 
+const updateTherapistStatusRequest = () => ({
+  type: 'UPDATE_THERAPIST_STATUS_REQUEST'
+});
+
+const updateTherapistStatusSuccess = () => ({
+  type: 'UPDATE_THERAPIST_STATUS_SUCCESS'
+});
+
+const updateTherapistStatusFail = () => ({
+  type: 'UPDATE_THERAPIST_STATUS_FAIL'
+});
+
 const getTherapistsRequest = () => ({
   type: 'GET_THERAPISTS_REQUEST'
 });
@@ -76,5 +88,8 @@ export const mutation = {
   deleteTherapistsFail,
   getPatientRequest,
   getPatientSuccess,
-  getPatientFail
+  getPatientFail,
+  updateTherapistStatusRequest,
+  updateTherapistStatusSuccess,
+  updateTherapistStatusFail
 };

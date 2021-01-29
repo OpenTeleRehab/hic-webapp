@@ -29,11 +29,27 @@ export const updateTherapist = (id, payload) => async (dispatch, getState) => {
     dispatch(mutation.updateTherapistSuccess());
     const filters = getState().therapist.filters;
     dispatch(getTherapists(filters));
-    dispatch(showSuccessNotification('toast_title.edit_admin_account', data.message));
+    dispatch(showSuccessNotification('toast_title.edit_therapist_account', data.message));
     return true;
   } else {
     dispatch(mutation.updateTherapistFail());
-    dispatch(showErrorNotification('toast_title.edit_admin_account', data.message));
+    dispatch(showErrorNotification('toast_title.edit_therapist_account', data.message));
+    return false;
+  }
+};
+
+export const updateTherapistStatus = (id, payload) => async (dispatch, getState) => {
+  dispatch(mutation.updateTherapistStatusRequest());
+  const data = await Therapist.updateTherapistStatus(id, payload);
+  if (data.success) {
+    dispatch(mutation.updateTherapistStatusSuccess());
+    const filters = getState().therapist.filters;
+    dispatch(getTherapists(filters));
+    dispatch(showSuccessNotification('toast_title.edit_therapist_account', data.message));
+    return true;
+  } else {
+    dispatch(mutation.updateTherapistStatusFail());
+    dispatch(showErrorNotification('toast_title.edit_therapist_account', data.message));
     return false;
   }
 };
