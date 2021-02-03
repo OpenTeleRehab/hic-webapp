@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 import { Button, Col, Form, Row } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import * as ROUTES from '../../../variables/routes';
+import {
+  createEducationMaterial,
+  getEducationMaterial, updateEducationMaterial
+} from '../../../store/educationMaterial/actions';
+import { formatFileSize, toMB } from '../../../utils/file';
+import settings from '../../../settings';
 
 const CreateEducationMaterial = ({ translate }) => {
+  const dispatch = useDispatch();
+  const history = useHistory();
   const { id } = useParams();
+  const { maxFileSize } = settings.educationMaterial;
 
   const { languages } = useSelector(state => state.language);
+  const { educationMaterial } = useSelector(state => state.educationMaterial);
 
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
@@ -20,6 +30,20 @@ const CreateEducationMaterial = ({ translate }) => {
   const [titleError, setTitleError] = useState(false);
   const [fileError, setFileError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getEducationMaterial(id, language));
+    }
+  }, [id, language, dispatch]);
+
+  useEffect(() => {
+    if (id && educationMaterial.id) {
+      setFormFields({
+        title: educationMaterial.title
+      });
+    }
+  }, [id, educationMaterial]);
 
   const handleLanguageChange = e => {
     const { value } = e.target;
@@ -33,7 +57,7 @@ const CreateEducationMaterial = ({ translate }) => {
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-    setFormFields({ ...formFields, [name]: files });
+    setFormFields({ ...formFields, [name]: files[0] });
   };
 
   const handleSave = () => {
@@ -46,7 +70,7 @@ const CreateEducationMaterial = ({ translate }) => {
       setTitleError(false);
     }
 
-    if (formFields.file === undefined) {
+    if (!id && (formFields.file === undefined || toMB(formFields.file.size) > maxFileSize)) {
       canSave = false;
       setFileError(true);
     } else {
@@ -55,14 +79,30 @@ const CreateEducationMaterial = ({ translate }) => {
 
     if (canSave) {
       setIsLoading(true);
+      if (id) {
+        dispatch(updateEducationMaterial(id, { ...formFields, lang: language }))
+          .then(result => {
+            if (result) {
+              history.push(ROUTES.SERVICE_SETUP_EDUCATION);
+            }
+            setIsLoading(false);
+          });
+      } else {
+        dispatch(createEducationMaterial({ ...formFields, lang: language }))
+          .then(result => {
+            if (result) {
+              history.push(ROUTES.SERVICE_SETUP_EDUCATION);
+            }
+            setIsLoading(false);
+          });
+      }
     }
   };
 
   const renderUploadFileName = () => {
-    if (formFields.file) {
-      const file = formFields.file[0];
-      const fileSize = (file.size / 1024).toFixed(2);
-      return `${file.name} (${fileSize}kB)`;
+    const file = formFields.file;
+    if (file) {
+      return `${file.name} (${formatFileSize(file.size)})`;
     }
     return translate('education_material.upload_file.placeholder');
   };
@@ -94,6 +134,7 @@ const CreateEducationMaterial = ({ translate }) => {
                 onChange={handleChange}
                 value={formFields.title}
                 placeholder={translate('education_material.title.placeholder')}
+                maxLength={settings.textMaxLength}
                 isInvalid={titleError}
               />
               <Form.Control.Feedback type="invalid">
@@ -103,6 +144,7 @@ const CreateEducationMaterial = ({ translate }) => {
 
             <Form.Group controlId="formFile">
               <Form.Label>{translate('education_material.upload_file')}</Form.Label>
+              <span className="text-dark ml-1">*</span>
               <Form.File custom>
                 <Form.File.Input
                   name='file'
@@ -111,7 +153,10 @@ const CreateEducationMaterial = ({ translate }) => {
                 />
                 <Form.File.Label>{renderUploadFileName()}</Form.File.Label>
                 <Form.Control.Feedback type="invalid">
-                  {translate('education_material.upload_file.required')}
+                  {formFields.file === undefined
+                    ? translate('education_material.upload_file.required')
+                    : translate('education_material.upload_file.max_size', { size: maxFileSize })
+                  }
                 </Form.Control.Feedback>
               </Form.File>
             </Form.Group>

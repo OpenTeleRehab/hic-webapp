@@ -1,6 +1,6 @@
 export const initialState = {
   filters: {},
-  exercises: [],
-  exercise: {},
+  educationMaterials: [],
+  educationMaterial: {},
   loading: false
 };

@@ -146,16 +146,16 @@ const CreateExercise = ({ translate }) => {
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
-              setIsLoading(false);
             }
+            setIsLoading(false);
           });
       } else {
         dispatch(createExercise({ ...formFields, additional_fields: JSON.stringify(inputFields), lang: language }, mediaUploads))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
-              setIsLoading(false);
             }
+            setIsLoading(false);
           });
       }
     }
