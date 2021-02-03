@@ -169,7 +169,7 @@ const CreateExercise = ({ translate }) => {
     for (i = 0; i < fileObj[0].length; i++) {
       const file = fileObj[0][i];
       const fileName = file.name;
-      const fileSize = Math.round((file.size / 1024), 2);
+      const fileSize = (file.size / 1024).toFixed(2);
       const fileType = file.type;
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -224,7 +224,7 @@ const CreateExercise = ({ translate }) => {
 
         <Row>
           <Col sm={4} xl={3}>
-            <div className="exercise-media ">
+            <div className="exercise-media">
               <h4>{translate('exercise.media')}</h4>
               { mediaUploads.map((mediaUpload, index) => (
                 <div key={index} className="mb-2 position-relative w-75" >
