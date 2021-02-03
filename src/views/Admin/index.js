@@ -111,7 +111,7 @@ const Admin = ({ translate }) => {
         )}
         { keycloak.hasRealmRole(USER_ROLES.MANAGE_CLINIC_ADMIN) && (
           <Tab eventKey={USER_GROUPS.CLINIC_ADMIN} title={translate('clinic_admin')}>
-            <ClinicAdmin handleEdit={handleEdit} type={type} handleDelete={handleDelete} />
+            <ClinicAdmin handleEdit={handleEdit} type={type} handleDelete={handleDelete} handleSwitchStatus={handleSwitchStatus} />
           </Tab>
         )}
       </Tabs>

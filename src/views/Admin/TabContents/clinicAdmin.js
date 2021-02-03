@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import CustomTable from 'components/Table';
 import EnabledStatus from 'components/EnabledStatus';
-import { EditAction, DeleteAction } from 'components/ActionIcons';
+import { EditAction, DeleteAction, EnabledAction, DisabledAction } from 'components/ActionIcons';
 import { USER_GROUPS } from 'variables/user';
 import { getUsers } from 'store/user/actions';
 import { getCountryName } from 'utils/country';
@@ -14,7 +14,7 @@ import settings from 'settings';
 import { getTranslate } from 'react-localize-redux';
 
 let timer = null;
-const ClinicAdmin = ({ handleEdit, handleDelete, type }) => {
+const ClinicAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) => {
   const dispatch = useDispatch();
   const users = useSelector(state => state.user.users);
   const countries = useSelector(state => state.country.countries);
@@ -85,8 +85,12 @@ const ClinicAdmin = ({ handleEdit, handleDelete, type }) => {
         rows={users.map(user => {
           const action = (
             <>
+              {user.enabled
+                ? <EnabledAction onClick={() => handleSwitchStatus(user.id, 0)} />
+                : <DisabledAction onClick={() => handleSwitchStatus(user.id, 1)} />
+              }
               <EditAction onClick={() => handleEdit(user.id)} />
-              <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} />
+              <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={user.enabled} />
             </>
           );
 
@@ -109,7 +113,8 @@ const ClinicAdmin = ({ handleEdit, handleDelete, type }) => {
 ClinicAdmin.propTypes = {
   handleEdit: PropTypes.func,
   type: PropTypes.string,
-  handleDelete: PropTypes.func
+  handleDelete: PropTypes.func,
+  handleSwitchStatus: PropTypes.func
 };
 
 export default ClinicAdmin;
