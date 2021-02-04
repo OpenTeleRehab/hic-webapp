@@ -19,7 +19,8 @@ const CreateEducationMaterial = ({ translate }) => {
   const { maxFileSize } = settings.educationMaterial;
 
   const { languages } = useSelector(state => state.language);
-  const { educationMaterial } = useSelector(state => state.educationMaterial);
+  const { educationMaterial, filters } = useSelector(state => state.educationMaterial);
+  const { profile } = useSelector((state) => state.auth);
 
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
@@ -30,6 +31,14 @@ const CreateEducationMaterial = ({ translate }) => {
   const [titleError, setTitleError] = useState(false);
   const [fileError, setFileError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (filters && filters.lang) {
+      setLanguage(filters.lang);
+    } else if (profile && profile.language_id) {
+      setLanguage(profile.language_id);
+    }
+  }, [filters, profile]);
 
   useEffect(() => {
     if (id) {
