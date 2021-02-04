@@ -15,10 +15,10 @@ export const getExercises = payload => async dispatch => {
   }
 };
 
-export const getExercise = (id, lanuage) => async dispatch => {
+export const getExercise = (id, language) => async dispatch => {
   dispatch(mutation.getExerciseRequest());
   dispatch(showSpinner(true));
-  const data = await Exercise.getExercise(id, lanuage);
+  const data = await Exercise.getExercise(id, language);
   if (data) {
     dispatch(mutation.getExerciseSuccess(data.data));
     dispatch(showSpinner(false));
@@ -30,45 +30,45 @@ export const getExercise = (id, lanuage) => async dispatch => {
 };
 
 export const createExercise = (payload, mediaUploads) => async dispatch => {
-  dispatch(mutation.createExercisesRequest());
+  dispatch(mutation.createExerciseRequest());
   const data = await Exercise.createExercise(payload, mediaUploads);
   if (data.success) {
-    dispatch(mutation.createExercisesSuccess());
+    dispatch(mutation.createExerciseSuccess());
     dispatch(getExercises());
     dispatch(showSuccessNotification('toast_title.new_exercise', data.message));
     return true;
   } else {
-    dispatch(mutation.createExercisesFail());
+    dispatch(mutation.createExerciseFail());
     dispatch(showErrorNotification('toast_title.new_exercise', data.message));
     return false;
   }
 };
 
 export const updateExercise = (id, payload, mediaUploads) => async dispatch => {
-  dispatch(mutation.updateExercisesRequest());
+  dispatch(mutation.updateExerciseRequest());
   const data = await Exercise.updateExercise(id, payload, mediaUploads);
   if (data.success) {
-    dispatch(mutation.updateExercisesSuccess());
+    dispatch(mutation.updateExerciseSuccess());
     dispatch(getExercises());
     dispatch(showSuccessNotification('toast_title.update_exercise', data.message));
     return true;
   } else {
-    dispatch(mutation.updateExercisesFail());
+    dispatch(mutation.updateExerciseFail());
     dispatch(showErrorNotification('toast_title.update_exercise', data.message));
     return false;
   }
 };
 
 export const deleteExercise = id => async dispatch => {
-  dispatch(mutation.deleteExercisesRequest());
+  dispatch(mutation.deleteExerciseRequest());
   const data = await Exercise.deleteExercise(id);
   if (data.success) {
-    dispatch(mutation.deleteExercisesSuccess());
+    dispatch(mutation.deleteExerciseSuccess());
     dispatch(getExercises());
     dispatch(showSuccessNotification('toast_title.delete_exercise', data.message));
     return true;
   } else {
-    dispatch(mutation.deleteExercisesFail());
+    dispatch(mutation.deleteExerciseFail());
     dispatch(showErrorNotification('toast_title.delete_exercise', data.message));
     return false;
   }

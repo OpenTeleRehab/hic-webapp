@@ -9,6 +9,9 @@ const settings = {
       { text: 'Therapist portal', value: 'therapist_portal' },
       { text: 'Patient app', value: 'patient_app' }
     ]
+  },
+  educationMaterial: {
+    maxFileSize: 25 // MB
   }
 };
 

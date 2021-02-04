@@ -25,43 +25,43 @@ const getExerciseFail = () => ({
   type: 'GET_EXERCISE_FAIL'
 });
 
-const createExercisesRequest = () => ({
-  type: 'CREATE_EXERCISES_REQUEST'
+const createExerciseRequest = () => ({
+  type: 'CREATE_EXERCISE_REQUEST'
 });
 
-const createExercisesSuccess = (data) => ({
-  type: 'CREATE_EXERCISES_SUCCESS',
+const createExerciseSuccess = (data) => ({
+  type: 'CREATE_EXERCISE_SUCCESS',
   data
 });
 
-const createExercisesFail = () => ({
-  type: 'CREATE_EXERCISES_FAIL'
+const createExerciseFail = () => ({
+  type: 'CREATE_EXERCISE_FAIL'
 });
 
-const updateExercisesRequest = () => ({
-  type: 'UPDATE_EXERCISES_REQUEST'
+const updateExerciseRequest = () => ({
+  type: 'UPDATE_EXERCISE_REQUEST'
 });
 
-const updateExercisesSuccess = (data) => ({
-  type: 'UPDATE_EXERCISES_SUCCESS',
+const updateExerciseSuccess = (data) => ({
+  type: 'UPDATE_EXERCISE_SUCCESS',
   data
 });
 
-const updateExercisesFail = () => ({
-  type: 'UPDATE_EXERCISES_FAIL'
+const updateExerciseFail = () => ({
+  type: 'UPDATE_EXERCISE_FAIL'
 });
 
-const deleteExercisesRequest = () => ({
-  type: 'DELETE_EXERCISES_REQUEST'
+const deleteExerciseRequest = () => ({
+  type: 'DELETE_EXERCISE_REQUEST'
 });
 
-const deleteExercisesSuccess = (data) => ({
-  type: 'DELETE_EXERCISES_SUCCESS',
+const deleteExerciseSuccess = (data) => ({
+  type: 'DELETE_EXERCISE_SUCCESS',
   data
 });
 
-const deleteExercisesFail = () => ({
-  type: 'DELETE_EXERCISES_FAIL'
+const deleteExerciseFail = () => ({
+  type: 'DELETE_EXERCISE_FAIL'
 });
 
 export const mutation = {
@@ -71,13 +71,13 @@ export const mutation = {
   getExerciseRequest,
   getExerciseSuccess,
   getExerciseFail,
-  createExercisesRequest,
-  createExercisesSuccess,
-  createExercisesFail,
-  updateExercisesRequest,
-  updateExercisesSuccess,
-  updateExercisesFail,
-  deleteExercisesRequest,
-  deleteExercisesSuccess,
-  deleteExercisesFail
+  createExerciseRequest,
+  createExerciseSuccess,
+  createExerciseFail,
+  updateExerciseRequest,
+  updateExerciseSuccess,
+  updateExerciseFail,
+  deleteExerciseRequest,
+  deleteExerciseSuccess,
+  deleteExerciseFail
 };
