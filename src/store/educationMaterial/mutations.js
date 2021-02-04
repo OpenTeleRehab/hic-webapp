@@ -51,6 +51,19 @@ const updateEducationMaterialFail = () => ({
   type: 'UPDATE_EDUCATION_MATERIAL_FAIL'
 });
 
+const deleteEducationMaterialRequest = () => ({
+  type: 'DELETE_EDUCATION_MATERIAL_REQUEST'
+});
+
+const deleteEducationMaterialSuccess = (data) => ({
+  type: 'DELETE_EDUCATION_MATERIAL_SUCCESS',
+  data
+});
+
+const deleteEducationMaterialFail = () => ({
+  type: 'DELETE_EDUCATION_MATERIAL_FAIL'
+});
+
 export const mutation = {
   getEducationMaterialRequest,
   getEducationMaterialSuccess,
@@ -63,5 +76,8 @@ export const mutation = {
   updateEducationMaterialFail,
   getEducationMaterialsFail,
   getEducationMaterialsRequest,
-  getEducationMaterialsSuccess
+  getEducationMaterialsSuccess,
+  deleteEducationMaterialRequest,
+  deleteEducationMaterialSuccess,
+  deleteEducationMaterialFail
 };
