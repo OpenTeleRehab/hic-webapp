@@ -14,9 +14,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BsSearch, BsX } from 'react-icons/bs/index';
 import { useHistory } from 'react-router-dom';
 
+import Dialog from 'components/Dialog';
 import CustomTable from 'components/Table';
 import { DeleteAction, EditAction } from 'components/ActionIcons';
-import { getEducationMaterials } from 'store/educationMaterial/actions';
+import { getEducationMaterials, deleteEducationMaterial } from 'store/educationMaterial/actions';
 
 let timer = null;
 const EducationMaterial = ({ translate }) => {
@@ -32,6 +33,8 @@ const EducationMaterial = ({ translate }) => {
   const { profile } = useSelector((state) => state.auth);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [id, setId] = useState(null);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     if (filters && filters.lang) {
@@ -76,6 +79,24 @@ const EducationMaterial = ({ translate }) => {
     { name: 'type', title: translate('education_material.type') },
     { name: 'action', title: translate('common.action') }
   ];
+
+  const handleDelete = (id) => {
+    setId(id);
+    setShow(true);
+  };
+
+  const handleClose = () => {
+    setId(null);
+    setShow(false);
+  };
+
+  const handleConfirm = () => {
+    dispatch(deleteEducationMaterial(id)).then(result => {
+      if (result) {
+        handleClose();
+      }
+    });
+  };
 
   return (
     <>
@@ -147,7 +168,7 @@ const EducationMaterial = ({ translate }) => {
               const action = (
                 <>
                   <EditAction onClick={() => handleEdit(educationMaterial.id)} />
-                  <DeleteAction className="ml-1" disabled={true} />
+                  <DeleteAction className="ml-1" onClick={() => handleDelete(educationMaterial.id)} disabled={educationMaterial.is_used} />
                 </>
               );
               return {
@@ -159,6 +180,16 @@ const EducationMaterial = ({ translate }) => {
           />
         </Col>
       </Row>
+      <Dialog
+        show={show}
+        title={translate('education.delete_confirmation_title')}
+        cancelLabel={translate('common.no')}
+        onCancel={handleClose}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handleConfirm}
+      >
+        <p>{translate('common.delete_confirmation_message')}</p>
+      </Dialog>
     </>
   );
 };

@@ -60,3 +60,18 @@ export const updateEducationMaterial = (id, payload, mediaUploads) => async disp
     return false;
   }
 };
+
+export const deleteEducationMaterial = id => async dispatch => {
+  dispatch(mutation.deleteEducationMaterialRequest());
+  const data = await EducationMaterial.deleteEducationMaterial(id);
+  if (data.success) {
+    dispatch(mutation.deleteEducationMaterialSuccess());
+    dispatch(getEducationMaterials());
+    dispatch(showSuccessNotification('toast_title.delete_education_material', data.message));
+    return true;
+  } else {
+    dispatch(mutation.deleteEducationMaterialFail());
+    dispatch(showErrorNotification('toast_title.delete_education_material', data.message));
+    return false;
+  }
+};

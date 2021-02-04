@@ -62,9 +62,22 @@ const updateEducationMaterial = (id, payload) => {
     });
 };
 
+const deleteEducationMaterial = id => {
+  return axios.delete(`/education-material/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const EducationMaterial = {
   getEducationMaterial,
   createEducationMaterial,
   updateEducationMaterial,
-  getEducationMaterials
+  getEducationMaterials,
+  deleteEducationMaterial
 };
