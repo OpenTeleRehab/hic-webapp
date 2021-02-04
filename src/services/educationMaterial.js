@@ -14,6 +14,18 @@ const getEducationMaterial = (id, language) => {
     });
 };
 
+const getEducationMaterials = payload => {
+  return axios.get('/education-material', { params: payload })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const createEducationMaterial = (payload) => {
   const formData = new FormData();
   _.forIn(payload, (value, key) => {
@@ -53,5 +65,6 @@ const updateEducationMaterial = (id, payload) => {
 export const EducationMaterial = {
   getEducationMaterial,
   createEducationMaterial,
-  updateEducationMaterial
+  updateEducationMaterial,
+  getEducationMaterials
 };

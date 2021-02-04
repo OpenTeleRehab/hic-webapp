@@ -35,7 +35,7 @@ import { useSelector } from 'react-redux';
 const FilterRow = (props) => <Table.Row className="filter" {...props} />;
 const FixedColumnCell = (props) => <TableFixedColumns.Cell {...props} showLeftDivider={false} />;
 
-const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, currentPage, setCurrentPage, totalCount, setSearchValue, setFilters, filters, showInlineEdited, editingStateColumnExtensions, commitChanges, editingRowIds, setEditingRowIds }) => {
+const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, currentPage, setCurrentPage, totalCount, setSearchValue, setFilters, filters, showInlineEdited, editingStateColumnExtensions, commitChanges, editingRowIds, setEditingRowIds, hideSearchFilter }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const [showFilter, setShowFilter] = useState(false);
@@ -84,9 +84,9 @@ const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, c
       <TableColumnVisibility columnExtensions={tableColumnVisibilityColumnExtensions} />
 
       <Toolbar />
-      <SearchPanel inputComponent={SearchInput} />
-      <FilterToggle onToggle={toggleFilter} showFilter={showFilter} />
-      <ColumnChooser toggleButtonComponent={ToggleButton} />
+      {!hideSearchFilter && <SearchPanel inputComponent={SearchInput} /> }
+      {!hideSearchFilter && <FilterToggle onToggle={toggleFilter} showFilter={showFilter} /> }
+      {!hideSearchFilter && <ColumnChooser toggleButtonComponent={ToggleButton} /> }
       <PagingPanel pageSizes={pageSizes} />
     </Grid>
   );
@@ -108,7 +108,8 @@ CustomTable.propTypes = {
   editingStateColumnExtensions: PropTypes.array,
   commitChanges: PropTypes.func,
   editingRowIds: PropTypes.array,
-  setEditingRowIds: PropTypes.func
+  setEditingRowIds: PropTypes.func,
+  hideSearchFilter: PropTypes.bool
 };
 
 CustomTable.defaultProps = {

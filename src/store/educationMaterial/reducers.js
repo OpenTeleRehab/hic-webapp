@@ -7,6 +7,13 @@ export const educationMaterial = (state = initialState, action) => {
         educationMaterial: action.data
       });
     }
+    case 'GET_EDUCATION_MATERIALS_SUCCESS': {
+      return Object.assign({}, state, {
+        educationMaterials: action.data,
+        filters: action.filters,
+        loading: false
+      });
+    }
     default:
       return state;
   }
