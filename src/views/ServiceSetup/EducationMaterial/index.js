@@ -73,7 +73,7 @@ const EducationMaterial = ({ translate }) => {
 
   const columns = [
     { name: 'title', title: translate('education_material.title') },
-    { name: 'first_name', title: translate('education_material.type') },
+    { name: 'type', title: translate('education_material.type') },
     { name: 'action', title: translate('common.action') }
   ];
 
@@ -152,7 +152,7 @@ const EducationMaterial = ({ translate }) => {
               );
               return {
                 title: educationMaterial.title,
-                type: 'Type',
+                type: educationMaterial.file.fileExtension,
                 action
               };
             })}
