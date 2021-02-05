@@ -26,7 +26,6 @@ const CreateExercise = ({ translate }) => {
   const history = useHistory();
   const { id } = useParams();
 
-  const { profile } = useSelector((state) => state.auth);
   const { languages } = useSelector(state => state.language);
   const { exercise, filters } = useSelector(state => state.exercise);
 
@@ -46,18 +45,15 @@ const CreateExercise = ({ translate }) => {
   const [inputValueError, setInputValueError] = useState([]);
 
   useEffect(() => {
-    if (filters && filters.lang) {
-      setLanguage(filters.lang);
-    } else if (profile && profile.language_id) {
-      setLanguage(profile.language_id);
-    }
-  }, [filters, profile]);
-
-  useEffect(() => {
     if (id) {
-      dispatch(getExercise(id, language));
+      let lang = '';
+      if (filters && filters.lang) {
+        lang = filters.lang;
+        setLanguage(lang);
+      }
+      dispatch(getExercise(id, lang));
     }
-  }, [id, language, dispatch]);
+  }, [id, filters, dispatch]);
 
   useEffect(() => {
     if (id && exercise.id) {

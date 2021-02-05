@@ -93,6 +93,13 @@ const routes = [
     type: PRIVATE
   },
   {
+    title: 'questionnaire.edit',
+    path: ROUTES.QUESTIONNAIRE_EDIT,
+    component: CreateQuestionnaire,
+    exact: true,
+    type: PRIVATE
+  },
+  {
     title: 'category',
     path: ROUTES.CATEGORY,
     component: CategoryPage,

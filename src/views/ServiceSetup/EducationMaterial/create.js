@@ -20,7 +20,6 @@ const CreateEducationMaterial = ({ translate }) => {
 
   const { languages } = useSelector(state => state.language);
   const { educationMaterial, filters } = useSelector(state => state.educationMaterial);
-  const { profile } = useSelector((state) => state.auth);
 
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
@@ -34,18 +33,15 @@ const CreateEducationMaterial = ({ translate }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (filters && filters.lang) {
-      setLanguage(filters.lang);
-    } else if (profile && profile.language_id) {
-      setLanguage(profile.language_id);
-    }
-  }, [filters, profile]);
-
-  useEffect(() => {
     if (id) {
-      dispatch(getEducationMaterial(id, language));
+      let lang = '';
+      if (filters && filters.lang) {
+        lang = filters.lang;
+        setLanguage(lang);
+      }
+      dispatch(getEducationMaterial(id, lang));
     }
-  }, [id, language, dispatch]);
+  }, [id, filters, dispatch]);
 
   useEffect(() => {
     if (id && educationMaterial.id) {
