@@ -173,7 +173,7 @@ const EducationMaterial = ({ translate }) => {
               );
               return {
                 title: educationMaterial.title,
-                type: educationMaterial.file.fileExtension,
+                type: translate(educationMaterial.file.fileGroupType),
                 action
               };
             })}

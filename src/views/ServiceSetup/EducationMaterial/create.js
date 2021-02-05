@@ -168,7 +168,7 @@ const CreateEducationMaterial = ({ translate }) => {
 
                 {materialFile && (
                   <Form.Text className="text-muted">
-                    {materialFile.fileExtension}:
+                    {translate(materialFile.fileGroupType)}:
                     <a
                       href={`${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`}
                       /* eslint-disable-next-line react/jsx-no-target-blank */
