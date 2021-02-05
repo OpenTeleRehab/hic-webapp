@@ -34,7 +34,6 @@ export const createExercise = (payload, mediaUploads) => async dispatch => {
   const data = await Exercise.createExercise(payload, mediaUploads);
   if (data.success) {
     dispatch(mutation.createExerciseSuccess());
-    dispatch(getExercises());
     dispatch(showSuccessNotification('toast_title.new_exercise', data.message));
     return true;
   } else {
@@ -49,7 +48,6 @@ export const updateExercise = (id, payload, mediaUploads) => async dispatch => {
   const data = await Exercise.updateExercise(id, payload, mediaUploads);
   if (data.success) {
     dispatch(mutation.updateExerciseSuccess());
-    dispatch(getExercises());
     dispatch(showSuccessNotification('toast_title.update_exercise', data.message));
     return true;
   } else {
@@ -59,12 +57,13 @@ export const updateExercise = (id, payload, mediaUploads) => async dispatch => {
   }
 };
 
-export const deleteExercise = id => async dispatch => {
+export const deleteExercise = id => async (dispatch, getState) => {
   dispatch(mutation.deleteExerciseRequest());
   const data = await Exercise.deleteExercise(id);
   if (data.success) {
     dispatch(mutation.deleteExerciseSuccess());
-    dispatch(getExercises());
+    const filters = getState().exercise.filters;
+    dispatch(getExercises(filters));
     dispatch(showSuccessNotification('toast_title.delete_exercise', data.message));
     return true;
   } else {
