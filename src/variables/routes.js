@@ -10,6 +10,7 @@ export const EXERCISE_EDIT = SERVICE_SETUP + '/exercise/edit/:id';
 export const EDUCATION_MATERIAL_CREATE = SERVICE_SETUP + '/education_material/create';
 export const EDUCATION_MATERIAL_EDIT = SERVICE_SETUP + '/education_material/edit/:id';
 export const QUESTIONNAIRE_CREATE = SERVICE_SETUP + '/questionnaire/create';
+export const QUESTIONNAIRE_EDIT = SERVICE_SETUP + '/questionnaire/edit/:id';
 
 export const THERAPIST = '/therapist';
 export const CATEGORY = '/category';

@@ -20,6 +20,7 @@ import { exercise } from 'store/exercise/reducers';
 import { localization } from 'store/localization/reducers';
 import { termAndCondition } from 'store/termAndCondition/reducers';
 import { educationMaterial } from 'store/educationMaterial/reducers';
+import { questionnaire } from 'store/questionnaire/reducers';
 
 export const rootReducer = {
   localize: localizeReducer,
@@ -37,7 +38,8 @@ export const rootReducer = {
   localization,
   termAndCondition,
   patient,
-  educationMaterial
+  educationMaterial,
+  questionnaire
 };
 
 const devTool =
