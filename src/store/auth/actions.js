@@ -36,11 +36,11 @@ export const updateUserProfile = payload => async dispatch => {
     dispatch(mutation.updateUserProfileSuccess());
     dispatch(getTranslations());
     dispatch(getProfile());
-    dispatch(showSuccessNotification('toast_title.new_admin_account', data.message));
+    dispatch(showSuccessNotification('toast_title.edit_profile', data.message));
     return true;
   } else {
     dispatch(mutation.updateUserProfileFail());
-    dispatch(showErrorNotification('toast_title.edit_admin_account', data.message));
+    dispatch(showErrorNotification('toast_title.edit_profile', data.message));
     return false;
   }
 };
