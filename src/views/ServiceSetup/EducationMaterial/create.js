@@ -27,6 +27,7 @@ const CreateEducationMaterial = ({ translate }) => {
     title: '',
     file: undefined
   });
+  const [materialFile, setMaterialFile] = useState(undefined);
 
   const [titleError, setTitleError] = useState(false);
   const [fileError, setFileError] = useState(false);
@@ -51,6 +52,7 @@ const CreateEducationMaterial = ({ translate }) => {
       setFormFields({
         title: educationMaterial.title
       });
+      setMaterialFile(educationMaterial.file);
     }
   }, [id, educationMaterial]);
 
@@ -167,6 +169,20 @@ const CreateEducationMaterial = ({ translate }) => {
                     : translate('education_material.upload_file.max_size', { size: maxFileSize })
                   }
                 </Form.Control.Feedback>
+
+                {materialFile && (
+                  <Form.Text className="text-muted">
+                    {materialFile.fileExtension}:
+                    <a
+                      href={`${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`}
+                      /* eslint-disable-next-line react/jsx-no-target-blank */
+                      target="_blank"
+                      className="pl-2"
+                    >
+                      {materialFile.fileName}
+                    </a>
+                  </Form.Text>
+                )}
               </Form.File>
             </Form.Group>
 

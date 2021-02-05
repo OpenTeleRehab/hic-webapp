@@ -22,7 +22,7 @@ export const getEducationMaterials = payload => async dispatch => {
   dispatch(showSpinner(true));
   const data = await EducationMaterial.getEducationMaterials(payload);
   if (data.success) {
-    dispatch(mutation.getEducationMaterialsSuccess(data.data));
+    dispatch(mutation.getEducationMaterialsSuccess(data.data, payload));
     dispatch(showSpinner(false));
     return data.info;
   } else {

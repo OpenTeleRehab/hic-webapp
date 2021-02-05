@@ -15,7 +15,7 @@ const VIEW_QUESTIONNAIRE = 'questionnaire';
 
 const ServiceSetup = ({ translate }) => {
   const { hash } = useLocation();
-  const [view, setView] = useState(VIEW_EXERCISE);
+  const [view, setView] = useState(undefined);
 
   useEffect(() => {
     if (hash.includes('#' + VIEW_EDUCATION)) {
