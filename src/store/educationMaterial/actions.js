@@ -51,7 +51,6 @@ export const updateEducationMaterial = (id, payload, mediaUploads) => async disp
   const data = await EducationMaterial.updateEducationMaterial(id, payload, mediaUploads);
   if (data.success) {
     dispatch(mutation.updateEducationMaterialSuccess());
-    dispatch(getEducationMaterials());
     dispatch(showSuccessNotification('toast_title.update_education_material', data.message));
     return true;
   } else {
@@ -61,12 +60,13 @@ export const updateEducationMaterial = (id, payload, mediaUploads) => async disp
   }
 };
 
-export const deleteEducationMaterial = id => async dispatch => {
+export const deleteEducationMaterial = id => async (dispatch, getState) => {
   dispatch(mutation.deleteEducationMaterialRequest());
   const data = await EducationMaterial.deleteEducationMaterial(id);
   if (data.success) {
     dispatch(mutation.deleteEducationMaterialSuccess());
-    dispatch(getEducationMaterials());
+    const filters = getState().educationMaterial.filters;
+    dispatch(getEducationMaterials(filters));
     dispatch(showSuccessNotification('toast_title.delete_education_material', data.message));
     return true;
   } else {
