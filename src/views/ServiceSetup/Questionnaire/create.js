@@ -48,6 +48,7 @@ const CreateQuestionnaire = ({ translate }) => {
         title: questionnaire.title,
         description: questionnaire.description
       });
+      setQuestions(questionnaire.questions);
     }
   }, [id, questionnaire]);
 
@@ -81,7 +82,7 @@ const CreateQuestionnaire = ({ translate }) => {
     if (canSave) {
       setIsLoading(true);
       if (id) {
-        dispatch(updateQuestionnaire(id, { ...formFields, lang: language }))
+        dispatch(updateQuestionnaire(id, { ...formFields, lang: language, questions }))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP_QUESTIONNAIRE);
@@ -89,7 +90,7 @@ const CreateQuestionnaire = ({ translate }) => {
             setIsLoading(false);
           });
       } else {
-        dispatch(createQuestionnaire({ ...formFields, lang: language }))
+        dispatch(createQuestionnaire({ ...formFields, lang: language, questions }))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP_QUESTIONNAIRE);
@@ -101,7 +102,7 @@ const CreateQuestionnaire = ({ translate }) => {
   };
 
   const handleAddQuestion = () => {
-    setQuestions([...questions, { title: '', type: '', answers: [{ description: '' }] }]);
+    setQuestions([...questions, { title: '', type: 'checkbox', answers: [{ description: '' }] }]);
   };
 
   return (
