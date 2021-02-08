@@ -69,7 +69,7 @@ const Question = ({ translate, questions, setQuestions }) => {
   const handleSelectChange = (index, e) => {
     const values = [...questions];
     values[index].type = e.target.value;
-    const updatedQuestion = { ...values[index], answers: values[index].type === 'checkbox' || values[index].type === 'multiple choice' ? [{ description: '' }] : [] };
+    const updatedQuestion = { ...values[index], answers: values[index].type === 'checkbox' || values[index].type === 'multiple' ? [{ description: '' }] : [] };
     values[index] = updatedQuestion;
     setQuestions(values);
   };
@@ -117,9 +117,9 @@ const Question = ({ translate, questions, setQuestions }) => {
                   <Form.Group controlId={`formType${index}`}>
                     <Form.Control name ="type" as="select" value={question.type} onChange={e => handleSelectChange(index, e)}>
                       <option value='checkbox'>{translate('question.type.checkbox')}</option>
-                      <option value='multiple choice'>{translate('question.type.multiple_choice')}</option>
-                      <option value='open-ended text'>{translate('question.type.open_ended_free_text')}</option>
-                      <option value='open-ended number'>{translate('question.type.open_ended_numbers_only')}</option>
+                      <option value='multiple'>{translate('question.type.multiple_choice')}</option>
+                      <option value='open-text'>{translate('question.type.open_ended_free_text')}</option>
+                      <option value='open-number'>{translate('question.type.open_ended_numbers_only')}</option>
                     </Form.Control>
                   </Form.Group>
                 </Col>
@@ -157,7 +157,7 @@ const Question = ({ translate, questions, setQuestions }) => {
                   )
                 }
                 {
-                  question.type === 'multiple choice' && (
+                  question.type === 'multiple' && (
                     question.answers.map((answer, answerIndex) => (
                       <Form.Check key={answerIndex} type='radio'>
                         <Form.Check.Input type='radio' isValid className="mt-3" disabled />
@@ -186,7 +186,7 @@ const Question = ({ translate, questions, setQuestions }) => {
                   )
                 }
                 {
-                  question.type === 'open-ended text' && (
+                  question.type === 'open-text' && (
                     <Form.Group controlId='formValue'>
                       <Form.Control
                         disabled
@@ -200,7 +200,7 @@ const Question = ({ translate, questions, setQuestions }) => {
                   )
                 }
                 {
-                  question.type === 'open-ended number' && (
+                  question.type === 'open-number' && (
                     <Form.Group controlId='formValue'>
                       <Form.Control
                         disabled
@@ -215,7 +215,7 @@ const Question = ({ translate, questions, setQuestions }) => {
                   )
                 }
                 {
-                  (question.type === 'checkbox' || question.type === 'multiple choice') &&
+                  (question.type === 'checkbox' || question.type === 'multiple') &&
                     <Form.Group className="ml-3">
                       <Button
                         variant="link"
