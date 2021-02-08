@@ -22,16 +22,32 @@
 	}
 }
 
-.exercise-media {
-	.upload-btn {
-		opacity: 0;
-		right: 0;
-		top: 0;
-	}
 
-	.remove-btn-wrapper {
-		right: -10px;
-		top: -10px;
-		bottom: 0;
+.upload-btn {
+	opacity: 0;
+	right: 0;
+	top: 0;
+}
+
+.remove-btn-wrapper {
+	right: -10px;
+	top: -10px;
+	bottom: 0;
+}
+
+.question-card {
+	margin-bottom: 5px;
+	.card-header {
+		background-color: $lightBlue;
+	}
+	.remove-btn {
+		background-color: $white;
+		width: 25px;
+		height: 25px;
+		padding: 0;
+		border-radius: 15px;
+		&:hover {
+			background-color: $danger;
+		}
 	}
 }

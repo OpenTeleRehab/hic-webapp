@@ -10,6 +10,8 @@ import {
   getQuestionnaire,
   updateQuestionnaire
 } from '../../../store/questionnaire/actions';
+import { BsPlusCircle } from 'react-icons/bs';
+import Question from './Question/question';
 
 const CreateQuestionnaire = ({ translate }) => {
   const dispatch = useDispatch();
@@ -27,6 +29,7 @@ const CreateQuestionnaire = ({ translate }) => {
   const [titleError, setTitleError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [questions, setQuestions] = useState([{ title: '', type: 'checkbox', answers: [{ description: '' }] }]);
 
   useEffect(() => {
     if (id) {
@@ -96,6 +99,11 @@ const CreateQuestionnaire = ({ translate }) => {
       }
     }
   };
+
+  const handleAddQuestion = () => {
+    setQuestions([...questions, { title: '', type: '', answers: [{ description: '' }] }]);
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
@@ -150,6 +158,24 @@ const CreateQuestionnaire = ({ translate }) => {
               <Form.Control.Feedback type="invalid">
                 {translate('exercise.additional_field.value.required')}
               </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={10} xl={8}>
+            <Question
+              questions={questions}
+              setQuestions={setQuestions}
+            />
+            <br/>
+            <Form.Group>
+              <Button
+                variant="link"
+                onClick={handleAddQuestion}
+                className="p-0"
+              >
+                <BsPlusCircle size={20} /> {translate('questionnaire.new.question')}
+              </Button>
             </Form.Group>
             <Form.Group>
               <Button
