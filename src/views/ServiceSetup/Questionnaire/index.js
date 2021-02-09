@@ -94,7 +94,7 @@ const Questionnaire = ({ translate }) => {
                   name="search_value"
                   value={formFields.search_value}
                   onChange={handleChange}
-                  placeholder={translate('exercise.search')}
+                  placeholder={translate('questionnaire.search')}
                 />
               </Form.Group>
             </Card.Header>
@@ -148,10 +148,12 @@ const Questionnaire = ({ translate }) => {
                 </>
               );
               return {
-                title: <span className="text-nowrap" dangerouslySetInnerHTML={{
-                  __html: '<strong>' + questionnaire.title + '</strong><br/>' +
-                questionnaire.description
-                }} />,
+                title: <span
+                  className="questionnaire-title"
+                  dangerouslySetInnerHTML={{
+                    __html: `<strong>${questionnaire.title}</strong><div class="description">${questionnaire.description}</div>`
+                  }}
+                />,
                 number_of_question: questionnaire.questions.length,
                 action
               };
