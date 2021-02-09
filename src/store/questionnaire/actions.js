@@ -59,3 +59,19 @@ export const updateQuestionnaire = (id, payload) => async dispatch => {
     return false;
   }
 };
+
+export const deleteQuestionnaire = id => async (dispatch, getState) => {
+  dispatch(mutation.deleteQuestionnaireRequest());
+  const data = await Questionnaire.deleteQuestionnaire(id);
+  if (data.success) {
+    dispatch(mutation.deleteQuestionnaireSuccess());
+    const filters = getState().questionnaire.filters;
+    dispatch(getQuestionnaires(filters));
+    dispatch(showSuccessNotification('toast_title.delete_questionnaire', data.message));
+    return true;
+  } else {
+    dispatch(mutation.deleteQuestionnaireFail());
+    dispatch(showErrorNotification('toast_title.delete_questionnaire', data.message));
+    return false;
+  }
+};
