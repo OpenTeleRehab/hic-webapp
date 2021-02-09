@@ -29,6 +29,8 @@ const CreateQuestionnaire = ({ translate }) => {
   const [descriptionError, setDescriptionError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [questions, setQuestions] = useState([{ title: '', type: 'checkbox', answers: [{ description: '' }] }]);
+  const [questionTitleError, setQuestionTitleError] = useState([]);
+  const [answerFieldError, setAnswerFieldError] = useState([]);
 
   useEffect(() => {
     if (languages.length) {
@@ -68,6 +70,8 @@ const CreateQuestionnaire = ({ translate }) => {
 
   const handleSave = () => {
     let canSave = true;
+    const errorQuestionTitle = [];
+    const errorAnswerField = [];
 
     if (formFields.title === '') {
       canSave = false;
@@ -82,6 +86,29 @@ const CreateQuestionnaire = ({ translate }) => {
     } else {
       setDescriptionError(false);
     }
+
+    for (let i = 0; i < questions.length; i++) {
+      if (questions[i].title === '') {
+        canSave = false;
+        errorQuestionTitle.push(true);
+      } else {
+        errorQuestionTitle.push(false);
+      }
+    }
+
+    for (let i = 0; i < questions.length; i++) {
+      errorAnswerField.push([]);
+      for (let j = 0; j < questions[i].answers.length; j++) {
+        if (questions[i].answers[j].description === '') {
+          canSave = false;
+          errorAnswerField[i].push(true);
+        } else {
+          errorAnswerField[i].push(false);
+        }
+      }
+    }
+    setQuestionTitleError(errorQuestionTitle);
+    setAnswerFieldError(errorAnswerField);
 
     if (canSave) {
       setIsLoading(true);
@@ -157,7 +184,7 @@ const CreateQuestionnaire = ({ translate }) => {
                 maxLength={255}
               />
               <Form.Control.Feedback type="invalid">
-                {translate('exercise.additional_field.value.required')}
+                {translate('questionnaire.description.required')}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
@@ -168,6 +195,8 @@ const CreateQuestionnaire = ({ translate }) => {
               questions={questions}
               setQuestions={setQuestions}
               language={language}
+              questionTitleError={questionTitleError}
+              answerFieldError={answerFieldError}
             />
             <Form.Group>
               <Button
