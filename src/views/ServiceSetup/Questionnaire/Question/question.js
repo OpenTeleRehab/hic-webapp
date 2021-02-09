@@ -10,9 +10,11 @@ import {
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import * as ROUTES from '../../../../variables/routes';
-import { BsPlus, BsUpload, BsX } from 'react-icons/bs';
+import { BsPlus, BsUpload, BsX, BsPlusCircle } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
 
-const Question = ({ translate, questions, setQuestions }) => {
+const Question = ({ translate, questions, setQuestions, language }) => {
+  const { languages } = useSelector(state => state.language);
   const [imageUpload, setImageUpload] = useState(null);
 
   const handleSave = () => {
@@ -72,6 +74,15 @@ const Question = ({ translate, questions, setQuestions }) => {
     const updatedQuestion = { ...values[index], answers: values[index].type === 'checkbox' || values[index].type === 'multiple' ? [{ description: '' }] : [] };
     values[index] = updatedQuestion;
     setQuestions(values);
+  };
+
+  const handleAddQuestion = () => {
+    setQuestions([...questions, { title: '', type: 'checkbox', answers: [{ description: '' }] }]);
+  };
+
+  const enableAddButtons = () => {
+    const languageObj = languages.find(item => item.id === language);
+    return languageObj && languageObj.code === languageObj.fallback;
   };
 
   return (
@@ -145,13 +156,15 @@ const Question = ({ translate, questions, setQuestions }) => {
                             </Form.Control.Feedback>
                           </Form.Group>
                         </Form.Check.Label>
-                        <Button
-                          variant="outline-danger"
-                          className="remove-btn btn-circle-sm"
-                          onClick={() => handleAnswerRemove(index, answerIndex)}
-                        >
-                          <BsX size={15} />
-                        </Button>
+                        {enableAddButtons() &&
+                          <Button
+                            variant="outline-danger"
+                            className="remove-btn btn-circle-sm"
+                            onClick={() => handleAnswerRemove(index, answerIndex)}
+                          >
+                            <BsX size={15} />
+                          </Button>
+                        }
                       </Form.Check>
                     ))
                   )
@@ -174,13 +187,14 @@ const Question = ({ translate, questions, setQuestions }) => {
                             </Form.Control.Feedback>
                           </Form.Group>
                         </Form.Check.Label>
-                        <Button
-                          variant="outline-danger"
-                          className="remove-btn btn-circle-sm"
-                          onClick={() => handleAnswerRemove(index, answerIndex)}
-                        >
-                          <BsX size={15} />
-                        </Button>
+                        {enableAddButtons() &&
+                          <Button variant="outline-danger"
+                            className="remove-btn btn-circle-sm"
+                            onClick={() => handleAnswerRemove(index,
+                              answerIndex)}>
+                            <BsX size={15}/>
+                          </Button>
+                        }
                       </Form.Check>
                     ))
                   )
@@ -215,7 +229,7 @@ const Question = ({ translate, questions, setQuestions }) => {
                   )
                 }
                 {
-                  (question.type === 'checkbox' || question.type === 'multiple') &&
+                  (enableAddButtons() && (question.type === 'checkbox' || question.type === 'multiple')) &&
                     <Form.Group className="ml-3">
                       <Button
                         variant="link"
@@ -248,6 +262,17 @@ const Question = ({ translate, questions, setQuestions }) => {
           </Card>
         ))
       }
+      {enableAddButtons() &&
+        <Form.Group className={'my-4'}>
+          <Button
+            variant="link"
+            onClick={handleAddQuestion}
+            className="p-0"
+          >
+            <BsPlusCircle size={20} /> {translate('questionnaire.new.question')}
+          </Button>
+        </Form.Group>
+      }
     </>
   );
 };
@@ -255,7 +280,8 @@ const Question = ({ translate, questions, setQuestions }) => {
 Question.propTypes = {
   translate: PropTypes.func,
   questions: PropTypes.array,
-  setQuestions: PropTypes.func
+  setQuestions: PropTypes.func,
+  language: PropTypes.string
 };
 
 export default withLocalize(Question);

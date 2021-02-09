@@ -10,7 +10,6 @@ import {
   getQuestionnaire,
   updateQuestionnaire
 } from '../../../store/questionnaire/actions';
-import { BsPlusCircle } from 'react-icons/bs';
 import Question from './Question/question';
 
 const CreateQuestionnaire = ({ translate }) => {
@@ -32,15 +31,20 @@ const CreateQuestionnaire = ({ translate }) => {
   const [questions, setQuestions] = useState([{ title: '', type: 'checkbox', answers: [{ description: '' }] }]);
 
   useEffect(() => {
-    if (id) {
-      let lang = '';
+    if (languages.length) {
       if (filters && filters.lang) {
-        lang = filters.lang;
-        setLanguage(lang);
+        setLanguage(filters.lang);
+      } else {
+        setLanguage(languages[0].id);
       }
-      dispatch(getQuestionnaire(id, lang));
     }
-  }, [id, filters, dispatch]);
+  }, [languages, filters]);
+
+  useEffect(() => {
+    if (id && language) {
+      dispatch(getQuestionnaire(id, language));
+    }
+  }, [id, language, dispatch]);
 
   useEffect(() => {
     if (id && questionnaire.id) {
@@ -99,10 +103,6 @@ const CreateQuestionnaire = ({ translate }) => {
           });
       }
     }
-  };
-
-  const handleAddQuestion = () => {
-    setQuestions([...questions, { title: '', type: 'checkbox', answers: [{ description: '' }] }]);
   };
 
   return (
@@ -167,17 +167,8 @@ const CreateQuestionnaire = ({ translate }) => {
             <Question
               questions={questions}
               setQuestions={setQuestions}
+              language={language}
             />
-            <br/>
-            <Form.Group>
-              <Button
-                variant="link"
-                onClick={handleAddQuestion}
-                className="p-0"
-              >
-                <BsPlusCircle size={20} /> {translate('questionnaire.new.question')}
-              </Button>
-            </Form.Group>
             <Form.Group>
               <Button
                 onClick={handleSave}
