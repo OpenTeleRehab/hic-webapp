@@ -70,7 +70,8 @@ const Questionnaire = ({ translate }) => {
   };
 
   const columns = [
-    { name: 'title', title: translate('questionnaire.title') },
+    { name: 'title', title: translate('questionnaire.title') + '/' + translate('questionnaire.description') },
+    { name: 'number_of_question', title: translate('questionnaire.number_of_question') },
     { name: 'action', title: translate('common.action') }
   ];
 
@@ -147,7 +148,11 @@ const Questionnaire = ({ translate }) => {
                 </>
               );
               return {
-                title: questionnaire.title,
+                title: <span className="text-nowrap" dangerouslySetInnerHTML={{
+                  __html: '<strong>' + questionnaire.title + '</strong><br/>' +
+                questionnaire.description
+                }} />,
+                number_of_question: questionnaire.questions.length,
                 action
               };
             })}
