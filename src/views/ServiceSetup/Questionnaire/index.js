@@ -73,7 +73,8 @@ const Questionnaire = ({ translate }) => {
   };
 
   const columns = [
-    { name: 'title', title: translate('questionnaire.title') },
+    { name: 'title', title: translate('questionnaire.title') + '/' + translate('questionnaire.description') },
+    { name: 'number_of_question', title: translate('questionnaire.number_of_question') },
     { name: 'action', title: translate('common.action') }
   ];
 
@@ -114,7 +115,7 @@ const Questionnaire = ({ translate }) => {
                   name="search_value"
                   value={formFields.search_value}
                   onChange={handleChange}
-                  placeholder={translate('exercise.search')}
+                  placeholder={translate('questionnaire.search')}
                 />
               </Form.Group>
             </Card.Header>
@@ -169,7 +170,13 @@ const Questionnaire = ({ translate }) => {
                 </>
               );
               return {
-                title: questionnaire.title,
+                title: <span
+                  className="questionnaire-title"
+                  dangerouslySetInnerHTML={{
+                    __html: `<strong>${questionnaire.title}</strong><div class="description">${questionnaire.description}</div>`
+                  }}
+                />,
+                number_of_question: questionnaire.questions.length,
                 action
               };
             })}
