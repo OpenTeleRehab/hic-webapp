@@ -75,17 +75,14 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
     setQuestions([...questions, { title: '', type: 'checkbox', answers: [{ description: '' }] }]);
   };
 
+  const handleRemoveQuestion = (index) => {
+    questions.splice(index, 1);
+    setQuestions([...questions]);
+  };
+
   const enableAddButtons = () => {
     const languageObj = languages.find(item => item.id === parseInt(language, 10));
     return languageObj && languageObj.code === languageObj.fallback;
-  };
-
-  const handleQuestionRemove = (index) => {
-    const questionData = [...questions];
-    if (index !== -1) {
-      questionData.splice(index, 1);
-    }
-    setQuestions(questionData);
   };
 
   return (
@@ -94,16 +91,18 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
         questions.map((question, index) => (
           <Card key={index} className="question-card mb-3">
             <Card.Header className="card-header">
-              <div className="position-absolute remove-btn-wrapper">
-                <Button
-                  variant="outline-danger"
-                  className="remove-btn"
-                  onClick={() => handleQuestionRemove(index)}
-                >
-                  <BsX size={23} />
-                </Button>
-              </div>
-              <Card.Title>Question {index + 1}</Card.Title>
+              <Card.Title className="d-flex justify-content-between">
+                <h5>{translate('questionnaire.question_number', { number: index + 1 })}</h5>
+                <div>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => handleRemoveQuestion(index)}
+                  >
+                    {translate('common.delete')}
+                  </Button>
+                </div>
+              </Card.Title>
               <Row>
                 <Col sm={8} xl={7}>
                   <Form.Group controlId={`formTitle${index}`}>
