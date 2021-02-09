@@ -49,9 +49,22 @@ const updateQuestionnaire = (id, payload) => {
     });
 };
 
+const deleteQuestionnaire = id => {
+  return axios.delete(`/questionnaire/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Questionnaire = {
   getQuestionnaire,
   getQuestionnaires,
   createQuestionnaire,
-  updateQuestionnaire
+  updateQuestionnaire,
+  deleteQuestionnaire
 };

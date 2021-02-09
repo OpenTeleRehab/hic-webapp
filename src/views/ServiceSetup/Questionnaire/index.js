@@ -8,14 +8,15 @@ import {
   Form,
   Button
 } from 'react-bootstrap';
-
+import Dialog from 'components/Dialog';
 import * as ROUTES from 'variables/routes';
 import { useDispatch, useSelector } from 'react-redux';
 import { BsSearch, BsX } from 'react-icons/bs/index';
 import { useHistory } from 'react-router-dom';
+
 import CustomTable from 'components/Table';
-import { EditAction } from 'components/ActionIcons';
-import { getQuestionnaires } from '../../../store/questionnaire/actions';
+import { EditAction, DeleteAction } from 'components/ActionIcons';
+import { getQuestionnaires, deleteQuestionnaire } from '../../../store/questionnaire/actions';
 
 let timer = null;
 const Questionnaire = ({ translate }) => {
@@ -31,6 +32,8 @@ const Questionnaire = ({ translate }) => {
   const { profile } = useSelector((state) => state.auth);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [id, setId] = useState('');
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     if (filters && filters.lang) {
@@ -73,6 +76,24 @@ const Questionnaire = ({ translate }) => {
     { name: 'title', title: translate('questionnaire.title') },
     { name: 'action', title: translate('common.action') }
   ];
+
+  const handleDelete = (id) => {
+    setId(id);
+    setShow(true);
+  };
+
+  const handleClose = () => {
+    setId(null);
+    setShow(false);
+  };
+
+  const handleConfirm = () => {
+    dispatch(deleteQuestionnaire(id)).then(result => {
+      if (result) {
+        handleClose();
+      }
+    });
+  };
 
   return (
     <>
@@ -144,6 +165,7 @@ const Questionnaire = ({ translate }) => {
               const action = (
                 <>
                   <EditAction onClick={() => handleEdit(questionnaire.id)} />
+                  <DeleteAction className="ml-1" onClick={() => handleDelete(questionnaire.id)} disabled={questionnaire.is_used} />
                 </>
               );
               return {
@@ -154,6 +176,16 @@ const Questionnaire = ({ translate }) => {
           />
         </Col>
       </Row>
+      <Dialog
+        show={show}
+        title={translate('questionnaire.delete_confirmation_title')}
+        cancelLabel={translate('common.no')}
+        onCancel={handleClose}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handleConfirm}
+      >
+        <p>{translate('common.delete_confirmation_message')}</p>
+      </Dialog>
     </>
   );
 };

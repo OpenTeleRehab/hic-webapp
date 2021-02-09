@@ -47,6 +47,18 @@ const updateQuestionnaireSuccess = () => ({
 
 const updateQuestionnaireFail = () => ({
   type: 'UPDATE_QUESTIONNAIRE_FAIL'
+}); ;
+
+const deleteQuestionnaireRequest = () => ({
+  type: 'DELETE_QUESTIONNAIRE_REQUEST'
+});
+
+const deleteQuestionnaireSuccess = () => ({
+  type: 'DELETE_QUESTIONNAIRE_SUCCESS'
+});
+
+const deleteQuestionnaireFail = () => ({
+  type: 'DELETE_QUESTIONNAIRE_FAIL'
 });
 
 export const mutation = {
@@ -61,5 +73,8 @@ export const mutation = {
   createQuestionnaireSuccess,
   updateQuestionnaireRequest,
   updateQuestionnaireSuccess,
-  updateQuestionnaireFail
+  updateQuestionnaireFail,
+  deleteQuestionnaireRequest,
+  deleteQuestionnaireSuccess,
+  deleteQuestionnaireFail
 };
