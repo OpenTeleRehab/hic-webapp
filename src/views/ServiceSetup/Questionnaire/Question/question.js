@@ -10,6 +10,8 @@ import {
 } from 'react-bootstrap';
 import { BsPlus, BsUpload, BsX, BsPlusCircle } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
+import { FaCopy, FaTrashAlt } from 'react-icons/fa';
+import settings from '../../../../settings';
 
 const Question = ({ translate, questions, setQuestions, language, questionTitleError, answerFieldError }) => {
   const { languages } = useSelector(state => state.language);
@@ -85,6 +87,14 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
     return languageObj && languageObj.code === languageObj.fallback;
   };
 
+  const handleCloneQuestion = (index) => {
+    const { title, type, answers } = questions[index];
+    setQuestions([...questions, { title, type, answers }]);
+    setTimeout(() => {
+      window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: 'smooth' });
+    }, 300);
+  };
+
   return (
     <>
       {
@@ -95,11 +105,20 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                 <h5>{translate('questionnaire.question_number', { number: index + 1 })}</h5>
                 <div>
                   <Button
-                    variant="danger"
+                    variant="link"
                     size="sm"
+                    className="text-primary"
+                    onClick={() => handleCloneQuestion(index)}
+                  >
+                    <FaCopy size={20} />
+                  </Button>
+                  <Button
+                    variant="link"
+                    size="sm"
+                    className="text-danger"
                     onClick={() => handleRemoveQuestion(index)}
                   >
-                    {translate('common.delete')}
+                    <FaTrashAlt size={20} />
                   </Button>
                 </div>
               </Card.Title>
@@ -112,6 +131,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                       value={question.title}
                       placeholder={translate('questionnaire.title.placeholder')}
                       isInvalid={questionTitleError[index]}
+                      maxLength={settings.textMaxLength}
                     />
                     <Form.Control.Feedback type="invalid">
                       {translate('question.title.required')}
