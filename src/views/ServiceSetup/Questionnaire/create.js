@@ -28,19 +28,19 @@ const CreateQuestionnaire = ({ translate }) => {
   const [titleError, setTitleError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [questions, setQuestions] = useState([{ title: '', type: 'checkbox', answers: [{ description: '' }] }]);
+  const [questions, setQuestions] = useState([{ title: '', type: 'checkbox', answers: [{ description: '' }], file: null }]);
   const [questionTitleError, setQuestionTitleError] = useState([]);
   const [answerFieldError, setAnswerFieldError] = useState([]);
 
   useEffect(() => {
     if (languages.length) {
-      if (filters && filters.lang) {
+      if (id && filters && filters.lang) {
         setLanguage(filters.lang);
       } else {
         setLanguage(languages[0].id);
       }
     }
-  }, [languages, filters]);
+  }, [languages, filters, id]);
 
   useEffect(() => {
     if (id && language) {
@@ -159,7 +159,7 @@ const CreateQuestionnaire = ({ translate }) => {
           <Col sm={4} xl={3}>
             <Form.Group controlId="formLanguage">
               <Form.Label>{translate('common.show_language.version')}</Form.Label>
-              <Form.Control as="select" value={id ? language : ''} onChange={handleLanguageChange} disabled={!id}>
+              <Form.Control as="select" value={language} onChange={handleLanguageChange} disabled={!id}>
                 {languages.map((language, index) => (
                   <option key={index} value={language.id}>
                     {language.name} {language.code === language.fallback && `(${translate('common.default')})`}

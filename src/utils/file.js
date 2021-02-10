@@ -6,3 +6,10 @@ export const formatFileSize = (bytes) => {
 export const toMB = (bytes) => {
   return bytes / Math.pow(1024, 2);
 };
+
+export const toBase64 = file => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => resolve(reader.result);
+  reader.onerror = error => reject(error);
+});

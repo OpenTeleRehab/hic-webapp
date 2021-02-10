@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 import {
@@ -15,19 +15,30 @@ import settings from '../../../../settings';
 
 const Question = ({ translate, questions, setQuestions, language, questionTitleError, answerFieldError }) => {
   const { languages } = useSelector(state => state.language);
-  const [imageUpload, setImageUpload] = useState(null);
 
-  const handleFileChange = (e) => {
-    const files = e.target.files;
-    const reader = new FileReader();
-    reader.readAsDataURL(files[0]);
-    reader.onloadend = () => {
-      setImageUpload(reader.result);
-    };
+  const handleFileChange = (e, index) => {
+    const { name, files } = e.target;
+    const values = [...questions];
+    values[index][name] = files[0];
+    setQuestions(values);
   };
 
-  const handleFileRemove = () => {
-    setImageUpload(null);
+  const readImage = (file) => {
+    if (file) {
+      if (file.id) {
+        return `${process.env.REACT_APP_API_BASE_URL}/file/${file.id}`;
+      }
+
+      return window.URL.createObjectURL(file);
+    }
+
+    return '';
+  };
+
+  const handleFileRemove = (index) => {
+    const values = [...questions];
+    values[index].file = null;
+    setQuestions(values);
   };
 
   const handleAddAnswer = (index) => {
@@ -74,7 +85,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
   };
 
   const handleAddQuestion = () => {
-    setQuestions([...questions, { title: '', type: 'checkbox', answers: [{ description: '' }] }]);
+    setQuestions([...questions, { title: '', type: 'checkbox', answers: [{ description: '' }], file: null }]);
   };
 
   const handleRemoveQuestion = (index) => {
@@ -82,7 +93,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
     setQuestions([...questions]);
   };
 
-  const enableAddButtons = () => {
+  const enableButtons = () => {
     const languageObj = languages.find(item => item.id === parseInt(language, 10));
     return languageObj && languageObj.code === languageObj.fallback;
   };
@@ -103,24 +114,26 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
             <Card.Header className="card-header">
               <Card.Title className="d-flex justify-content-between">
                 <h5>{translate('questionnaire.question_number', { number: index + 1 })}</h5>
-                <div>
-                  <Button
-                    variant="link"
-                    size="sm"
-                    className="text-primary"
-                    onClick={() => handleCloneQuestion(index)}
-                  >
-                    <FaCopy size={20} />
-                  </Button>
-                  <Button
-                    variant="link"
-                    size="sm"
-                    className="text-danger"
-                    onClick={() => handleRemoveQuestion(index)}
-                  >
-                    <FaTrashAlt size={20} />
-                  </Button>
-                </div>
+                {enableButtons() &&
+                  <div>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="text-primary p-0 mr-1"
+                      onClick={() => handleCloneQuestion(index)}
+                    >
+                      <FaCopy size={20} />
+                    </Button>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="text-danger p-0"
+                      onClick={() => handleRemoveQuestion(index)}
+                    >
+                      <FaTrashAlt size={20} />
+                    </Button>
+                  </div>
+                }
               </Card.Title>
               <Row>
                 <Col sm={8} xl={7}>
@@ -137,24 +150,28 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                       {translate('question.title.required')}
                     </Form.Control.Feedback>
                   </Form.Group>
-                  { imageUpload &&
-                    <div className="mb-2 position-relative w-50">
-                      <div className="position-absolute remove-btn-wrapper">
-                        <Button
-                          variant="outline-danger"
-                          className="remove-btn"
-                          onClick={handleFileRemove}
-                        >
-                          <BsX size={15} />
-                        </Button>
-                      </div>
-                      <img src={imageUpload} alt="..." className="img-thumbnail"/>
+                  { question.file &&
+                    <div className="mb-2 w-50 d-flex justify-content-between">
+                      <img src={readImage(question.file)} alt="..." className="img-thumbnail"/>
+                      {enableButtons() &&
+                        <div className="ml-3">
+                          <Button
+                            variant="outline-danger"
+                            className="remove-btn"
+                            onClick={() => handleFileRemove(index)}
+                          >
+                            <BsX size={15} />
+                          </Button>
+                        </div>
+                      }
                     </div>
                   }
-                  <div className="btn btn-sm text-primary position-relative overflow-hidden" >
-                    <BsUpload size={15}/> Upload Image
-                    <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} accept=".jpeg, .png"/>
-                  </div>
+                  {enableButtons() &&
+                    <div className="btn btn-sm text-primary position-relative overflow-hidden" >
+                      <BsUpload size={15}/> Upload Image
+                      <input type="file" name="file" className="position-absolute upload-btn" onChange={e => handleFileChange(e, index)} accept="image/*"/>
+                    </div>
+                  }
                 </Col>
                 <Col sm={5} xl={4}>
                   <Form.Group controlId={`formType${index}`}>
@@ -193,7 +210,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                             </Form.Check.Label>
                           </Form.Check>
                         </Col>
-                        {enableAddButtons() &&
+                        {enableButtons() &&
                           <Col sm={4} xl={3} className="mt-1">
                             <Button
                               variant="outline-danger"
@@ -231,7 +248,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                             </Form.Check.Label>
                           </Form.Check>
                         </Col>
-                        {enableAddButtons() &&
+                        {enableButtons() &&
                           <Col sm={4} xl={3} className="mt-1">
                             <Button
                               variant="outline-danger"
@@ -252,7 +269,6 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                       <Form.Control
                         disabled
                         name="value"
-                        placeholder={translate('answer.input.placeholder')}
                       />
                     </Form.Group>
                   )
@@ -264,13 +280,12 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                         disabled
                         type="number"
                         name="value"
-                        placeholder={translate('answer.input.placeholder')}
                       />
                     </Form.Group>
                   )
                 }
                 {
-                  (enableAddButtons() && (question.type === 'checkbox' || question.type === 'multiple')) &&
+                  (enableButtons() && (question.type === 'checkbox' || question.type === 'multiple')) &&
                     <Form.Group className="ml-3">
                       <Button
                         variant="link"
@@ -286,7 +301,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
           </Card>
         ))
       }
-      {enableAddButtons() &&
+      {enableButtons() &&
         <Form.Group className={'my-4'}>
           <Button
             variant="link"
