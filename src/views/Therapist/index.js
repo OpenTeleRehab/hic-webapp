@@ -170,7 +170,7 @@ const Therapist = ({ translate }) => {
                 : <DisabledAction onClick={() => handleSwitchStatus(user.id, 1)} disabled={!!getPatient(user.id, patients)} />
               }
               <EditAction onClick={() => handleEdit(user.id)} />
-              <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={!!getPatient(user.id, patients) }/>
+              <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={!!getPatient(user.id, patients) || user.enabled }/>
             </>
           );
 
