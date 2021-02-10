@@ -175,7 +175,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                 </Col>
                 <Col sm={5} xl={4}>
                   <Form.Group controlId={`formType${index}`}>
-                    <Form.Control name ="type" as="select" value={question.type} onChange={e => handleSelectChange(index, e)}>
+                    <Form.Control name ="type" as="select" value={question.type} onChange={e => handleSelectChange(index, e)} disabled={!enableButtons()}>
                       <option value='checkbox'>{translate('question.type.checkbox')}</option>
                       <option value='multiple'>{translate('question.type.multiple_choice')}</option>
                       <option value='open-text'>{translate('question.type.open_ended_free_text')}</option>
