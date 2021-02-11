@@ -31,3 +31,19 @@ export const createClinic = payload => async (dispatch) => {
     return false;
   }
 };
+
+export const deleteClinic = id => async (dispatch, getState) => {
+  dispatch(mutation.deleteClinicRequest());
+  const data = await Clinic.deleteClinic(id);
+  if (data.success) {
+    dispatch(mutation.deleteClinicSuccess());
+    const filters = getState().clinic.filters;
+    dispatch(getClinics(filters));
+    dispatch(showSuccessNotification('toast_title.delete_clinic', data.message));
+    return true;
+  } else {
+    dispatch(mutation.deleteClinicFail());
+    dispatch(showErrorNotification('toast_title.delete_clinic', data.message));
+    return false;
+  }
+};
