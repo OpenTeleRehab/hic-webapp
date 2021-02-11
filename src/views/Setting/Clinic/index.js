@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import BasicTable from 'components/Table/basic';
 import { EditAction, DeleteAction } from 'components/ActionIcons';
 import { getCountryISO } from 'utils/country';
+import Dialog from 'components/Dialog';
+import { deleteClinic } from 'store/clinic/actions';
 
 const Clinic = ({ translate }) => {
   const clinics = useSelector(state => state.clinic.clinics);
   const countries = useSelector(state => state.country.countries);
+  const dispatch = useDispatch();
+
+  const [editId, setEditId] = useState('');
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const [columns] = useState([
     { name: 'id', title: translate('common.id') },
@@ -21,6 +27,24 @@ const Clinic = ({ translate }) => {
     { name: 'action', title: translate('common.action') }
   ]);
 
+  const handleDelete = (id) => {
+    setEditId(id);
+    setShowDeleteDialog(true);
+  };
+
+  const handleDeleteDialogClose = () => {
+    setEditId(null);
+    setShowDeleteDialog(false);
+  };
+
+  const handleDeleteDialogConfirm = () => {
+    dispatch(deleteClinic(editId)).then(result => {
+      if (result) {
+        handleDeleteDialogClose();
+      }
+    });
+  };
+
   return (
     <div className="card">
       <BasicTable
@@ -28,7 +52,7 @@ const Clinic = ({ translate }) => {
           const action = (
             <>
               <EditAction disabled />
-              <DeleteAction className="ml-1" disabled />
+              <DeleteAction className="ml-1" onClick={() => handleDelete(clinic.id)} disabled={clinic.is_used} />
             </>
           );
           return {
@@ -43,6 +67,16 @@ const Clinic = ({ translate }) => {
         })}
         columns={columns}
       />
+      <Dialog
+        show={showDeleteDialog}
+        title={translate('clinic.delete_confirmation_title')}
+        cancelLabel={translate('common.no')}
+        onCancel={handleDeleteDialogClose}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handleDeleteDialogConfirm}
+      >
+        <p>{translate('common.delete_confirmation_message')}</p>
+      </Dialog>
     </div>
   );
 };
