@@ -83,7 +83,7 @@ const Therapist = ({ translate }) => {
         }
       });
     }, 500);
-  }, [currentPage, pageSize, searchValue, filters, dispatch]);
+  }, [currentPage, pageSize, searchValue, filters, dispatch, profile.clinic_id]);
 
   const handleShow = () => setShow(true);
 
