@@ -25,6 +25,7 @@ const Therapist = ({ translate }) => {
   const patients = useSelector(state => state.patient.patients);
   const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
+  const { profile } = useSelector((state) => state.auth);
 
   const [show, setShow] = useState(false);
   const [editId, setEditId] = useState('');
@@ -71,6 +72,7 @@ const Therapist = ({ translate }) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       dispatch(getTherapists({
+        clinic_id: profile.clinic_id,
         filters,
         search_value: searchValue,
         page_size: pageSize,
