@@ -21,7 +21,7 @@ const reorderQuestion = (questions, startIndex, endIndex) => {
   return result;
 };
 
-const Question = ({ translate, questions, setQuestions, language, questionTitleError, answerFieldError }) => {
+const Question = ({ translate, questions, setQuestions, language, questionTitleError, answerFieldError, modifiable }) => {
   const { languages } = useSelector(state => state.language);
 
   const handleFileChange = (e, index) => {
@@ -53,8 +53,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
     const newAnswer = questions[index].answers;
     newAnswer.push({ description: '' });
     const questionData = [...questions];
-    const updatedQuestion = { ...questionData[index], answers: newAnswer };
-    questionData[index] = updatedQuestion;
+    questionData[index] = { ...questionData[index], answers: newAnswer };
     setQuestions(questionData);
   };
 
@@ -62,8 +61,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
     const answers = questions[questionIndex].answers;
     answers[answerIndex].description = e.target.value;
     const questionData = [...questions];
-    const updatedQuestion = { ...questionData[questionIndex], answer: answers };
-    questionData[questionIndex] = updatedQuestion;
+    questionData[questionIndex] = { ...questionData[questionIndex], answer: answers };
     setQuestions(questionData);
   };
 
@@ -73,8 +71,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
       answers.splice(answerIndex, 1);
     }
     const questionData = [...questions];
-    const updatedQuestion = { ...questionData[questionIndex], answer: answers };
-    questionData[questionIndex] = updatedQuestion;
+    questionData[questionIndex] = { ...questionData[questionIndex], answer: answers };
     setQuestions(questionData);
   };
 
@@ -87,8 +84,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
   const handleSelectChange = (index, e) => {
     const values = [...questions];
     values[index].type = e.target.value;
-    const updatedQuestion = { ...values[index], answers: values[index].type === 'checkbox' || values[index].type === 'multiple' ? [{ description: '' }] : [] };
-    values[index] = updatedQuestion;
+    values[index] = { ...values[index], answers: values[index].type === 'checkbox' || values[index].type === 'multiple' ? [{ description: '' }] : [] };
     setQuestions(values);
   };
 
@@ -103,7 +99,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
 
   const enableButtons = () => {
     const languageObj = languages.find(item => item.id === parseInt(language, 10));
-    return languageObj && languageObj.code === languageObj.fallback;
+    return languageObj && languageObj.code === languageObj.fallback && modifiable;
   };
 
   const handleCloneQuestion = (index) => {
@@ -377,7 +373,8 @@ Question.propTypes = {
   setQuestions: PropTypes.func,
   language: PropTypes.string,
   questionTitleError: PropTypes.array,
-  answerFieldError: PropTypes.array
+  answerFieldError: PropTypes.array,
+  modifiable: PropTypes.bool
 };
 
 export default withLocalize(Question);
