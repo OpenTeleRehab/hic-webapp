@@ -197,6 +197,7 @@ const CreateQuestionnaire = ({ translate }) => {
               language={language}
               questionTitleError={questionTitleError}
               answerFieldError={answerFieldError}
+              modifiable={!questionnaire.is_used}
             />
             <Form.Group>
               <Button
