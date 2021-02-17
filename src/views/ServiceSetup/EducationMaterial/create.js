@@ -33,15 +33,20 @@ const CreateEducationMaterial = ({ translate }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      let lang = '';
-      if (filters && filters.lang) {
-        lang = filters.lang;
-        setLanguage(lang);
+    if (languages.length) {
+      if (id && filters && filters.lang) {
+        setLanguage(filters.lang);
+      } else {
+        setLanguage(languages[0].id);
       }
-      dispatch(getEducationMaterial(id, lang));
     }
-  }, [id, filters, dispatch]);
+  }, [languages, filters, id]);
+
+  useEffect(() => {
+    if (id && language) {
+      dispatch(getEducationMaterial(id, language));
+    }
+  }, [id, language, dispatch]);
 
   useEffect(() => {
     if (id && educationMaterial.id) {
