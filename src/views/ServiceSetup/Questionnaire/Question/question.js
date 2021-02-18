@@ -84,12 +84,12 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
   const handleSelectChange = (index, e) => {
     const values = [...questions];
     values[index].type = e.target.value;
-    values[index] = { ...values[index], answers: values[index].type === 'checkbox' || values[index].type === 'multiple' ? [{ description: '' }] : [] };
+    values[index] = { ...values[index], answers: values[index].type === 'checkbox' || values[index].type === 'multiple' ? [{ description: '' }, { description: '' }] : [] };
     setQuestions(values);
   };
 
   const handleAddQuestion = () => {
-    setQuestions([...questions, { title: '', type: 'checkbox', answers: [{ description: '' }], file: null }]);
+    setQuestions([...questions, { title: '', type: 'checkbox', answers: [{ description: '' }, { description: '' }], file: null }]);
   };
 
   const handleRemoveQuestion = (index) => {
@@ -172,6 +172,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                                     size="sm"
                                     className="text-danger p-0"
                                     onClick={() => handleRemoveQuestion(index)}
+                                    disabled={questions.length === 1}
                                   >
                                     <FaTrashAlt size={20} />
                                   </Button>
@@ -260,6 +261,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                                         variant="outline-danger"
                                         className="remove-btn"
                                         onClick={() => handleAnswerRemove(index, answerIndex)}
+                                        disabled={question.answers.length <= 2}
                                       >
                                         <BsX size={15} />
                                       </Button>
@@ -298,6 +300,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                                         variant="outline-danger"
                                         className="remove-btn"
                                         onClick={() => handleAnswerRemove(index, answerIndex)}
+                                        disabled={question.answers.length <= 2}
                                       >
                                         <BsX size={15} />
                                       </Button>
