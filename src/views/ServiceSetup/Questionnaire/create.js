@@ -28,7 +28,7 @@ const CreateQuestionnaire = ({ translate }) => {
   const [titleError, setTitleError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [questions, setQuestions] = useState([{ title: '', type: 'checkbox', answers: [{ description: '' }], file: null }]);
+  const [questions, setQuestions] = useState([{ title: '', type: 'checkbox', answers: [{ description: '' }, { description: '' }], file: null }]);
   const [questionTitleError, setQuestionTitleError] = useState([]);
   const [answerFieldError, setAnswerFieldError] = useState([]);
 
