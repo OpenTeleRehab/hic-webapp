@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import BasicTable from 'components/Table/basic';
 import { EditAction, DeleteAction } from 'components/ActionIcons';
 import { getLanguageName } from 'utils/language';
+import Dialog from 'components/Dialog';
+import { deleteCountry } from 'store/country/actions';
 
 const Country = ({ translate, handleRowEdit }) => {
   const countries = useSelector(state => state.country.countries);
   const languages = useSelector(state => state.language.languages);
+  const dispatch = useDispatch();
 
   const columns = [
     { name: 'id', title: translate('common.id') },
@@ -20,6 +23,26 @@ const Country = ({ translate, handleRowEdit }) => {
     { name: 'action', title: translate('common.action') }
   ];
 
+  const [deleteId, setDeleteId] = useState('');
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  const handleDelete = (id) => {
+    setDeleteId(id);
+    setShowDeleteDialog(true);
+  };
+
+  const handleDeleteDialogClose = () => {
+    setDeleteId(null);
+    setShowDeleteDialog(false);
+  };
+
+  const handleDeleteDialogConfirm = () => {
+    dispatch(deleteCountry(deleteId)).then(result => {
+      if (result) {
+        handleDeleteDialogClose();
+      }
+    });
+  };
   return (
     <div className="card">
       <BasicTable
@@ -27,7 +50,7 @@ const Country = ({ translate, handleRowEdit }) => {
           const action = (
             <>
               <EditAction onClick={() => handleRowEdit(country.id)} />
-              <DeleteAction className="ml-1" disabled />
+              <DeleteAction className="ml-1" onClick={() => handleDelete(country.id)} disabled={country.is_used} />
             </>
           );
           return {
@@ -41,6 +64,16 @@ const Country = ({ translate, handleRowEdit }) => {
         })}
         columns={columns}
       />
+      <Dialog
+        show={showDeleteDialog}
+        title={translate('country.delete_confirmation_title')}
+        cancelLabel={translate('common.no')}
+        onCancel={handleDeleteDialogClose}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handleDeleteDialogConfirm}
+      >
+        <p>{translate('common.delete_confirmation_message')}</p>
+      </Dialog>
     </div>
   );
 };
