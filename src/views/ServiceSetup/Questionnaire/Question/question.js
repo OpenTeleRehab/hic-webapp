@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { FaCopy, FaTrashAlt } from 'react-icons/fa';
 import settings from '../../../../settings';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import _ from 'lodash';
 
 const reorderQuestion = (questions, startIndex, endIndex) => {
   const result = Array.from(questions);
@@ -103,7 +104,8 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
   };
 
   const handleCloneQuestion = (index) => {
-    const { title, type, answers } = questions[index];
+    const { title, type } = questions[index];
+    const answers = _.cloneDeep(questions[index].answers);
     setQuestions([...questions, { title, type, answers }]);
     setTimeout(() => {
       window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: 'smooth' });
