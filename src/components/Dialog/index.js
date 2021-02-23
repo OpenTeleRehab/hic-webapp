@@ -32,9 +32,11 @@ const Dialog = (props) => {
       </Modal.Body>
 
       <Modal.Footer>
-        <Button variant="primary" onClick={onConfirm} disabled={disabled}>
-          {confirmLabel}
-        </Button>
+        {onConfirm &&
+          <Button variant="primary" onClick={onConfirm} disabled={disabled}>
+            {confirmLabel}
+          </Button>
+        }
         <Button variant="outline-dark" onClick={onCancel} disabled={disabled}>
           {cancelLabel}
         </Button>

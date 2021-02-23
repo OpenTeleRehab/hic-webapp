@@ -15,8 +15,9 @@ import { BsSearch, BsX } from 'react-icons/bs/index';
 import { useHistory } from 'react-router-dom';
 
 import CustomTable from 'components/Table';
-import { EditAction, DeleteAction } from 'components/ActionIcons';
+import { EditAction, DeleteAction, ViewAction } from 'components/ActionIcons';
 import { getQuestionnaires, deleteQuestionnaire } from '../../../store/questionnaire/actions';
+import ViewQuestionnaire from './viewQuestionnaire';
 
 let timer = null;
 const Questionnaire = ({ translate }) => {
@@ -34,6 +35,8 @@ const Questionnaire = ({ translate }) => {
   const [pageSize, setPageSize] = useState(10);
   const [id, setId] = useState('');
   const [show, setShow] = useState(false);
+  const [questionnaire, setQuestionnaire] = useState([]);
+  const [viewQuestionnaire, setViewQuestionnaire] = useState(false);
 
   useEffect(() => {
     if (filters && filters.lang) {
@@ -94,6 +97,15 @@ const Questionnaire = ({ translate }) => {
         handleClose();
       }
     });
+  };
+
+  const handleView = (questionnaire) => {
+    setQuestionnaire(questionnaire);
+    setViewQuestionnaire(true);
+  };
+
+  const handleQuestionnaireViewClose = () => {
+    setViewQuestionnaire(false);
   };
 
   return (
@@ -165,7 +177,8 @@ const Questionnaire = ({ translate }) => {
             rows={questionnaires.map(questionnaire => {
               const action = (
                 <>
-                  <EditAction onClick={() => handleEdit(questionnaire.id)} />
+                  <ViewAction onClick={() => handleView(questionnaire)} />
+                  <EditAction className="ml-1" onClick={() => handleEdit(questionnaire.id)} />
                   <DeleteAction className="ml-1" onClick={() => handleDelete(questionnaire.id)} disabled={questionnaire.is_used} />
                 </>
               );
@@ -193,6 +206,7 @@ const Questionnaire = ({ translate }) => {
       >
         <p>{translate('common.delete_confirmation_message')}</p>
       </Dialog>
+      {viewQuestionnaire && <ViewQuestionnaire questionnaire={questionnaire} show={viewQuestionnaire} handleClose={handleQuestionnaireViewClose}/>}
     </>
   );
 };
