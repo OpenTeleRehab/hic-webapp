@@ -24,7 +24,7 @@ const Dialog = (props) => {
       {...rest}
     >
       <Modal.Header closeButton>
-        <Modal.Title>{title}</Modal.Title>
+        <Modal.Title className="text-break">{title}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
