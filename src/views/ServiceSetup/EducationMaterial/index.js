@@ -16,8 +16,9 @@ import { useHistory } from 'react-router-dom';
 
 import Dialog from 'components/Dialog';
 import CustomTable from 'components/Table';
-import { DeleteAction, EditAction } from 'components/ActionIcons';
+import { DeleteAction, EditAction, ViewAction } from 'components/ActionIcons';
 import { getEducationMaterials, deleteEducationMaterial } from 'store/educationMaterial/actions';
+import ViewEducationMaterial from './view';
 
 let timer = null;
 const EducationMaterial = ({ translate }) => {
@@ -35,6 +36,7 @@ const EducationMaterial = ({ translate }) => {
   const [pageSize, setPageSize] = useState(10);
   const [id, setId] = useState(null);
   const [show, setShow] = useState(false);
+  const [showView, setShowView] = useState(false);
 
   useEffect(() => {
     if (filters && filters.lang) {
@@ -96,6 +98,16 @@ const EducationMaterial = ({ translate }) => {
         handleClose();
       }
     });
+  };
+
+  const handleView = (id) => {
+    setId(id);
+    setShowView(true);
+  };
+
+  const handleViewClose = () => {
+    setId('');
+    setShowView(false);
   };
 
   return (
@@ -167,8 +179,9 @@ const EducationMaterial = ({ translate }) => {
             rows={educationMaterials.map(educationMaterial => {
               const action = (
                 <>
-                  <EditAction onClick={() => handleEdit(educationMaterial.id)} />
-                  <DeleteAction className="ml-1" onClick={() => handleDelete(educationMaterial.id)} disabled={educationMaterial.is_used} />
+                  <ViewAction className="mr-1" onClick={() => handleView(educationMaterial.id)} />
+                  <EditAction onClick={() => handleEdit(educationMaterial.id)} className="mr-1" />
+                  <DeleteAction onClick={() => handleDelete(educationMaterial.id)} disabled={educationMaterial.is_used} />
                 </>
               );
               return {
@@ -180,6 +193,7 @@ const EducationMaterial = ({ translate }) => {
           />
         </Col>
       </Row>
+      {showView && <ViewEducationMaterial showView={showView} handleViewClose={handleViewClose} id={id} />}
       <Dialog
         show={show}
         title={translate('education.delete_confirmation_title')}
