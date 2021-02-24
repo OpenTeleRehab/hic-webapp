@@ -1,6 +1,9 @@
 .exercise-card {
 	overflow: hidden;
 	height: 315px;
+	&:hover {
+		cursor: pointer;
+	}
 
 	.img-fluid {
 		max-width: 100%;
@@ -32,6 +35,18 @@
 	right: -10px;
 	top: -10px;
 	bottom: 0;
+}
+
+.delete-btn {
+	bottom: 27px;
+	right: 20px;
+	z-index: 1;
+}
+
+.edit-btn {
+	top: 0;
+	right: 20px;
+	z-index: 1;
 }
 
 .question-card {
