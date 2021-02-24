@@ -25,10 +25,8 @@ const ViewEducationMaterial = ({ showView, handleViewClose, id }) => {
     <Dialog
       show={showView}
       title={title}
-      cancelLabel={translate('common.no')}
+      cancelLabel={translate('common.close')}
       onCancel={handleViewClose}
-      confirmLabel={translate('common.yes')}
-      onConfirm={handleViewClose}
     >
       <Form>
         <Row>
@@ -52,6 +50,7 @@ const ViewEducationMaterial = ({ showView, handleViewClose, id }) => {
                       <source src={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`} type="video/mp4" />
                     </video>
                   }
+
                   { materialFile.fileType === 'application/pdf' &&
                     <object
                       data={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`}
@@ -69,6 +68,18 @@ const ViewEducationMaterial = ({ showView, handleViewClose, id }) => {
                       </iframe>
                     </object>
                   }
+
+                  <Form.Text className="text-muted">
+                    {translate(materialFile.fileGroupType)}:
+                    <a
+                      href={`${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`}
+                      /* eslint-disable-next-line react/jsx-no-target-blank */
+                      target="_blank"
+                      className="pl-2"
+                    >
+                      {materialFile.fileName}
+                    </a>
+                  </Form.Text>
                 </div>
             }
           </Col>
