@@ -5,15 +5,13 @@ import {
   Row,
   Col,
   Card,
-  Dropdown,
-  DropdownButton,
   Form,
   Tooltip,
   OverlayTrigger,
   Button
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { BsSearch, BsX } from 'react-icons/bs';
 
 import Dialog from 'components/Dialog';
@@ -21,13 +19,19 @@ import Pagination from 'components/Pagination';
 import { deleteExercise, getExercises } from 'store/exercise/actions';
 import * as ROUTES from 'variables/routes';
 import Spinner from 'react-bootstrap/Spinner';
+import { EditAction, DeleteAction } from 'components/ActionIcons';
+import ViewExercise from './view';
 
 let timer = null;
 const Exercise = ({ translate }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
+
   const { loading, exercises, filters } = useSelector(state => state.exercise);
   const { profile } = useSelector((state) => state.auth);
   const { languages } = useSelector(state => state.language);
+  const [id, setId] = useState(null);
+  const [showView, setShowView] = useState(false);
 
   const [deletedId, setDeletedId] = useState(null);
   const [show, setShow] = useState(false);
@@ -93,6 +97,20 @@ const Exercise = ({ translate }) => {
         handleClose();
       }
     });
+  };
+
+  const handleEdit = (id) => {
+    history.push(ROUTES.EXERCISE_EDIT.replace(':id', id));
+  };
+
+  const handleView = (id) => {
+    setId(id);
+    setShowView(true);
+  };
+
+  const handleViewClose = () => {
+    setId('');
+    setShowView(false);
   };
 
   return (
@@ -164,31 +182,26 @@ const Exercise = ({ translate }) => {
               <Row>
                 { exercises.map(exercise => (
                   <Col key={exercise.id} md={6} lg={3}>
-                    <Card className="exercise-card shadow-sm mb-4">
+                    <div className="position-absolute delete-btn">
+                      <DeleteAction disabled={!exercise.can_delete} onClick={() => handleDelete(exercise.id)} />
+                    </div>
+                    <div className="position-absolute edit-btn">
+                      <EditAction onClick={() => handleEdit(exercise.id)} />
+                    </div>
+                    <Card className="exercise-card shadow-sm mb-4" onClick={() => handleView(exercise.id)}>
                       <div className="card-img bg-light">
-                        <div className="position-absolute w-100">
-                          <DropdownButton title="" className="float-right action" alignRight variant="outline-dark">
-                            <Dropdown.Item as={Link} to={ROUTES.EXERCISE_EDIT.replace(':id', exercise.id)}>
-                              {translate('common.edit')}
-                            </Dropdown.Item>
-                            <Dropdown.Item disabled={!exercise.can_delete} onClick={() => handleDelete(exercise.id)}>
-                              {translate('common.delete')}
-                            </Dropdown.Item>
-                          </DropdownButton>
-                        </div>
                         {
                           exercise.files.length > 0 && (
                             (exercise.files[0].fileType === 'audio/mpeg' &&
-                              <div className="w-100">
+                              <div className="w-100 pt-5 pl-3 pr-3">
                                 <audio controls className="w-100">
                                   <source src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} type="audio/ogg" />
                                 </audio>
                               </div>
                             ) ||
                             (exercise.files[0].fileType === 'video/mp4' &&
-                              <video controls className="w-100 h-100">
-                                <source src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} type="video/mp4" />
-                              </video>
+                              <img className="img-fluid mx-auto d-block" src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}/?thumbnail=1`} alt="Exercise"
+                              />
                             ) ||
                             ((exercise.files[0].fileType !== 'audio/mpeg' && exercise.files[0].fileType !== 'video/mp4') &&
                               <img className="img-fluid mx-auto d-block" src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} alt="Exercise"
@@ -231,7 +244,7 @@ const Exercise = ({ translate }) => {
           { loading && <Spinner className="loading-icon" animation="border" variant="primary" /> }
         </Col>
       </Row>
-
+      {showView && <ViewExercise showView={showView} handleViewClose={handleViewClose} id={id} />}
       <Dialog
         show={show}
         title={translate('exercise.delete_confirmation_title')}
