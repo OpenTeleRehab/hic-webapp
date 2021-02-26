@@ -80,3 +80,16 @@
 		height: 45px;
 	}
 }
+
+.view-exercise-carousel {
+	.carousel-control-next, .carousel-control-prev {
+		height: 30px;
+		top: 40%;
+	}
+	.carousel-indicators {
+		height: 15px;
+	}
+	.audio-wrapper {
+		height: 120px;
+	}
+}

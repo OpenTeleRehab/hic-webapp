@@ -39,12 +39,12 @@ const ViewExercise = ({ showView, handleViewClose, id }) => {
       <Form>
         <Row>
           <Col sm={12} xl={12}>
-            <Carousel activeIndex={index} onSelect={handleSelect}>
+            <Carousel activeIndex={index} onSelect={handleSelect} controls={mediaUploads.length > 1} indicators={mediaUploads.length > 1} className="view-exercise-carousel">
               { mediaUploads.map((mediaUpload, index) => (
                 <Carousel.Item key={index}>
                   { mediaUpload.fileType === 'audio/mpeg' &&
-                    <div className="img-thumbnail w-100 pt-2 pl-5 pr-5 bg-light">
-                      <audio controls className="w-100">
+                    <div className="img-thumbnail w-100 pt-2 pl-5 pr-5 bg-light audio-wrapper">
+                      <audio controls className="w-100 mt-4">
                         <source src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} type="audio/ogg" />
                       </audio>
                     </div>
@@ -57,7 +57,7 @@ const ViewExercise = ({ showView, handleViewClose, id }) => {
                   }
 
                   { mediaUpload.fileType === 'video/mp4' &&
-                    <video className="w-100 img-thumbnail" controls autoPlay={true}>
+                    <video className="w-100 img-thumbnail" controls>
                       <source src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} type="video/mp4" />
                     </video>
                   }
@@ -68,7 +68,7 @@ const ViewExercise = ({ showView, handleViewClose, id }) => {
               { additionalFields && additionalFields.map((additionalField, index) => (
                 <div key={index}>
                   <strong>{additionalField.field}</strong>
-                  <p>{additionalField.value}</p>
+                  <p style={{ whiteSpace: 'pre-wrap' }}>{additionalField.value}</p>
                 </div>
               ))}
             </div>
