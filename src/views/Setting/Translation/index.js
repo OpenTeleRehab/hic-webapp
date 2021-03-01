@@ -66,7 +66,7 @@ const Translation = ({ translate }) => {
     <>
       <Form>
         <Form.Row>
-          <Form.Group controlId="formEmail" className="col-md-4">
+          <Form.Group controlId="formPlateForm" className="col-md-4">
             <Form.Label>{translate('setting.translations.platform')}</Form.Label>
             <Form.Control
               name="platform"

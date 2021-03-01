@@ -12,6 +12,7 @@ import SystemLimit from 'views/Setting/SystemLimit';
 import Clinic from 'views/Setting/Clinic';
 import Profession from 'views/Setting/Profession';
 import Language from 'views/Setting/Language';
+import StaticPage from 'views/Setting/StaticPage';
 
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES, SETTING_ROLES } from 'variables/user';
@@ -19,6 +20,7 @@ import CreateCountry from 'views/Setting/Country/create';
 import CreateClinic from 'views/Setting/Clinic/create';
 import CreateLanguage from 'views/Setting/Language/create';
 import CreateTermAndCondition from 'views/Setting/TermAndCondition/create';
+import CreateStaticPage from 'views/Setting/StaticPage/create';
 
 const VIEW_COUNTRY = 'country';
 const VIEW_TRANSLATION = 'translation';
@@ -27,6 +29,7 @@ const VIEW_SYSTEM_LIMIT = 'system_limit';
 const VIEW_CLINIC = 'clinic';
 const VIEW_PROFESSION = 'profession';
 const VIEW_LANGUAGE = 'language';
+const VIEW_STATIC_PAGE = 'static_page';
 
 const Setting = ({ translate }) => {
   const { keycloak } = useKeycloak();
@@ -49,6 +52,8 @@ const Setting = ({ translate }) => {
       setView(VIEW_PROFESSION);
     } else if (hash.includes('#' + VIEW_LANGUAGE)) {
       setView(VIEW_LANGUAGE);
+    } else if (hash.includes('#' + VIEW_STATIC_PAGE)) {
+      setView(VIEW_STATIC_PAGE);
     } else {
       for (const role of SETTING_ROLES) {
         if (keycloak.hasRealmRole(role)) {
@@ -77,7 +82,7 @@ const Setting = ({ translate }) => {
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1>{translate('setting')}</h1>
-        {[VIEW_COUNTRY, VIEW_LANGUAGE, VIEW_TERM_AND_CONDITION, VIEW_CLINIC].map(v => {
+        {[VIEW_COUNTRY, VIEW_LANGUAGE, VIEW_TERM_AND_CONDITION, VIEW_CLINIC, VIEW_STATIC_PAGE].map(v => {
           if (v === view) {
             return (
               <div className="btn-toolbar mb-2 mb-md-0">
@@ -96,6 +101,7 @@ const Setting = ({ translate }) => {
       {show && view === VIEW_LANGUAGE && <CreateLanguage show={show} editId={editId} handleClose={handleClose} />}
       {show && view === VIEW_TERM_AND_CONDITION && <CreateTermAndCondition show={show} editId={editId} handleClose={handleClose} />}
       {show && view === VIEW_CLINIC && <CreateClinic show={show} handleClose={handleClose} />}
+      {show && view === VIEW_STATIC_PAGE && <CreateStaticPage show={show} handleClose={handleClose} />}
 
       <Nav variant="tabs" activeKey={view} className="mb-3">
         { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY) && (
@@ -119,7 +125,7 @@ const Setting = ({ translate }) => {
             </Nav.Link>
           </Nav.Item>
         )}
-        { keycloak.hasRealmRole(USER_ROLES.MANAGE_SYSTEM_LIMIT) && (
+        { keycloak.hasRealmRole(USER_ROLES.MANAGE_TERM_CONDITION) && (
           <Nav.Item>
             <Nav.Link as={Link} to={ROUTES.SETTING_TERM_AND_CONDITION} eventKey={VIEW_TERM_AND_CONDITION}>
               {translate('setting.term_and_conditions')}
@@ -147,15 +153,24 @@ const Setting = ({ translate }) => {
             </Nav.Link>
           </Nav.Item>
         )}
+        { keycloak.hasRealmRole(USER_ROLES.MANAGE_STATIC_PAGE) && (
+          <Nav.Item>
+            <Nav.Link as={Link} to={ROUTES.SETTING_STATIC_PAGE} eventKey={VIEW_STATIC_PAGE}>
+              {translate('setting.static_page')}
+            </Nav.Link>
+          </Nav.Item>
+        )}
       </Nav>
 
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY) && view === VIEW_COUNTRY && <Country handleRowEdit={handleEdit} /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_LANGUAGE) && view === VIEW_LANGUAGE && <Language handleRowEdit={handleEdit} /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_TRANSLATION) && view === VIEW_TRANSLATION && <Translation /> }
-      { keycloak.hasRealmRole(USER_ROLES.MANAGE_SYSTEM_LIMIT) && view === VIEW_TERM_AND_CONDITION && <TermAndCondition handleRowEdit={handleEdit} /> }
+      { keycloak.hasRealmRole(USER_ROLES.MANAGE_TERM_CONDITION) && view === VIEW_TERM_AND_CONDITION && <TermAndCondition handleRowEdit={handleEdit} /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_SYSTEM_LIMIT) && view === VIEW_SYSTEM_LIMIT && <SystemLimit /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_CLINIC) && view === VIEW_CLINIC && <Clinic /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_PROFESSION) && view === VIEW_PROFESSION && <Profession /> }
+      { keycloak.hasRealmRole(USER_ROLES.MANAGE_STATIC_PAGE) && view === VIEW_STATIC_PAGE && <StaticPage /> }
+
     </>
   );
 };
