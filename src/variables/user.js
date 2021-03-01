@@ -31,9 +31,11 @@ export const USER_ROLES = {
   MANAGE_COUNTRY: 'manage_country',
   MANAGE_TRANSLATION: 'manage_translation',
   MANAGE_SYSTEM_LIMIT: 'manage_system_limit',
+  MANAGE_TERM_CONDITION: 'manage_term_condition',
   MANAGE_CLINIC: 'manage_clinic',
   MANAGE_PROFESSION: 'manage_profession',
-  MANAGE_LANGUAGE: 'manage_language'
+  MANAGE_LANGUAGE: 'manage_language',
+  MANAGE_STATIC_PAGE: 'manage_static_page'
 };
 
 export const SETTING_ROLES = [
@@ -41,5 +43,7 @@ export const SETTING_ROLES = [
   USER_ROLES.MANAGE_TRANSLATION,
   USER_ROLES.MANAGE_SYSTEM_LIMIT,
   USER_ROLES.MANAGE_CLINIC,
-  USER_ROLES.MANAGE_PROFESSION
+  USER_ROLES.MANAGE_PROFESSION,
+  USER_ROLES.MANAGE_STATIC_PAGE,
+  USER_ROLES.MANAGE_TERM_CONDITION
 ];
