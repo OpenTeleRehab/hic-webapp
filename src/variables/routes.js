@@ -2,8 +2,8 @@ export const DASHBOARD = '/';
 export const ADMIN = '/admin';
 
 export const SERVICE_SETUP = '/service-setup';
-export const SERVICE_SETUP_EDUCATION = '/service-setup#education';
-export const SERVICE_SETUP_QUESTIONNAIRE = '/service-setup#questionnaire';
+export const SERVICE_SETUP_EDUCATION = SERVICE_SETUP + '#education';
+export const SERVICE_SETUP_QUESTIONNAIRE = SERVICE_SETUP + '#questionnaire';
 
 export const EXERCISE_CREATE = SERVICE_SETUP + '/exercise/create';
 export const EXERCISE_EDIT = SERVICE_SETUP + '/exercise/edit/:id';
@@ -14,6 +14,8 @@ export const QUESTIONNAIRE_EDIT = SERVICE_SETUP + '/questionnaire/edit/:id';
 
 export const THERAPIST = '/therapist';
 export const CATEGORY = '/category';
+export const CATEGORY_EDUCATION = CATEGORY + '#education';
+export const CATEGORY_QUESTIONNAIRE = CATEGORY + '#questionnaire';
 
 export const SETTING = '/setting';
 export const SETTING_TRANSLATIONS = SETTING + '#translation';
