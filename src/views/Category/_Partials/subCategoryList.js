@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { ListGroup } from 'react-bootstrap';
 import { EditAction } from 'components/ActionIcons';
 
-const SubCategoryList = ({ subCategories, categories, active, setActive, setEditId, ...rest }) => {
+const SubCategoryList = ({ subCategories, categories, active, setActive, handleEdit, ...rest }) => {
   return (
     <ListGroup variant="flush" className="border-top border-bottom" {...rest}>
       {subCategories.map(sub => {
@@ -17,7 +17,7 @@ const SubCategoryList = ({ subCategories, categories, active, setActive, setEdit
             className="d-flex justify-content-between align-items-start"
           >
             {sub.title} ({childSubCategories.length})
-            <EditAction onClick={() => setEditId(sub.id)} />
+            <EditAction onClick={() => handleEdit(sub.id)} />
           </ListGroup.Item>
         );
       })}
@@ -30,7 +30,7 @@ SubCategoryList.propTypes = {
   categories: PropTypes.array,
   active: PropTypes.object,
   setActive: PropTypes.func,
-  setEditId: PropTypes.func,
+  handleEdit: PropTypes.func,
   rest: PropTypes.any
 };
 

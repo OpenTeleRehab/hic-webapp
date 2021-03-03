@@ -5,7 +5,7 @@ import { Button, Card } from 'react-bootstrap';
 import { BsPlus } from 'react-icons/all';
 import SubCategoryList from './subCategoryList';
 
-const SubCategoryCard = ({ activeCategory, categories, active, setActive, setEditId, ...rest }) => {
+const SubCategoryCard = ({ activeCategory, categories, active, setActive, handleCreate, handleEdit, ...rest }) => {
   if (!activeCategory) {
     return (
       <Card>
@@ -24,6 +24,7 @@ const SubCategoryCard = ({ activeCategory, categories, active, setActive, setEdi
           <Button
             variant="outline-primary"
             className="btn-circle"
+            onClick={() => handleCreate(activeCategory.id, false)}
           >
             <BsPlus size={20} />
           </Button>
@@ -37,7 +38,7 @@ const SubCategoryCard = ({ activeCategory, categories, active, setActive, setEdi
             categories={categories}
             active={active}
             setActive={setActive}
-            setEditId={setEditId}
+            handleEdit={handleEdit}
           />
         </Card.Body>
       )}
@@ -50,7 +51,8 @@ SubCategoryCard.propTypes = {
   categories: PropTypes.array,
   active: PropTypes.object,
   setActive: PropTypes.func,
-  setEditId: PropTypes.func,
+  handleCreate: PropTypes.func,
+  handleEdit: PropTypes.func,
   rest: PropTypes.any
 };
 
