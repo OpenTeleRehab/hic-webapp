@@ -22,6 +22,7 @@ import { termAndCondition } from 'store/termAndCondition/reducers';
 import { educationMaterial } from 'store/educationMaterial/reducers';
 import { questionnaire } from 'store/questionnaire/reducers';
 import { staticPages } from 'store/staticPage/reducers';
+import { category } from 'store/category/reducers';
 
 export const rootReducer = {
   localize: localizeReducer,
@@ -41,7 +42,8 @@ export const rootReducer = {
   patient,
   educationMaterial,
   questionnaire,
-  staticPages
+  staticPages,
+  category
 };
 
 const devTool =
