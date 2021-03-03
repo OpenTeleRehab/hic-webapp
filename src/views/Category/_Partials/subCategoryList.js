@@ -2,17 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { ListGroup } from 'react-bootstrap';
-import { EditAction } from '../../../components/ActionIcons';
+import { EditAction } from 'components/ActionIcons';
 
-const SubCategoryList = ({ subCategories, categories, ...rest }) => {
+const SubCategoryList = ({ subCategories, categories, active, setActive, setEditId, ...rest }) => {
   return (
     <ListGroup variant="flush" {...rest}>
       {subCategories.map(sub => {
         const childSubCategories = _.filter(categories, { parent: sub.id });
         return (
-          <ListGroup.Item key={sub.id}>
+          <ListGroup.Item key={sub.id} active={active && active.id === sub.id} onClick={() => setActive ? setActive(sub) : undefined}>
             {sub.title} ({childSubCategories.length})
-            <EditAction className="float-right" />
+            <EditAction className="float-right" onClick={() => setEditId(sub.id)} />
           </ListGroup.Item>
         );
       })}
@@ -23,6 +23,9 @@ const SubCategoryList = ({ subCategories, categories, ...rest }) => {
 SubCategoryList.propTypes = {
   subCategories: PropTypes.array,
   categories: PropTypes.array,
+  active: PropTypes.object,
+  setActive: PropTypes.func,
+  setEditId: PropTypes.func,
   rest: PropTypes.any
 };
 
