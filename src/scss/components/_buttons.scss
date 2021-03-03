@@ -1,0 +1,22 @@
+.btn-circle {
+	background-color: $white;
+	width: 25px;
+	height: 25px;
+	padding: 0;
+	line-height: 0;
+	border-radius: 15px;
+	border: 2px solid $gray-500;
+
+	&-sm {
+		@extend .btn-circle;
+		width: 20px;
+		height: 20px;
+		border-radius: 10px;
+	}
+
+	&-lg {
+		width: 30px;
+		height: 30px;
+		border-radius: 20px;
+	}
+}
