@@ -1,5 +1,65 @@
 .category-container {
-	> .card {
-		min-height: 250px;
+	>.card {
+		min-height: 200px;
+
+		>.card-header {
+			background-color: #ADADAD;
+			height: 48px;
+			border: none;
+		}
+
+		.list-group-item {
+			cursor: pointer;
+		}
+
+		&:not(:first-child) {
+			>.card-header {
+				position: relative;
+				background-color: #D6D6D6;
+
+				&::before,
+				&::after {
+					content: '';
+					position: absolute;
+					left: -15px;
+					height: 25px;
+					width: 25px;
+					background-color: #ADADAD;
+				}
+
+				&::before {
+					top: 0;
+					transform: skew(35deg);
+				}
+
+				&::after {
+					bottom: 0;
+					transform: skew(-35deg);
+				}
+
+				@include media-breakpoint-down(xs) {
+					overflow: hidden;
+				}
+			}
+		}
+
+		&:last-child {
+			>.card-header {
+				background-color: #EBEBEB;
+
+				&::before,
+				&::after {
+					background-color: #D6D6D6;
+				}
+			}
+
+			.list-group-item {
+				cursor: auto;
+			}
+		}
+
+		.card {
+			border-left: 5px solid $primary;
+		}
 	}
 }

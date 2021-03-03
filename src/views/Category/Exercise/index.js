@@ -1,8 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 
-import { Button, Card, CardGroup } from 'react-bootstrap';
+import {
+  Accordion,
+  AccordionContext,
+  Button,
+  Card,
+  CardGroup, useAccordionToggle
+} from 'react-bootstrap';
 import { BsPlus } from 'react-icons/all';
 import _ from 'lodash';
 
@@ -11,6 +17,7 @@ import SubCategoryList from '../_Partials/subCategoryList';
 import Create from '../_Patials/Create';
 import { CATEGORY_TYPES } from 'variables/category';
 import SubCategoryCard from '../_Partials/SubCategoryCard';
+import { BsChevronDown, BsChevronRight } from 'react-icons/bs';
 
 const Exercise = ({ translate }) => {
   const [editId, setEditId] = useState('');
@@ -52,8 +59,8 @@ const Exercise = ({ translate }) => {
     <>
       <CardGroup className="category-container">
         <Card>
-          <Card.Header as="h5">
-            Categories
+          <Card.Header className="pl-2 d-flex justify-content-between align-items-start">
+            <h5 className="m-0 text-truncate">{translate('category')}</h5>
             <Button
               variant="outline-primary"
               className="btn-circle float-right"
@@ -62,30 +69,37 @@ const Exercise = ({ translate }) => {
               <BsPlus size={20} />
             </Button>
           </Card.Header>
-          <Card.Body className="p-2">
+          <Card.Body className="px-2">
             {categories.length > 0 && (
               <>
                 <strong>3 categories, 18 sub-categories</strong>
                 {_.filter(categories, { parent: null }).map(category => {
                   const subCategories = _.filter(categories, { parent: category.id });
                   return (
-                    <Card key={category.id} className="mb-2">
-                      <Card.Header as="h5" className="bg-white">
-                        {category.title} ({subCategories.length})
-                        <EditAction className="float-right" onClick={() => setEditId(category.id)} />
-                      </Card.Header>
-                      {subCategories.length > 0 && (
-                        <Card.Body className="p-0 px-2">
-                          <SubCategoryList
-                            subCategories={subCategories}
-                            categories={categories}
-                            active={activeSub1}
-                            setActive={setActiveSub1}
-                            setEditId={setEditId}
-                          />
-                        </Card.Body>
-                      )}
-                    </Card>
+                    <Accordion key={category.id}>
+                      <Card className="mb-2 shadow-sm">
+                        <Card.Header className="bg-white pl-2 d-flex justify-content-between align-items-start">
+                          <h5 className="m-0">
+                            <CustomToggle eventKey={category.id} />
+                            {category.title} ({subCategories.length})
+                          </h5>
+                          <EditAction onClick={() => setEditId(category.id)} />
+                        </Card.Header>
+                        {subCategories.length > 0 && (
+                          <Accordion.Collapse eventKey={category.id}>
+                            <Card.Body className="p-0 pl-2">
+                              <SubCategoryList
+                                subCategories={subCategories}
+                                categories={categories}
+                                active={activeSub1}
+                                setActive={setActiveSub1}
+                                setEditId={setEditId}
+                              />
+                            </Card.Body>
+                          </Accordion.Collapse>
+                        )}
+                      </Card>
+                    </Accordion>
                   );
                 })}
               </>
@@ -116,3 +130,22 @@ Exercise.propTypes = {
 };
 
 export default withLocalize(Exercise);
+
+const CustomToggle = ({ eventKey }) => {
+  const currentEventKey = useContext(AccordionContext);
+  const decoratedOnClick = useAccordionToggle(eventKey);
+
+  return (
+    <Button variant="link" className="mr-2 py-0 px-1" onClick={decoratedOnClick}>
+      {currentEventKey === eventKey ? (
+        <BsChevronDown className="ml-auto" />
+      ) : (
+        <BsChevronRight className="ml-auto" />
+      )}
+    </Button>
+  );
+};
+
+CustomToggle.propTypes = {
+  eventKey: PropTypes.string
+};
