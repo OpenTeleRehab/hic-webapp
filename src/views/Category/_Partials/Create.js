@@ -109,7 +109,7 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
   return (
     <Dialog
       show={show}
-      title={translate(editId ? 'category.edit' : 'category.new')}
+      title={translate(editId ? 'category.edit_' + type : 'category.new_' + type)}
       onCancel={handleClose}
       onConfirm={handleConfirm}
       confirmLabel={editId ? translate('common.save') : translate('common.create')}
