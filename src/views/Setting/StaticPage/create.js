@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import {
+  Form,
+  InputGroup,
+  FormControl
+} from 'react-bootstrap';
 import Dialog from 'components/Dialog';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import settings from 'settings';
-import { createStaticPage } from 'store/staticPage/actions';
-import { formatFileSize, toMB } from '../../../utils/file';
+import { createStaticPage, getStaticPage, updateStaticPage } from 'store/staticPage/actions';
+import { toMB } from '../../../utils/file';
+import { BsUpload, BsXCircle } from 'react-icons/bs/index';
+import { Editor } from '@tinymce/tinymce-react';
+
+import { SketchPicker } from 'react-color';
 
 const CreateStaticPage = ({ show, editId, handleClose }) => {
   const localize = useSelector((state) => state.localize);
@@ -18,9 +26,12 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
   const [errorTitle, setErrorTitle] = useState(false);
   const [errorPlatform, setErrorPlatform] = useState(false);
   const [errorUrl, setErrorUrl] = useState(false);
+  const [materialFile, setMaterialFile] = useState(undefined);
   const [fileError, setFileError] = useState(false);
-  const [materialFile] = useState(undefined);
   const { languages } = useSelector(state => state.language);
+  const { profile } = useSelector((state) => state.auth);
+
+  const { staticPage, filters } = useSelector(state => state.staticPage);
 
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
@@ -29,14 +40,45 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
     private: false,
     title: '',
     content: '',
+    background_color: '#fff',
+    text_color: '#000',
     file: undefined
   });
 
   useEffect(() => {
     if (languages.length) {
-      setLanguage(languages[0].id);
+      if (editId) {
+        if (filters && filters.lang) {
+          setLanguage(filters.lang);
+        } else if (profile && profile.language_id) {
+          setLanguage(profile.language_id);
+        }
+      } else {
+        setLanguage(languages[0].id);
+      }
     }
-  }, [languages]);
+  }, [languages, filters, editId, profile]);
+
+  useEffect(() => {
+    if (editId && language) {
+      dispatch(getStaticPage(editId, language));
+    }
+  }, [editId, language, dispatch]);
+
+  useEffect(() => {
+    if (editId && staticPage.id) {
+      setFormFields({
+        title: staticPage.title || '',
+        platform: staticPage.platform || '',
+        url: staticPage.url || '',
+        private: staticPage.private || '',
+        content: staticPage.content || '',
+        background_color: staticPage.background_color || '',
+        text_color: staticPage.text_color || ''
+      });
+      setMaterialFile(staticPage.file);
+    }
+  }, [editId, staticPage]);
 
   const handleLanguageChange = e => {
     const { value } = e.target;
@@ -56,6 +98,41 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     setFormFields({ ...formFields, [name]: files[0] });
+
+    const file = files[0];
+    if (file) {
+      const fileName = file.name;
+      const fileSize = (file.size / 1024).toFixed(2);
+      const fileType = file.type;
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setMaterialFile({ url: reader.result, fileName, fileSize, fileType, file });
+      };
+    }
+  };
+
+  const handleUrlChange = (e) => {
+    const { name, value } = e.target;
+    const val = value.replace(/\s+/g, '-').toLowerCase();
+    setFormFields({ ...formFields, [name]: val });
+  };
+
+  const handleFileRemove = (e) => {
+    setMaterialFile(null);
+    setFormFields({ ...formFields, file: undefined });
+  };
+
+  const handleEditorChange = (content, editor) => {
+    setFormFields({ ...formFields, content: content });
+  };
+
+  const handleBackgroundColorChange = (color, editor) => {
+    setFormFields({ ...formFields, background_color: color.hex });
+  };
+
+  const handleTextColorChange = (color, editor) => {
+    setFormFields({ ...formFields, text_color: color.hex });
   };
 
   const handleConfirm = () => {
@@ -89,7 +166,7 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
       setErrorContent(false);
     }
 
-    if (!editId && (formFields.file === undefined || toMB(formFields.file.size) > maxFileSize)) {
+    if (formFields.file !== undefined && toMB(formFields.file.size) > maxFileSize) {
       canSave = false;
       setFileError(true);
     } else {
@@ -97,28 +174,29 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
     }
 
     if (canSave) {
-      dispatch(createStaticPage({ ...formFields, lang: language }))
-        .then(result => {
-          if (result) {
-            handleClose();
-          }
-        });
+      if (editId) {
+        dispatch(updateStaticPage(editId, { ...formFields, lang: language }))
+          .then(result => {
+            if (result) {
+              handleClose();
+            }
+          });
+      } else {
+        dispatch(createStaticPage({ ...formFields, lang: language }))
+          .then(result => {
+            if (result) {
+              handleClose();
+            }
+          });
+      }
     }
-  };
-
-  const renderUploadFileName = () => {
-    const file = formFields.file;
-    if (file) {
-      return `${file.name} (${formatFileSize(file.size)})`;
-    }
-    return translate('education_material.upload_file.placeholder');
   };
 
   return (
     <Dialog
       size="lg"
       show={show}
-      title={translate(editId ? 'term_and_condition.edit' : 'term_and_condition.new')}
+      title={translate(editId ? 'static_page.edit' : 'static_page.new')}
       onCancel={handleClose}
       onConfirm={handleConfirm}
       confirmLabel={editId ? translate('common.save') : translate('common.create')}
@@ -126,7 +204,7 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
       <Form>
         <Form.Group controlId="formLanguage">
           <Form.Label>{translate('common.show_language.version')}</Form.Label>
-          <Form.Control as="select" value={editId ? language : ''} onChange={handleLanguageChange} disabled>
+          <Form.Control as="select" value={editId ? language : ''} onChange={handleLanguageChange} disabled={!editId}>
             {languages.map((language, index) => (
               <option key={index} value={language.id}>
                 {language.name} {language.code === language.fallback && `(${translate('common.default')})`}
@@ -149,7 +227,7 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
           <Form.Control
             name="platform"
             as="select"
-            value={formFields.plateform}
+            value={formFields.platform}
             onChange={handleChange}
             isInvalid={errorPlatform}
           >
@@ -157,26 +235,57 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
             {settings.platforms.options.map((platform, index) => (
               <option key={index} value={platform.value}>{platform.text}</option>
             ))}
-            <Form.Control.Feedback type="invalid">
-              {translate('error.platform')}
-            </Form.Control.Feedback>
           </Form.Control>
+          <Form.Control.Feedback type="invalid">
+            {translate('error.static_page.platform')}
+          </Form.Control.Feedback>
         </Form.Group>
         <Form.Group controlId="url">
           <Form.Label>{translate('static_page.url')}</Form.Label>
           <span className="text-dark ml-1">*</span>
-          <Form.Control
-            name="url"
-            onChange={handleChange}
-            type="text"
-            placeholder={translate('placeholder.static_page.url')}
-            value={formFields.url}
-            maxLength={settings.textMaxLength}
-            isInvalid={errorUrl}
-          />
+          <InputGroup className="mb-3">
+            <InputGroup.Prepend>
+              <InputGroup.Text id="basic-addon1">/</InputGroup.Text>
+            </InputGroup.Prepend>
+            <FormControl
+              name="url"
+              placeholder={translate('placeholder.static_page.url')}
+              onChange={handleUrlChange}
+              value={formFields.url}
+              maxLength={settings.textMaxLength}
+              isInvalid={errorUrl}
+            />
+
+            <Form.Control.Feedback type="invalid">
+              {translate('error.static_page.url')}
+            </Form.Control.Feedback>
+          </InputGroup>
+        </Form.Group>
+        <Form.Group controlId="formFile">
+          <Form.Label>{translate('static_page.image')}</Form.Label>
           <Form.Control.Feedback type="invalid">
-            {translate('error.static_page.url')}
+            {formFields.file !== undefined
+              ? translate('education_material.upload_file.max_size', { size: maxFileSize }) : ''
+            }
           </Form.Control.Feedback>
+
+          <div className="w-50">
+            {materialFile && (
+              <div className="exercise-media">
+                <div className="mb-2 position-relative">
+                  <div className="position-absolute remove-btn-wrapper">
+                    <BsXCircle size={20} onClick={handleFileRemove}/>
+                  </div>
+                  <img src={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`} alt="..." className="w-100 img-thumbnail"/>
+                  <div>{materialFile.fileName} {materialFile.fileSize ? ('(' + materialFile.fileSize + 'kB )') : ''}</div>
+                </div>
+              </div>
+            )}
+            <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden" >
+              <BsUpload size={15}/> Upload Image
+              <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} accept="image/*" isInvalid={fileError} />
+            </div>
+          </div>
         </Form.Group>
         <Form.Group controlId="title">
           <Form.Label>{translate('static_page.title')}</Form.Label>
@@ -194,53 +303,46 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
             {translate('error.static_page.title')}
           </Form.Control.Feedback>
         </Form.Group>
+        <Form.Row>
+          <Form.Group controlId="background-color" className="col-md-6">
+            <Form.Label>{translate('static_page.background_color')}</Form.Label>
+            <SketchPicker
+              onChange={handleBackgroundColorChange}
+              color={formFields.background_color}
+            />
+          </Form.Group>
+          <Form.Group controlId="text-color" className="col-md-6">
+            <Form.Label>{translate('static_page.text_color')}</Form.Label>
+            <SketchPicker
+              onChange={handleTextColorChange}
+              color={formFields.text_color}
+            />
+          </Form.Group>
+        </Form.Row>
         <Form.Group controlId="content">
           <Form.Label>{translate('term_and_condition.content')}</Form.Label>
           <span className="text-dark ml-1">*</span>
-          <Form.Control
-            as="textarea"
+          <Editor
+            apiKey={settings.tinymce.apiKey}
             name="content"
-            onChange={handleChange}
-            placeholder={translate('placeholder.term_and_condition.content')}
             isInvalid={errorContent}
+            initialValue="<p>This is the initial content of the editor</p>"
             value={formFields.content}
-            rows={15}
+            init={{
+              height: 500,
+              plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount'
+              ],
+              toolbar:
+              'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link | help'
+            }}
+            onEditorChange={handleEditorChange}
           />
-          <Form.Control.Feedback type="invalid">
-            {translate('error.term_and_condition.content')}
-          </Form.Control.Feedback>
-        </Form.Group>
-        <Form.Group controlId="formFile">
-          <Form.Label>{translate('education_material.upload_file')}</Form.Label>
-          <span className="text-dark ml-1">*</span>
-          <Form.File custom>
-            <Form.File.Input
-              name='file'
-              onChange={handleFileChange}
-              isInvalid={fileError}
-            />
-            <Form.File.Label>{renderUploadFileName()}</Form.File.Label>
-            <Form.Control.Feedback type="invalid">
-              {formFields.file === undefined
-                ? translate('education_material.upload_file.required')
-                : translate('education_material.upload_file.max_size', { size: maxFileSize })
-              }
-            </Form.Control.Feedback>
-
-            {materialFile && (
-              <Form.Text className="text-muted">
-                {translate(materialFile.fileGroupType)}:
-                <a
-                  href={`${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`}
-                  /* eslint-disable-next-line react/jsx-no-target-blank */
-                  target="_blank"
-                  className="pl-2"
-                >
-                  {materialFile.fileName}
-                </a>
-              </Form.Text>
-            )}
-          </Form.File>
+          {errorContent &&
+            <div className="invalid-feedback d-block">{translate('error.term_and_condition.content')}</div>
+          }
         </Form.Group>
       </Form>
     </Dialog>

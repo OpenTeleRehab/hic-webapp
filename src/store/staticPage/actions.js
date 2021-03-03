@@ -4,25 +4,58 @@ import {
   showErrorNotification,
   showSuccessNotification
 } from 'store/notification/actions';
+import { showSpinner } from '../spinnerOverlay/actions';
 
-export const getStaticPages = () => async dispatch => {
+export const getStaticPages = payload => async dispatch => {
   dispatch(mutation.getStaticPagesRequest());
-  const data = await staticPage.getStaticPages();
+  dispatch(showSpinner(true));
+  const data = await staticPage.getStaticPages(payload);
   if (data.success) {
     dispatch(mutation.getStaticPagesSuccess(data.data));
+    dispatch(showSpinner(false));
   } else {
     dispatch(mutation.getStaticPagesFail());
+    dispatch(showSpinner(false));
     dispatch(showErrorNotification('toast_title.error_message', data.message));
   }
 };
 
+export const getStaticPage = (id, language) => async dispatch => {
+  dispatch(mutation.getStaticPageRequest());
+  dispatch(showSpinner(true));
+  const data = await staticPage.getStaticPage(id, language);
+  if (data) {
+    dispatch(mutation.getStaticPageSuccess(data.data));
+    dispatch(showSpinner(false));
+  } else {
+    dispatch(mutation.getStaticPageFail());
+    dispatch(showSpinner(false));
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
+  }
+};
+
+export const updateStaticPage = (id, payload) => async dispatch => {
+  dispatch(mutation.updateStaticPageRequest());
+  const data = await staticPage.updateStaticPage(id, payload);
+  if (data.success) {
+    dispatch(mutation.updateStaticPageSuccess());
+    dispatch(getStaticPages(payload));
+    dispatch(showSuccessNotification('toast_title.update_static_page', data.message));
+    return true;
+  } else {
+    dispatch(mutation.updateStaticPagesFail());
+    dispatch(showErrorNotification('toast_title.update_static_page', data.message));
+    return false;
+  }
+};
+
 // Actions
-export const createStaticPage = payload => async (dispatch) => {
+export const createStaticPage = (payload) => async (dispatch) => {
   dispatch(mutation.createStaticPageRequest());
   const data = await staticPage.createStaticPage(payload);
   if (data.success) {
     dispatch(mutation.createStaticPageSuccess());
-    dispatch(getStaticPages());
+    dispatch(getStaticPages(payload));
     dispatch(showSuccessNotification('toast_title.new_static_page', data.message));
     return true;
   } else {
