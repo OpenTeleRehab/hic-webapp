@@ -42,6 +42,7 @@ const CategoryList = ({ type, translate }) => {
   useEffect(() => {
     if (type) {
       dispatch(getCategories({ type }));
+      setActiveCategory('');
     }
   }, [type, dispatch]);
 

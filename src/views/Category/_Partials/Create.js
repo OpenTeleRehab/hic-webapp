@@ -203,7 +203,7 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
             />
           }
           <Form.Control.Feedback type="invalid">
-            {translate('error.category')}
+            {translate(errorCategory ? 'error.category' : errorCurrentCategory ? 'error.current_category' : '')}
           </Form.Control.Feedback>
         </Form.Group>
         {!editId &&
