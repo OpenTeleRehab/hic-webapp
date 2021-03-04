@@ -40,7 +40,9 @@ const CategoryList = ({ type, translate }) => {
   }, [activeSub1, categories]);
 
   useEffect(() => {
-    dispatch(getCategories({ type }));
+    if (type) {
+      dispatch(getCategories({ type }));
+    }
   }, [type, dispatch]);
 
   const handleClose = () => {
@@ -60,6 +62,13 @@ const CategoryList = ({ type, translate }) => {
     setShow(true);
   };
 
+  const mainCategories = _.filter(categories, { parent: null });
+  let numberOfSubCategory = 0;
+  _.forEach(mainCategories, c => {
+    const subCategories = _.filter(categories, { parent: c.id });
+    numberOfSubCategory += subCategories.length;
+  });
+
   return (
     <>
       <CardGroup className="category-container">
@@ -77,15 +86,18 @@ const CategoryList = ({ type, translate }) => {
           <Card.Body className="px-2">
             {categories.length > 0 && (
               <>
-                <strong>3 categories, 18 sub-categories</strong>
-                {_.filter(categories, { parent: null }).map(category => {
+                <strong>
+                  {translate('category.number_of_categories', { number: mainCategories.length })}
+                  , {translate('category.number_of_sub_categories', { number: numberOfSubCategory })}
+                </strong>
+                {mainCategories.map(category => {
                   const subCategories = _.filter(categories, { parent: category.id });
                   return (
                     <Accordion key={category.id}>
                       <Card className="mb-2 shadow-sm">
                         <Card.Header className="bg-white pl-2 d-flex justify-content-between align-items-start">
                           <h5 className="m-0">
-                            <CustomToggle eventKey={category.id} />
+                            <CustomToggle eventKey={category.id} disabled={subCategories.length === 0} />
                             {category.title} ({subCategories.length})
                           </h5>
                           <EditAction onClick={() => handleEdit(category.id)} />
@@ -148,12 +160,17 @@ CategoryList.propTypes = {
 
 export default withLocalize(CategoryList);
 
-const CustomToggle = ({ eventKey }) => {
+const CustomToggle = ({ eventKey, disabled }) => {
   const currentEventKey = useContext(AccordionContext);
   const decoratedOnClick = useAccordionToggle(eventKey);
 
   return (
-    <Button variant="link" className="mr-2 py-0 px-1" onClick={decoratedOnClick}>
+    <Button
+      variant="link"
+      className="mr-2 py-0 px-1"
+      onClick={decoratedOnClick}
+      disabled={disabled}
+    >
       {currentEventKey === eventKey ? (
         <BsChevronDown className="ml-auto" />
       ) : (
@@ -164,5 +181,6 @@ const CustomToggle = ({ eventKey }) => {
 };
 
 CustomToggle.propTypes = {
-  eventKey: PropTypes.string
+  eventKey: PropTypes.string,
+  disabled: PropTypes.bool
 };

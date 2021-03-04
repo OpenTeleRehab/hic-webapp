@@ -16,7 +16,7 @@ const SubCategoryList = ({ subCategories, categories, active, setActive, handleE
             onClick={() => setActive ? setActive(sub) : undefined}
             className="d-flex justify-content-between align-items-start"
           >
-            {sub.title} ({childSubCategories.length})
+            {sub.title}{setActive ? ` (${childSubCategories.length})` : ''}
             <EditAction onClick={() => handleEdit(sub.id)} />
           </ListGroup.Item>
         );
