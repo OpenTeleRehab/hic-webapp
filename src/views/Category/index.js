@@ -4,9 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import * as ROUTES from 'variables/routes';
-import Exercise from './Exercise';
-import EducationMaterial from './EducationMaterial';
-import Questionnaire from './Questionnaire';
+import CategoryList from './_Partials/CategoryList';
 
 const VIEW_EXERCISE = 'exercise';
 const VIEW_EDUCATION = 'education';
@@ -50,9 +48,7 @@ const Category = ({ translate }) => {
         </Nav.Item>
       </Nav>
 
-      { view === VIEW_EXERCISE && <Exercise /> }
-      { view === VIEW_EDUCATION && <EducationMaterial /> }
-      { view === VIEW_QUESTIONNAIRE && <Questionnaire /> }
+      <CategoryList type={view} />
     </>
   );
 };

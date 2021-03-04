@@ -15,13 +15,12 @@ import _ from 'lodash';
 import { EditAction } from 'components/ActionIcons';
 import SubCategoryList from '../_Partials/subCategoryList';
 import Create from '../_Partials/Create';
-import { CATEGORY_TYPES } from 'variables/category';
 import SubCategoryCard from '../_Partials/SubCategoryCard';
 import { BsChevronDown, BsChevronRight } from 'react-icons/bs';
 import { getCategories } from 'store/category/actions';
 import { useDispatch, useSelector } from 'react-redux';
 
-const Exercise = ({ translate }) => {
+const CategoryList = ({ type, translate }) => {
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.category);
   const [editId, setEditId] = useState('');
@@ -41,8 +40,8 @@ const Exercise = ({ translate }) => {
   }, [activeSub1, categories]);
 
   useEffect(() => {
-    dispatch(getCategories({ type: CATEGORY_TYPES.EXERCISE }));
-  }, [dispatch]);
+    dispatch(getCategories({ type }));
+  }, [type, dispatch]);
 
   const handleClose = () => {
     setEditId('');
@@ -133,7 +132,7 @@ const Exercise = ({ translate }) => {
           show={show}
           editId={editId}
           handleClose={handleClose}
-          type={CATEGORY_TYPES.EXERCISE}
+          type={type}
           activeCategory={activeCategory}
           allowNew={allowNew}
         />
@@ -142,11 +141,12 @@ const Exercise = ({ translate }) => {
   );
 };
 
-Exercise.propTypes = {
+CategoryList.propTypes = {
+  type: PropTypes.string,
   translate: PropTypes.func
 };
 
-export default withLocalize(Exercise);
+export default withLocalize(CategoryList);
 
 const CustomToggle = ({ eventKey }) => {
   const currentEventKey = useContext(AccordionContext);
