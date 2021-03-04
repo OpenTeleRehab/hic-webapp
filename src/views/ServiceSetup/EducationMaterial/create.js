@@ -162,6 +162,7 @@ const CreateEducationMaterial = ({ translate }) => {
                   name='file'
                   onChange={handleFileChange}
                   isInvalid={fileError}
+                  accept="audio/*, video/*, image/*, .pdf"
                 />
                 <Form.File.Label>{renderUploadFileName()}</Form.File.Label>
                 <Form.Control.Feedback type="invalid">

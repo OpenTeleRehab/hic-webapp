@@ -255,7 +255,7 @@ const CreateExercise = ({ translate }) => {
               ))}
               <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden" >
                 <BsUpload size={15}/> Upload Image
-                <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} multiple accept=".gif, .jpeg, .png, .mp3, .mp4" />
+                <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} multiple accept="audio/*, video/*, image/*" />
               </div>
               { mediaUploadsError &&
                 <div className="text-danger">{translate('exercise.media_upload.required')}</div>
