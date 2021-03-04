@@ -40,7 +40,9 @@ const CategoryList = ({ type, translate }) => {
   }, [activeSub1, categories]);
 
   useEffect(() => {
-    dispatch(getCategories({ type }));
+    if (type) {
+      dispatch(getCategories({ type }));
+    }
   }, [type, dispatch]);
 
   const handleClose = () => {
