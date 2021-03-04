@@ -9,7 +9,7 @@ const SubCategoryCard = ({ activeCategory, categories, active, setActive, setEdi
   if (!activeCategory) {
     return (
       <Card>
-        <Card.Header as="h5">&nbsp;</Card.Header>
+        <Card.Header as="h5" />
       </Card>
     );
   }
@@ -18,20 +18,21 @@ const SubCategoryCard = ({ activeCategory, categories, active, setActive, setEdi
 
   return (
     <Card>
-      <Card.Header as="h5">
-        {activeCategory.title}
-        <Button
-          variant="outline-primary"
-          className="btn-circle float-right"
-        >
-          <BsPlus size={20} />
-        </Button>
+      <Card.Header className="pl-4 d-flex justify-content-between align-items-start">
+        <h5 className="m-0 text-truncate">{activeCategory.title}</h5>
+        {setActive && (
+          <Button
+            variant="outline-primary"
+            className="btn-circle"
+          >
+            <BsPlus size={20} />
+          </Button>
+        )}
       </Card.Header>
       {subCategories.length > 0 && (
-        <Card.Body className="p-2">
+        <Card.Body className="px-2">
           <strong>{subCategories.length} sub-categories</strong>
           <SubCategoryList
-            className="border-top border-bottom"
             subCategories={subCategories}
             categories={categories}
             active={active}

@@ -6,13 +6,18 @@ import { EditAction } from 'components/ActionIcons';
 
 const SubCategoryList = ({ subCategories, categories, active, setActive, setEditId, ...rest }) => {
   return (
-    <ListGroup variant="flush" {...rest}>
+    <ListGroup variant="flush" className="border-top border-bottom" {...rest}>
       {subCategories.map(sub => {
         const childSubCategories = _.filter(categories, { parent: sub.id });
         return (
-          <ListGroup.Item key={sub.id} active={active && active.id === sub.id} onClick={() => setActive ? setActive(sub) : undefined}>
+          <ListGroup.Item
+            key={sub.id}
+            active={active && active.id === sub.id}
+            onClick={() => setActive ? setActive(sub) : undefined}
+            className="d-flex justify-content-between align-items-start"
+          >
             {sub.title} ({childSubCategories.length})
-            <EditAction className="float-right" onClick={() => setEditId(sub.id)} />
+            <EditAction onClick={() => setEditId(sub.id)} />
           </ListGroup.Item>
         );
       })}
