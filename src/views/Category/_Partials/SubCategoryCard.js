@@ -20,15 +20,13 @@ const SubCategoryCard = ({ activeCategory, categories, active, setActive, handle
     <Card>
       <Card.Header className="pl-4 d-flex justify-content-between align-items-start">
         <h5 className="m-0 text-truncate">{activeCategory.title}</h5>
-        {setActive && (
-          <Button
-            variant="outline-primary"
-            className="btn-circle"
-            onClick={() => handleCreate(activeCategory.id, false)}
-          >
-            <BsPlus size={20} />
-          </Button>
-        )}
+        <Button
+          variant="outline-primary"
+          className="btn-circle"
+          onClick={() => handleCreate(activeCategory.id, false)}
+        >
+          <BsPlus size={20} />
+        </Button>
       </Card.Header>
       {subCategories.length > 0 && (
         <Card.Body className="px-2">
