@@ -11,6 +11,19 @@ const getCategoriesFail = () => ({
   type: 'GET_CATEGORIES_FAIL'
 });
 
+const getCategoryRequest = () => ({
+  type: 'GET_CATEGORY_REQUEST'
+});
+
+const getCategorySuccess = (data) => ({
+  type: 'GET_CATEGORY_SUCCESS',
+  data
+});
+
+const getCategoryFail = () => ({
+  type: 'GET_CATEGORY_FAIL'
+});
+
 const createCategoryRequest = () => ({
   type: 'CREATE_CATEGORY_REQUEST'
 });
@@ -39,6 +52,9 @@ export const mutation = {
   getCategoriesRequest,
   getCategoriesSuccess,
   getCategoriesFail,
+  getCategoryRequest,
+  getCategorySuccess,
+  getCategoryFail,
   createCategoryRequest,
   createCategorySuccess,
   createCategoryFail,

@@ -23,6 +23,11 @@ export const category = (state = initialState, action) => {
         categories: action.data
       });
     }
+    case 'GET_CATEGORY_SUCCESS': {
+      return Object.assign({}, state, {
+        category: action.data
+      });
+    }
     default:
       return state;
   }

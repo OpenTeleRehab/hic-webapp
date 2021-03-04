@@ -3,13 +3,16 @@ import Dialog from 'components/Dialog';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import { Form } from 'react-bootstrap';
-import { createCategory, updateCategory } from 'store/category/actions';
+import { createCategory, updateCategory, getCategory } from 'store/category/actions';
 import PropTypes from 'prop-types';
+import settings from 'settings';
 
 const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) => {
   const dispatch = useDispatch();
   const localize = useSelector((state) => state.localize);
-  const { categories } = useSelector((state) => state.category);
+  const { categories, category } = useSelector((state) => state.category);
+  const { languages } = useSelector(state => state.language);
+  const profile = useSelector(state => state.auth.profile);
   const translate = getTranslate(localize);
   const [isCurrent, setIsCurrent] = useState(false);
   const [selectableCategories, setSelectableCategories] = useState([]);
@@ -18,6 +21,7 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
     current_category: '',
     category_value: ''
   });
+  const [language, setLanguage] = useState('');
 
   const [errorCategory, setErrorCategory] = useState(false);
   const [errorCurrentCategory, setErrorCurrentCategory] = useState(false);
@@ -30,12 +34,27 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
   }, [allowNew]);
 
   useEffect(() => {
-    if (editId && categories.length) {
-      const editingCategory = categories.find(category => category.id === editId);
-      setFormFields({ ...formFields, category: editingCategory.title });
+    if (languages.length) {
+      if (editId && profile) {
+        setLanguage(profile.language_id);
+      } else {
+        setLanguage(languages[0].id);
+      }
+    }
+  }, [languages, profile, editId]);
+
+  useEffect(() => {
+    if (editId && language) {
+      dispatch(getCategory(editId, language));
+    }
+  }, [editId, language, dispatch]);
+
+  useEffect(() => {
+    if (editId && category) {
+      setFormFields({ ...formFields, category: category.title });
     }
     // eslint-disable-next-line
-  }, [editId]);
+  }, [editId, category]);
 
   useEffect(() => {
     if (categories.length) {
@@ -57,6 +76,11 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
     }
     // eslint-disable-next-line
   }, [isCurrent, editId]);
+
+  const handleLanguageChange = e => {
+    const { value } = e.target;
+    setLanguage(value);
+  };
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -89,14 +113,14 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
 
     if (canSave) {
       if (editId) {
-        dispatch(updateCategory(editId, { ...formFields, type }))
+        dispatch(updateCategory(editId, { ...formFields, type, lang: language }))
           .then(result => {
             if (result) {
               handleClose();
             }
           });
       } else {
-        dispatch(createCategory({ ...formFields, type }))
+        dispatch(createCategory({ ...formFields, type, lang: language }))
           .then(result => {
             if (result) {
               handleClose();
@@ -135,6 +159,16 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
             />
           </Form.Group>
         }
+        <Form.Group controlId="formLanguage">
+          <Form.Label>{translate('common.show_language.version')}</Form.Label>
+          <Form.Control as="select" value={editId ? language : ''} onChange={handleLanguageChange} disabled={!editId}>
+            {languages.map((language, index) => (
+              <option key={index} value={language.id}>
+                {language.name} {language.code === language.fallback && `(${translate('common.default')})`}
+              </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
         <Form.Group>
           <Form.Label>{translate(editId ? 'category.title' : 'category.category')}</Form.Label>
           <span className="text-dark ml-1">*</span>
@@ -165,6 +199,7 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
               isInvalid={errorCategory}
               value={formFields.category}
               onChange={handleChange}
+              maxLength={settings.textMaxLength}
             />
           }
           <Form.Control.Feedback type="invalid">

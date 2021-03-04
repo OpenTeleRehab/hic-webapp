@@ -4,6 +4,7 @@ import {
   showErrorNotification,
   showSuccessNotification
 } from 'store/notification/actions';
+import { showSpinner } from '../spinnerOverlay/actions';
 
 export const getCategories = payload => async dispatch => {
   dispatch(mutation.getCategoriesRequest());
@@ -12,6 +13,20 @@ export const getCategories = payload => async dispatch => {
     dispatch(mutation.getCategoriesSuccess(data.data));
   } else {
     dispatch(mutation.getCategoriesFail());
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
+  }
+};
+
+export const getCategory = (id, language) => async dispatch => {
+  dispatch(mutation.getCategoryRequest());
+  dispatch(showSpinner(true));
+  const data = await Category.getCategory(id, language);
+  if (data) {
+    dispatch(mutation.getCategorySuccess(data.data));
+    dispatch(showSpinner(false));
+  } else {
+    dispatch(mutation.getCategoryFail());
+    dispatch(showSpinner(false));
     dispatch(showErrorNotification('toast_title.error_message', data.message));
   }
 };
