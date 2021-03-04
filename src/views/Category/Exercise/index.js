@@ -14,32 +14,22 @@ import _ from 'lodash';
 
 import { EditAction } from 'components/ActionIcons';
 import SubCategoryList from '../_Partials/subCategoryList';
-import Create from '../_Patials/Create';
+import Create from '../_Partials/Create';
 import { CATEGORY_TYPES } from 'variables/category';
 import SubCategoryCard from '../_Partials/SubCategoryCard';
 import { BsChevronDown, BsChevronRight } from 'react-icons/bs';
+import { getCategories } from 'store/category/actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Exercise = ({ translate }) => {
+  const dispatch = useDispatch();
+  const { categories } = useSelector((state) => state.category);
   const [editId, setEditId] = useState('');
   const [show, setShow] = useState(false);
   const [activeSub1, setActiveSub1] = useState(undefined);
   const [activeSub2, setActiveSub2] = useState(undefined);
-
-  const categories = [
-    { id: 1, title: 'Speciality', parent: null },
-    { id: 2, title: 'Equipment', parent: null },
-    { id: 3, title: 'Difficulty', parent: null },
-
-    { id: 10, title: 'Aquatic Therapy', parent: 1 },
-    { id: 11, title: 'Mental Health', parent: 1 },
-    { id: 12, title: 'Yoga', parent: 1 },
-
-    { id: 20, title: 'Yoga', parent: 2 },
-
-    { id: 50, title: 'Yoga A', parent: 10 },
-
-    { id: 90, title: 'Yoga A', parent: 50 }
-  ];
+  const [activeCategory, setActiveCategory] = useState('');
+  const [allowNew, setAllowNew] = useState(true);
 
   useEffect(() => {
     if (activeSub1) {
@@ -50,9 +40,25 @@ const Exercise = ({ translate }) => {
     }
   }, [activeSub1, categories]);
 
+  useEffect(() => {
+    dispatch(getCategories({ type: CATEGORY_TYPES.EXERCISE }));
+  }, [dispatch]);
+
   const handleClose = () => {
     setEditId('');
     setShow(false);
+  };
+
+  const handleCreate = (parentId, allowNew = true) => {
+    setActiveCategory(parentId);
+    setAllowNew(allowNew);
+    setShow(true);
+  };
+
+  const handleEdit = (id) => {
+    setAllowNew(true);
+    setEditId(id);
+    setShow(true);
   };
 
   return (
@@ -64,7 +70,7 @@ const Exercise = ({ translate }) => {
             <Button
               variant="outline-primary"
               className="btn-circle float-right"
-              onClick={() => setShow(true)}
+              onClick={() => handleCreate(activeSub1 ? activeSub1.parent : '')}
             >
               <BsPlus size={20} />
             </Button>
@@ -83,7 +89,7 @@ const Exercise = ({ translate }) => {
                             <CustomToggle eventKey={category.id} />
                             {category.title} ({subCategories.length})
                           </h5>
-                          <EditAction onClick={() => setEditId(category.id)} />
+                          <EditAction onClick={() => handleEdit(category.id)} />
                         </Card.Header>
                         {subCategories.length > 0 && (
                           <Accordion.Collapse eventKey={category.id}>
@@ -93,7 +99,7 @@ const Exercise = ({ translate }) => {
                                 categories={categories}
                                 active={activeSub1}
                                 setActive={setActiveSub1}
-                                setEditId={setEditId}
+                                handleEdit={handleEdit}
                               />
                             </Card.Body>
                           </Accordion.Collapse>
@@ -111,16 +117,27 @@ const Exercise = ({ translate }) => {
           activeCategory={activeSub1}
           active={activeSub2}
           setActive={setActiveSub2}
-          setEditId={setEditId}
+          handleCreate={handleCreate}
+          handleEdit={handleEdit}
         />
         <SubCategoryCard
           categories={categories}
           activeCategory={activeSub2}
-          setEditId={setEditId}
+          handleCreate={handleCreate}
+          handleEdit={handleEdit}
         />
       </CardGroup>
 
-      {show && <Create show={show} editId={editId} handleClose={handleClose} type={CATEGORY_TYPES.EXERCISE} />}
+      {show &&
+        <Create
+          show={show}
+          editId={editId}
+          handleClose={handleClose}
+          type={CATEGORY_TYPES.EXERCISE}
+          activeCategory={activeCategory}
+          allowNew={allowNew}
+        />
+      }
     </>
   );
 };
