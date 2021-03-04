@@ -4,8 +4,13 @@ import _ from 'lodash';
 import { Button, Card } from 'react-bootstrap';
 import { BsPlus } from 'react-icons/all';
 import SubCategoryList from './subCategoryList';
+import { useSelector } from 'react-redux';
+import { getTranslate } from 'react-localize-redux';
 
-const SubCategoryCard = ({ activeCategory, categories, active, setActive, handleCreate, handleEdit, ...rest }) => {
+const SubCategoryCard = ({ activeCategory, categories, active, setActive, handleCreate, handleEdit }) => {
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
+
   if (!activeCategory) {
     return (
       <Card>
@@ -30,7 +35,9 @@ const SubCategoryCard = ({ activeCategory, categories, active, setActive, handle
       </Card.Header>
       {subCategories.length > 0 && (
         <Card.Body className="px-2">
-          <strong>{subCategories.length} sub-categories</strong>
+          <strong>
+            {translate('category.number_of_sub_categories', { number: subCategories.length })}
+          </strong>
           <SubCategoryList
             subCategories={subCategories}
             categories={categories}
@@ -50,8 +57,7 @@ SubCategoryCard.propTypes = {
   active: PropTypes.object,
   setActive: PropTypes.func,
   handleCreate: PropTypes.func,
-  handleEdit: PropTypes.func,
-  rest: PropTypes.any
+  handleEdit: PropTypes.func
 };
 
 export default SubCategoryCard;
