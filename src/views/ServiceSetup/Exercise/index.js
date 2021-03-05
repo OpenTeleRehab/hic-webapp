@@ -1,25 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Tooltip,
-  OverlayTrigger,
-  Button
-} from 'react-bootstrap';
+import { Row, Col, Card, Form, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { BsSearch, BsX } from 'react-icons/bs';
+import Spinner from 'react-bootstrap/Spinner';
 
 import Dialog from 'components/Dialog';
 import Pagination from 'components/Pagination';
-import { deleteExercise, getExercises } from 'store/exercise/actions';
-import * as ROUTES from 'variables/routes';
-import Spinner from 'react-bootstrap/Spinner';
 import { EditAction, DeleteAction } from 'components/ActionIcons';
+import { deleteExercise, getExercises } from 'store/exercise/actions';
+import SearchInput from 'components/Form/SearchInput';
+import * as ROUTES from 'variables/routes';
 import ViewExercise from './view';
 
 let timer = null;
@@ -119,22 +111,13 @@ const Exercise = ({ translate }) => {
         <Col sm={5} md={4} lg={3}>
           <Card bg="info">
             <Card.Header>
-              <Form.Group className="search-box-with-icon">
-                <BsSearch className="search-icon" />
-                <Button
-                  variant="light"
-                  className="clear-btn"
-                  onClick={handleClearSearch}
-                >
-                  <BsX size={18} />
-                </Button>
-                <Form.Control
-                  name="search_value"
-                  value={formFields.search_value}
-                  onChange={handleChange}
-                  placeholder={translate('exercise.search')}
-                />
-              </Form.Group>
+              <SearchInput
+                name="search_value"
+                value={formFields.search_value}
+                placeholder={translate('education_material.search')}
+                onChange={handleChange}
+                onClear={handleClearSearch}
+              />
             </Card.Header>
             <Card.Body>
               <Form.Group>
