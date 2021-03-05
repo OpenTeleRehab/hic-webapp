@@ -13,6 +13,9 @@ import { deleteExercise, getExercises } from 'store/exercise/actions';
 import SearchInput from 'components/Form/SearchInput';
 import * as ROUTES from 'variables/routes';
 import ViewExercise from './view';
+import { getCategories } from 'store/category/actions';
+import CustomTree from 'components/Tree';
+import { CATEGORY_TYPES } from 'variables/category';
 
 let timer = null;
 const Exercise = ({ translate }) => {
@@ -22,6 +25,7 @@ const Exercise = ({ translate }) => {
   const { loading, exercises, filters } = useSelector(state => state.exercise);
   const { profile } = useSelector((state) => state.auth);
   const { languages } = useSelector(state => state.language);
+  const { categories } = useSelector((state) => state.category);
   const [id, setId] = useState(null);
   const [showView, setShowView] = useState(false);
 
@@ -34,6 +38,14 @@ const Exercise = ({ translate }) => {
   const [formFields, setFormFields] = useState({
     search_value: ''
   });
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState([]);
+  const treeColumns = [
+    { name: 'title', title: translate('common.category') }
+  ];
+  const tableColumnExtensions = [
+    { columnName: 'title', width: 700 }
+  ];
 
   useEffect(() => {
     if (filters && filters.lang) {
@@ -44,11 +56,31 @@ const Exercise = ({ translate }) => {
   }, [filters, profile]);
 
   useEffect(() => {
+    if (language) {
+      dispatch(getCategories({ type: CATEGORY_TYPES.EXERCISE, lang: language }));
+    }
+  }, [language, dispatch]);
+
+  useEffect(() => {
+    if (categories.length) {
+      const selectedCatIndexes = [];
+      categories.forEach((cat, index) => {
+        if (selectedCategories.indexOf(cat.id) >= 0) {
+          selectedCatIndexes.push(index);
+        }
+      });
+
+      setSelectedCategoryIndexes(selectedCatIndexes);
+    }
+  }, [categories, selectedCategories]);
+
+  useEffect(() => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       dispatch(getExercises({
         lang: language,
         filter: formFields,
+        categories: selectedCategories,
         page_size: pageSize,
         page: currentPage
       })).then(result => {
@@ -57,7 +89,7 @@ const Exercise = ({ translate }) => {
         }
       });
     }, 500);
-  }, [language, formFields, currentPage, pageSize, dispatch]);
+  }, [language, formFields, selectedCategories, currentPage, pageSize, dispatch]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -105,6 +137,11 @@ const Exercise = ({ translate }) => {
     setShowView(false);
   };
 
+  const onSelectChange = (rowIds) => {
+    const selectedCats = categories.filter((cat, index) => rowIds.indexOf(index) >= 0).map(cat => cat.id);
+    setSelectedCategories(selectedCats);
+  };
+
   return (
     <>
       <Row>
@@ -121,27 +158,6 @@ const Exercise = ({ translate }) => {
             </Card.Header>
             <Card.Body>
               <Form.Group>
-                <Form.Label>{translate('common.category')}</Form.Label>
-                <Form.Control as="select" disabled>
-                  <option>{translate('placeholder.category_item')}</option>
-                  <option>{translate('placeholder.category_item')}</option>
-                </Form.Control>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>{translate('common.category')}</Form.Label>
-                <Form.Control as="select" disabled>
-                  <option>{translate('placeholder.category_item')}</option>
-                  <option>{translate('placeholder.category_item')}</option>
-                </Form.Control>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>{translate('common.category')}</Form.Label>
-                <Form.Control as="select" disabled>
-                  <option>{translate('placeholder.category_item')}</option>
-                  <option>{translate('placeholder.category_item')}</option>
-                </Form.Control>
-              </Form.Group>
-              <Form.Group>
                 <Form.Label>{translate('common.language')}</Form.Label>
                 <Form.Control as="select" value={language} onChange={handleLanguageChange}>
                   {languages.map((language, index) => (
@@ -151,6 +167,20 @@ const Exercise = ({ translate }) => {
                   ))}
                 </Form.Control>
               </Form.Group>
+              <CustomTree
+                columns={treeColumns}
+                treeColumnName="title"
+                tableColumnExtensions={tableColumnExtensions}
+                selection={selectedCategoryIndexes}
+                onSelectChange={onSelectChange}
+                data={categories.map(category => {
+                  return {
+                    id: category.id,
+                    title: category.title,
+                    parentId: category.parent || null
+                  };
+                })}
+              />
             </Card.Body>
           </Card>
         </Col>

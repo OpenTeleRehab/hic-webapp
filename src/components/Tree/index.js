@@ -6,7 +6,6 @@ import {
 } from '@devexpress/dx-react-grid';
 import {
   Grid,
-  VirtualTable,
   Table,
   TableHeaderRow,
   TableTreeColumn
@@ -36,7 +35,6 @@ const CustomTree = ({ data, columns, treeColumnName, tableColumnExtensions, sele
         <Table
           columnExtensions={tableColumnExtensions}
         />
-        <VirtualTable height={300} />
         <TableHeaderRow />
         <TableTreeColumn
           for={treeColumnName}
