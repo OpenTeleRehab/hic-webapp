@@ -6,6 +6,7 @@ import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import validateEmail from 'utils/validateEmail';
 import { USER_GROUPS, USER_ROLES } from 'variables/user';
+import { getCountryName } from 'utils/country';
 
 import { createUser, updateUser } from 'store/user/actions';
 import { useKeycloak } from '@react-keycloak/web';
@@ -19,6 +20,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
   const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
   const [hintMessage, setHintMessage] = useState('');
+  const { profile } = useSelector((state) => state.auth);
 
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorCountry, setErrorCountry] = useState(false);
@@ -63,7 +65,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
         email: '',
         first_name: '',
         last_name: '',
-        country_id: '',
+        country_id: profile.country_id,
         clinic_id: ''
       });
     }
@@ -230,13 +232,11 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
               as="select"
               isInvalid={errorCountry}
               value={formFields.country_id}
-              disabled={!!editId}
+              disabled="disabled"
             >
-              <option value="">{translate('placeholder.country')}</option>
-              {countries.map((country) => (
-                <option key={country.id} value={country.id}>{country.name}</option>
-              ))}
-
+              { profile !== undefined && (
+                <option value={profile.country_id}>{getCountryName(profile.country_id, countries)}</option>
+              )}
             </Form.Control>
             <Form.Control.Feedback type="invalid">
               {translate('error.country')}
