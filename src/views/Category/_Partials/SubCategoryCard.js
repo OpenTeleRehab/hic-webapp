@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Button, Card } from 'react-bootstrap';
@@ -6,10 +6,34 @@ import { BsPlus } from 'react-icons/all';
 import SubCategoryList from './subCategoryList';
 import { useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
+import SearchInput from 'components/Form/SearchInput';
 
 const SubCategoryCard = ({ activeCategory, categories, active, setActive, handleCreate, handleEdit }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const [searchValue, setSearchValue] = useState('');
+
+  const [subCategories, setSubCategories] = useState([]);
+  const [searchCategories, setSearchCategories] = useState([]);
+
+  // Set the current sub-categories
+  useEffect(() => {
+    if (activeCategory && categories.length) {
+      setSubCategories(_.filter(categories, { parent: activeCategory.id }));
+    }
+  }, [activeCategory, categories]);
+
+  // Filter categories by search value
+  useEffect(() => {
+    const value = searchValue.trim();
+    if (value !== '') {
+      setSearchCategories(_.filter(subCategories, c => {
+        return c.title.toLowerCase().search(value.toLowerCase()) !== -1;
+      }));
+    } else {
+      setSearchCategories(subCategories);
+    }
+  }, [subCategories, searchValue]);
 
   if (!activeCategory) {
     return (
@@ -18,8 +42,6 @@ const SubCategoryCard = ({ activeCategory, categories, active, setActive, handle
       </Card>
     );
   }
-
-  const subCategories = _.filter(categories, { parent: activeCategory.id });
 
   return (
     <Card>
@@ -35,11 +57,18 @@ const SubCategoryCard = ({ activeCategory, categories, active, setActive, handle
       </Card.Header>
       {subCategories.length > 0 && (
         <Card.Body className="px-2">
+          <SearchInput
+            name="search_value"
+            value={searchValue}
+            placeholder={translate('category.search_sub_category')}
+            onChange={e => setSearchValue(e.target.value)}
+            onClear={() => setSearchValue('')}
+          />
           <strong>
-            {translate('category.number_of_sub_categories', { number: subCategories.length })}
+            {translate('category.number_of_sub_categories', { number: searchCategories.length })}
           </strong>
           <SubCategoryList
-            subCategories={subCategories}
+            subCategories={searchCategories}
             categories={categories}
             active={active}
             setActive={setActive}

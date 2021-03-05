@@ -1,50 +1,69 @@
 import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Accordion,
   AccordionContext,
   Button,
   Card,
-  CardGroup, useAccordionToggle
+  CardGroup,
+  useAccordionToggle
 } from 'react-bootstrap';
-import { BsPlus } from 'react-icons/all';
+import { BsChevronDown, BsChevronRight, BsPlus } from 'react-icons/bs';
 import _ from 'lodash';
 
-import { EditAction } from 'components/ActionIcons';
 import SubCategoryList from '../_Partials/subCategoryList';
 import Create from '../_Partials/Create';
 import SubCategoryCard from '../_Partials/SubCategoryCard';
-import { BsChevronDown, BsChevronRight } from 'react-icons/bs';
+import { EditAction } from 'components/ActionIcons';
+import SearchInput from 'components/Form/SearchInput';
 import { getCategories } from 'store/category/actions';
-import { useDispatch, useSelector } from 'react-redux';
 
 const CategoryList = ({ type, translate }) => {
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.category);
+
   const [editId, setEditId] = useState('');
   const [show, setShow] = useState(false);
+  const [activeCategory, setActiveCategory] = useState('');
   const [activeSub1, setActiveSub1] = useState(undefined);
   const [activeSub2, setActiveSub2] = useState(undefined);
-  const [activeCategory, setActiveCategory] = useState('');
   const [allowNew, setAllowNew] = useState(true);
+  const [searchValue, setSearchValue] = useState('');
+  const [mainCategories, setMainCategories] = useState([]);
 
-  useEffect(() => {
-    if (activeSub1) {
-      const subCategories = _.filter(categories, { parent: activeSub1.id });
-      if (subCategories.length === 0) {
-        setActiveSub2(undefined);
-      }
-    }
-  }, [activeSub1, categories]);
-
+  // Fetch category data
   useEffect(() => {
     if (type) {
       dispatch(getCategories({ type }));
       setActiveCategory('');
+      setActiveSub1(undefined);
+      setActiveSub2(undefined);
     }
   }, [type, dispatch]);
+
+  // Filter categories by search value
+  useEffect(() => {
+    const value = searchValue.trim();
+    if (value !== '') {
+      setMainCategories(_.filter(categories, c => {
+        return c.parent === null && c.title.toLowerCase().search(value.toLowerCase()) !== -1;
+      }));
+    } else {
+      setMainCategories(_.filter(categories, { parent: null }));
+    }
+  }, [categories, searchValue]);
+
+  // Clear the active sub2 if sub1 is changed
+  useEffect(() => {
+    if (activeSub1 && activeSub2) {
+      const hasSub2 = _.findIndex(categories, { parent: activeSub1.id, id: activeSub2.id });
+      if (hasSub2 === -1) {
+        setActiveSub2(undefined);
+      }
+    }
+  }, [activeSub1, activeSub2, categories]);
 
   const handleClose = () => {
     setEditId('');
@@ -63,7 +82,6 @@ const CategoryList = ({ type, translate }) => {
     setShow(true);
   };
 
-  const mainCategories = _.filter(categories, { parent: null });
   let numberOfSubCategory = 0;
   _.forEach(mainCategories, c => {
     const subCategories = _.filter(categories, { parent: c.id });
@@ -87,6 +105,13 @@ const CategoryList = ({ type, translate }) => {
           <Card.Body className="px-2">
             {categories.length > 0 && (
               <>
+                <SearchInput
+                  name="search_value"
+                  value={searchValue}
+                  placeholder={translate('category.search')}
+                  onChange={e => setSearchValue(e.target.value)}
+                  onClear={() => setSearchValue('')}
+                />
                 <strong>
                   {translate('category.number_of_categories', { number: mainCategories.length })}
                   , {translate('category.number_of_sub_categories', { number: numberOfSubCategory })}
