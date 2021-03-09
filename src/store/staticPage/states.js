@@ -1,3 +1,6 @@
 export const initialState = {
-  staticPages: []
+  filters: {},
+  staticPages: [],
+  staticPage: {},
+  loading: false
 };
