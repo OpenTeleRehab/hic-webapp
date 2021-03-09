@@ -37,7 +37,7 @@ const CreateEducationMaterial = ({ translate }) => {
     { name: 'title', title: translate('common.category') }
   ];
   const tableColumnExtensions = [
-    { columnName: 'title', width: 300 }
+    { columnName: 'title', width: 700 }
   ];
 
   const [titleError, setTitleError] = useState(false);
