@@ -5,7 +5,7 @@ import { ListGroup } from 'react-bootstrap';
 import { EditAction } from 'components/ActionIcons';
 
 const SubCategoryList = ({ subCategories, categories, active, setActive, handleEdit, ...rest }) => {
-  return (
+  return subCategories.length && (
     <ListGroup variant="flush" className="border-top border-bottom" {...rest}>
       {subCategories.map(sub => {
         const childSubCategories = _.filter(categories, { parent: sub.id });
