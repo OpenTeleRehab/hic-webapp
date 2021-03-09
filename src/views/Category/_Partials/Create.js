@@ -218,6 +218,9 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
               value={formFields.category_value}
               onChange={handleChange}
             />
+            <Form.Text className="text-muted">
+              {translate('category.category_value_hint')}
+            </Form.Text>
             <Form.Control.Feedback type="invalid">
               {translate('error.category_value')}
             </Form.Control.Feedback>
