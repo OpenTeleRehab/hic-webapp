@@ -11,6 +11,9 @@ import {
   updateQuestionnaire
 } from '../../../store/questionnaire/actions';
 import Question from './Question/question';
+import CustomTree from 'components/Tree';
+import { getCategories } from 'store/category/actions';
+import { CATEGORY_TYPES } from 'variables/category';
 
 const CreateQuestionnaire = ({ translate }) => {
   const dispatch = useDispatch();
@@ -19,11 +22,20 @@ const CreateQuestionnaire = ({ translate }) => {
 
   const { languages } = useSelector(state => state.language);
   const { questionnaire, filters } = useSelector(state => state.questionnaire);
+  const { categories } = useSelector((state) => state.category);
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
     title: '',
     description: ''
   });
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState([]);
+  const treeColumns = [
+    { name: 'title', title: translate('common.category') }
+  ];
+  const tableColumnExtensions = [
+    { columnName: 'title', width: 300 }
+  ];
 
   const [titleError, setTitleError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
@@ -43,10 +55,29 @@ const CreateQuestionnaire = ({ translate }) => {
   }, [languages, filters, id]);
 
   useEffect(() => {
+    if (language) {
+      dispatch(getCategories({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: language }));
+    }
+  }, [language, dispatch]);
+
+  useEffect(() => {
     if (id && language) {
       dispatch(getQuestionnaire(id, language));
     }
   }, [id, language, dispatch]);
+
+  useEffect(() => {
+    if (categories.length) {
+      const selectedCatIndexes = [];
+      categories.forEach((cat, index) => {
+        if (selectedCategories.indexOf(cat.id) >= 0) {
+          selectedCatIndexes.push(index);
+        }
+      });
+
+      setSelectedCategoryIndexes(selectedCatIndexes);
+    }
+  }, [categories, selectedCategories]);
 
   useEffect(() => {
     if (id && questionnaire.id) {
@@ -55,6 +86,7 @@ const CreateQuestionnaire = ({ translate }) => {
         description: questionnaire.description
       });
       setQuestions(questionnaire.questions);
+      setSelectedCategories(questionnaire.categories);
     }
   }, [id, questionnaire]);
 
@@ -113,7 +145,7 @@ const CreateQuestionnaire = ({ translate }) => {
     if (canSave) {
       setIsLoading(true);
       if (id) {
-        dispatch(updateQuestionnaire(id, { ...formFields, lang: language, questions }))
+        dispatch(updateQuestionnaire(id, { ...formFields, categories: selectedCategories, lang: language, questions }))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP_QUESTIONNAIRE);
@@ -121,7 +153,7 @@ const CreateQuestionnaire = ({ translate }) => {
             setIsLoading(false);
           });
       } else {
-        dispatch(createQuestionnaire({ ...formFields, lang: language, questions }))
+        dispatch(createQuestionnaire({ ...formFields, categories: selectedCategories, lang: language, questions }))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP_QUESTIONNAIRE);
@@ -130,6 +162,11 @@ const CreateQuestionnaire = ({ translate }) => {
           });
       }
     }
+  };
+
+  const onSelectChange = (rowIds) => {
+    const selectedCats = categories.filter((cat, index) => rowIds.indexOf(index) >= 0).map(cat => cat.id);
+    setSelectedCategories(selectedCats);
   };
 
   return (
@@ -187,6 +224,27 @@ const CreateQuestionnaire = ({ translate }) => {
                 {translate('questionnaire.description.required')}
               </Form.Control.Feedback>
             </Form.Group>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={9} xl={7}>
+            <div className="mb-3">
+              <CustomTree
+                columns={treeColumns}
+                treeColumnName="title"
+                tableColumnExtensions={tableColumnExtensions}
+                selection={selectedCategoryIndexes}
+                onSelectChange={onSelectChange}
+                data={categories.map(category => {
+                  return {
+                    id: category.id,
+                    title: category.title,
+                    parentId: category.parent || null
+                  };
+                })}
+              />
+            </div>
+
           </Col>
         </Row>
         <Row>
