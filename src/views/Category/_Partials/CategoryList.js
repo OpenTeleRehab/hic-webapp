@@ -9,6 +9,7 @@ import {
   Card,
   CardGroup,
   useAccordionToggle
+  , Form
 } from 'react-bootstrap';
 import { BsChevronDown, BsChevronRight, BsPlus } from 'react-icons/bs';
 import _ from 'lodash';
@@ -32,6 +33,9 @@ const CategoryList = ({ type, translate }) => {
   const [allowNew, setAllowNew] = useState(true);
   const [searchValue, setSearchValue] = useState('');
   const [mainCategories, setMainCategories] = useState([]);
+  const [mainSubCategories, setMainSubCategories] = useState([]);
+  const [searchSubCat, setSearchSubCat] = useState(false);
+  const [numberOfSubCategory, setNumberOfSubCategory] = useState(0);
 
   // Fetch category data
   useEffect(() => {
@@ -46,14 +50,44 @@ const CategoryList = ({ type, translate }) => {
   // Filter categories by search value
   useEffect(() => {
     const value = searchValue.trim();
+    let arrCategories = [...categories];
     if (value !== '') {
-      setMainCategories(_.filter(categories, c => {
-        return c.parent === null && c.title.toLowerCase().search(value.toLowerCase()) !== -1;
-      }));
+      if (searchSubCat) {
+        const parentIds = categories.filter(c => c.parent === null).map(c => c.id);
+        setMainCategories(_.filter(categories, c => {
+          arrCategories = _.filter(arrCategories, child => child.title.toLowerCase().search(value.toLowerCase()) !== -1 && parentIds.indexOf(child.parent) > -1);
+          return c.parent === null;
+        }));
+        setMainSubCategories(arrCategories);
+        setNumberOfSubCategory(arrCategories.length);
+      } else {
+        const mainCats = _.filter(categories, c => {
+          return c.parent === null && c.title.toLowerCase().search(value.toLowerCase()) !== -1;
+        });
+
+        let numberOfSubCat = 0;
+        _.forEach(mainCats, c => {
+          const subCategories = _.filter(categories, { parent: c.id });
+          numberOfSubCat += subCategories.length;
+        });
+
+        setMainCategories(mainCats);
+        setMainSubCategories(arrCategories);
+        setNumberOfSubCategory(numberOfSubCat);
+      }
     } else {
-      setMainCategories(_.filter(categories, { parent: null }));
+      const mainCats = _.filter(categories, { parent: null });
+      let numberOfSubCat = 0;
+      _.forEach(mainCats, c => {
+        const subCategories = _.filter(categories, { parent: c.id });
+        numberOfSubCat += subCategories.length;
+      });
+
+      setMainCategories(mainCats);
+      setMainSubCategories(arrCategories);
+      setNumberOfSubCategory(numberOfSubCat);
     }
-  }, [categories, searchValue]);
+  }, [categories, searchValue, searchSubCat]);
 
   // Clear the active sub2 if sub1 is changed
   useEffect(() => {
@@ -82,11 +116,10 @@ const CategoryList = ({ type, translate }) => {
     setShow(true);
   };
 
-  let numberOfSubCategory = 0;
-  _.forEach(mainCategories, c => {
-    const subCategories = _.filter(categories, { parent: c.id });
-    numberOfSubCategory += subCategories.length;
-  });
+  const handleChangeSearchType = e => {
+    const { checked } = e.target;
+    setSearchSubCat(checked);
+  };
 
   return (
     <>
@@ -112,12 +145,21 @@ const CategoryList = ({ type, translate }) => {
                   onChange={e => setSearchValue(e.target.value)}
                   onClear={() => setSearchValue('')}
                 />
+                <Form.Check
+                  custom
+                  type="checkbox"
+                  id="searchType"
+                  className="mb-3"
+                  label={translate('category.sub_category')}
+                  checked={searchSubCat}
+                  onChange={handleChangeSearchType}
+                />
                 <strong>
                   {translate('category.number_of_categories', { number: mainCategories.length })}
                   , {translate('category.number_of_sub_categories', { number: numberOfSubCategory })}
                 </strong>
                 {mainCategories.map(category => {
-                  const subCategories = _.filter(categories, { parent: category.id });
+                  const subCategories = _.filter(mainSubCategories, { parent: category.id });
                   return (
                     <Accordion key={category.id}>
                       <Card className="mb-2 shadow-sm">
