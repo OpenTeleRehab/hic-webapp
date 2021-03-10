@@ -13,6 +13,7 @@ import {
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { BsUpload, BsXCircle, BsX, BsPlus } from 'react-icons/bs';
+import CustomTree from 'components/Tree';
 
 import * as ROUTES from 'variables/routes';
 import {
@@ -20,6 +21,8 @@ import {
   getExercise,
   updateExercise
 } from 'store/exercise/actions';
+import { getCategories } from 'store/category/actions';
+import { CATEGORY_TYPES } from 'variables/category';
 
 const CreateExercise = ({ translate }) => {
   const dispatch = useDispatch();
@@ -28,6 +31,7 @@ const CreateExercise = ({ translate }) => {
 
   const { languages } = useSelector(state => state.language);
   const { exercise, filters } = useSelector(state => state.exercise);
+  const { categories } = useSelector((state) => state.category);
 
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
@@ -43,6 +47,14 @@ const CreateExercise = ({ translate }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [inputFieldError, setInputFieldError] = useState([]);
   const [inputValueError, setInputValueError] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState([]);
+  const treeColumns = [
+    { name: 'title', title: translate('common.category') }
+  ];
+  const tableColumnExtensions = [
+    { columnName: 'title', width: 700 }
+  ];
 
   useEffect(() => {
     if (languages.length) {
@@ -55,10 +67,29 @@ const CreateExercise = ({ translate }) => {
   }, [languages, filters, id]);
 
   useEffect(() => {
+    if (language) {
+      dispatch(getCategories({ type: CATEGORY_TYPES.EXERCISE, lang: language }));
+    }
+  }, [language, dispatch]);
+
+  useEffect(() => {
     if (id && language) {
       dispatch(getExercise(id, language));
     }
   }, [id, language, dispatch]);
+
+  useEffect(() => {
+    if (categories.length) {
+      const selectedCatIndexes = [];
+      categories.forEach((cat, index) => {
+        if (selectedCategories.indexOf(cat.id) >= 0) {
+          selectedCatIndexes.push(index);
+        }
+      });
+
+      setSelectedCategoryIndexes(selectedCatIndexes);
+    }
+  }, [categories, selectedCategories]);
 
   useEffect(() => {
     if (id && exercise.id) {
@@ -69,6 +100,7 @@ const CreateExercise = ({ translate }) => {
       });
       setMediaUploads(exercise.files);
       setInputFields(exercise.additional_fields || []);
+      setSelectedCategories(exercise.categories);
     }
   }, [id, exercise]);
 
@@ -143,7 +175,7 @@ const CreateExercise = ({ translate }) => {
     if (canSave) {
       setIsLoading(true);
       if (id) {
-        dispatch(updateExercise(id, { ...formFields, additional_fields: JSON.stringify(inputFields), lang: language }, mediaUploads))
+        dispatch(updateExercise(id, { ...formFields, additional_fields: JSON.stringify(inputFields), categories: selectedCategories, lang: language }, mediaUploads))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
@@ -151,7 +183,7 @@ const CreateExercise = ({ translate }) => {
             setIsLoading(false);
           });
       } else {
-        dispatch(createExercise({ ...formFields, additional_fields: JSON.stringify(inputFields), lang: language }, mediaUploads))
+        dispatch(createExercise({ ...formFields, additional_fields: JSON.stringify(inputFields), categories: selectedCategories, lang: language }, mediaUploads))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
@@ -160,6 +192,11 @@ const CreateExercise = ({ translate }) => {
           });
       }
     }
+  };
+
+  const onSelectChange = (rowIds) => {
+    const selectedCats = categories.filter((cat, index) => rowIds.indexOf(index) >= 0).map(cat => cat.id);
+    setSelectedCategories(selectedCats);
   };
 
   const handleFileChange = (e) => {
@@ -306,6 +343,23 @@ const CreateExercise = ({ translate }) => {
                 label={translate('exercise.get_pain_level_feedback')}
               />
             </Form.Group>
+
+            <div className="mb-3">
+              <CustomTree
+                columns={treeColumns}
+                treeColumnName="title"
+                tableColumnExtensions={tableColumnExtensions}
+                selection={selectedCategoryIndexes}
+                onSelectChange={onSelectChange}
+                data={categories.map(category => {
+                  return {
+                    id: category.id,
+                    title: category.title,
+                    parentId: category.parent || null
+                  };
+                })}
+              />
+            </div>
 
             {
               inputFields.map((inputField, index) => (
