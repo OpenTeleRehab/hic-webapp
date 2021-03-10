@@ -39,11 +39,11 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
     url: '',
     private: false,
     title: '',
-    content: '',
     background_color: '#fff',
     text_color: '#000',
     file: undefined
   });
+  const [content, setContent] = useState('');
 
   useEffect(() => {
     if (languages.length) {
@@ -72,11 +72,11 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
         platform: staticPage.platform || '',
         url: staticPage.url || '',
         private: staticPage.private || '',
-        content: staticPage.content || '',
         background_color: staticPage.background_color || '',
         text_color: staticPage.text_color || ''
       });
       setMaterialFile(staticPage.file);
+      setContent(staticPage.content || '');
     }
   }, [editId, staticPage]);
 
@@ -123,8 +123,8 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
     setFormFields({ ...formFields, file: undefined });
   };
 
-  const handleEditorChange = (content, editor) => {
-    setFormFields({ ...formFields, content: content });
+  const handleEditorChange = (value, editor) => {
+    setContent(value);
   };
 
   const handleBackgroundColorChange = (color, editor) => {
@@ -175,14 +175,14 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
 
     if (canSave) {
       if (editId) {
-        dispatch(updateStaticPage(editId, { ...formFields, lang: language }))
+        dispatch(updateStaticPage(editId, { ...formFields, content, lang: language }))
           .then(result => {
             if (result) {
               handleClose();
             }
           });
       } else {
-        dispatch(createStaticPage({ ...formFields, lang: language }))
+        dispatch(createStaticPage({ ...formFields, content, lang: language }))
           .then(result => {
             if (result) {
               handleClose();
@@ -326,8 +326,7 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
             apiKey={settings.tinymce.apiKey}
             name="content"
             isInvalid={errorContent}
-            initialValue="<p>This is the initial content of the editor</p>"
-            value={formFields.content}
+            value={content}
             init={{
               height: 500,
               plugins: [
