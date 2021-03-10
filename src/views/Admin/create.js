@@ -221,8 +221,29 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
             {translate('error.email')}
           </Form.Control.Feedback>
         </Form.Group>
-        {(formFields.type === USER_GROUPS.COUNTRY_ADMIN ||
-          formFields.type === USER_GROUPS.CLINIC_ADMIN) && (
+        {(formFields.type === USER_GROUPS.COUNTRY_ADMIN) && (
+          <Form.Group controlId="formCountry">
+            <Form.Label>{translate('common.country')}</Form.Label>
+            <span className="text-dark ml-1">*</span>
+            <Form.Control
+              name="country_id"
+              onChange={handleChange}
+              as="select"
+              isInvalid={errorCountry}
+              value={formFields.country_id}
+              disabled={!!editId}
+            >
+              <option value="">{translate('placeholder.country')}</option>
+              {countries.map((country) => (
+                <option key={country.id} value={country.id}>{country.name}</option>
+              ))}
+            </Form.Control>
+            <Form.Control.Feedback type="invalid">
+              {translate('error.country')}
+            </Form.Control.Feedback>
+          </Form.Group>
+        )}
+        {(formFields.type === USER_GROUPS.CLINIC_ADMIN) && (
           <Form.Group controlId="formCountry">
             <Form.Label>{translate('common.country')}</Form.Label>
             <span className="text-dark ml-1">*</span>
