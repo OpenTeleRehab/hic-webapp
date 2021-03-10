@@ -1,5 +1,5 @@
 export const CATEGORY_TYPES = {
   EXERCISE: 'exercise',
-  MATERIAL: 'material',
+  MATERIAL: 'education',
   QUESTIONNAIRE: 'questionnaire'
 };

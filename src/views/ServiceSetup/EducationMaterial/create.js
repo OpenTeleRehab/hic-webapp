@@ -11,6 +11,9 @@ import {
 } from '../../../store/educationMaterial/actions';
 import { formatFileSize, toMB } from '../../../utils/file';
 import settings from '../../../settings';
+import CustomTree from 'components/Tree';
+import { getCategories } from 'store/category/actions';
+import { CATEGORY_TYPES } from 'variables/category';
 
 const CreateEducationMaterial = ({ translate }) => {
   const dispatch = useDispatch();
@@ -20,6 +23,7 @@ const CreateEducationMaterial = ({ translate }) => {
 
   const { languages } = useSelector(state => state.language);
   const { educationMaterial, filters } = useSelector(state => state.educationMaterial);
+  const { categories } = useSelector((state) => state.category);
 
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
@@ -27,6 +31,14 @@ const CreateEducationMaterial = ({ translate }) => {
     file: undefined
   });
   const [materialFile, setMaterialFile] = useState(undefined);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState([]);
+  const treeColumns = [
+    { name: 'title', title: translate('common.category') }
+  ];
+  const tableColumnExtensions = [
+    { columnName: 'title', width: 700 }
+  ];
 
   const [titleError, setTitleError] = useState(false);
   const [fileError, setFileError] = useState(false);
@@ -43,10 +55,29 @@ const CreateEducationMaterial = ({ translate }) => {
   }, [languages, filters, id]);
 
   useEffect(() => {
+    if (language) {
+      dispatch(getCategories({ type: CATEGORY_TYPES.MATERIAL, lang: language }));
+    }
+  }, [language, dispatch]);
+
+  useEffect(() => {
     if (id && language) {
       dispatch(getEducationMaterial(id, language));
     }
   }, [id, language, dispatch]);
+
+  useEffect(() => {
+    if (categories.length) {
+      const selectedCatIndexes = [];
+      categories.forEach((cat, index) => {
+        if (selectedCategories.indexOf(cat.id) >= 0) {
+          selectedCatIndexes.push(index);
+        }
+      });
+
+      setSelectedCategoryIndexes(selectedCatIndexes);
+    }
+  }, [categories, selectedCategories]);
 
   useEffect(() => {
     if (id && educationMaterial.id) {
@@ -54,6 +85,7 @@ const CreateEducationMaterial = ({ translate }) => {
         title: educationMaterial.title
       });
       setMaterialFile(educationMaterial.file);
+      setSelectedCategories(educationMaterial.categories);
     }
   }, [id, educationMaterial]);
 
@@ -92,7 +124,7 @@ const CreateEducationMaterial = ({ translate }) => {
     if (canSave) {
       setIsLoading(true);
       if (id) {
-        dispatch(updateEducationMaterial(id, { ...formFields, lang: language }))
+        dispatch(updateEducationMaterial(id, { ...formFields, categories: selectedCategories, lang: language }))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP_EDUCATION);
@@ -100,7 +132,7 @@ const CreateEducationMaterial = ({ translate }) => {
             setIsLoading(false);
           });
       } else {
-        dispatch(createEducationMaterial({ ...formFields, lang: language }))
+        dispatch(createEducationMaterial({ ...formFields, categories: selectedCategories, lang: language }))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP_EDUCATION);
@@ -117,6 +149,11 @@ const CreateEducationMaterial = ({ translate }) => {
       return `${file.name} (${formatFileSize(file.size)})`;
     }
     return translate('education_material.upload_file.placeholder');
+  };
+
+  const onSelectChange = (rowIds) => {
+    const selectedCats = categories.filter((cat, index) => rowIds.indexOf(index) >= 0).map(cat => cat.id);
+    setSelectedCategories(selectedCats);
   };
 
   return (
@@ -187,6 +224,23 @@ const CreateEducationMaterial = ({ translate }) => {
                 )}
               </Form.File>
             </Form.Group>
+
+            <div className="mb-3">
+              <CustomTree
+                columns={treeColumns}
+                treeColumnName="title"
+                tableColumnExtensions={tableColumnExtensions}
+                selection={selectedCategoryIndexes}
+                onSelectChange={onSelectChange}
+                data={categories.map(category => {
+                  return {
+                    id: category.id,
+                    title: category.title,
+                    parentId: category.parent || null
+                  };
+                })}
+              />
+            </div>
 
             <Form.Group>
               <Button
