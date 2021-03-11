@@ -11,6 +11,8 @@ import {
   TableTreeColumn
 } from '@devexpress/dx-react-grid-bootstrap4';
 import PropTypes from 'prop-types';
+import { Button, Form } from 'react-bootstrap';
+import { BsCaretDownFill, BsCaretRightFill } from 'react-icons/bs';
 
 const CustomTree = ({ data, columns, treeColumnName, tableColumnExtensions, selection, onSelectChange }) => {
   const getChildRows = (row, rootRows) => {
@@ -39,6 +41,8 @@ const CustomTree = ({ data, columns, treeColumnName, tableColumnExtensions, sele
         <TableTreeColumn
           for={treeColumnName}
           showSelectionControls
+          checkboxComponent={(props) => <TreeCheckBox {...props} />}
+          expandButtonComponent={(props) => <TreeExpandedButton {...props} />}
         />
       </Grid>
     </div>
@@ -52,6 +56,47 @@ CustomTree.propTypes = {
   tableColumnExtensions: PropTypes.array,
   selection: PropTypes.array,
   onSelectChange: PropTypes.func
+};
+
+const TreeCheckBox = ({ checked, indeterminate, onChange }) => {
+  return (
+    <Form.Check
+      className="form-check tree-checkbox"
+      type="checkbox"
+      checked={checked}
+      onChange={onChange}
+    />
+  );
+};
+
+TreeCheckBox.propTypes = {
+  indeterminate: PropTypes.bool,
+  checked: PropTypes.bool,
+  onChange: PropTypes.func
+};
+
+const TreeExpandedButton = ({ visible, expanded, onToggle }) => {
+  return (
+    <>
+      {
+        visible && <Button variant="link" className="p-0 mr-2"
+          onClick={onToggle}>
+          {expanded ? (
+            <BsCaretDownFill size={15} color="black" />
+          ) : (
+            <BsCaretRightFill size={15} color="black" />
+          )
+          }
+        </Button>
+      }
+    </>
+  );
+};
+
+TreeExpandedButton.propTypes = {
+  visible: PropTypes.bool,
+  expanded: PropTypes.bool,
+  onToggle: PropTypes.func
 };
 
 export default CustomTree;

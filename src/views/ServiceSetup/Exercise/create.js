@@ -53,7 +53,7 @@ const CreateExercise = ({ translate }) => {
     { name: 'title', title: translate('common.category') }
   ];
   const tableColumnExtensions = [
-    { columnName: 'title', width: 700 }
+    { columnName: 'title', width: 'auto', wordWrapEnabled: true }
   ];
 
   useEffect(() => {
