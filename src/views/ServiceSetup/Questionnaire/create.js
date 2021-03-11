@@ -38,7 +38,6 @@ const CreateQuestionnaire = ({ translate }) => {
   ];
 
   const [titleError, setTitleError] = useState(false);
-  const [descriptionError, setDescriptionError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [questions, setQuestions] = useState([{ title: '', type: 'checkbox', answers: [{ description: '' }, { description: '' }], file: null }]);
   const [questionTitleError, setQuestionTitleError] = useState([]);
@@ -110,13 +109,6 @@ const CreateQuestionnaire = ({ translate }) => {
       setTitleError(true);
     } else {
       setTitleError(false);
-    }
-
-    if (formFields.description === '') {
-      canSave = false;
-      setDescriptionError(true);
-    } else {
-      setDescriptionError(false);
     }
 
     for (let i = 0; i < questions.length; i++) {
@@ -210,19 +202,14 @@ const CreateQuestionnaire = ({ translate }) => {
           <Col sm={9} xl={7}>
             <Form.Group controlId={'formDescription'}>
               <Form.Label>{translate('questionnaire.description')}</Form.Label>
-              <span className="text-dark ml-1">*</span>
               <Form.Control
                 name="description"
                 as="textarea" rows={3}
                 placeholder={translate('questionnaire.description.placeholder')}
                 value={formFields.description}
                 onChange={handleChange}
-                isInvalid={descriptionError}
                 maxLength={255}
               />
-              <Form.Control.Feedback type="invalid">
-                {translate('questionnaire.description.required')}
-              </Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>
