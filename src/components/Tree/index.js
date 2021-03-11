@@ -79,7 +79,7 @@ const TreeExpandedButton = ({ visible, expanded, onToggle }) => {
   return (
     <>
       {
-        visible && <Button variant="link" className="p-0 mr-2"
+        <Button variant="link" className={'p-0 mr-2 ' + (visible ? '' : 'invisible')}
           onClick={onToggle}>
           {expanded ? (
             <BsCaretDownFill size={15} color="black" />
