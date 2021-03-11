@@ -360,7 +360,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
       {enableButtons() &&
         <Form.Group className={'my-4'}>
           <Button
-            variant="link"
+            variant="link btn-lg"
             onClick={handleAddQuestion}
             className="p-0"
           >
