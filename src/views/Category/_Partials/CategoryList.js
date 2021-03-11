@@ -8,10 +8,11 @@ import {
   Button,
   Card,
   CardGroup,
-  useAccordionToggle
-  , Form
+  useAccordionToggle,
+  ToggleButton,
+  ButtonGroup
 } from 'react-bootstrap';
-import { BsChevronDown, BsChevronRight, BsPlus } from 'react-icons/bs';
+import { BsChevronDown, BsChevronRight, BsPlus, GrTree } from 'react-icons/all';
 import _ from 'lodash';
 
 import SubCategoryList from '../_Partials/subCategoryList';
@@ -138,22 +139,25 @@ const CategoryList = ({ type, translate }) => {
           <Card.Body className="px-2">
             {categories.length > 0 && (
               <>
-                <SearchInput
-                  name="search_value"
-                  value={searchValue}
-                  placeholder={translate('category.search')}
-                  onChange={e => setSearchValue(e.target.value)}
-                  onClear={() => setSearchValue('')}
-                />
-                <Form.Check
-                  custom
-                  type="checkbox"
-                  id="searchType"
-                  className="mb-3"
-                  label={translate('category.sub_category')}
-                  checked={searchSubCat}
-                  onChange={handleChangeSearchType}
-                />
+                <div className="d-flex justify-content-between align-items-start">
+                  <ButtonGroup toggle className="mr-1">
+                    <ToggleButton
+                      type="checkbox"
+                      variant="outline-info"
+                      checked={searchSubCat}
+                      onChange={handleChangeSearchType}
+                    >
+                      <GrTree />
+                    </ToggleButton>
+                  </ButtonGroup>
+                  <SearchInput
+                    name="search_value"
+                    value={searchValue}
+                    placeholder={translate(`${searchSubCat ? 'category.search_sub_category' : 'category.search'}`)}
+                    onChange={e => setSearchValue(e.target.value)}
+                    onClear={() => setSearchValue('')}
+                  />
+                </div>
                 <strong>
                   {translate('category.number_of_categories', { number: mainCategories.length })}
                   , {translate('category.number_of_sub_categories', { number: numberOfSubCategory })}
