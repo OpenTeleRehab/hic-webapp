@@ -170,7 +170,7 @@ const CreateEducationMaterial = ({ translate }) => {
               <Form.Control as="select" value={id ? language : ''} onChange={handleLanguageChange} disabled={!id}>
                 {languages.map((language, index) => (
                   <option key={index} value={language.id}>
-                    {language.name} {language.code === language.fallback && `(${translate('common.default')})`}
+                    {language.name}
                   </option>
                 ))}
               </Form.Control>
