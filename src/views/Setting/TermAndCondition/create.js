@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Editor } from '@tinymce/tinymce-react';
 import { Form } from 'react-bootstrap';
 import Dialog from 'components/Dialog';
 import { useSelector, useDispatch } from 'react-redux';
@@ -19,9 +20,10 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
 
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
-    version: '',
-    content: ''
+    version: ''
   });
+
+  const [content, setContent] = useState('');
 
   useEffect(() => {
     if (languages.length) {
@@ -33,9 +35,9 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
     if (editId && termAndConditions.length) {
       const termAndCondition = termAndConditions.find(term => term.id === editId);
       setFormFields({
-        version: termAndCondition.version,
-        content: termAndCondition.content
+        version: termAndCondition.version
       });
+      setContent(termAndCondition.content);
     }
   }, [editId, termAndConditions]);
 
@@ -59,7 +61,7 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
       setVersion(false);
     }
 
-    if (formFields.content === '') {
+    if (content === '') {
       canSave = false;
       setErrorContent(true);
     } else {
@@ -68,14 +70,14 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
 
     if (canSave) {
       if (editId) {
-        dispatch(updateTermAndCondition(editId, { ...formFields, lang: language }))
+        dispatch(updateTermAndCondition(editId, { ...formFields, content, lang: language }))
           .then(result => {
             if (result) {
               handleClose();
             }
           });
       } else {
-        dispatch(createTermAndCondition({ ...formFields, lang: language }))
+        dispatch(createTermAndCondition({ ...formFields, content, lang: language }))
           .then(result => {
             if (result) {
               handleClose();
@@ -83,6 +85,10 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
           });
       }
     }
+  };
+
+  const handleEditorChange = (value, editor) => {
+    setContent(value);
   };
 
   return (
@@ -121,20 +127,29 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
             {translate('error.term_and_condition.version')}
           </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group controlId="content">
-          <Form.Label>{translate('term_and_condition.content')}</Form.Label>
+        <Form.Group controlId="version">
+          <Form.Label>Content</Form.Label>
           <span className="text-dark ml-1">*</span>
-          <Form.Control
-            as="textarea"
+          <Editor
+            apiKey={settings.tinymce.apiKey}
             name="content"
-            onChange={handleChange}
-            placeholder={translate('placeholder.term_and_condition.content')}
+            value={content}
             isInvalid={errorContent}
-            value={formFields.content}
-            rows={15}
+            initialValue="<p>This is the initial content of the editor</p>"
+            init={{
+              height: 500,
+              plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount'
+              ],
+              toolbar:
+                'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link | help'
+            }}
+            onEditorChange={handleEditorChange}
           />
           <Form.Control.Feedback type="invalid">
-            {translate('error.term_and_condition.content')}
+            {translate('error.term_and_condition.version')}
           </Form.Control.Feedback>
         </Form.Group>
       </Form>

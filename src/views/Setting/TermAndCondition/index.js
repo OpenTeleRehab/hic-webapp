@@ -68,7 +68,7 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
           );
           return {
             version: term.version,
-            content: term.content,
+            content: <div dangerouslySetInnerHTML={{ __html: term.content }} />,
             status: status,
             published_date: publishedDate ? moment(publishedDate).format(settings.date_format) : '',
             action
