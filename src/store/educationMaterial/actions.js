@@ -75,3 +75,7 @@ export const deleteEducationMaterial = id => async (dispatch, getState) => {
     return false;
   }
 };
+
+export const clearFilterEducationMaterials = () => async dispatch => {
+  dispatch(mutation.clearFilterEducationMaterialsRequest());
+};

@@ -2,6 +2,9 @@ import { Auth } from 'services/auth';
 import { mutation } from './mutations';
 import { showErrorNotification, showSuccessNotification } from 'store/notification/actions';
 import { getTranslations } from 'store/translation/actions';
+import { clearFilterExercises } from 'store/exercise/actions';
+import { clearFilterEducationMaterials } from 'store/educationMaterial/actions';
+import { clearFilterQuestionnaires } from 'store/questionnaire/actions';
 
 // Actions
 export const getProfile = () => async dispatch => {
@@ -36,6 +39,9 @@ export const updateUserProfile = payload => async dispatch => {
     dispatch(mutation.updateUserProfileSuccess());
     dispatch(getTranslations());
     dispatch(getProfile());
+    dispatch(clearFilterExercises());
+    dispatch(clearFilterEducationMaterials());
+    dispatch(clearFilterQuestionnaires());
     dispatch(showSuccessNotification('toast_title.edit_profile', data.message));
     return true;
   } else {

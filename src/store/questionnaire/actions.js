@@ -75,3 +75,7 @@ export const deleteQuestionnaire = id => async (dispatch, getState) => {
     return false;
   }
 };
+
+export const clearFilterQuestionnaires = () => async dispatch => {
+  dispatch(mutation.clearFilterQuestionnairesRequest());
+};

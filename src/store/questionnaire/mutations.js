@@ -61,6 +61,10 @@ const deleteQuestionnaireFail = () => ({
   type: 'DELETE_QUESTIONNAIRE_FAIL'
 });
 
+const clearFilterQuestionnairesRequest = () => ({
+  type: 'CLEAR_FILTER_QUESTIONNAIRES_REQUEST'
+});
+
 export const mutation = {
   getQuestionnairesRequest,
   getQuestionnairesSuccess,
@@ -76,5 +80,6 @@ export const mutation = {
   updateQuestionnaireFail,
   deleteQuestionnaireRequest,
   deleteQuestionnaireSuccess,
-  deleteQuestionnaireFail
+  deleteQuestionnaireFail,
+  clearFilterQuestionnairesRequest
 };

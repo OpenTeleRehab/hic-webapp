@@ -24,6 +24,11 @@ export const exercise = (state = initialState, action) => {
         exercise: action.data
       });
     }
+    case 'CLEAR_FILTER_EXERCISES_REQUEST': {
+      return Object.assign({}, state, {
+        filters: {}
+      });
+    }
     default:
       return state;
   }

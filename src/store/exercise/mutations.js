@@ -64,6 +64,10 @@ const deleteExerciseFail = () => ({
   type: 'DELETE_EXERCISE_FAIL'
 });
 
+const clearFilterExercisesRequest = () => ({
+  type: 'CLEAR_FILTER_EXERCISES_REQUEST'
+});
+
 export const mutation = {
   getExercisesFail,
   getExercisesRequest,
@@ -79,5 +83,6 @@ export const mutation = {
   updateExerciseFail,
   deleteExerciseRequest,
   deleteExerciseSuccess,
-  deleteExerciseFail
+  deleteExerciseFail,
+  clearFilterExercisesRequest
 };
