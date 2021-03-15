@@ -64,6 +64,10 @@ const deleteEducationMaterialFail = () => ({
   type: 'DELETE_EDUCATION_MATERIAL_FAIL'
 });
 
+const clearFilterEducationMaterialsRequest = () => ({
+  type: 'CLEAR_FILTER_EDUCATION_MATERIALS_REQUEST'
+});
+
 export const mutation = {
   getEducationMaterialRequest,
   getEducationMaterialSuccess,
@@ -79,5 +83,6 @@ export const mutation = {
   getEducationMaterialsSuccess,
   deleteEducationMaterialRequest,
   deleteEducationMaterialSuccess,
-  deleteEducationMaterialFail
+  deleteEducationMaterialFail,
+  clearFilterEducationMaterialsRequest
 };

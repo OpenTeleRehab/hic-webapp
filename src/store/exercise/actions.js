@@ -72,3 +72,7 @@ export const deleteExercise = id => async (dispatch, getState) => {
     return false;
   }
 };
+
+export const clearFilterExercises = () => async dispatch => {
+  dispatch(mutation.clearFilterExercisesRequest());
+};
