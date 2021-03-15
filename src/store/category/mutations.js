@@ -11,6 +11,19 @@ const getCategoriesFail = () => ({
   type: 'GET_CATEGORIES_FAIL'
 });
 
+const getCategoryTreeDataRequest = () => ({
+  type: 'GET_CATEGORY_TREE_DATA_REQUEST'
+});
+
+const getCategoryTreeDataSuccess = (data) => ({
+  type: 'GET_CATEGORY_TREE_DATA_SUCCESS',
+  data
+});
+
+const getCategoryTreeDataFail = () => ({
+  type: 'GET_CATEGORY_TREE_DATA_FAIL'
+});
+
 const getCategoryRequest = () => ({
   type: 'GET_CATEGORY_REQUEST'
 });
@@ -52,6 +65,9 @@ export const mutation = {
   getCategoriesRequest,
   getCategoriesSuccess,
   getCategoriesFail,
+  getCategoryTreeDataRequest,
+  getCategoryTreeDataSuccess,
+  getCategoryTreeDataFail,
   getCategoryRequest,
   getCategorySuccess,
   getCategoryFail,
