@@ -14,7 +14,6 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
   const { languages } = useSelector(state => state.language);
   const profile = useSelector(state => state.auth.profile);
   const translate = getTranslate(localize);
-  const [isCurrent, setIsCurrent] = useState(false);
   const [selectableCategories, setSelectableCategories] = useState([]);
   const [formFields, setFormFields] = useState({
     category: '',
@@ -26,12 +25,6 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
   const [errorCategory, setErrorCategory] = useState(false);
   const [errorCurrentCategory, setErrorCurrentCategory] = useState(false);
   const [errorCategoryValue, setErrorCategoryValue] = useState(false);
-
-  useEffect(() => {
-    if (!allowNew) {
-      setIsCurrent(true);
-    }
-  }, [allowNew]);
 
   useEffect(() => {
     if (languages.length) {
@@ -57,25 +50,17 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
   }, [editId, category]);
 
   useEffect(() => {
-    if (categories.length) {
-      if (allowNew) {
-        setSelectableCategories(categories.filter(category => !category.parent));
-      } else {
-        setSelectableCategories(categories.filter(category => category.id === activeCategory));
-      }
+    if (!allowNew && activeCategory && categories.length) {
+      setSelectableCategories(categories.filter(category => category.id === activeCategory));
     }
-  }, [categories, activeCategory, allowNew]);
+  }, [allowNew, categories, activeCategory]);
 
   useEffect(() => {
-    if (!editId) {
-      if (isCurrent) {
-        setFormFields({ ...formFields, category: '', current_category: activeCategory });
-      } else {
-        setFormFields({ ...formFields, current_category: '' });
-      }
+    if (!allowNew && !editId && activeCategory) {
+      setFormFields({ ...formFields, category: '', current_category: activeCategory });
     }
     // eslint-disable-next-line
-  }, [isCurrent, editId]);
+  }, [allowNew, editId, activeCategory]);
 
   const handleLanguageChange = e => {
     const { value } = e.target;
@@ -90,14 +75,14 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
   const handleConfirm = () => {
     let canSave = true;
 
-    if (formFields.category === '' && !isCurrent) {
+    if (formFields.category === '' && allowNew) {
       canSave = false;
       setErrorCategory(true);
     } else {
       setErrorCategory(false);
     }
 
-    if (formFields.current_category === '' && isCurrent && !editId) {
+    if (formFields.current_category === '' && !allowNew && !editId) {
       canSave = false;
       setErrorCurrentCategory(true);
     } else {
@@ -139,26 +124,6 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
       confirmLabel={editId ? translate('common.save') : translate('common.create')}
     >
       <Form>
-        {!editId && allowNew &&
-          <Form.Group>
-            <Form.Check
-              id="current"
-              inline
-              label={translate('category.current_categories')}
-              checked={isCurrent}
-              type="radio"
-              onClick={() => setIsCurrent(true)}
-            />
-            <Form.Check
-              id="notCurrent"
-              inline
-              label={translate('category.new_category')}
-              checked={!isCurrent}
-              type="radio"
-              onClick={() => setIsCurrent(false)}
-            />
-          </Form.Group>
-        }
         <Form.Group controlId="formLanguage">
           <Form.Label>{translate('common.show_language.version')}</Form.Label>
           <Form.Control as="select" value={editId ? language : ''} onChange={handleLanguageChange} disabled={!editId}>
@@ -172,7 +137,7 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
         <Form.Group>
           <Form.Label>{translate(editId ? 'category.title' : 'category.category')}</Form.Label>
           <span className="text-dark ml-1">*</span>
-          {isCurrent && !editId &&
+          {!allowNew && !editId &&
             <Form.Control
               as="select"
               name="current_category"
@@ -191,7 +156,7 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
               }
             </Form.Control>
           }
-          {!isCurrent &&
+          {allowNew &&
             <Form.Control
               type="text"
               name="category"

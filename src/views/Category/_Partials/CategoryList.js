@@ -3,22 +3,18 @@ import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  Accordion,
   AccordionContext,
   Button,
   Card,
   CardGroup,
-  useAccordionToggle,
-  ToggleButton,
-  ButtonGroup
+  useAccordionToggle
 } from 'react-bootstrap';
-import { BsChevronDown, BsChevronRight, BsPlus, GrTree } from 'react-icons/all';
+import { BsChevronDown, BsChevronRight, BsPlus } from 'react-icons/all';
 import _ from 'lodash';
 
 import SubCategoryList from '../_Partials/subCategoryList';
 import Create from '../_Partials/Create';
 import SubCategoryCard from '../_Partials/SubCategoryCard';
-import { EditAction } from 'components/ActionIcons';
 import SearchInput from 'components/Form/SearchInput';
 import { getCategories } from 'store/category/actions';
 
@@ -34,9 +30,6 @@ const CategoryList = ({ type, translate }) => {
   const [allowNew, setAllowNew] = useState(true);
   const [searchValue, setSearchValue] = useState('');
   const [mainCategories, setMainCategories] = useState([]);
-  const [mainSubCategories, setMainSubCategories] = useState([]);
-  const [searchSubCat, setSearchSubCat] = useState(false);
-  const [numberOfSubCategory, setNumberOfSubCategory] = useState(0);
 
   // Fetch category data
   useEffect(() => {
@@ -51,44 +44,16 @@ const CategoryList = ({ type, translate }) => {
   // Filter categories by search value
   useEffect(() => {
     const value = searchValue.trim();
-    let arrCategories = [...categories];
     if (value !== '') {
-      if (searchSubCat) {
-        const parentIds = categories.filter(c => c.parent === null).map(c => c.id);
-        setMainCategories(_.filter(categories, c => {
-          arrCategories = _.filter(arrCategories, child => child.title.toLowerCase().search(value.toLowerCase()) !== -1 && parentIds.indexOf(child.parent) > -1);
-          return c.parent === null;
-        }));
-        setMainSubCategories(arrCategories);
-        setNumberOfSubCategory(arrCategories.length);
-      } else {
-        const mainCats = _.filter(categories, c => {
-          return c.parent === null && c.title.toLowerCase().search(value.toLowerCase()) !== -1;
-        });
-
-        let numberOfSubCat = 0;
-        _.forEach(mainCats, c => {
-          const subCategories = _.filter(categories, { parent: c.id });
-          numberOfSubCat += subCategories.length;
-        });
-
-        setMainCategories(mainCats);
-        setMainSubCategories(arrCategories);
-        setNumberOfSubCategory(numberOfSubCat);
-      }
+      const mainCats = _.filter(categories, c => {
+        return c.parent === null && c.title.toLowerCase().search(value.toLowerCase()) !== -1;
+      });
+      setMainCategories(mainCats);
     } else {
       const mainCats = _.filter(categories, { parent: null });
-      let numberOfSubCat = 0;
-      _.forEach(mainCats, c => {
-        const subCategories = _.filter(categories, { parent: c.id });
-        numberOfSubCat += subCategories.length;
-      });
-
       setMainCategories(mainCats);
-      setMainSubCategories(arrCategories);
-      setNumberOfSubCategory(numberOfSubCat);
     }
-  }, [categories, searchValue, searchSubCat]);
+  }, [categories, searchValue]);
 
   // Clear the active sub2 if sub1 is changed
   useEffect(() => {
@@ -117,11 +82,6 @@ const CategoryList = ({ type, translate }) => {
     setShow(true);
   };
 
-  const handleChangeSearchType = e => {
-    const { checked } = e.target;
-    setSearchSubCat(checked);
-  };
-
   return (
     <>
       <CardGroup className="category-container">
@@ -139,58 +99,23 @@ const CategoryList = ({ type, translate }) => {
           <Card.Body className="px-2">
             {categories.length > 0 && (
               <>
-                <div className="d-flex justify-content-between align-items-start">
-                  <ButtonGroup toggle className="mr-1">
-                    <ToggleButton
-                      type="checkbox"
-                      variant="outline-info"
-                      checked={searchSubCat}
-                      onChange={handleChangeSearchType}
-                    >
-                      <GrTree />
-                    </ToggleButton>
-                  </ButtonGroup>
-                  <SearchInput
-                    name="search_value"
-                    value={searchValue}
-                    placeholder={translate(`${searchSubCat ? 'category.search_sub_category' : 'category.search'}`)}
-                    onChange={e => setSearchValue(e.target.value)}
-                    onClear={() => setSearchValue('')}
-                  />
-                </div>
+                <SearchInput
+                  name="search_value"
+                  value={searchValue}
+                  placeholder={translate('category.search')}
+                  onChange={e => setSearchValue(e.target.value)}
+                  onClear={() => setSearchValue('')}
+                />
                 <strong>
                   {translate('category.number_of_categories', { number: mainCategories.length })}
-                  , {translate('category.number_of_sub_categories', { number: numberOfSubCategory })}
                 </strong>
-                {mainCategories.map(category => {
-                  const subCategories = _.filter(mainSubCategories, { parent: category.id });
-                  return (
-                    <Accordion key={category.id}>
-                      <Card className="mb-2 shadow-sm">
-                        <Card.Header className="bg-white pl-2 d-flex justify-content-between align-items-start">
-                          <h5 className="m-0">
-                            <CustomToggle eventKey={category.id} disabled={subCategories.length === 0} />
-                            {category.title} ({subCategories.length})
-                          </h5>
-                          <EditAction onClick={() => handleEdit(category.id)} />
-                        </Card.Header>
-                        {subCategories.length > 0 && (
-                          <Accordion.Collapse eventKey={category.id}>
-                            <Card.Body className="p-0 pl-2">
-                              <SubCategoryList
-                                subCategories={subCategories}
-                                categories={categories}
-                                active={activeSub1}
-                                setActive={setActiveSub1}
-                                handleEdit={handleEdit}
-                              />
-                            </Card.Body>
-                          </Accordion.Collapse>
-                        )}
-                      </Card>
-                    </Accordion>
-                  );
-                })}
+                <SubCategoryList
+                  subCategories={mainCategories}
+                  categories={categories}
+                  active={activeSub1}
+                  setActive={setActiveSub1}
+                  handleEdit={handleEdit}
+                />
               </>
             )}
           </Card.Body>
