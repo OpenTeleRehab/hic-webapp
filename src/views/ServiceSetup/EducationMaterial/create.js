@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import { Button, Col, Form, Row, Accordion, Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import * as ROUTES from '../../../variables/routes';
@@ -11,9 +11,18 @@ import {
 } from '../../../store/educationMaterial/actions';
 import { formatFileSize, toMB } from '../../../utils/file';
 import settings from '../../../settings';
-import CustomTree from 'components/Tree';
-import { getCategories } from 'store/category/actions';
+import { getCategoryTreeData } from 'store/category/actions';
 import { CATEGORY_TYPES } from 'variables/category';
+import {
+  BsCaretDownFill,
+  BsCaretRightFill,
+  BsSquare,
+  BsDashSquare
+} from 'react-icons/bs';
+import { FaRegCheckSquare } from 'react-icons/fa';
+import CheckboxTree from 'react-checkbox-tree';
+import _ from 'lodash';
+import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 
 const CreateEducationMaterial = ({ translate }) => {
   const dispatch = useDispatch();
@@ -23,7 +32,7 @@ const CreateEducationMaterial = ({ translate }) => {
 
   const { languages } = useSelector(state => state.language);
   const { educationMaterial, filters } = useSelector(state => state.educationMaterial);
-  const { categories } = useSelector((state) => state.category);
+  const { categoryTreeData } = useSelector((state) => state.category);
 
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
@@ -32,13 +41,7 @@ const CreateEducationMaterial = ({ translate }) => {
   });
   const [materialFile, setMaterialFile] = useState(undefined);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState([]);
-  const treeColumns = [
-    { name: 'title', title: translate('common.category') }
-  ];
-  const tableColumnExtensions = [
-    { columnName: 'title', width: 'auto', wordWrapEnabled: true }
-  ];
+  const [expanded, setExpanded] = useState([]);
 
   const [titleError, setTitleError] = useState(false);
   const [fileError, setFileError] = useState(false);
@@ -56,7 +59,7 @@ const CreateEducationMaterial = ({ translate }) => {
 
   useEffect(() => {
     if (language) {
-      dispatch(getCategories({ type: CATEGORY_TYPES.MATERIAL, lang: language }));
+      dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.MATERIAL, lang: language }));
     }
   }, [language, dispatch]);
 
@@ -67,17 +70,14 @@ const CreateEducationMaterial = ({ translate }) => {
   }, [id, language, dispatch]);
 
   useEffect(() => {
-    if (categories.length) {
-      const selectedCatIndexes = [];
-      categories.forEach((cat, index) => {
-        if (selectedCategories.indexOf(cat.id) >= 0) {
-          selectedCatIndexes.push(index);
-        }
+    if (categoryTreeData.length) {
+      const rootCategoryStructure = {};
+      categoryTreeData.forEach(category => {
+        rootCategoryStructure[category.value] = [];
       });
-
-      setSelectedCategoryIndexes(selectedCatIndexes);
+      setSelectedCategories(rootCategoryStructure);
     }
-  }, [categories, selectedCategories]);
+  }, [categoryTreeData]);
 
   useEffect(() => {
     if (id && educationMaterial.id) {
@@ -85,9 +85,20 @@ const CreateEducationMaterial = ({ translate }) => {
         title: educationMaterial.title
       });
       setMaterialFile(educationMaterial.file);
-      setSelectedCategories(educationMaterial.categories);
+      if (categoryTreeData.length) {
+        const rootCategoryStructure = {};
+        categoryTreeData.forEach(category => {
+          const ids = [];
+          JSON.stringify(category, (key, value) => {
+            if (key === 'value') ids.push(value);
+            return value;
+          });
+          rootCategoryStructure[category.value] = _.intersectionWith(educationMaterial.categories, ids);
+        });
+        setSelectedCategories(rootCategoryStructure);
+      }
     }
-  }, [id, educationMaterial]);
+  }, [id, educationMaterial, categoryTreeData]);
 
   const handleLanguageChange = e => {
     const { value } = e.target;
@@ -121,10 +132,15 @@ const CreateEducationMaterial = ({ translate }) => {
       setFileError(false);
     }
 
+    let serializedSelectedCats = [];
+    Object.keys(selectedCategories).forEach(function (key) {
+      serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
+    });
+
     if (canSave) {
       setIsLoading(true);
       if (id) {
-        dispatch(updateEducationMaterial(id, { ...formFields, categories: selectedCategories, lang: language }))
+        dispatch(updateEducationMaterial(id, { ...formFields, categories: serializedSelectedCats, lang: language }))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP_EDUCATION);
@@ -132,7 +148,7 @@ const CreateEducationMaterial = ({ translate }) => {
             setIsLoading(false);
           });
       } else {
-        dispatch(createEducationMaterial({ ...formFields, categories: selectedCategories, lang: language }))
+        dispatch(createEducationMaterial({ ...formFields, categories: serializedSelectedCats, lang: language }))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP_EDUCATION);
@@ -151,9 +167,8 @@ const CreateEducationMaterial = ({ translate }) => {
     return translate('education_material.upload_file.placeholder');
   };
 
-  const onSelectChange = (rowIds) => {
-    const selectedCats = categories.filter((cat, index) => rowIds.indexOf(index) >= 0).map(cat => cat.id);
-    setSelectedCategories(selectedCats);
+  const handleSetSelectedCategories = (parent, checked) => {
+    setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
   };
 
   return (
@@ -164,7 +179,7 @@ const CreateEducationMaterial = ({ translate }) => {
 
       <Form>
         <Row>
-          <Col sm={{ span: 6, offset: 4 }} xl={{ span: 4, offset: 3 }}>
+          <Col sm={12} xl={11}>
             <Form.Group controlId="formLanguage">
               <Form.Label>{translate('common.show_language.version')}</Form.Label>
               <Form.Control as="select" value={id ? language : ''} onChange={handleLanguageChange} disabled={!id}>
@@ -225,22 +240,42 @@ const CreateEducationMaterial = ({ translate }) => {
               </Form.File>
             </Form.Group>
 
-            <div className="mb-3">
-              <CustomTree
-                columns={treeColumns}
-                treeColumnName="title"
-                tableColumnExtensions={tableColumnExtensions}
-                selection={selectedCategoryIndexes}
-                onSelectChange={onSelectChange}
-                data={categories.map(category => {
-                  return {
-                    id: category.id,
-                    title: category.title,
-                    parentId: category.parent || null
-                  };
-                })}
-              />
-            </div>
+            <Accordion className="mb-3" defaultActiveKey={1}>
+              {
+                categoryTreeData.map((category, index) => (
+                  <Card key={index}>
+                    <Accordion.Toggle as={Card.Header} eventKey={index + 1} className="d-flex align-items-center">
+                      {category.label}
+                      <div className="ml-auto">
+                        <span className="mr-3">
+                          {selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('category.selected')}
+                        </span>
+                        <ContextAwareToggle eventKey={index + 1} />
+                      </div>
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey={index + 1}>
+                      <Card.Body>
+                        <CheckboxTree
+                          nodes={category.children}
+                          checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
+                          expanded={expanded}
+                          onCheck={(checked) => handleSetSelectedCategories(category.value, checked)}
+                          onExpand={expanded => setExpanded(expanded)}
+                          icons={{
+                            check: <FaRegCheckSquare size={40} color="black" />,
+                            uncheck: <BsSquare size={40} color="black" />,
+                            halfCheck: <BsDashSquare size={40} color="black" />,
+                            expandClose: <BsCaretRightFill size={40} color="black" />,
+                            expandOpen: <BsCaretDownFill size={40} color="black" />
+                          }}
+                          showNodeIcon={false}
+                        />
+                      </Card.Body>
+                    </Accordion.Collapse>
+                  </Card>
+                ))
+              }
+            </Accordion>
 
             <Form.Group>
               <Button

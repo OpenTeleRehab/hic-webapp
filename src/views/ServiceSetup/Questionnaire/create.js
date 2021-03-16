@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import { Button, Col, Form, Row, Accordion, Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import * as ROUTES from '../../../variables/routes';
@@ -11,9 +11,18 @@ import {
   updateQuestionnaire
 } from '../../../store/questionnaire/actions';
 import Question from './Question/question';
-import CustomTree from 'components/Tree';
-import { getCategories } from 'store/category/actions';
+import { getCategoryTreeData } from 'store/category/actions';
 import { CATEGORY_TYPES } from 'variables/category';
+import _ from 'lodash';
+import CheckboxTree from 'react-checkbox-tree';
+import {
+  BsCaretDownFill,
+  BsCaretRightFill,
+  BsSquare,
+  BsDashSquare
+} from 'react-icons/bs';
+import { FaRegCheckSquare } from 'react-icons/fa';
+import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 
 const CreateQuestionnaire = ({ translate }) => {
   const dispatch = useDispatch();
@@ -22,20 +31,14 @@ const CreateQuestionnaire = ({ translate }) => {
 
   const { languages } = useSelector(state => state.language);
   const { questionnaire, filters } = useSelector(state => state.questionnaire);
-  const { categories } = useSelector((state) => state.category);
+  const { categoryTreeData } = useSelector((state) => state.category);
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
     title: '',
     description: ''
   });
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState([]);
-  const treeColumns = [
-    { name: 'title', title: translate('common.category') }
-  ];
-  const tableColumnExtensions = [
-    { columnName: 'title', width: 'auto', wordWrapEnabled: true }
-  ];
+  const [expanded, setExpanded] = useState([]);
 
   const [titleError, setTitleError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +58,7 @@ const CreateQuestionnaire = ({ translate }) => {
 
   useEffect(() => {
     if (language) {
-      dispatch(getCategories({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: language }));
+      dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: language }));
     }
   }, [language, dispatch]);
 
@@ -66,17 +69,14 @@ const CreateQuestionnaire = ({ translate }) => {
   }, [id, language, dispatch]);
 
   useEffect(() => {
-    if (categories.length) {
-      const selectedCatIndexes = [];
-      categories.forEach((cat, index) => {
-        if (selectedCategories.indexOf(cat.id) >= 0) {
-          selectedCatIndexes.push(index);
-        }
+    if (categoryTreeData.length) {
+      const rootCategoryStructure = {};
+      categoryTreeData.forEach(category => {
+        rootCategoryStructure[category.value] = [];
       });
-
-      setSelectedCategoryIndexes(selectedCatIndexes);
+      setSelectedCategories(rootCategoryStructure);
     }
-  }, [categories, selectedCategories]);
+  }, [categoryTreeData]);
 
   useEffect(() => {
     if (id && questionnaire.id) {
@@ -85,9 +85,20 @@ const CreateQuestionnaire = ({ translate }) => {
         description: questionnaire.description
       });
       setQuestions(questionnaire.questions);
-      setSelectedCategories(questionnaire.categories);
+      if (categoryTreeData.length) {
+        const rootCategoryStructure = {};
+        categoryTreeData.forEach(category => {
+          const ids = [];
+          JSON.stringify(category, (key, value) => {
+            if (key === 'value') ids.push(value);
+            return value;
+          });
+          rootCategoryStructure[category.value] = _.intersectionWith(questionnaire.categories, ids);
+        });
+        setSelectedCategories(rootCategoryStructure);
+      }
     }
-  }, [id, questionnaire]);
+  }, [id, questionnaire, categoryTreeData]);
 
   const handleLanguageChange = e => {
     const { value } = e.target;
@@ -134,10 +145,15 @@ const CreateQuestionnaire = ({ translate }) => {
     setQuestionTitleError(errorQuestionTitle);
     setAnswerFieldError(errorAnswerField);
 
+    let serializedSelectedCats = [];
+    Object.keys(selectedCategories).forEach(function (key) {
+      serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
+    });
+
     if (canSave) {
       setIsLoading(true);
       if (id) {
-        dispatch(updateQuestionnaire(id, { ...formFields, categories: selectedCategories, lang: language, questions }))
+        dispatch(updateQuestionnaire(id, { ...formFields, categories: serializedSelectedCats, lang: language, questions }))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP_QUESTIONNAIRE);
@@ -145,7 +161,7 @@ const CreateQuestionnaire = ({ translate }) => {
             setIsLoading(false);
           });
       } else {
-        dispatch(createQuestionnaire({ ...formFields, categories: selectedCategories, lang: language, questions }))
+        dispatch(createQuestionnaire({ ...formFields, categories: serializedSelectedCats, lang: language, questions }))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP_QUESTIONNAIRE);
@@ -156,9 +172,8 @@ const CreateQuestionnaire = ({ translate }) => {
     }
   };
 
-  const onSelectChange = (rowIds) => {
-    const selectedCats = categories.filter((cat, index) => rowIds.indexOf(index) >= 0).map(cat => cat.id);
-    setSelectedCategories(selectedCats);
+  const handleSetSelectedCategories = (parent, checked) => {
+    setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
   };
 
   return (
@@ -168,7 +183,7 @@ const CreateQuestionnaire = ({ translate }) => {
       </div>
       <Form>
         <Row>
-          <Col sm={5} xl={4}>
+          <Col sm={6} xl={6}>
             <Form.Group controlId="formTitle">
               <Form.Label>{translate('questionnaire.title')}</Form.Label>
               <span className="text-dark ml-1">*</span>
@@ -185,7 +200,7 @@ const CreateQuestionnaire = ({ translate }) => {
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
-          <Col sm={4} xl={3}>
+          <Col sm={6} xl={5}>
             <Form.Group controlId="formLanguage">
               <Form.Label>{translate('common.show_language.version')}</Form.Label>
               <Form.Control as="select" value={language} onChange={handleLanguageChange} disabled={!id}>
@@ -199,7 +214,7 @@ const CreateQuestionnaire = ({ translate }) => {
           </Col>
         </Row>
         <Row>
-          <Col sm={9} xl={7}>
+          <Col sm={12} xl={11}>
             <Form.Group controlId={'formDescription'}>
               <Form.Label>{translate('questionnaire.description')}</Form.Label>
               <Form.Control
@@ -214,28 +229,47 @@ const CreateQuestionnaire = ({ translate }) => {
           </Col>
         </Row>
         <Row>
-          <Col sm={9} xl={7}>
-            <div className="mb-3">
-              <CustomTree
-                columns={treeColumns}
-                treeColumnName="title"
-                tableColumnExtensions={tableColumnExtensions}
-                selection={selectedCategoryIndexes}
-                onSelectChange={onSelectChange}
-                data={categories.map(category => {
-                  return {
-                    id: category.id,
-                    title: category.title,
-                    parentId: category.parent || null
-                  };
-                })}
-              />
-            </div>
-
+          <Col sm={12} xl={11}>
+            <Accordion className="mb-3" defaultActiveKey={1}>
+              {
+                categoryTreeData.map((category, index) => (
+                  <Card key={index}>
+                    <Accordion.Toggle as={Card.Header} eventKey={index + 1} className="d-flex align-items-center">
+                      {category.label}
+                      <div className="ml-auto">
+                        <span className="mr-3">
+                          {selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('category.selected')}
+                        </span>
+                        <ContextAwareToggle eventKey={index + 1} />
+                      </div>
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey={index + 1}>
+                      <Card.Body>
+                        <CheckboxTree
+                          nodes={category.children}
+                          checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
+                          expanded={expanded}
+                          onCheck={(checked) => handleSetSelectedCategories(category.value, checked)}
+                          onExpand={expanded => setExpanded(expanded)}
+                          icons={{
+                            check: <FaRegCheckSquare size={40} color="black" />,
+                            uncheck: <BsSquare size={40} color="black" />,
+                            halfCheck: <BsDashSquare size={40} color="black" />,
+                            expandClose: <BsCaretRightFill size={40} color="black" />,
+                            expandOpen: <BsCaretDownFill size={40} color="black" />
+                          }}
+                          showNodeIcon={false}
+                        />
+                      </Card.Body>
+                    </Accordion.Collapse>
+                  </Card>
+                ))
+              }
+            </Accordion>
           </Col>
         </Row>
         <Row>
-          <Col sm={10} xl={8}>
+          <Col sm={12} xl={11}>
             <Question
               questions={questions}
               setQuestions={setQuestions}

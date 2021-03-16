@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import { Row, Col, Card, Form } from 'react-bootstrap';
+import { Row, Col, Card, Form, Accordion } from 'react-bootstrap';
 import Dialog from 'components/Dialog';
 import * as ROUTES from 'variables/routes';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,9 +12,18 @@ import { EditAction, DeleteAction, ViewAction } from 'components/ActionIcons';
 import SearchInput from 'components/Form/SearchInput';
 import { getQuestionnaires, deleteQuestionnaire } from 'store/questionnaire/actions';
 import ViewQuestionnaire from './viewQuestionnaire';
-import { getCategories } from 'store/category/actions';
-import CustomTree from 'components/Tree';
+import { getCategoryTreeData } from 'store/category/actions';
 import { CATEGORY_TYPES } from 'variables/category';
+import CheckboxTree from 'react-checkbox-tree';
+import {
+  BsCaretDownFill,
+  BsCaretRightFill,
+  BsSquare,
+  BsDashSquare
+} from 'react-icons/bs';
+import { FaRegCheckSquare } from 'react-icons/fa';
+import _ from 'lodash';
+import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 
 let timer = null;
 const Questionnaire = ({ translate }) => {
@@ -28,7 +37,7 @@ const Questionnaire = ({ translate }) => {
   const [language, setLanguage] = useState('');
   const { questionnaires, filters } = useSelector(state => state.questionnaire);
   const { profile } = useSelector((state) => state.auth);
-  const { categories } = useSelector((state) => state.category);
+  const { categoryTreeData } = useSelector((state) => state.category);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [id, setId] = useState('');
@@ -36,13 +45,7 @@ const Questionnaire = ({ translate }) => {
   const [questionnaire, setQuestionnaire] = useState([]);
   const [viewQuestionnaire, setViewQuestionnaire] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState([]);
-  const treeColumns = [
-    { name: 'title', title: translate('common.category') }
-  ];
-  const tableColumnExtensions = [
-    { columnName: 'title', width: 'auto', wordWrapEnabled: true }
-  ];
+  const [expanded, setExpanded] = useState([]);
 
   useEffect(() => {
     if (filters && filters.lang) {
@@ -54,30 +57,32 @@ const Questionnaire = ({ translate }) => {
 
   useEffect(() => {
     if (language) {
-      dispatch(getCategories({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: language }));
+      dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: language }));
     }
   }, [language, dispatch]);
 
   useEffect(() => {
-    if (categories.length) {
-      const selectedCatIndexes = [];
-      categories.forEach((cat, index) => {
-        if (selectedCategories.indexOf(cat.id) >= 0) {
-          selectedCatIndexes.push(index);
-        }
+    if (categoryTreeData.length) {
+      const rootCategoryStructure = {};
+      categoryTreeData.forEach(category => {
+        rootCategoryStructure[category.value] = [];
       });
-
-      setSelectedCategoryIndexes(selectedCatIndexes);
+      setSelectedCategories(rootCategoryStructure);
     }
-  }, [categories, selectedCategories]);
+  }, [categoryTreeData]);
 
   useEffect(() => {
+    let serializedSelectedCats = [];
+    Object.keys(selectedCategories).forEach(function (key) {
+      serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
+    });
+
     clearTimeout(timer);
     timer = setTimeout(() => {
       dispatch(getQuestionnaires({
         lang: language,
         filter: formFields,
-        categories: selectedCategories,
+        categories: serializedSelectedCats,
         page_size: pageSize,
         page: currentPage
       }));
@@ -135,9 +140,8 @@ const Questionnaire = ({ translate }) => {
     setViewQuestionnaire(false);
   };
 
-  const onSelectChange = (rowIds) => {
-    const selectedCats = categories.filter((cat, index) => rowIds.indexOf(index) >= 0).map(cat => cat.id);
-    setSelectedCategories(selectedCats);
+  const handleSetSelectedCategories = (parent, checked) => {
+    setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
   };
 
   return (
@@ -165,20 +169,42 @@ const Questionnaire = ({ translate }) => {
                   ))}
                 </Form.Control>
               </Form.Group>
-              <CustomTree
-                columns={treeColumns}
-                treeColumnName="title"
-                tableColumnExtensions={tableColumnExtensions}
-                selection={selectedCategoryIndexes}
-                onSelectChange={onSelectChange}
-                data={categories.map(category => {
-                  return {
-                    id: category.id,
-                    title: category.title,
-                    parentId: category.parent || null
-                  };
-                })}
-              />
+              {
+                categoryTreeData.map(category => (
+                  <Accordion key={category.value} className="mb-3" defaultActiveKey={category.value}>
+                    <Card>
+                      <Accordion.Toggle as={Card.Header} eventKey={category.value} className="d-flex align-items-center">
+                        {category.label}
+                        <div className="ml-auto text-nowrap">
+                          <span className="mr-3">
+                            {selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('category.selected')}
+                          </span>
+                          <ContextAwareToggle eventKey={category.value} />
+                        </div>
+                      </Accordion.Toggle>
+                      <Accordion.Collapse eventKey={category.value}>
+                        <Card.Body>
+                          <CheckboxTree
+                            nodes={category.children}
+                            checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
+                            expanded={expanded}
+                            onCheck={checked => handleSetSelectedCategories(category.value, checked)}
+                            onExpand={expanded => setExpanded(expanded)}
+                            icons={{
+                              check: <FaRegCheckSquare size={40} color="black" />,
+                              uncheck: <BsSquare size={40} color="black" />,
+                              halfCheck: <BsDashSquare size={40} color="black" />,
+                              expandClose: <BsCaretRightFill size={40} color="black" />,
+                              expandOpen: <BsCaretDownFill size={40} color="black" />
+                            }}
+                            showNodeIcon={false}
+                          />
+                        </Card.Body>
+                      </Accordion.Collapse>
+                    </Card>
+                  </Accordion>
+                ))
+              }
 
             </Card.Body>
           </Card>

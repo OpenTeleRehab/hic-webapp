@@ -17,6 +17,17 @@ export const getCategories = payload => async dispatch => {
   }
 };
 
+export const getCategoryTreeData = payload => async dispatch => {
+  dispatch(mutation.getCategoryTreeDataRequest());
+  const data = await Category.getCategoryTreeData(payload);
+  if (data.success) {
+    dispatch(mutation.getCategoryTreeDataSuccess(data.data));
+  } else {
+    dispatch(mutation.getCategoryTreeDataFail());
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
+  }
+};
+
 export const getCategory = (id, language) => async dispatch => {
   dispatch(mutation.getCategoryRequest());
   dispatch(showSpinner(true));
