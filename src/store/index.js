@@ -24,7 +24,7 @@ import { questionnaire } from 'store/questionnaire/reducers';
 import { category } from 'store/category/reducers';
 import { staticPage } from 'store/staticPage/reducers';
 import { dashboard } from 'store/dashboard/reducers';
-
+import { systemLimit } from 'store/systemLimit/reducers';
 export const rootReducer = {
   localize: localizeReducer,
   user,
@@ -45,7 +45,8 @@ export const rootReducer = {
   questionnaire,
   category,
   staticPage,
-  dashboard
+  dashboard,
+  systemLimit
 };
 
 const devTool =

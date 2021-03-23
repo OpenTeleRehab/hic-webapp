@@ -11,6 +11,12 @@ const settings = {
       { text: 'Patient app', value: 'patient_app' }
     ]
   },
+  contentTypes: {
+    options: [
+      { text: 'Activities', value: 'activities' },
+      { text: 'Preset Treatment', value: 'preset_treatment' }
+    ]
+  },
   educationMaterial: {
     maxFileSize: 25 // MB
   },
