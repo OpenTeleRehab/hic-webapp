@@ -89,11 +89,13 @@ const Questionnaire = ({ translate }) => {
 
   const handleClearSearch = () => {
     setFormFields({ ...formFields, search_value: '' });
+    setCurrentPage(1);
   };
 
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
+    setCurrentPage(1);
   };
 
   const handleLanguageChange = e => {
@@ -140,6 +142,7 @@ const Questionnaire = ({ translate }) => {
 
   const handleSetSelectedCategories = (parent, checked) => {
     setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
+    setCurrentPage(1);
   };
 
   return (
