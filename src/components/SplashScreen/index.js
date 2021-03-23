@@ -7,7 +7,7 @@ const SplashScreen = () => {
       <img
         src={'/images/logo-horizontal.svg'}
         alt='HI Logo'
-        width={100}
+        width={200}
       />
       <Spinner className="mt-3" animation="border" variant="primary" />
     </div>
