@@ -53,6 +53,11 @@ const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, c
     setShowFilter(!showFilter);
   };
 
+  const handlePageSizeChange = value => {
+    setCurrentPage(0);
+    setPageSize(value);
+  };
+
   return (
     <Grid
       rows={rows}
@@ -63,7 +68,7 @@ const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, c
         currentPage={currentPage}
         onCurrentPageChange={setCurrentPage}
         pageSize={pageSize}
-        onPageSizeChange={setPageSize}
+        onPageSizeChange={handlePageSizeChange}
       />
       <CustomPaging
         totalCount={totalCount}

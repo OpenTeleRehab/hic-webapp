@@ -38,8 +38,9 @@ const Questionnaire = ({ translate }) => {
   const { questionnaires, filters } = useSelector(state => state.questionnaire);
   const { profile } = useSelector((state) => state.auth);
   const { categoryTreeData } = useSelector((state) => state.category);
-  const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const [id, setId] = useState('');
   const [show, setShow] = useState(false);
   const [questionnaire, setQuestionnaire] = useState([]);
@@ -82,8 +83,12 @@ const Questionnaire = ({ translate }) => {
         filter: formFields,
         categories: serializedSelectedCats,
         page_size: pageSize,
-        page: currentPage
-      }));
+        page: currentPage + 1
+      })).then(result => {
+        if (result) {
+          setTotalCount(result.total_count);
+        }
+      });
     }, 500);
   }, [language, formFields, selectedCategories, currentPage, pageSize, dispatch]);
 
@@ -216,6 +221,7 @@ const Questionnaire = ({ translate }) => {
             setPageSize={setPageSize}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
+            totalCount={totalCount}
             columns={columns}
             hideSearchFilter={true}
             rows={questionnaires.map(questionnaire => {
