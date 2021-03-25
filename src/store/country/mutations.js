@@ -35,6 +35,18 @@ const updateCountryFail = () => ({
   type: 'UPDATE_COUNTRY_FAIL'
 });
 
+const deleteCountryRequest = () => ({
+  type: 'DELETE_COUNTRY_REQUEST'
+});
+
+const deleteCountrySuccess = () => ({
+  type: 'DELETE_COUNTRY_SUCCESS'
+});
+
+const deleteCountryFail = () => ({
+  type: 'DELETE_COUNTRY_FAIL'
+});
+
 export const mutation = {
   getCountriesFail,
   getCountriesRequest,
@@ -44,5 +56,8 @@ export const mutation = {
   createCountryFail,
   updateCountryRequest,
   updateCountrySuccess,
-  updateCountryFail
+  updateCountryFail,
+  deleteCountryRequest,
+  deleteCountrySuccess,
+  deleteCountryFail
 };

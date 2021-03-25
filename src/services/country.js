@@ -36,8 +36,21 @@ const updateCountry = (id, payload) => {
     });
 };
 
+const deleteCountry = id => {
+  return axios.delete(`/country/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Country = {
   getCountries,
   createCountry,
-  updateCountry
+  updateCountry,
+  deleteCountry
 };

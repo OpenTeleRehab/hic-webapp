@@ -46,3 +46,19 @@ export const updateCountry = (id, payload) => async (dispatch) => {
     return false;
   }
 };
+
+export const deleteCountry = id => async (dispatch, getState) => {
+  dispatch(mutation.deleteCountryRequest());
+  const data = await Country.deleteCountry(id);
+  if (data.success) {
+    dispatch(mutation.deleteCountrySuccess());
+    const filters = getState().country.filters;
+    dispatch(getCountries(filters));
+    dispatch(showSuccessNotification('toast_title.delete_country', data.message));
+    return true;
+  } else {
+    dispatch(mutation.deleteCountryFail());
+    dispatch(showErrorNotification('toast_title.delete_country', data.message));
+    return false;
+  }
+};
