@@ -63,7 +63,8 @@ const ClinicAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) => 
 
   const columnExtensions = [
     { columnName: 'last_name', wordWrapEnabled: true },
-    { columnName: 'first_name', wordWrapEnabled: true }
+    { columnName: 'first_name', wordWrapEnabled: true },
+    { columnName: 'last_login', wordWrapEnabled: true, width: 250 }
   ];
 
   return (
@@ -101,7 +102,7 @@ const ClinicAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) => 
             country: getCountryName(user.country_id, countries),
             clinic: getClinicName(user.clinic_id, clinics),
             status: <EnabledStatus enabled={!!user.enabled} />,
-            last_login: moment(user.last_login).format(settings.date_format),
+            last_login: user.last_login ? moment(user.last_login).format(settings.date_format + ' hh:mm A') : '',
             action
           };
         })}

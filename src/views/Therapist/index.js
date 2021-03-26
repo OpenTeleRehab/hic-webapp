@@ -52,7 +52,8 @@ const Therapist = ({ translate }) => {
     { columnName: 'last_name', wordWrapEnabled: true },
     { columnName: 'first_name', wordWrapEnabled: true },
     { columnName: 'limit_patient', wordWrapEnabled: true },
-    { columnName: 'assigned_patients', wordWrapEnabled: true }
+    { columnName: 'assigned_patients', wordWrapEnabled: true },
+    { columnName: 'last_login', wordWrapEnabled: true, width: 250 }
   ];
 
   const [pageSize, setPageSize] = useState(10);
@@ -184,7 +185,7 @@ const Therapist = ({ translate }) => {
             country: getCountryName(user.country_id, countries),
             clinic: getClinicName(user.clinic_id, clinics),
             status: <EnabledStatus enabled={user.enabled} />,
-            last_login: moment(user.last_login).format(settings.date_format),
+            last_login: user.last_login ? moment(user.last_login).format(settings.date_format + ' hh:mm A') : '',
             action
           };
         })}
