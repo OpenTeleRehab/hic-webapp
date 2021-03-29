@@ -95,7 +95,7 @@ const GlobalAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) => 
             first_name: user.first_name,
             email: user.email,
             status: <EnabledStatus enabled={!!user.enabled} />,
-            last_login: user.last_login ? moment(user.last_login).format(settings.date_format + ' hh:mm A') : '',
+            last_login: user.last_login ? moment(user.last_login).format(settings.date_format + ' HH:mm:ss') : '',
             action
           };
         })}
