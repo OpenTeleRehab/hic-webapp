@@ -102,7 +102,7 @@ const ClinicAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) => 
             country: getCountryName(user.country_id, countries),
             clinic: getClinicName(user.clinic_id, clinics),
             status: <EnabledStatus enabled={!!user.enabled} />,
-            last_login: user.last_login ? moment(user.last_login).format(settings.date_format + ' HH:mm:ss') : '',
+            last_login: user.last_login ? moment.utc(user.last_login).local().format(settings.datetime_format) : '',
             action
           };
         })}

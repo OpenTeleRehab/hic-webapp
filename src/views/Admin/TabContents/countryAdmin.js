@@ -100,7 +100,7 @@ const CountryAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) =>
             email: user.email,
             country: getCountryName(user.country_id, countries),
             status: <EnabledStatus enabled={!!user.enabled} />,
-            last_login: user.last_login ? moment(user.last_login).format(settings.date_format + ' HH:mm:ss') : '',
+            last_login: user.last_login ? moment.utc(user.last_login).local().format(settings.datetime_format) : '',
             action
           };
         })}
