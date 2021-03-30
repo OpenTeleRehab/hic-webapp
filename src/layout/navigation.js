@@ -29,7 +29,7 @@ const navItems = [
     label: 'therapist',
     to: ROUTES.THERAPIST,
     exact: true,
-    roles: [USER_ROLES.MANAGE_THERAPIST]
+    roles: [USER_ROLES.MANAGE_THERAPIST, USER_ROLES.MANAGE_GLOBAL_ADMIN]
   },
   {
     label: 'service_setup',

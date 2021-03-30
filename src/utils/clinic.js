@@ -10,3 +10,8 @@ export const getClinicIdentity = (id, clinics) => {
 
   return clinic ? clinic.identity : '';
 };
+export const getClinicRegion = (id, clinics) => {
+  const clinic = _.findLast(clinics, { id: parseInt(id, 10) });
+
+  return clinic ? clinic.region : '';
+};

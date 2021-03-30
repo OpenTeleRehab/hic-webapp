@@ -10,17 +10,24 @@ import { DeleteAction, EditAction, EnabledAction, DisabledAction } from 'compone
 import CreateTherapist from 'views/Therapist/create';
 import { getTherapists, deleteTherapistUser, getPatients, updateTherapistStatus } from 'store/therapist/actions';
 import { getCountryName } from 'utils/country';
-import { getClinicName } from 'utils/clinic';
+import { getClinicName, getClinicRegion } from 'utils/clinic';
 import * as moment from 'moment';
 import settings from 'settings';
 import Dialog from 'components/Dialog';
 
-import { getPatient } from 'utils/patient';
+import {
+  getPatient,
+  getTotalOnGoingTreatment,
+  getTotalPatient
+} from 'utils/patient';
+import { USER_ROLES } from '../../variables/user';
+import { useKeycloak } from '@react-keycloak/web';
 
 let timer = null;
 
 const Therapist = ({ translate }) => {
   const dispatch = useDispatch();
+  const { keycloak } = useKeycloak();
   const therapists = useSelector(state => state.therapist.therapists);
   const patients = useSelector(state => state.patient.patients);
   const countries = useSelector(state => state.country.countries);
@@ -29,6 +36,7 @@ const Therapist = ({ translate }) => {
 
   const [show, setShow] = useState(false);
   const [editId, setEditId] = useState('');
+  const [isGlobalAdmin, setIsGlobalAdmin] = useState(false);
 
   const [formFields, setFormFields] = useState({
     enabled: 0
@@ -39,8 +47,8 @@ const Therapist = ({ translate }) => {
     { name: 'last_name', title: translate('common.last_name') },
     { name: 'first_name', title: translate('common.first_name') },
     { name: 'email', title: translate('common.email') },
-    { name: 'country', title: translate('common.country') },
-    { name: 'clinic', title: translate('common.clinic') },
+    { name: 'therapist_country', title: translate('common.country') },
+    { name: 'therapist_clinic', title: translate('common.clinic') },
     { name: 'limit_patient', title: translate('common.on_going.treatment_let') },
     { name: 'assigned_patients', title: translate('common.assign_patient') },
     { name: 'status', title: translate('common.status') },
@@ -48,12 +56,23 @@ const Therapist = ({ translate }) => {
     { name: 'action', title: translate('common.action') }
   ];
 
+  const globalAdminTherapistColumns = [
+    { name: 'id', title: translate('common.id') },
+    { name: 'therapist_country', title: translate('common.country') },
+    { name: 'region', title: translate('common.region') },
+    { name: 'therapist_clinic', title: translate('common.clinic') },
+    { name: 'total_patient', title: translate('common.total_patient') },
+    { name: 'on_going_treatment', title: translate('common.ongoing_treatment_plan') }
+  ];
+
   const columnExtensions = [
     { columnName: 'last_name', wordWrapEnabled: true },
     { columnName: 'first_name', wordWrapEnabled: true },
     { columnName: 'limit_patient', wordWrapEnabled: true },
     { columnName: 'assigned_patients', wordWrapEnabled: true },
-    { columnName: 'last_login', wordWrapEnabled: true, width: 250 }
+    { columnName: 'last_login', wordWrapEnabled: true, width: 250 },
+    { columnName: 'total_patient', wordWrapEnabled: true },
+    { columnName: 'on_going_treatment', wordWrapEnabled: true }
   ];
 
   const [pageSize, setPageSize] = useState(10);
@@ -73,7 +92,7 @@ const Therapist = ({ translate }) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       dispatch(getTherapists({
-        clinic_id: profile.clinic_id,
+        clinic_id: profile ? profile.clinic_id : null,
         filters,
         search_value: searchValue,
         page_size: pageSize,
@@ -84,7 +103,13 @@ const Therapist = ({ translate }) => {
         }
       });
     }, 500);
-  }, [currentPage, pageSize, searchValue, filters, dispatch, profile.clinic_id]);
+  }, [currentPage, pageSize, searchValue, filters, dispatch, profile]);
+
+  useEffect(() => {
+    if (keycloak.hasRealmRole(USER_ROLES.MANAGE_GLOBAL_ADMIN)) {
+      setIsGlobalAdmin(true);
+    }
+  }, [keycloak]);
 
   const handleShow = () => setShow(true);
 
@@ -136,22 +161,21 @@ const Therapist = ({ translate }) => {
   };
 
   useEffect(() => {
-    dispatch(getPatients({
-      page_size: pageSize,
-      page: currentPage + 1
-    }));
-  }, [currentPage, pageSize, dispatch]);
+    dispatch(getPatients());
+  }, [dispatch]);
 
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1>{translate('therapist.management')}</h1>
-        <div className="btn-toolbar mb-2 mb-md-0">
-          <Button variant="primary" onClick={handleShow}>
-            <BsPlus size={20} className="mr-1" />
-            {translate('therapist.new')}
-          </Button>
-        </div>
+        {!isGlobalAdmin &&
+          <div className="btn-toolbar mb-2 mb-md-0">
+            <Button variant="primary" onClick={handleShow}>
+              <BsPlus size={20} className="mr-1" />
+              {translate('therapist.new')}
+            </Button>
+          </div>
+        }
       </div>
       {show && <CreateTherapist show={show} handleClose={handleClose} editId={editId} />}
       <CustomTable
@@ -163,7 +187,7 @@ const Therapist = ({ translate }) => {
         setSearchValue={setSearchValue}
         setFilters={setFilters}
         filters={filters}
-        columns={columns}
+        columns={isGlobalAdmin ? globalAdminTherapistColumns : columns}
         columnExtensions={columnExtensions}
         rows={therapists.map(user => {
           const action = (
@@ -178,12 +202,15 @@ const Therapist = ({ translate }) => {
           );
 
           return {
-            id: user.id,
+            id: user.identity,
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,
-            country: getCountryName(user.country_id, countries),
-            clinic: getClinicName(user.clinic_id, clinics),
+            therapist_country: getCountryName(user.country_id, countries),
+            region: getClinicRegion(user.clinic_id, clinics),
+            therapist_clinic: getClinicName(user.clinic_id, clinics),
+            total_patient: getTotalPatient(user.id, patients),
+            on_going_treatment: getTotalOnGoingTreatment(user.id, patients),
             status: <EnabledStatus enabled={user.enabled} />,
             last_login: user.last_login ? moment.utc(user.last_login).local().format(settings.datetime_format) : '',
             action
