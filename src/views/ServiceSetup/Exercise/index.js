@@ -223,7 +223,7 @@ const Exercise = ({ translate }) => {
                 { exercises.map(exercise => (
                   <Col key={exercise.id} md={6} lg={3}>
                     <div className="position-absolute delete-btn">
-                      <DeleteAction disabled={!exercise.can_delete} onClick={() => handleDelete(exercise.id)} />
+                      <DeleteAction disabled={exercise.is_used} onClick={() => handleDelete(exercise.id)} />
                     </div>
                     <div className="position-absolute edit-btn">
                       <EditAction onClick={() => handleEdit(exercise.id)} />
@@ -250,7 +250,7 @@ const Exercise = ({ translate }) => {
                           )
                         }
                       </div>
-                      <Card.Body>
+                      <Card.Body className="d-flex flex-column justify-content-between">
                         <Card.Title>
                           {
                             exercise.title.length <= 50
@@ -264,6 +264,11 @@ const Exercise = ({ translate }) => {
                               )
                           }
                         </Card.Title>
+                        {exercise.sets > 0 && (
+                          <Card.Text>
+                            {translate('exercise.number_of_sets_and_reps', { sets: exercise.sets, reps: exercise.reps })}
+                          </Card.Text>
+                        )}
                       </Card.Body>
                     </Card>
                   </Col>
