@@ -1,5 +1,6 @@
 const settings = {
   date_format: 'DD/MM/YYYY',
+  datetime_format: 'DD/MM/YYYY HH:mm:ss',
   textMaxLength: 255,
   phoneCodeMaxLength: 3,
   isoCodeLength: 2,
