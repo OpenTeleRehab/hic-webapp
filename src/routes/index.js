@@ -47,7 +47,7 @@ const routes = [
     component: Therapist,
     exact: true,
     type: PRIVATE,
-    roles: [USER_ROLES.MANAGE_THERAPIST]
+    roles: [USER_ROLES.MANAGE_THERAPIST, USER_ROLES.MANAGE_GLOBAL_ADMIN]
   },
   {
     title: 'service_setup',
