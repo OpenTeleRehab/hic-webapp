@@ -13,6 +13,7 @@ export const QUESTIONNAIRE_CREATE = SERVICE_SETUP + '/questionnaire/create';
 export const QUESTIONNAIRE_EDIT = SERVICE_SETUP + '/questionnaire/edit/:id';
 
 export const THERAPIST = '/therapist';
+export const PATIENT = '/patient';
 export const CATEGORY = '/category';
 export const CATEGORY_EDUCATION = CATEGORY + '#education';
 export const CATEGORY_QUESTIONNAIRE = CATEGORY + '#questionnaire';
