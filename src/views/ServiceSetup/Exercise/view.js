@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { withLocalize } from 'react-localize-redux';
+import { getTranslate } from 'react-localize-redux';
 import { Col, Form, Row } from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
 import { useSelector } from 'react-redux';
 import Dialog from 'components/Dialog';
-import { getTranslate } from 'react-localize-redux/lib/index';
 
 const ViewExercise = ({ showView, handleViewClose, id }) => {
-  const { exercises } = useSelector(state => state.exercise);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const { exercises } = useSelector(state => state.exercise);
+  const [exercise, seExercise] = useState({});
   const [title, setTitle] = useState('');
   const [mediaUploads, setMediaUploads] = useState([]);
   const [additionalFields, setAdditionalFields] = useState([]);
@@ -23,6 +23,7 @@ const ViewExercise = ({ showView, handleViewClose, id }) => {
   useEffect(() => {
     if (id && exercises.length) {
       const data = exercises.find(exercise => exercise.id === id);
+      seExercise(data);
       setTitle(data.title);
       setMediaUploads(data.files);
       setAdditionalFields(data.additional_fields);
@@ -64,6 +65,13 @@ const ViewExercise = ({ showView, handleViewClose, id }) => {
                 </Carousel.Item>
               ))}
             </Carousel>
+
+            {exercise.sets > 0 && (
+              <p className="mt-2">
+                {translate('exercise.number_of_sets_and_reps', { sets: exercise.sets, reps: exercise.reps })}
+              </p>
+            )}
+
             <div className="mt-4">
               { additionalFields && additionalFields.map((additionalField, index) => (
                 <div key={index}>
@@ -85,4 +93,4 @@ ViewExercise.propTypes = {
   id: PropTypes.string
 };
 
-export default withLocalize(ViewExercise);
+export default ViewExercise;

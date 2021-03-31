@@ -50,11 +50,16 @@ const CreateExercise = ({ translate }) => {
   const [formFields, setFormFields] = useState({
     title: '',
     include_feedback: true,
-    get_pain_level: ''
+    get_pain_level: '',
+    show_sets_reps: false,
+    sets: '',
+    reps: ''
   });
   const [inputFields, setInputFields] = useState([]);
 
   const [titleError, setTitleError] = useState(false);
+  const [setsError, setSetsError] = useState(false);
+  const [repsError, setRepsError] = useState(false);
   const [mediaUploads, setMediaUploads] = useState([]);
   const [mediaUploadsError, setMediaUploadsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -95,10 +100,14 @@ const CreateExercise = ({ translate }) => {
 
   useEffect(() => {
     if (id && exercise.id) {
+      const showSetsReps = exercise.sets > 0;
       setFormFields({
         title: exercise.title,
-        include_feedback: exercise.include_feedback,
-        get_pain_level: exercise.get_pain_level
+        include_feedback: showSetsReps && exercise.include_feedback,
+        get_pain_level: exercise.get_pain_level,
+        show_sets_reps: showSetsReps,
+        sets: exercise.sets,
+        reps: exercise.reps
       });
       setMediaUploads(exercise.files);
       setInputFields(exercise.additional_fields || []);
@@ -185,6 +194,25 @@ const CreateExercise = ({ translate }) => {
     setInputFieldError(errorInputFields);
     setInputValueError(errorValueFields);
 
+    if (formFields.show_sets_reps) {
+      if (formFields.sets > 0) {
+        setSetsError(false);
+      } else {
+        canSave = false;
+        setSetsError(true);
+      }
+
+      if (formFields.reps > 0) {
+        setRepsError(false);
+      } else {
+        canSave = false;
+        setRepsError(true);
+      }
+    } else {
+      setSetsError(false);
+      setRepsError(false);
+    }
+
     let serializedSelectedCats = [];
     Object.keys(selectedCategories).forEach(function (key) {
       serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
@@ -192,8 +220,17 @@ const CreateExercise = ({ translate }) => {
 
     if (canSave) {
       setIsLoading(true);
+      const payload = {
+        ...formFields,
+        sets: formFields.show_sets_reps ? formFields.sets : 0,
+        reps: formFields.show_sets_reps ? formFields.reps : 0,
+        include_feedback: formFields.show_sets_reps && formFields.include_feedback,
+        additional_fields: JSON.stringify(inputFields),
+        categories: serializedSelectedCats,
+        lang: language
+      };
       if (id) {
-        dispatch(updateExercise(id, { ...formFields, additional_fields: JSON.stringify(inputFields), categories: serializedSelectedCats, lang: language }, mediaUploads))
+        dispatch(updateExercise(id, payload, mediaUploads))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
@@ -201,7 +238,7 @@ const CreateExercise = ({ translate }) => {
             setIsLoading(false);
           });
       } else {
-        dispatch(createExercise({ ...formFields, additional_fields: JSON.stringify(inputFields), categories: serializedSelectedCats, lang: language }, mediaUploads))
+        dispatch(createExercise(payload, mediaUploads))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
@@ -342,15 +379,60 @@ const CreateExercise = ({ translate }) => {
                 {translate('exercise.title.required')}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group controlId="formIncludeFeedback">
+            <Form.Group controlId="formShowSetsReps">
               <Form.Check
-                name="include_feedback"
+                name="show_sets_reps"
                 onChange={handleCheck}
                 value={true}
-                checked={formFields.include_feedback}
-                label={translate('exercise.include_collecting_feedback')}
+                checked={formFields.show_sets_reps}
+                label={translate('exercise.set_efault_exercise_sets_and_reps')}
               />
             </Form.Group>
+            {formFields.show_sets_reps && (
+              <Card bg="light" body className="mb-3">
+                <Form.Row>
+                  <Form.Group as={Col} controlId="formSets">
+                    <Form.Label>{translate('exercise.sets')}</Form.Label>
+                    <span className="text-dark ml-1">*</span>
+                    <Form.Control
+                      type="number"
+                      name="sets"
+                      placeholder={translate('exercise.sets.placeholder')}
+                      value={formFields.sets}
+                      onChange={handleChange}
+                      isInvalid={setsError}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {translate('exercise.sets.required')}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group as={Col} controlId="formGridPassword">
+                    <Form.Label>{translate('exercise.reps')}</Form.Label>
+                    <span className="text-dark ml-1">*</span>
+                    <Form.Control
+                      type="number"
+                      name="reps"
+                      placeholder={translate('exercise.reps.placeholder')}
+                      value={formFields.reps}
+                      onChange={handleChange}
+                      isInvalid={repsError}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {translate('exercise.reps.required')}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Form.Row>
+                <Form.Group controlId="formIncludeFeedback">
+                  <Form.Check
+                    name="include_feedback"
+                    onChange={handleCheck}
+                    value={true}
+                    checked={formFields.include_feedback}
+                    label={translate('exercise.include_collecting_feedback')}
+                  />
+                </Form.Group>
+              </Card>
+            )}
             <Form.Group controlId="formGetPainLevel">
               <Form.Check
                 name="get_pain_level"
@@ -432,7 +514,8 @@ const CreateExercise = ({ translate }) => {
                       <span className="text-dark ml-1">*</span>
                       <Form.Control
                         name="value"
-                        as="textarea" rows={3}
+                        as="textarea"
+                        rows={3}
                         placeholder={translate('exercise.additional_field.placeholder.value')}
                         value={inputField.value}
                         onChange={event => handleChangeInput(index, event)}
