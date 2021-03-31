@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import { Row, Col, Card, Form, Tooltip, OverlayTrigger, Accordion } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Tooltip,
+  OverlayTrigger,
+  Accordion,
+  Button
+} from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
@@ -9,7 +18,10 @@ import Spinner from 'react-bootstrap/Spinner';
 import Dialog from 'components/Dialog';
 import Pagination from 'components/Pagination';
 import { EditAction, DeleteAction } from 'components/ActionIcons';
-import { deleteExercise, getExercises } from 'store/exercise/actions';
+import {
+  deleteExercise, downloadExercises,
+  getExercises
+} from 'store/exercise/actions';
 import SearchInput from 'components/Form/SearchInput';
 import * as ROUTES from 'variables/routes';
 import ViewExercise from './view';
@@ -49,6 +61,7 @@ const Exercise = ({ translate }) => {
   });
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     if (filters && filters.lang) {
@@ -147,6 +160,16 @@ const Exercise = ({ translate }) => {
     setCurrentPage(1);
   };
 
+  const handleDownload = () => {
+    setDownloading(true);
+    let serializedSelectedCats = [];
+    Object.keys(selectedCategories).forEach(function (key) {
+      serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
+    });
+    dispatch(downloadExercises({ filter: formFields, categories: serializedSelectedCats }))
+      .then(() => { setDownloading(false); });
+  };
+
   return (
     <>
       <Row>
@@ -208,6 +231,9 @@ const Exercise = ({ translate }) => {
                   </Accordion>
                 ))
               }
+              <Button block onClick={() => handleDownload()} disabled={downloading}>
+                {translate('exercise.download')}
+              </Button>
             </Card.Body>
           </Card>
         </Col>

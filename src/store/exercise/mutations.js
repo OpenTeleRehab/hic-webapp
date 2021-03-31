@@ -68,6 +68,18 @@ const clearFilterExercisesRequest = () => ({
   type: 'CLEAR_FILTER_EXERCISES_REQUEST'
 });
 
+const downloadExercisesRequest = () => ({
+  type: 'DOWNLOAD_EXERCISES_REQUEST'
+});
+
+const downloadExercisesSuccess = () => ({
+  type: 'DOWNLOAD_EXERCISES_SUCCESS'
+});
+
+const downloadExercisesFail = () => ({
+  type: 'DOWNLOAD_EXERCISES_FAIL'
+});
+
 export const mutation = {
   getExercisesFail,
   getExercisesRequest,
@@ -84,5 +96,8 @@ export const mutation = {
   deleteExerciseRequest,
   deleteExerciseSuccess,
   deleteExerciseFail,
-  clearFilterExercisesRequest
+  clearFilterExercisesRequest,
+  downloadExercisesRequest,
+  downloadExercisesSuccess,
+  downloadExercisesFail
 };

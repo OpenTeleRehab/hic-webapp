@@ -1,3 +1,4 @@
+import { saveAs } from 'file-saver';
 import { Exercise } from 'services/exercise';
 import { mutation } from './mutations';
 import { showErrorNotification, showSuccessNotification } from 'store/notification/actions';
@@ -75,4 +76,18 @@ export const deleteExercise = id => async (dispatch, getState) => {
 
 export const clearFilterExercises = () => async dispatch => {
   dispatch(mutation.clearFilterExercisesRequest());
+};
+
+export const downloadExercises = payload => async dispatch => {
+  dispatch(mutation.downloadExercisesRequest());
+  const res = await Exercise.downloadExercises(payload);
+  if (res) {
+    dispatch(mutation.downloadExercisesSuccess());
+    saveAs(res, 'Exercise.csv');
+    return true;
+  } else {
+    dispatch(mutation.downloadExercisesFail());
+    dispatch(showErrorNotification('toast_title.error_message', res.message));
+    return false;
+  }
 };

@@ -88,10 +88,23 @@ const deleteExercise = id => {
     });
 };
 
+const downloadExercises = payload => {
+  return axios.get('/exercise/export/csv', { params: payload, responseType: 'blob' })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Exercise = {
   getExercises,
   getExercise,
   createExercise,
   updateExercise,
-  deleteExercise
+  deleteExercise,
+  downloadExercises
 };
