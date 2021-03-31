@@ -10,6 +10,6 @@ export const getTotalPatient = (therapisId, patients) => {
   return totalPatients;
 };
 export const getTotalOnGoingTreatment = (therapisId, patients) => {
-  const totalOnGoing = patients.filter(p => p.therapist_id === therapisId && p.ongoingTreatmentPlan !== null).length;
+  const totalOnGoing = patients.filter(p => p.therapist_id === therapisId && !_.isEmpty(p.ongoingTreatmentPlan)).length;
   return totalOnGoing;
 };

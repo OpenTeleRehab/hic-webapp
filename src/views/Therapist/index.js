@@ -8,7 +8,7 @@ import CustomTable from 'components/Table';
 import EnabledStatus from 'components/EnabledStatus';
 import { DeleteAction, EditAction, EnabledAction, DisabledAction } from 'components/ActionIcons';
 import CreateTherapist from 'views/Therapist/create';
-import { getTherapists, deleteTherapistUser, getPatients, updateTherapistStatus } from 'store/therapist/actions';
+import { getTherapists, deleteTherapistUser, updateTherapistStatus } from 'store/therapist/actions';
 import { getCountryName } from 'utils/country';
 import { getClinicName, getClinicRegion } from 'utils/clinic';
 import * as moment from 'moment';
@@ -22,6 +22,8 @@ import {
 } from 'utils/patient';
 import { USER_ROLES } from '../../variables/user';
 import { useKeycloak } from '@react-keycloak/web';
+import _ from 'lodash';
+import { Therapist as therapistService } from 'services/therapist';
 
 let timer = null;
 
@@ -29,7 +31,6 @@ const Therapist = ({ translate }) => {
   const dispatch = useDispatch();
   const { keycloak } = useKeycloak();
   const therapists = useSelector(state => state.therapist.therapists);
-  const patients = useSelector(state => state.patient.patients);
   const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
   const { profile } = useSelector((state) => state.auth);
@@ -83,6 +84,7 @@ const Therapist = ({ translate }) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showSwitchStatusDialog, setShowSwitchStatusDialog] = useState(false);
   const [id, setId] = useState(null);
+  const [patients, setPatients] = useState([]);
 
   useEffect(() => {
     setCurrentPage(0);
@@ -95,6 +97,7 @@ const Therapist = ({ translate }) => {
         clinic_id: profile ? profile.clinic_id : null,
         filters,
         search_value: searchValue,
+        user_type: profile.type,
         page_size: pageSize,
         page: currentPage + 1
       })).then(result => {
@@ -110,6 +113,17 @@ const Therapist = ({ translate }) => {
       setIsGlobalAdmin(true);
     }
   }, [keycloak]);
+
+  useEffect(() => {
+    if (therapists && therapists.length > 0 && totalCount) {
+      const therapistIds = _.map(therapists, 'id');
+      therapistService.getPatientByTherapistIds(therapistIds).then(res => {
+        if (res.data) {
+          setPatients(res.data);
+        }
+      });
+    };
+  }, [therapists, totalCount]);
 
   const handleShow = () => setShow(true);
 
@@ -159,10 +173,6 @@ const Therapist = ({ translate }) => {
       }
     });
   };
-
-  useEffect(() => {
-    dispatch(getPatients());
-  }, [dispatch]);
 
   return (
     <>
