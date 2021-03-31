@@ -15,7 +15,7 @@ const ClinicFilterCell = ({ filter, onFilter }) => {
         value={filter ? filter.value : ''}
         onChange={e => onFilter(e.target.value ? { value: e.target.value } : null)}
       >
-        <option value={null}>{ translate('common.all') }</option>
+        <option value="">{ translate('common.all') }</option>
         {clinics.map((clinic, index) => (
           <option key={index} value={clinic.id}>
             {clinic.name}

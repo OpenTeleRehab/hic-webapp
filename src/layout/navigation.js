@@ -32,10 +32,16 @@ const navItems = [
     roles: [USER_ROLES.MANAGE_THERAPIST, USER_ROLES.MANAGE_GLOBAL_ADMIN]
   },
   {
+    label: 'patient',
+    to: ROUTES.PATIENT,
+    exact: true,
+    roles: [USER_ROLES.MANAGE_GLOBAL_ADMIN]
+  },
+  {
     label: 'service_setup',
     to: ROUTES.SERVICE_SETUP,
     exact: false,
-    roles: [USER_ROLES.SETUP_EXERCISE]
+    roles: [USER_ROLES.MANAGE_GLOBAL_ADMIN]
   },
   {
     label: 'category',

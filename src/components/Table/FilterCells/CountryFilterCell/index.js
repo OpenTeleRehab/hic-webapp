@@ -15,11 +15,9 @@ const CountryFilterCell = ({ filter, onFilter }) => {
         value={filter ? filter.value : ''}
         onChange={e => onFilter(e.target.value ? { value: e.target.value } : null)}
       >
-        <option value={null}>{ translate('common.all') }</option>
-        {countries.map((country, index) => (
-          <option key={index} value={country.id}>
-            {country.name}
-          </option>
+        <option value="">{ translate('common.all') }</option>
+        {countries.map((country) => (
+          <option key={country.id} value={country.id}>{country.name}</option>
         ))}
       </select>
     </th>

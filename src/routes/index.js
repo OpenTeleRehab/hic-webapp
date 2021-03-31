@@ -14,6 +14,7 @@ import CreateExercise from 'views/ServiceSetup/Exercise/create';
 import CreateEducationMaterial from 'views/ServiceSetup/EducationMaterial/create';
 import CreateQuestionnaire from 'views/ServiceSetup/Questionnaire/create';
 import Therapist from 'views/Therapist';
+import Patient from 'views/Patient';
 import ProfilePage from 'views/Profile';
 
 import * as ROUTES from 'variables/routes';
@@ -48,6 +49,14 @@ const routes = [
     exact: true,
     type: PRIVATE,
     roles: [USER_ROLES.MANAGE_THERAPIST, USER_ROLES.MANAGE_GLOBAL_ADMIN]
+  },
+  {
+    title: 'patient',
+    path: ROUTES.PATIENT,
+    component: Patient,
+    exact: true,
+    type: PRIVATE,
+    roles: [USER_ROLES.MANAGE_GLOBAL_ADMIN]
   },
   {
     title: 'service_setup',
