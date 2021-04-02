@@ -98,3 +98,27 @@ export const getPatients = payload => async (dispatch, getState) => {
     return false;
   }
 };
+
+export const getPatientByClinic = clinicId => async (dispatch, getState) => {
+  dispatch(mutation.getPatientByClinicRequest());
+  const data = await Therapist.getPatientByClinicId(clinicId);
+  if (data.success) {
+    dispatch(mutation.getPatientByClinicSuccess(data.data));
+    return data.info;
+  } else {
+    dispatch(mutation.getPatientByClinicFail());
+    return false;
+  }
+};
+
+export const getTherapistByClinic = clinicId => async (dispatch, getState) => {
+  dispatch(mutation.getTherapistByClinicRequest());
+  const data = await Therapist.getTherapistByClinicId(clinicId);
+  if (data.success) {
+    dispatch(mutation.getTherapistByClinicSuccess(data.data));
+    return data.info;
+  } else {
+    dispatch(mutation.getTherapistByClinicFail());
+    return false;
+  }
+};
