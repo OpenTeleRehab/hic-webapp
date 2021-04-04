@@ -27,8 +27,8 @@ const Dashboard = ({ translate }) => {
   return (
     <>
       { viewClinicDashboard && <ClinicAdminDashbaord /> }
-      { viewCountryDashboard && <GlobalAdminDashboard /> }
-      { viewGlobalDashboard && <CountryAdminDashboard /> }
+      { viewGlobalDashboard && <GlobalAdminDashboard /> }
+      { viewCountryDashboard && <CountryAdminDashboard /> }
     </>
   );
 };

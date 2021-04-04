@@ -7,6 +7,11 @@ export const dashboard = (state = initialState, action) => {
         countyAdminData: action.data
       });
     }
+    case 'GET_CHART_DATA_GLOBAL_ADMIN_SUCCESS': {
+      return Object.assign({}, state, {
+        globalAdminData: action.data
+      });
+    }
     default:
       return state;
   }
