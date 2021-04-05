@@ -8,7 +8,6 @@ import { FaFlag, FaClinicMedical } from 'react-icons/fa';
 import { getChartDataGlobalAdmin } from 'store/dashboard/actions';
 import { getTranslate } from 'react-localize-redux';
 import { Bar } from 'react-chartjs-2';
-import { getCountryName } from 'utils/country';
 import _ from 'lodash';
 
 const GlobalAdminDashboard = () => {
@@ -24,9 +23,6 @@ const GlobalAdminDashboard = () => {
   const [countryAdminPerCountries, setCountryAdminPerCountries] = useState([]);
   const [clinicAdminPerCountries, setClinicAdminPerCountries] = useState([]);
   const [countryLabel, setCountryLabel] = useState([]);
-  const [countryData, setCountryData] = useState([]);
-  const [clinicLabel, setClinicLabel] = useState([]);
-  const [clinicData, setClinicData] = useState([]);
 
   useEffect(() => {
     dispatch(getChartDataGlobalAdmin());
@@ -37,12 +33,20 @@ const GlobalAdminDashboard = () => {
       setTotalGlobalAdmin(globalAdminData.globalAdminTotal);
       setTotalCountryAdmin(globalAdminData.countryAdminTotal);
       setTotalClinicAdmin(globalAdminData.clinicAdminTotal);
-      if (globalAdminData.countryAdminByCountry.length) {
-        setCountryAdminPerCountries(globalAdminData.countryAdminByCountry);
-      }
-      if (globalAdminData.clinicAdminsByCountry.length) {
-        setClinicAdminPerCountries(globalAdminData.clinicAdminsByCountry);
-      }
+      const countryLabels = [];
+      const countryAdminsPerCountry = [];
+      const clinicAdminsByCountry = [];
+      countries.forEach(country => {
+        countryLabels.push(country.name);
+        const countryAdmins = globalAdminData.countryAdminByCountry.find(c => parseInt(c.country_id) === country.id);
+        countryAdminsPerCountry.push(countryAdmins ? countryAdmins.total : 0);
+        const clinicAdmins = globalAdminData.clinicAdminsByCountry.find(c => parseInt(c.country_id) === country.id);
+        clinicAdminsByCountry.push(clinicAdmins ? clinicAdmins.total : 0);
+      });
+
+      setCountryLabel(countryLabels);
+      setCountryAdminPerCountries(countryAdminsPerCountry);
+      setClinicAdminPerCountries(clinicAdminsByCountry);
 
       if (globalAdminData.therapistData.length) {
         setTotalTherapist(globalAdminData.therapistData.data.therapistTotal);
@@ -50,35 +54,26 @@ const GlobalAdminDashboard = () => {
     }
   }, [globalAdminData]);
 
-  useEffect(() => {
-    if (countryAdminPerCountries.length) {
-      const countryLabel = [];
-      const countryData = [];
-      // eslint-disable-next-line
-      { countryAdminPerCountries.map((countryAdminPerCountry) => (
-        // eslint-disable-next-line
-        countryLabel.push(getCountryName(countryAdminPerCountry.country_id, countries)),
-        countryData.push(countryAdminPerCountry.total)
-      )); }
-
-      setCountryLabel(countryLabel);
-      setCountryData(countryData);
+  const barChartOptions = {
+    legend: {
+      display: false
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        },
+        gridLines: {
+          drawOnChartArea: false
+        }
+      }],
+      xAxes: [{
+        gridLines: {
+          drawOnChartArea: false
+        }
+      }]
     }
-
-    if (clinicAdminPerCountries.length) {
-      const clinicLabel = [];
-      const clinicData = [];
-      // eslint-disable-next-line
-      { clinicAdminPerCountries.map((clinicAdminPerCountry) => (
-        // eslint-disable-next-line
-        clinicLabel.push(getCountryName(clinicAdminPerCountry.country_id, countries)),
-        clinicData.push(clinicAdminPerCountry.total)
-      )); }
-
-      setClinicLabel(clinicLabel);
-      setClinicData(clinicData);
-    }
-  }, [countryAdminPerCountries, clinicAdminPerCountries, countries]);
+  };
 
   const countryAdminPerCountryData = {
     labels: countryLabel,
@@ -88,20 +83,20 @@ const GlobalAdminDashboard = () => {
         lineTension: 0.5,
         backgroundColor: '#06038D',
         borderWidth: 2,
-        data: countryData
+        data: countryAdminPerCountries
       }
     ]
   };
 
   const clinicAdminPerCountryData = {
-    labels: clinicLabel,
+    labels: countryLabel,
     datasets: [
       {
         fill: false,
         lineTension: 0.5,
         backgroundColor: '#5BC2E7',
         borderWidth: 2,
-        data: clinicData
+        data: clinicAdminPerCountries
       }
     ]
   };
@@ -170,38 +165,22 @@ const GlobalAdminDashboard = () => {
           </Card>
         </Col>
       </Row>
-      <Row className="mt-5">
-        <Col sm={5} md={4} lg={6}>
-          <Bar
-            data={countryAdminPerCountryData}
-            options={{
-              title: {
-                display: true,
-                text: translate('common.country_admin_per_country'),
-                fontSize: 20
-              },
-              legend: {
-                display: true,
-                position: 'right'
-              }
-            }}
-          />
+      <Row className="top-card-container">
+        <Col className="container-fluid content-row">
+          <Card className="h-100">
+            <Card.Header as="h5" className="chart-header">{translate('common.country_admin_per_country')}</Card.Header>
+            <Card.Body>
+              <Bar data={countryAdminPerCountryData} options={barChartOptions}/>
+            </Card.Body>
+          </Card>
         </Col>
-        <Col sm={5} md={4} lg={6}>
-          <Bar
-            data={clinicAdminPerCountryData}
-            options={{
-              title: {
-                display: true,
-                text: translate('common.clinic_admin_per_country'),
-                fontSize: 20
-              },
-              legend: {
-                display: true,
-                position: 'right'
-              }
-            }}
-          />
+        <Col className="container-fluid content-row">
+          <Card className="h-100">
+            <Card.Header as="h5" className="chart-header">{translate('common.clinic_admin_per_country')}</Card.Header>
+            <Card.Body>
+              <Bar data={clinicAdminPerCountryData} options={barChartOptions} />
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
     </>
