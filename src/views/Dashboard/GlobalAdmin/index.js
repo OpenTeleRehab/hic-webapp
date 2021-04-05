@@ -11,6 +11,7 @@ import { Bar } from 'react-chartjs-2';
 import _ from 'lodash';
 import { CHART } from '../../../variables/dashboard';
 import settings from '../../../settings';
+import { Chart } from 'react-google-charts';
 
 const GlobalAdminDashboard = () => {
   const localize = useSelector((state) => state.localize);
@@ -28,10 +29,21 @@ const GlobalAdminDashboard = () => {
   const [patientsByAgePerCountry, setPatientsByAgePerCounty] = useState([]);
   const [ongoingByAgePerCountry, setOngoingByAgePerCounty] = useState([]);
   const [treatmentByAgePerCountry, setTreatmentByAgePerCounty] = useState([]);
+  const [mapData, setMapData] = useState([]);
 
   useEffect(() => {
     dispatch(getChartDataGlobalAdmin());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (countries.length) {
+      const data = [['Country']];
+      countries.forEach(country => {
+        data.push([country.name]);
+      });
+      setMapData(data);
+    }
+  }, [countries]);
 
   useEffect(() => {
     if (!_.isEmpty(globalAdminData)) {
@@ -266,6 +278,23 @@ const GlobalAdminDashboard = () => {
               </Row>
             </Card.Body>
           </Card>
+        </Col>
+      </Row>
+      <Row className="top-card-container mt-5">
+        <Col sm={12}>
+          <Chart
+            chartType="GeoChart"
+            width="100%"
+            height="600px"
+            data={mapData}
+            options={{
+              colorAxis: { colors: ['#0077c8'] },
+              legend: 'none',
+              datalessRegionColor: '#edc8a3',
+              stroke: '#0077c8'
+            }}
+            mapsApiKey={process.env.REACT_APP_MAP_API_KEY}
+          />
         </Col>
       </Row>
       <Row className="top-card-container">
