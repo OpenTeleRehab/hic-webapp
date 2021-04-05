@@ -9,6 +9,8 @@ import { getChartDataGlobalAdmin } from 'store/dashboard/actions';
 import { getTranslate } from 'react-localize-redux';
 import { Bar } from 'react-chartjs-2';
 import _ from 'lodash';
+import { CHART } from '../../../variables/dashboard';
+import settings from '../../../settings';
 
 const GlobalAdminDashboard = () => {
   const localize = useSelector((state) => state.localize);
@@ -23,6 +25,9 @@ const GlobalAdminDashboard = () => {
   const [countryAdminPerCountries, setCountryAdminPerCountries] = useState([]);
   const [clinicAdminPerCountries, setClinicAdminPerCountries] = useState([]);
   const [countryLabel, setCountryLabel] = useState([]);
+  const [patientsByAgePerCountry, setPatientsByAgePerCounty] = useState([]);
+  const [ongoingByAgePerCountry, setOngoingByAgePerCounty] = useState([]);
+  const [treatmentByAgePerCountry, setTreatmentByAgePerCounty] = useState([]);
 
   useEffect(() => {
     dispatch(getChartDataGlobalAdmin());
@@ -51,8 +56,65 @@ const GlobalAdminDashboard = () => {
       if (globalAdminData.therapistData.length) {
         setTotalTherapist(globalAdminData.therapistData.data.therapistTotal);
       }
+
+      const ageLabels = [];
+      const color = CHART.COLOR;
+      const patientsByAgeGapGroupedByCountry = globalAdminData.patientData.patientsByAgeGapGroupedByCountry;
+      const ongoingsByAgeGapGroupedByCountry = globalAdminData.patientData.onGoingTreatmentsByAgeGapGroupedByCountry;
+      const treatmentsByAgeGapGroupedByCountry = globalAdminData.patientData.treatmentsByAgeGapGroupedByCountry;
+
+      for (let i = settings.minAge; i <= settings.maxAge; i = i +
+        settings.ageGap) {
+        if (i === 0) {
+          ageLabels.push('< ' + settings.ageGap);
+        } else if (i === settings.maxAge) {
+          ageLabels.push('>= ' + settings.maxAge);
+        } else {
+          ageLabels.push(i + ' - ' + (i + settings.ageGap));
+        }
+      }
+      const patientsByAgeByCountryDatasets = [];
+      const ongoingTreatmentByAgeByCountryDatasets = [];
+      const treatmentsByAgeGapGroupedByCountryDatasets = [];
+
+      ageLabels.forEach((ageLabel, index) => {
+        const patientsByAgeByCountryDataset = {};
+        patientsByAgeByCountryDataset.label = ageLabel + ' ' + translate('common.year');
+        patientsByAgeByCountryDataset.data = [];
+        patientsByAgeByCountryDataset.backgroundColor = color[index];
+        patientsByAgeByCountryDataset.borderColor = color[index];
+
+        const ongoingTreatmentByAgeByCountryDataset = {};
+        ongoingTreatmentByAgeByCountryDataset.label = ageLabel + ' ' + translate('common.year');
+        ongoingTreatmentByAgeByCountryDataset.data = [];
+        ongoingTreatmentByAgeByCountryDataset.backgroundColor = color[index];
+        ongoingTreatmentByAgeByCountryDataset.borderColor = color[index];
+
+        const treatmentsByAgeGapGroupedByCountryDataset = {};
+        treatmentsByAgeGapGroupedByCountryDataset.label = ageLabel + ' ' + translate('common.year');
+        treatmentsByAgeGapGroupedByCountryDataset.data = [];
+        treatmentsByAgeGapGroupedByCountryDataset.backgroundColor = color[index];
+        treatmentsByAgeGapGroupedByCountryDataset.borderColor = color[index];
+
+        countries.forEach(country => {
+          const patientDataByAge = patientsByAgeGapGroupedByCountry.find(item => item.country_id === country.id);
+          patientsByAgeByCountryDataset.data.push(patientDataByAge ? patientDataByAge[ageLabel] : 0);
+
+          const ongoingDataByAge = ongoingsByAgeGapGroupedByCountry.find(item => item.country_id === country.id);
+          ongoingTreatmentByAgeByCountryDataset.data.push(ongoingDataByAge ? ongoingDataByAge[ageLabel] : 0);
+
+          const treatmentDataByAge = treatmentsByAgeGapGroupedByCountry.find(item => item.country_id === country.id);
+          treatmentsByAgeGapGroupedByCountryDataset.data.push(treatmentDataByAge ? treatmentDataByAge[ageLabel] : 0);
+        });
+        patientsByAgeByCountryDatasets.push(patientsByAgeByCountryDataset);
+        ongoingTreatmentByAgeByCountryDatasets.push(ongoingTreatmentByAgeByCountryDataset);
+        treatmentsByAgeGapGroupedByCountryDatasets.push(treatmentsByAgeGapGroupedByCountryDataset);
+      });
+      setOngoingByAgePerCounty(ongoingTreatmentByAgeByCountryDatasets);
+      setPatientsByAgePerCounty(patientsByAgeByCountryDatasets);
+      setTreatmentByAgePerCounty(treatmentsByAgeGapGroupedByCountryDatasets);
     }
-  }, [globalAdminData]);
+  }, [globalAdminData, countries, translate]);
 
   const barChartOptions = {
     legend: {
@@ -71,6 +133,32 @@ const GlobalAdminDashboard = () => {
         gridLines: {
           drawOnChartArea: false
         }
+      }]
+    }
+  };
+
+  const groupBarChartOptions = {
+    legend: {
+      labels: {
+        boxWidth: 10,
+        fontColor: '#000000'
+      }
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        },
+        gridLines: {
+          drawOnChartArea: false
+        },
+        fontColor: '#000000'
+      }],
+      xAxes: [{
+        gridLines: {
+          drawOnChartArea: false
+        },
+        barPercentage: 1.0
       }]
     }
   };
@@ -99,6 +187,21 @@ const GlobalAdminDashboard = () => {
         data: clinicAdminPerCountries
       }
     ]
+  };
+
+  const patientsByAgePerCountryData = {
+    labels: countryLabel,
+    datasets: patientsByAgePerCountry
+  };
+
+  const ongoingTreatmentsByAgePerCountryData = {
+    labels: countryLabel,
+    datasets: ongoingByAgePerCountry
+  };
+
+  const treatmentsByAgePerCountryData = {
+    labels: countryLabel,
+    datasets: treatmentByAgePerCountry
   };
 
   return (
@@ -182,6 +285,35 @@ const GlobalAdminDashboard = () => {
             </Card.Body>
           </Card>
         </Col>
+      </Row>
+      <Row className="top-card-container">
+        <Col className="container-fluid content-row">
+          <Card className="h-100">
+            <Card.Header as="h5" className="chart-header">{translate('common.patient_by_age_per_country')}</Card.Header>
+            <Card.Body>
+              <Bar data={patientsByAgePerCountryData} options={groupBarChartOptions}/>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col className="container-fluid content-row">
+          <Card className="h-100">
+            <Card.Header as="h5" className="chart-header">{translate('common.ongoing_by_age_per_country')}</Card.Header>
+            <Card.Body>
+              <Bar data={ongoingTreatmentsByAgePerCountryData} options={groupBarChartOptions} />
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+      <Row>
+        <Col className="container-fluid content-row">
+          <Card className="h-100">
+            <Card.Header as="h5" className="chart-header">{translate('common.treatment_by_age_per_country')}</Card.Header>
+            <Card.Body>
+              <Bar data={treatmentsByAgePerCountryData} options={groupBarChartOptions}/>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col></Col>
       </Row>
     </>
   );
