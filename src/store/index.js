@@ -23,6 +23,7 @@ import { educationMaterial } from 'store/educationMaterial/reducers';
 import { questionnaire } from 'store/questionnaire/reducers';
 import { category } from 'store/category/reducers';
 import { staticPage } from 'store/staticPage/reducers';
+import { dashboard } from 'store/dashboard/reducers';
 
 export const rootReducer = {
   localize: localizeReducer,
@@ -43,7 +44,8 @@ export const rootReducer = {
   educationMaterial,
   questionnaire,
   category,
-  staticPage
+  staticPage,
+  dashboard
 };
 
 const devTool =
