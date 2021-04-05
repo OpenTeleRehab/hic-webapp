@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
 import { IoPerson } from 'react-icons/io5';
 import { AiOutlineGlobal } from 'react-icons/ai';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaFlag, FaClinicMedical } from 'react-icons/fa';
 import { getChartDataGlobalAdmin } from 'store/dashboard/actions';
@@ -30,6 +29,9 @@ const GlobalAdminDashboard = () => {
   const [ongoingByAgePerCountry, setOngoingByAgePerCounty] = useState([]);
   const [treatmentByAgePerCountry, setTreatmentByAgePerCounty] = useState([]);
   const [mapData, setMapData] = useState([]);
+  const [patientsByGenderByCountry, setPatientsByGenderByCountry] = useState([]);
+  const [treatmentsByGenderByCountry, setTreatmentsByGenderByCountry] = useState([]);
+  const [ongoingTreatmentsByGenderByCountry, setOngoingTreatmentsByGenderByCountry] = useState([]);
 
   useEffect(() => {
     dispatch(getChartDataGlobalAdmin());
@@ -53,12 +55,31 @@ const GlobalAdminDashboard = () => {
       const countryLabels = [];
       const countryAdminsPerCountry = [];
       const clinicAdminsByCountry = [];
+      const femalePatientByCountry = [];
+      const malePatientByCountry = [];
+      const femaleTreatmentByCountry = [];
+      const maleTreatmentByCountry = [];
+      const maleOngoingTreatmentByCountry = [];
+      const femaleOngoingTreatmentByCountry = [];
+
       countries.forEach(country => {
         countryLabels.push(country.name);
         const countryAdmins = globalAdminData.countryAdminByCountry.find(c => parseInt(c.country_id) === country.id);
         countryAdminsPerCountry.push(countryAdmins ? countryAdmins.total : 0);
         const clinicAdmins = globalAdminData.clinicAdminsByCountry.find(c => parseInt(c.country_id) === country.id);
         clinicAdminsByCountry.push(clinicAdmins ? clinicAdmins.total : 0);
+
+        const patientData = globalAdminData.patientData.patientsByGenderGroupedByCountry.find(c => parseInt(c.country_id) === country.id);
+        malePatientByCountry.push(patientData ? patientData.male : 0);
+        femalePatientByCountry.push(patientData ? patientData.female : 0);
+
+        const treatmentData = globalAdminData.patientData.treatmentsByGender.find(c => parseInt(c.country_id) === country.id);
+        maleTreatmentByCountry.push(treatmentData ? treatmentData.male : 0);
+        femaleTreatmentByCountry.push(treatmentData ? treatmentData.female : 0);
+
+        const onGoingTreatmentData = globalAdminData.patientData.onGoingTreatmentsByGenderGroupedByCountry.find(c => parseInt(c.country_id) === country.id);
+        maleOngoingTreatmentByCountry.push(onGoingTreatmentData ? onGoingTreatmentData.male : 0);
+        femaleOngoingTreatmentByCountry.push(onGoingTreatmentData ? onGoingTreatmentData.female : 0);
       });
 
       setCountryLabel(countryLabels);
@@ -125,6 +146,21 @@ const GlobalAdminDashboard = () => {
       setOngoingByAgePerCounty(ongoingTreatmentByAgeByCountryDatasets);
       setPatientsByAgePerCounty(patientsByAgeByCountryDatasets);
       setTreatmentByAgePerCounty(treatmentsByAgeGapGroupedByCountryDatasets);
+
+      setPatientsByGenderByCountry([
+        { label: translate('common.male'), data: malePatientByCountry, backgroundColor: '#06038D', borderColor: '#E35205', borderWidth: 1 },
+        { label: translate('common.female'), data: femalePatientByCountry, backgroundColor: '#64CCC9', borderColor: '#64CCC9', borderWidth: 1 }
+      ]);
+
+      setTreatmentsByGenderByCountry([
+        { label: translate('common.male'), data: maleTreatmentByCountry, backgroundColor: '#06038D', borderColor: '#E35205', borderWidth: 1 },
+        { label: translate('common.female'), data: femaleTreatmentByCountry, backgroundColor: '#64CCC9', borderColor: '#64CCC9', borderWidth: 1 }
+      ]);
+
+      setOngoingTreatmentsByGenderByCountry([
+        { label: translate('common.male'), data: maleOngoingTreatmentByCountry, backgroundColor: '#06038D', borderColor: '#E35205', borderWidth: 1 },
+        { label: translate('common.female'), data: femaleOngoingTreatmentByCountry, backgroundColor: '#64CCC9', borderColor: '#64CCC9', borderWidth: 1 }
+      ]);
     }
   }, [globalAdminData, countries, translate]);
 
@@ -214,6 +250,49 @@ const GlobalAdminDashboard = () => {
   const treatmentsByAgePerCountryData = {
     labels: countryLabel,
     datasets: treatmentByAgePerCountry
+  };
+
+  const patientsByGenderByCountryData = {
+    labels: countryLabel,
+    datasets: patientsByGenderByCountry
+  };
+
+  const treatmentsByGenderByCountryData = {
+    labels: countryLabel,
+    datasets: treatmentsByGenderByCountry
+  };
+
+  const ongoingTreatmentsByGenderByCountryData = {
+    labels: countryLabel,
+    datasets: ongoingTreatmentsByGenderByCountry
+  };
+
+  const groupStackedBarChartOptions = {
+    legend: {
+      labels: {
+        boxWidth: 10,
+        fontColor: '#000000'
+      }
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        },
+        stacked: true,
+        gridLines: {
+          drawOnChartArea: false
+        },
+        fontColor: '#000000'
+      }],
+      xAxes: [{
+        gridLines: {
+          drawOnChartArea: false
+        },
+        barPercentage: 1.0,
+        stacked: true
+      }]
+    }
   };
 
   return (
@@ -318,9 +397,45 @@ const GlobalAdminDashboard = () => {
       <Row className="top-card-container">
         <Col className="container-fluid content-row">
           <Card className="h-100">
+            <Card.Header as="h5" className="chart-header">{translate('common.patient_by_gender_per_country')}</Card.Header>
+            <Card.Body>
+              <Bar data={patientsByGenderByCountryData} options={groupStackedBarChartOptions} />
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col className="container-fluid content-row">
+          <Card className="h-100">
             <Card.Header as="h5" className="chart-header">{translate('common.patient_by_age_per_country')}</Card.Header>
             <Card.Body>
               <Bar data={patientsByAgePerCountryData} options={groupBarChartOptions}/>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+      <Row className="top-card-container">
+        <Col className="container-fluid content-row">
+          <Card className="h-100">
+            <Card.Header as="h5" className="chart-header">{translate('common.treatment_by_gender_per_country')}</Card.Header>
+            <Card.Body>
+              <Bar data={treatmentsByGenderByCountryData} options={groupStackedBarChartOptions} />
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col className="container-fluid content-row">
+          <Card className="h-100">
+            <Card.Header as="h5" className="chart-header">{translate('common.treatment_by_age_per_country')}</Card.Header>
+            <Card.Body>
+              <Bar data={treatmentsByAgePerCountryData} options={groupBarChartOptions}/>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+      <Row className="top-card-container">
+        <Col className="container-fluid content-row">
+          <Card className="h-100">
+            <Card.Header as="h5" className="chart-header">{translate('common.ongoing_treatement_by_gender_per_country')}</Card.Header>
+            <Card.Body>
+              <Bar data={ongoingTreatmentsByGenderByCountryData} options={groupStackedBarChartOptions} />
             </Card.Body>
           </Card>
         </Col>
@@ -333,23 +448,8 @@ const GlobalAdminDashboard = () => {
           </Card>
         </Col>
       </Row>
-      <Row>
-        <Col className="container-fluid content-row">
-          <Card className="h-100">
-            <Card.Header as="h5" className="chart-header">{translate('common.treatment_by_age_per_country')}</Card.Header>
-            <Card.Body>
-              <Bar data={treatmentsByAgePerCountryData} options={groupBarChartOptions}/>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col></Col>
-      </Row>
     </>
   );
-};
-
-GlobalAdminDashboard.propTypes = {
-  translate: PropTypes.func
 };
 
 export default GlobalAdminDashboard;
