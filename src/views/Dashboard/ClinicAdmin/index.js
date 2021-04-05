@@ -4,7 +4,7 @@ import { IoPerson } from 'react-icons/io5';
 import { FaNotesMedical } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPatientByClinic, getTherapistByClinic } from 'store/therapist/actions';
+import { getChartDataClinicAdmin } from 'store/dashboard/actions';
 import _ from 'lodash';
 import { getTranslate } from 'react-localize-redux';
 
@@ -12,8 +12,7 @@ const ClinicAdminDashboard = () => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
-  const patients = useSelector(state => state.patient.patients);
-  const therapists = useSelector(state => state.therapist.therapists);
+  const dashboardData = useSelector(state => state.dashboard.clinicAdminData);
   const { profile } = useSelector((state) => state.auth);
   const [totalTherapist, setTotalTherapist] = useState(0);
   const [totalPatient, setTotalPatient] = useState(0);
@@ -21,28 +20,24 @@ const ClinicAdminDashboard = () => {
 
   useEffect(() => {
     if (profile !== undefined) {
-      dispatch(getPatientByClinic({
-        clinic_id: profile.clinic_id
-      }));
-      dispatch(getTherapistByClinic({
+      dispatch(getChartDataClinicAdmin({
         clinic_id: profile.clinic_id
       }));
     }
   }, [dispatch, profile]);
 
   useEffect(() => {
-    if (patients && patients.length) {
-      const ongoingTreatment = patients.filter(p => !_.isEmpty(p.ongoingTreatmentPlan));
-      setTotalOngoingTreatment(ongoingTreatment.length);
-      setTotalPatient(patients.length);
-    }
-  }, [patients]);
+    if (!_.isEmpty(dashboardData)) {
+      if (dashboardData.therapistData) {
+        setTotalTherapist(dashboardData.therapistData.therapistTotal);
+      }
 
-  useEffect(() => {
-    if (therapists && therapists.length) {
-      setTotalTherapist(therapists.length);
+      if (dashboardData.patientData) {
+        setTotalPatient(dashboardData.patientData.patientTotal);
+        setTotalOngoingTreatment(dashboardData.patientData.onGoingTreatments);
+      }
     }
-  }, [therapists]);
+  }, [dashboardData]);
 
   return (
     <>

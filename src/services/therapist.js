@@ -104,30 +104,6 @@ const getPatientByTherapistIds = (therapistIds) => {
     });
 };
 
-const getPatientByClinicId = clinicId => {
-  return patientAxios.get('/patient/list/by-clinic-id', { params: clinicId })
-    .then(
-      res => {
-        return res.data;
-      }
-    )
-    .catch((e) => {
-      return e.response.data;
-    });
-};
-
-const getTherapistByClinicId = clinicId => {
-  return customAxios.get('/therapist/list/by-clinic-id', { params: clinicId })
-    .then(
-      res => {
-        return res.data;
-      }
-    )
-    .catch((e) => {
-      return e.response.data;
-    });
-};
-
 export const Therapist = {
   createTherapist,
   updateTherapist,
@@ -135,7 +111,5 @@ export const Therapist = {
   deleteTherapistUser,
   getPatients,
   updateTherapistStatus,
-  getPatientByTherapistIds,
-  getPatientByClinicId,
-  getTherapistByClinicId
+  getPatientByTherapistIds
 };

@@ -24,3 +24,14 @@ export const getChartDataGlobalAdmin = () => async dispatch => {
     dispatch(showErrorNotification('toast_title.error_message', data.message));
   }
 };
+
+export const getChartDataClinicAdmin = clinicId => async dispatch => {
+  dispatch(mutation.getChartDataClinicAdminRequest());
+  const data = await Dashboard.getChartDataClinicAdmin(clinicId);
+  if (data.success) {
+    dispatch(mutation.getChartDataClinicAdminSuccess(data.data));
+  } else {
+    dispatch(mutation.getChartDataClinicAdminFail());
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
+  }
+};

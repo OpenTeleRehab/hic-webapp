@@ -24,7 +24,20 @@ const getChartDataGlobalAdmin = payload => {
     });
 };
 
+const getChartDataClinicAdmin = clinicId => {
+  return axios.get('/chart/clinic-admin-dashboard', { params: clinicId })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Dashboard = {
   getDataForCountryAdmin,
-  getChartDataGlobalAdmin
+  getChartDataGlobalAdmin,
+  getChartDataClinicAdmin
 };

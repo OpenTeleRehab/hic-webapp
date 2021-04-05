@@ -12,6 +12,11 @@ export const dashboard = (state = initialState, action) => {
         globalAdminData: action.data
       });
     }
+    case 'GET_CHART_DATA_CLINIC_ADMIN_SUCCESS': {
+      return Object.assign({}, state, {
+        clinicAdminData: action.data
+      });
+    }
     default:
       return state;
   }

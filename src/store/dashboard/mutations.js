@@ -24,11 +24,27 @@ const getChartDataGlobalAdminFail = () => ({
   type: 'GET_CHART_DATA_GLOBAL_ADMIN_FAIL'
 });
 
+const getChartDataClinicAdminRequest = () => ({
+  type: 'GET_CHART_DATA_CLINIC_ADMIN_REQUEST'
+});
+
+const getChartDataClinicAdminSuccess = (data) => ({
+  type: 'GET_CHART_DATA_CLINIC_ADMIN_SUCCESS',
+  data
+});
+
+const getChartDataClinicAdminFail = () => ({
+  type: 'GET_CHART_DATA_CLINIC_ADMIN_FAIL'
+});
+
 export const mutation = {
   getCountryAdminDataFail,
   getCountryAdminDataRequest,
   getCountryAdminDataSuccess,
   getChartDataGlobalAdminRequest,
   getChartDataGlobalAdminSuccess,
-  getChartDataGlobalAdminFail
+  getChartDataGlobalAdminFail,
+  getChartDataClinicAdminRequest,
+  getChartDataClinicAdminSuccess,
+  getChartDataClinicAdminFail
 };

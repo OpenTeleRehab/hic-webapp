@@ -73,32 +73,6 @@ const getPatientFail = () => ({
   type: 'GET_PATIENT_FAIL'
 });
 
-const getPatientByClinicRequest = () => ({
-  type: 'GET_PATIENT_BY_CLINIC_REQUEST'
-});
-
-const getPatientByClinicSuccess = (data) => ({
-  type: 'GET_PATIENT_BY_CLINIC_SUCCESS',
-  data
-});
-
-const getPatientByClinicFail = () => ({
-  type: 'GET_PATIENT_BY_CLINIC_FAIL'
-});
-
-const getTherapistByClinicRequest = () => ({
-  type: 'GET_THERAPIST_BY_CLINIC_REQUEST'
-});
-
-const getTherapistByClinicSuccess = (data) => ({
-  type: 'GET_THERAPIST_BY_CLINIC_SUCCESS',
-  data
-});
-
-const getTherapistByClinicFail = () => ({
-  type: 'GET_THERAPIST_BY_CLINIC_FAIL'
-});
-
 export const mutation = {
   createTherapistRequest,
   createTherapistSuccess,
@@ -117,11 +91,5 @@ export const mutation = {
   getPatientFail,
   updateTherapistStatusRequest,
   updateTherapistStatusSuccess,
-  updateTherapistStatusFail,
-  getPatientByClinicRequest,
-  getPatientByClinicSuccess,
-  getPatientByClinicFail,
-  getTherapistByClinicRequest,
-  getTherapistByClinicSuccess,
-  getTherapistByClinicFail
+  updateTherapistStatusFail
 };
