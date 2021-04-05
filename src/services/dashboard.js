@@ -12,6 +12,19 @@ const getDataForCountryAdmin = countryId => {
     });
 };
 
+const getChartDataGlobalAdmin = payload => {
+  return axios.get('/chart/admin-dashboard', { params: payload })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Dashboard = {
-  getDataForCountryAdmin
+  getDataForCountryAdmin,
+  getChartDataGlobalAdmin
 };
