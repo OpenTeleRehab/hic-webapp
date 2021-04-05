@@ -16,7 +16,10 @@ const settings = {
   },
   tinymce: {
     apiKey: 'hp4m52i3gyuf4edxwxu9jyt91br22arfth7bg6ckya5a83k0'
-  }
+  },
+  minAge: 0,
+  maxAge: 80,
+  ageGap: 10
 };
 
 export default settings;
