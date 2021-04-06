@@ -66,7 +66,7 @@ const Patient = ({ translate }) => {
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
-        <h1>{translate('therapist.management')}</h1>
+        <h1>{translate('patient.list')}</h1>
       </div>
       <CustomTable
         pageSize={pageSize}
