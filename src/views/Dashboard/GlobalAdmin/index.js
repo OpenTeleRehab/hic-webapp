@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FaFlag, FaClinicMedical } from 'react-icons/fa';
 import { getChartDataGlobalAdmin } from 'store/dashboard/actions';
 import { getTranslate } from 'react-localize-redux';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Line } from 'react-chartjs-2';
 import _ from 'lodash';
 import { CHART } from '../../../variables/dashboard';
 import settings from '../../../settings';
@@ -32,6 +32,7 @@ const GlobalAdminDashboard = () => {
   const [patientsByGenderByCountry, setPatientsByGenderByCountry] = useState([]);
   const [treatmentsByGenderByCountry, setTreatmentsByGenderByCountry] = useState([]);
   const [ongoingTreatmentsByGenderByCountry, setOngoingTreatmentsByGenderByCountry] = useState([]);
+  const [therapistsByCountry, setTherapistsByCountry] = useState([]);
 
   useEffect(() => {
     dispatch(getChartDataGlobalAdmin());
@@ -46,6 +47,27 @@ const GlobalAdminDashboard = () => {
       setMapData(data);
     }
   }, [countries]);
+
+  useEffect(() => {
+    if (!_.isEmpty(globalAdminData) && countries.length) {
+      const labels = [];
+      const data = [];
+      countries.map(country => {
+        labels.push(country.name);
+        const numberByCountry = globalAdminData.therapistData.data.therapistsByCountry.find(item => item.country_id === country.id);
+        data.push(numberByCountry ? numberByCountry.total : 0);
+      });
+
+      setTherapistsByCountry({
+        labels,
+        datasets: [{
+          data,
+          fill: true,
+          backgroundColor: CHART.COLOR[0]
+        }]
+      });
+    }
+  }, [globalAdminData, countries]);
 
   useEffect(() => {
     if (!_.isEmpty(globalAdminData)) {
@@ -86,7 +108,7 @@ const GlobalAdminDashboard = () => {
       setCountryAdminPerCountries(countryAdminsPerCountry);
       setClinicAdminPerCountries(clinicAdminsByCountry);
 
-      if (globalAdminData.therapistData.length) {
+      if (!_.isEmpty(globalAdminData.therapistData)) {
         setTotalTherapist(globalAdminData.therapistData.data.therapistTotal);
       }
 
@@ -447,6 +469,36 @@ const GlobalAdminDashboard = () => {
             </Card.Body>
           </Card>
         </Col>
+      </Row>
+      <Row>
+        <Col className="container-fluid content-row">
+          <Card className="h-100">
+            <Card.Header as="h5" className="chart-header">{translate('common.therapist_per_country')}</Card.Header>
+            <Card.Body>
+              <Line
+                data={therapistsByCountry}
+                options={{
+                  legend: {
+                    display: false
+                  },
+                  scales: {
+                    xAxes: [{
+                      gridLines: {
+                        display: false
+                      }
+                    }],
+                    yAxes: [{
+                      gridLines: {
+                        display: false
+                      }
+                    }]
+                  }
+                }}
+              />
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col></Col>
       </Row>
     </>
   );
