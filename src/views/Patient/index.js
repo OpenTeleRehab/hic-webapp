@@ -26,15 +26,13 @@ const Patient = ({ translate }) => {
     { name: 'clinic', title: translate('common.clinic') },
     { name: 'region', title: translate('common.region') },
     { name: 'treatment_plan', title: translate('common.ongoing_treatment_plan') },
-    { name: 'treatment_status', title: translate('common.ongoing_treatment_status') },
-    { name: 'next_appointment', title: translate('common.next_appointment') }
+    { name: 'treatment_status', title: translate('common.ongoing_treatment_status') }
   ];
 
   const columnExtensions = [
     { columnName: 'id', wordWrapEnabled: true },
     { columnName: 'treatment_plan', wordWrapEnabled: true },
-    { columnName: 'treatment_status', wordWrapEnabled: true },
-    { columnName: 'next_appointment', wordWrapEnabled: true }
+    { columnName: 'treatment_status', wordWrapEnabled: true }
   ];
 
   const [pageSize, setPageSize] = useState(10);
@@ -89,8 +87,7 @@ const Patient = ({ translate }) => {
             clinic: getClinicName(patient.clinic_id, clinics),
             region: getClinicRegion(patient.clinic_id, clinics),
             treatment_plan: patient.upcomingTreatmentPlan ? patient.upcomingTreatmentPlan.name : '',
-            treatment_status: renderStatusBadge(patient.upcomingTreatmentPlan),
-            next_appointment: ''
+            treatment_status: renderStatusBadge(patient.upcomingTreatmentPlan)
           };
         })}
       />
