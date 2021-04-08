@@ -46,3 +46,18 @@ export const updateProfession = (id, payload) => async (dispatch) => {
     return false;
   }
 };
+
+export const deleteProfession = id => async (dispatch) => {
+  dispatch(mutation.deleteProfessionRequest());
+  const data = await Profession.deleteProfession(id);
+  if (data.success) {
+    dispatch(mutation.deleteProfessionSuccess());
+    dispatch(getProfessions());
+    dispatch(showSuccessNotification('toast_title.delete_profession', data.message));
+    return true;
+  } else {
+    dispatch(mutation.deleteProfessionFail());
+    dispatch(showErrorNotification('toast_title.delete_profession', data.message));
+    return false;
+  }
+};
