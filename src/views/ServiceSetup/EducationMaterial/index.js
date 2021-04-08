@@ -234,7 +234,7 @@ const EducationMaterial = ({ translate }) => {
               );
               return {
                 title: educationMaterial.title,
-                type: translate(educationMaterial.file.fileGroupType),
+                type: educationMaterial.file ? translate(educationMaterial.file.fileGroupType) : '',
                 action
               };
             })}
