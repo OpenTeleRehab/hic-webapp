@@ -31,57 +31,59 @@ const ViewEducationMaterial = ({ showView, handleViewClose, id }) => {
       <Form>
         <Row>
           <Col sm={12} xl={12}>
-            { materialFile !== undefined &&
-                <div className = "exercise-media">
-                  { materialFile.fileType === 'audio/mpeg' &&
-                    <div className="img-thumbnail w-100 pt-2">
-                      <audio controls className="w-100">
-                        <source src={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`} type="audio/ogg" />
-                      </audio>
-                    </div>
-                  }
-
-                  { (materialFile.fileType !== 'audio/mpeg' && materialFile.fileType !== 'video/mp4' && materialFile.fileType !== 'application/pdf') &&
-                    <img src={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`} alt="..." className="w-100 img-thumbnail"/>
-                  }
-
-                  { materialFile.fileType === 'video/mp4' &&
-                    <video className="w-100 img-thumbnail" controls>
-                      <source src={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`} type="video/mp4" />
-                    </video>
-                  }
-
-                  { materialFile.fileType === 'application/pdf' &&
-                    <object
-                      data={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`}
-                      type="application/pdf"
-                      width="480"
-                      height="678"
-                    >
-                      <iframe
-                        src={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`}
-                        width="480"
-                        height="678"
-                        title={materialFile.fileName}
-                      >
-                        <p>This browser does not support PDF!</p>
-                      </iframe>
-                    </object>
-                  }
-
-                  <Form.Text className="text-muted">
-                    {translate(materialFile.fileGroupType)}:
-                    <a
-                      href={`${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`}
-                      /* eslint-disable-next-line react/jsx-no-target-blank */
-                      target="_blank"
-                      className="pl-2"
-                    >
-                      {materialFile.fileName}
-                    </a>
-                  </Form.Text>
+            { materialFile ? (
+              <div className = "exercise-media">
+                { materialFile.fileType === 'audio/mpeg' &&
+                <div className="img-thumbnail w-100 pt-2">
+                  <audio controls className="w-100">
+                    <source src={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`} type="audio/ogg" />
+                  </audio>
                 </div>
-            }
+                }
+
+                { (materialFile.fileType !== 'audio/mpeg' && materialFile.fileType !== 'video/mp4' && materialFile.fileType !== 'application/pdf') &&
+                <img src={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`} alt="..." className="w-100 img-thumbnail"/>
+                }
+
+                { materialFile.fileType === 'video/mp4' &&
+                <video className="w-100 img-thumbnail" controls>
+                  <source src={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`} type="video/mp4" />
+                </video>
+                }
+
+                { materialFile.fileType === 'application/pdf' &&
+                <object
+                  data={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`}
+                  type="application/pdf"
+                  width="480"
+                  height="678"
+                >
+                  <iframe
+                    src={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`}
+                    width="480"
+                    height="678"
+                    title={materialFile.fileName}
+                  >
+                    <p>This browser does not support PDF!</p>
+                  </iframe>
+                </object>
+                }
+
+                <Form.Text className="text-muted">
+                  {translate(materialFile.fileGroupType)}:
+                  <a
+                    href={`${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`}
+                    /* eslint-disable-next-line react/jsx-no-target-blank */
+                    target="_blank"
+                    className="pl-2"
+                  >
+                    {materialFile.fileName}
+                  </a>
+                </Form.Text>
+              </div>
+            ) : (
+              <div>{translate('common.no_file_translate')}</div>
+            )}
           </Col>
         </Row>
       </Form>
