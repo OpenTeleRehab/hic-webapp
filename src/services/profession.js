@@ -12,6 +12,32 @@ const getProfession = () => {
     });
 };
 
+const createProfession = payload => {
+  return axios.post('/profession', payload)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const updateProfession = (id, payload) => {
+  return axios.put(`/profession/${id}`, payload)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Profession = {
-  getProfession
+  getProfession,
+  createProfession,
+  updateProfession
 };

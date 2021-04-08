@@ -12,6 +12,7 @@ import { getCountryName, getCountryIdentity } from 'utils/country';
 import { getClinicName, getClinicIdentity } from 'utils/clinic';
 
 import { getProfile } from 'store/auth/actions';
+import { getProfessions } from 'store/profession/actions';
 
 const CreateTherapist = ({ show, handleClose, editId }) => {
   const { keycloak } = useKeycloak();
@@ -58,6 +59,10 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
     }
     // eslint-disable-next-line
   }, [show]);
+
+  useEffect(() => {
+    dispatch(getProfessions());
+  }, [dispatch]);
 
   const resetData = () => {
     setErrorEmail(false);
@@ -273,7 +278,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
             >
               <option value="">{translate('placeholder.profession')}</option>
               {professions.map((profession, index) => (
-                <option key={index} value={profession.id}>{profession.title}</option>
+                <option key={index} value={profession.id}>{profession.name}</option>
               ))}
             </Form.Control>
             <Form.Control.Feedback type="invalid">
