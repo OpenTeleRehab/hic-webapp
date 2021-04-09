@@ -274,7 +274,6 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
               as="select"
               isInvalid={errorClinic}
               value={formFields.clinic_id}
-              disabled={!!editId}
             >
               <option value="">{translate('placeholder.clinic')}</option>
               {clinics.map((clinic) => (
