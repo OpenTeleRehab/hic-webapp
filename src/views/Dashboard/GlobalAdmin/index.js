@@ -28,7 +28,7 @@ const GlobalAdminDashboard = () => {
   const [patientsByAgePerCountry, setPatientsByAgePerCounty] = useState([]);
   const [ongoingByAgePerCountry, setOngoingByAgePerCounty] = useState([]);
   const [treatmentByAgePerCountry, setTreatmentByAgePerCounty] = useState([]);
-  const [mapData, setMapData] = useState([]);
+  const [mapData, setMapData] = useState([['Country']]);
   const [patientsByGenderByCountry, setPatientsByGenderByCountry] = useState([]);
   const [treatmentsByGenderByCountry, setTreatmentsByGenderByCountry] = useState([]);
   const [ongoingTreatmentsByGenderByCountry, setOngoingTreatmentsByGenderByCountry] = useState([]);
