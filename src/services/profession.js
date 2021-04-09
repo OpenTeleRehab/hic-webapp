@@ -36,8 +36,21 @@ const updateProfession = (id, payload) => {
     });
 };
 
+const deleteProfession = id => {
+  return axios.delete(`/profession/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Profession = {
   getProfession,
   createProfession,
-  updateProfession
+  updateProfession,
+  deleteProfession
 };

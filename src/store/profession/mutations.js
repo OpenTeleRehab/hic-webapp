@@ -35,6 +35,19 @@ const updateProfessionsFail = () => ({
   type: 'UPDATE_PROFESSIONS_FAIL'
 });
 
+const deleteProfessionRequest = () => ({
+  type: 'DELETE_PROFESSION_REQUEST'
+});
+
+const deleteProfessionSuccess = (data) => ({
+  type: 'DELETE_PROFESSION_SUCCESS',
+  data
+});
+
+const deleteProfessionFail = () => ({
+  type: 'DELETE_PROFESSION_FAIL'
+});
+
 export const mutation = {
   getProfessionRequest,
   getProfessionsFail,
@@ -44,5 +57,8 @@ export const mutation = {
   createProfessionsFail,
   updateProfessionRequest,
   updateProfessionsSuccess,
-  updateProfessionsFail
+  updateProfessionsFail,
+  deleteProfessionRequest,
+  deleteProfessionSuccess,
+  deleteProfessionFail
 };
