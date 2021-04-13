@@ -1,15 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  AccordionContext,
-  Button,
-  Card,
-  CardGroup,
-  useAccordionToggle
-} from 'react-bootstrap';
-import { BsChevronDown, BsChevronRight, BsPlus } from 'react-icons/all';
+import { Button, Card, CardGroup } from 'react-bootstrap';
+import { BsPlus } from 'react-icons/all';
 import _ from 'lodash';
 
 import SubCategoryList from '../_Partials/subCategoryList';
@@ -115,6 +109,7 @@ const CategoryList = ({ type, translate }) => {
                   active={activeSub1}
                   setActive={setActiveSub1}
                   handleEdit={handleEdit}
+                  type={type}
                 />
               </>
             )}
@@ -127,12 +122,14 @@ const CategoryList = ({ type, translate }) => {
           setActive={setActiveSub2}
           handleCreate={handleCreate}
           handleEdit={handleEdit}
+          type={type}
         />
         <SubCategoryCard
           categories={categories}
           activeCategory={activeSub2}
           handleCreate={handleCreate}
           handleEdit={handleEdit}
+          type={type}
         />
       </CardGroup>
 
@@ -156,28 +153,3 @@ CategoryList.propTypes = {
 };
 
 export default withLocalize(CategoryList);
-
-const CustomToggle = ({ eventKey, disabled }) => {
-  const currentEventKey = useContext(AccordionContext);
-  const decoratedOnClick = useAccordionToggle(eventKey);
-
-  return (
-    <Button
-      variant="link"
-      className="mr-2 py-0 px-1"
-      onClick={decoratedOnClick}
-      disabled={disabled}
-    >
-      {currentEventKey === eventKey ? (
-        <BsChevronDown className="ml-auto" />
-      ) : (
-        <BsChevronRight className="ml-auto" />
-      )}
-    </Button>
-  );
-};
-
-CustomToggle.propTypes = {
-  eventKey: PropTypes.string,
-  disabled: PropTypes.bool
-};

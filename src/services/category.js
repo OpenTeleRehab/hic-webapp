@@ -67,10 +67,23 @@ const updateCategory = (id, payload) => {
     });
 };
 
+const deleteCategory = id => {
+  return axios.delete(`/category/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Category = {
   getCategories,
   getCategoryTreeData,
   getCategory,
   createCategory,
-  updateCategory
+  updateCategory,
+  deleteCategory
 };

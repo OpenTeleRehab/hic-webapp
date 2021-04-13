@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import SearchInput from 'components/Form/SearchInput';
 
-const SubCategoryCard = ({ activeCategory, categories, active, setActive, handleCreate, handleEdit }) => {
+const SubCategoryCard = ({ type, activeCategory, categories, active, setActive, handleCreate, handleEdit }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const [searchValue, setSearchValue] = useState('');
@@ -73,6 +73,7 @@ const SubCategoryCard = ({ activeCategory, categories, active, setActive, handle
             active={active}
             setActive={setActive}
             handleEdit={handleEdit}
+            type={type}
           />
         </Card.Body>
       )}
@@ -81,6 +82,7 @@ const SubCategoryCard = ({ activeCategory, categories, active, setActive, handle
 };
 
 SubCategoryCard.propTypes = {
+  type: PropTypes.string,
   activeCategory: PropTypes.object,
   categories: PropTypes.array,
   active: PropTypes.object,
