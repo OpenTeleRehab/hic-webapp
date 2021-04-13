@@ -9,7 +9,7 @@ import { getCountryISO } from 'utils/country';
 import Dialog from 'components/Dialog';
 import { deleteClinic } from 'store/clinic/actions';
 
-const Clinic = ({ translate }) => {
+const Clinic = ({ translate, handleRowEdit }) => {
   const clinics = useSelector(state => state.clinic.clinics);
   const countries = useSelector(state => state.country.countries);
   const dispatch = useDispatch();
@@ -51,7 +51,7 @@ const Clinic = ({ translate }) => {
         rows={clinics.map(clinic => {
           const action = (
             <>
-              <EditAction disabled />
+              <EditAction onClick={() => handleRowEdit(clinic.id)} />
               <DeleteAction className="ml-1" onClick={() => handleDelete(clinic.id)} disabled={clinic.is_used} />
             </>
           );
@@ -82,6 +82,7 @@ const Clinic = ({ translate }) => {
 };
 
 Clinic.propTypes = {
+  handleRowEdit: PropTypes.func,
   translate: PropTypes.func
 };
 

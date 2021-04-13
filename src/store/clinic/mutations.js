@@ -23,6 +23,18 @@ const createClinicFail = () => ({
   type: 'CREATE_CLINIC_FAIL'
 });
 
+const updateClinicRequest = () => ({
+  type: 'UPDATE_CLINIC_REQUEST'
+});
+
+const updateClinicSuccess = () => ({
+  type: 'UPDATE_CLINIC_SUCCESS'
+});
+
+const updateClinicFail = () => ({
+  type: 'UPDATE_CLINIC_FAIL'
+});
+
 const deleteClinicRequest = () => ({
   type: 'DELETE_CLINIC_REQUEST'
 });
@@ -42,6 +54,9 @@ export const mutation = {
   createClinicRequest,
   createClinicSuccess,
   createClinicFail,
+  updateClinicRequest,
+  updateClinicSuccess,
+  updateClinicFail,
   deleteClinicRequest,
   deleteClinicSuccess,
   deleteClinicFail

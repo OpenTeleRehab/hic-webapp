@@ -4,11 +4,11 @@ import Dialog from 'components/Dialog';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
-import { createClinic } from 'store/clinic/actions';
+import { createClinic, updateClinic } from 'store/clinic/actions';
 import settings from 'settings';
 import { getCountryISO } from 'utils/country';
 
-const CreateClinic = ({ show, handleClose }) => {
+const CreateClinic = ({ show, editId, handleClose }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
@@ -18,6 +18,7 @@ const CreateClinic = ({ show, handleClose }) => {
   const [errorRegion, setErrorRegion] = useState(false);
 
   const countries = useSelector(state => state.country.countries);
+  const clinics = useSelector(state => state.clinic.clinics);
   const profile = useSelector(state => state.auth.profile);
 
   const [formFields, setFormFields] = useState({
@@ -30,11 +31,25 @@ const CreateClinic = ({ show, handleClose }) => {
   });
 
   useEffect(() => {
-    if (profile !== undefined) {
-      setFormFields({ ...formFields, country: profile.country_id, country_iso: getCountryISO(profile.country_id, countries) });
+    if (editId && clinics.length) {
+      const clinic = clinics.find(clinic => clinic.id === editId);
+      setFormFields({
+        name: clinic.name,
+        country: clinic.country_id,
+        region: clinic.region,
+        province: clinic.province,
+        city: clinic.city,
+        country_iso: getCountryISO(profile.country_id, countries)
+      });
+    } else if (profile) {
+      setFormFields({
+        ...formFields,
+        country: profile.country_id,
+        country_iso: getCountryISO(profile.country_id, countries)
+      });
     }
     // eslint-disable-next-line
-  }, [profile, countries]);
+  }, [editId, profile, countries]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -66,21 +81,29 @@ const CreateClinic = ({ show, handleClose }) => {
     }
 
     if (canSave) {
-      dispatch(createClinic(formFields)).then(result => {
-        if (result) {
-          handleClose();
-        }
-      });
+      if (editId) {
+        dispatch(updateClinic(editId, formFields)).then(result => {
+          if (result) {
+            handleClose();
+          }
+        });
+      } else {
+        dispatch(createClinic(formFields)).then(result => {
+          if (result) {
+            handleClose();
+          }
+        });
+      }
     }
   };
 
   return (
     <Dialog
       show={show}
-      title={translate('clinic.new')}
+      title={translate(editId ? 'clinic.edit' : 'clinic.new')}
       onCancel={handleClose}
       onConfirm={handleConfirm}
-      confirmLabel={translate('common.create')}
+      confirmLabel={editId ? translate('common.save') : translate('common.create')}
     >
       <Form>
         <Form.Row>
@@ -158,6 +181,7 @@ const CreateClinic = ({ show, handleClose }) => {
 
 CreateClinic.propTypes = {
   show: PropTypes.bool,
+  editId: PropTypes.string,
   handleClose: PropTypes.func
 };
 

@@ -32,6 +32,21 @@ export const createClinic = payload => async (dispatch) => {
   }
 };
 
+export const updateClinic = (id, payload) => async (dispatch) => {
+  dispatch(mutation.updateClinicRequest());
+  const data = await Clinic.updateClinic(id, payload);
+  if (data.success) {
+    dispatch(mutation.updateClinicSuccess());
+    dispatch(getClinics());
+    dispatch(showSuccessNotification('toast_title.edit_clinic', data.message));
+    return true;
+  } else {
+    dispatch(mutation.updateClinicFail());
+    dispatch(showErrorNotification('toast_title.edit_clinic', data.message));
+    return false;
+  }
+};
+
 export const deleteClinic = id => async (dispatch, getState) => {
   dispatch(mutation.deleteClinicRequest());
   const data = await Clinic.deleteClinic(id);

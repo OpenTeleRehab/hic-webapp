@@ -24,6 +24,18 @@ const createClinic = payload => {
     });
 };
 
+const updateClinic = (id, payload) => {
+  return axios.put(`/clinic/${id}`, payload)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const deleteClinic = id => {
   return axios.delete(`/clinic/${id}`)
     .then(
@@ -39,5 +51,6 @@ const deleteClinic = id => {
 export const Clinic = {
   getClinics,
   createClinic,
+  updateClinic,
   deleteClinic
 };
