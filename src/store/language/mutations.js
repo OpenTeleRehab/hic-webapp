@@ -35,6 +35,18 @@ const updateLanguageFail = () => ({
   type: 'UPDATE_LANGUAGE_FAIL'
 });
 
+const deleteLanguageRequest = () => ({
+  type: 'DELETE_LANGUAGE_REQUEST'
+});
+
+const deleteLanguageSuccess = () => ({
+  type: 'DELETE_LANGUAGE_SUCCESS'
+});
+
+const deleteLanguageFail = () => ({
+  type: 'DELETE_LANGUAGE_FAIL'
+});
+
 export const mutation = {
   getLanguagesRequest,
   getLanguagesSuccess,
@@ -44,5 +56,8 @@ export const mutation = {
   createLanguageSuccess,
   updateLanguageRequest,
   updateLanguageSuccess,
-  updateLanguageFail
+  updateLanguageFail,
+  deleteLanguageRequest,
+  deleteLanguageSuccess,
+  deleteLanguageFail
 };

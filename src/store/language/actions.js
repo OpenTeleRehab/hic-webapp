@@ -37,12 +37,27 @@ export const updateLanguage = (id, payload) => async (dispatch) => {
   const data = await Language.updateLanguage(id, payload);
   if (data.success) {
     dispatch(mutation.updateLanguageSuccess());
-    dispatch((getLanguages()));
+    dispatch(getLanguages());
     dispatch(showSuccessNotification('toast_title.edit_language', data.message));
     return true;
   } else {
     dispatch(mutation.updateLanguageFail());
     dispatch(showErrorNotification('toast_title.edit_language', data.message));
+    return false;
+  }
+};
+
+export const deleteLanguage = id => async (dispatch) => {
+  dispatch(mutation.deleteLanguageRequest());
+  const data = await Language.deleteLanguage(id);
+  if (data.success) {
+    dispatch(mutation.deleteLanguageSuccess());
+    dispatch(getLanguages());
+    dispatch(showSuccessNotification('toast_title.delete_language', data.message));
+    return true;
+  } else {
+    dispatch(mutation.deleteLanguageFail());
+    dispatch(showErrorNotification('toast_title.delete_language', data.message));
     return false;
   }
 };

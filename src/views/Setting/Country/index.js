@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 import { useSelector, useDispatch } from 'react-redux';
@@ -7,7 +7,7 @@ import BasicTable from 'components/Table/basic';
 import { EditAction, DeleteAction } from 'components/ActionIcons';
 import { getLanguageName } from 'utils/language';
 import Dialog from 'components/Dialog';
-import { deleteCountry } from 'store/country/actions';
+import { deleteCountry, getCountries } from 'store/country/actions';
 
 const Country = ({ translate, handleRowEdit }) => {
   const countries = useSelector(state => state.country.countries);
@@ -26,6 +26,10 @@ const Country = ({ translate, handleRowEdit }) => {
   const [deleteId, setDeleteId] = useState('');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
+  useEffect(() => {
+    dispatch(getCountries());
+  }, [dispatch]);
+
   const handleDelete = (id) => {
     setDeleteId(id);
     setShowDeleteDialog(true);
@@ -43,6 +47,7 @@ const Country = ({ translate, handleRowEdit }) => {
       }
     });
   };
+
   return (
     <div className="card">
       <BasicTable
