@@ -61,6 +61,18 @@ const updateCategoryFail = () => ({
   type: 'UPDATE_CATEGORY_FAIL'
 });
 
+const deleteCategoryRequest = () => ({
+  type: 'DELETE_CATEGORY_REQUEST'
+});
+
+const deleteCategorySuccess = () => ({
+  type: 'DELETE_CATEGORY_SUCCESS'
+});
+
+const deleteCategoryFail = () => ({
+  type: 'DELETE_CATEGORY_FAIL'
+});
+
 export const mutation = {
   getCategoriesRequest,
   getCategoriesSuccess,
@@ -76,5 +88,8 @@ export const mutation = {
   createCategoryFail,
   updateCategoryRequest,
   updateCategorySuccess,
-  updateCategoryFail
+  updateCategoryFail,
+  deleteCategoryRequest,
+  deleteCategorySuccess,
+  deleteCategoryFail
 };

@@ -71,3 +71,18 @@ export const updateCategory = (id, payload) => async (dispatch) => {
     return false;
   }
 };
+
+export const deleteCategory = (id, type) => async (dispatch) => {
+  dispatch(mutation.deleteCategoryRequest());
+  const data = await Category.deleteCategory(id);
+  if (data.success) {
+    dispatch(mutation.deleteCategorySuccess());
+    dispatch(getCategories({ type }));
+    dispatch(showSuccessNotification('toast_title.delete_category', data.message));
+    return true;
+  } else {
+    dispatch(mutation.deleteCategoryFail());
+    dispatch(showErrorNotification('toast_title.delete_category', data.message));
+    return false;
+  }
+};
