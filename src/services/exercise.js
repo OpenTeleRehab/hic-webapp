@@ -100,11 +100,29 @@ const downloadExercises = payload => {
     });
 };
 
+const uploadExercises = payload => {
+  const formData = new FormData();
+  _.forIn(payload, (value, key) => {
+    formData.append(key, value);
+  });
+
+  return axios.post('/import/exercises', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Exercise = {
   getExercises,
   getExercise,
   createExercise,
   updateExercise,
   deleteExercise,
-  downloadExercises
+  downloadExercises,
+  uploadExercises
 };

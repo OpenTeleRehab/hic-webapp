@@ -91,3 +91,17 @@ export const downloadExercises = payload => async dispatch => {
     return false;
   }
 };
+
+export const uploadExercises = payload => async dispatch => {
+  dispatch(mutation.uploadExercisesRequest());
+  const data = await Exercise.uploadExercises(payload);
+  if (data.success) {
+    dispatch(mutation.uploadExercisesSuccess());
+    dispatch(showSuccessNotification('toast_title.upload_exercises', data.message));
+    return true;
+  } else {
+    dispatch(mutation.uploadExercisesFail());
+    dispatch(showErrorNotification('toast_title.upload_exercises', data.message));
+    return false;
+  }
+};
