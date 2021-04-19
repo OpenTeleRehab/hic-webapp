@@ -36,8 +36,21 @@ const updateLanguage = (id, payload) => {
     });
 };
 
+const deleteLanguage = id => {
+  return axios.delete(`/language/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Language = {
   getLanguage,
   createLanguage,
-  updateLanguage
+  updateLanguage,
+  deleteLanguage
 };
