@@ -17,3 +17,9 @@ export const getCountryISO = (id, countries) => {
 
   return country ? country.iso_code : '';
 };
+
+export const getTotalTherapistLimit = (id, countries) => {
+  const country = _.findLast(countries, { id: parseInt(id, 10) });
+
+  return country ? country.therapist_limit : 50;
+};

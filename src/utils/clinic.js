@@ -17,3 +17,9 @@ export const getClinicRegion = (id, clinics) => {
 
   return clinic ? clinic.region : '';
 };
+
+export const getTotalTherapistLimit = (id, clinics) => {
+  const clinic = _.findLast(clinics, { id: parseInt(id, 10) });
+
+  return clinic ? clinic.therapist_limit : 0;
+};

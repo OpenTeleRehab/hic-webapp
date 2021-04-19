@@ -48,9 +48,37 @@ const deleteClinic = id => {
     });
 };
 
+const countTherapistLimitByCountry = (countryId) => {
+  const params = { country_id: countryId };
+  return axios.get('clinic/therapist-limit/count/by-contry', { params })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const countTherapistLimitByClinic = (clinicId) => {
+  const params = { clinic_id: clinicId };
+  return axios.get('clinic/therapist-limit/count/by-clinic', { params })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Clinic = {
   getClinics,
   createClinic,
   updateClinic,
-  deleteClinic
+  deleteClinic,
+  countTherapistLimitByCountry,
+  countTherapistLimitByClinic
 };
