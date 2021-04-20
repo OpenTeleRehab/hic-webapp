@@ -3,21 +3,25 @@ import { withLocalize } from 'react-localize-redux';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { formatFileSize, toMB } from '../../../utils/file';
 import settings from '../../../settings';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as ROUTES from '../../../variables/routes';
 import { BsDownload } from 'react-icons/bs';
 import { TEMPLATE_URL } from 'variables/exercises';
 import { uploadExercises } from 'store/exercise/actions';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+import UploadInfoDialog from './uploadInfo';
+import Spinner from 'react-bootstrap/Spinner';
 
 const UploadExercise = ({ translate }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const { maxFileSize } = settings.educationMaterial;
   const [file, setFile] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [fileError, setFileError] = useState(false);
+  const [show, setShow] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [info, setInfo] = useState([]);
 
   const handleFileChange = (e) => {
     const { files } = e.target;
@@ -42,20 +46,36 @@ const UploadExercise = ({ translate }) => {
     }
 
     if (canSave) {
+      setIsLoading(true);
       dispatch(uploadExercises({
         file
       }))
         .then(result => {
-          if (result) {
-            history.push(ROUTES.SERVICE_SETUP);
-          }
+          setShow(true);
+          setSuccess(result.success);
+          setInfo(result.info);
           setIsLoading(false);
         });
     }
   };
 
+  const handleClose = () => {
+    setShow(false);
+    setSuccess(false);
+    setInfo([]);
+  };
+
   return (
     <>
+      { isLoading && <Spinner className="loading-icon" animation="border" variant="primary" /> }
+      {show &&
+        <UploadInfoDialog
+          show={show}
+          handleClose={handleClose}
+          success={success}
+          info={info}
+        />
+      }
       <Row>
         <Col>
           <Form.Group controlId="formFile">

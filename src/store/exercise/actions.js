@@ -98,10 +98,10 @@ export const uploadExercises = payload => async dispatch => {
   if (data.success) {
     dispatch(mutation.uploadExercisesSuccess());
     dispatch(showSuccessNotification('toast_title.upload_exercises', data.message));
-    return true;
+    return { success: true, info: data.info };
   } else {
     dispatch(mutation.uploadExercisesFail());
     dispatch(showErrorNotification('toast_title.upload_exercises', data.message));
-    return false;
+    return { success: false, info: data.errors };
   }
 };
