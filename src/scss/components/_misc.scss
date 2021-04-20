@@ -20,6 +20,14 @@
 	}
 }
 
+.error-feedback {
+  display: block;
+  color: $red;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+}
+
 // additional-field
 .additional-field {
 	.remove-btn-container {
