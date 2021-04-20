@@ -6,6 +6,7 @@ import StatusFilterCell from 'components/Table/FilterCells/StatusFilterCell';
 import DateRangeFilterCell from 'components/Table/FilterCells/DateRangeFilterCell';
 import CountryFilterCell from 'components/Table/FilterCells/CountryFilterCell';
 import ClinicFilterCell from 'components/Table/FilterCells/ClinicFilterCell';
+import ProfessionFilterCell from 'components/Table/FilterCells/ProfessionFilterCell';
 
 const FilterCell = (props) => {
   const { column } = props;
@@ -29,6 +30,8 @@ const FilterCell = (props) => {
     return <CountryFilterCell {...props} />;
   } else if (column.name === 'clinic') {
     return <ClinicFilterCell {...props} />;
+  } else if (column.name === 'profession') {
+    return <ProfessionFilterCell {...props} />;
   }
   return <TableFilterRow.Cell {...props} />;
 };
