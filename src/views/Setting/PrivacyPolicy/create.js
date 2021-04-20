@@ -6,19 +6,19 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import settings from 'settings';
-import { createTermAndCondition, updateTermAndCondition } from 'store/termAndCondition/actions';
+import { createPrivacyPolicy, updatePrivacyPolicy } from 'store/privacyPolicy/actions';
 
-const CreateTermAndCondition = ({ show, editId, handleClose }) => {
+const CreatePrivacyPolicy = ({ show, editId, handleClose }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
 
   const [errorContent, setErrorContent] = useState(false);
-  const [errorClass, setErrorClass] = useState('');
   const [errorContentMessage, setErrorContentMessage] = useState('');
+  const [errorClass, setErrorClass] = useState('');
   const [errorVersion, setVersion] = useState(false);
   const { languages } = useSelector(state => state.language);
-  const { termAndConditions } = useSelector(state => state.termAndCondition);
+  const { privacyPolicies } = useSelector(state => state.privacyPolicy);
 
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
@@ -34,14 +34,14 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
   }, [languages]);
 
   useEffect(() => {
-    if (editId && termAndConditions.length) {
-      const termAndCondition = termAndConditions.find(term => term.id === editId);
+    if (editId && privacyPolicies.length) {
+      const privacyPolicy = privacyPolicies.find(privacyPolicy => privacyPolicy.id === editId);
       setFormFields({
-        version: termAndCondition.version
+        version: privacyPolicy.version
       });
-      setContent(termAndCondition.content);
+      setContent(privacyPolicy.content);
     }
-  }, [editId, termAndConditions]);
+  }, [editId, privacyPolicies]);
 
   const handleLanguageChange = e => {
     const { value } = e.target;
@@ -74,14 +74,14 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
 
     if (canSave) {
       if (editId) {
-        dispatch(updateTermAndCondition(editId, { ...formFields, content, lang: language }))
+        dispatch(updatePrivacyPolicy(editId, { ...formFields, content, lang: language }))
           .then(result => {
             if (result) {
               handleClose();
             }
           });
       } else {
-        dispatch(createTermAndCondition({ ...formFields, content, lang: language }))
+        dispatch(createPrivacyPolicy({ ...formFields, content, lang: language }))
           .then(result => {
             if (result) {
               handleClose();
@@ -99,7 +99,7 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
     <Dialog
       size="lg"
       show={show}
-      title={translate(editId ? 'term_and_condition.edit' : 'term_and_condition.new')}
+      title={translate(editId ? 'privacy_policy.edit' : 'privacy_policy.new')}
       onCancel={handleClose}
       onConfirm={handleConfirm}
       confirmLabel={editId ? translate('common.save') : translate('common.create')}
@@ -116,19 +116,19 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
           </Form.Control>
         </Form.Group>
         <Form.Group controlId="version">
-          <Form.Label>{translate('term_and_condition.version')}</Form.Label>
+          <Form.Label>{translate('privacy_policy.version')}</Form.Label>
           <span className="text-dark ml-1">*</span>
           <Form.Control
             name="version"
             onChange={handleChange}
             type="text"
-            placeholder={translate('placeholder.term_and_condition.version')}
+            placeholder={translate('placeholder.privacy_policy.version')}
             isInvalid={errorVersion}
             value={formFields.version}
             maxLength={settings.textMaxLength}
           />
           <Form.Control.Feedback type="invalid">
-            {translate('error.term_and_condition.version')}
+            {translate('error.privacy_policy.version')}
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group controlId="version">
@@ -159,10 +159,10 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
   );
 };
 
-CreateTermAndCondition.propTypes = {
+CreatePrivacyPolicy.propTypes = {
   show: PropTypes.bool,
   editId: PropTypes.number,
   handleClose: PropTypes.func
 };
 
-export default CreateTermAndCondition;
+export default CreatePrivacyPolicy;

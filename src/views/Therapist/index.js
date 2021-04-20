@@ -142,7 +142,7 @@ const Therapist = ({ translate }) => {
         }
       });
     }
-  }, [profile, countries]);
+  }, [profile, countries, clinics]);
 
   const handleShow = () => setShow(true);
 

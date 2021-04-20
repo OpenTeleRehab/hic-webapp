@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import Country from 'views/Setting/Country';
 import Translation from 'views/Setting/Translation';
 import TermAndCondition from 'views/Setting/TermAndCondition';
+import PrivacyPolicy from 'views/Setting/PrivacyPolicy';
 import SystemLimit from 'views/Setting/SystemLimit';
 import Clinic from 'views/Setting/Clinic';
 import Profession from 'views/Setting/Profession';
@@ -22,10 +23,12 @@ import CreateLanguage from 'views/Setting/Language/create';
 import CreateTermAndCondition from 'views/Setting/TermAndCondition/create';
 import CreateStaticPage from 'views/Setting/StaticPage/create';
 import CreateProfession from 'views/Setting/Profession/create';
+import CreatePrivacyPolicy from 'views/Setting/PrivacyPolicy/create';
 
 const VIEW_COUNTRY = 'country';
 const VIEW_TRANSLATION = 'translation';
 const VIEW_TERM_AND_CONDITION = 'term_and_condition';
+const VIEW_PRIVACY_POLICY = 'privacy_policy';
 const VIEW_SYSTEM_LIMIT = 'system_limit';
 const VIEW_CLINIC = 'clinic';
 const VIEW_PROFESSION = 'profession';
@@ -45,6 +48,8 @@ const Setting = ({ translate }) => {
       setView(VIEW_TRANSLATION);
     } else if (hash.includes('#' + VIEW_TERM_AND_CONDITION)) {
       setView(VIEW_TERM_AND_CONDITION);
+    } else if (hash.includes('#' + VIEW_PRIVACY_POLICY)) {
+      setView(VIEW_PRIVACY_POLICY);
     } else if (hash.includes('#' + VIEW_SYSTEM_LIMIT)) {
       setView(VIEW_SYSTEM_LIMIT);
     } else if (hash.includes('#' + VIEW_CLINIC)) {
@@ -83,7 +88,7 @@ const Setting = ({ translate }) => {
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1>{translate('setting')}</h1>
-        {[VIEW_COUNTRY, VIEW_LANGUAGE, VIEW_TERM_AND_CONDITION, VIEW_CLINIC, VIEW_STATIC_PAGE, VIEW_PROFESSION].map(v => {
+        {[VIEW_COUNTRY, VIEW_LANGUAGE, VIEW_TERM_AND_CONDITION, VIEW_PRIVACY_POLICY, VIEW_CLINIC, VIEW_STATIC_PAGE, VIEW_PROFESSION].map(v => {
           if (v === view) {
             return (
               <div className="btn-toolbar mb-2 mb-md-0">
@@ -101,6 +106,7 @@ const Setting = ({ translate }) => {
       {show && view === VIEW_COUNTRY && <CreateCountry show={show} editId={editId} handleClose={handleClose} />}
       {show && view === VIEW_LANGUAGE && <CreateLanguage show={show} editId={editId} handleClose={handleClose} />}
       {show && view === VIEW_TERM_AND_CONDITION && <CreateTermAndCondition show={show} editId={editId} handleClose={handleClose} />}
+      {show && view === VIEW_PRIVACY_POLICY && <CreatePrivacyPolicy show={show} editId={editId} handleClose={handleClose} />}
       {show && view === VIEW_CLINIC && <CreateClinic show={show} editId={editId} handleClose={handleClose} />}
       {show && view === VIEW_STATIC_PAGE && <CreateStaticPage show={show} editId={editId} handleClose={handleClose} />}
       {show && view === VIEW_PROFESSION && <CreateProfession show={show} editId={editId} handleClose={handleClose} />}
@@ -131,6 +137,13 @@ const Setting = ({ translate }) => {
           <Nav.Item>
             <Nav.Link as={Link} to={ROUTES.SETTING_TERM_AND_CONDITION} eventKey={VIEW_TERM_AND_CONDITION}>
               {translate('setting.term_and_conditions')}
+            </Nav.Link>
+          </Nav.Item>
+        )}
+        { keycloak.hasRealmRole(USER_ROLES.MANAGE_PRIVACY_POLICY) && (
+          <Nav.Item>
+            <Nav.Link as={Link} to={ROUTES.SETTING_PRIVACY_POLICY} eventKey={VIEW_PRIVACY_POLICY}>
+              {translate('setting.privacy_policy')}
             </Nav.Link>
           </Nav.Item>
         )}
@@ -172,6 +185,7 @@ const Setting = ({ translate }) => {
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_CLINIC) && view === VIEW_CLINIC && <Clinic handleRowEdit={handleEdit} /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_PROFESSION) && view === VIEW_PROFESSION && <Profession handleRowEdit={handleEdit} /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_STATIC_PAGE) && view === VIEW_STATIC_PAGE && <StaticPage handleRowEdit={handleEdit} /> }
+      { keycloak.hasRealmRole(USER_ROLES.MANAGE_PRIVACY_POLICY) && view === VIEW_PRIVACY_POLICY && <PrivacyPolicy handleRowEdit={handleEdit} /> }
 
     </>
   );
