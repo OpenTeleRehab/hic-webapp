@@ -166,7 +166,7 @@ const Exercise = ({ translate }) => {
     Object.keys(selectedCategories).forEach(function (key) {
       serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
     });
-    dispatch(downloadExercises({ filter: formFields, categories: serializedSelectedCats }))
+    dispatch(downloadExercises({ lang: language, filter: formFields, categories: serializedSelectedCats }))
       .then(() => { setDownloading(false); });
   };
 
