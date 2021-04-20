@@ -133,16 +133,17 @@ const Therapist = ({ translate }) => {
 
   useEffect(() => {
     if (profile !== undefined) {
-      clinicService.countTherapistLimitByClinic(profile.clinic_id).then(res => {
-        console.log(getTotalTherapistLimit(profile.clinic_id, clinics));
+      clinicService.countTherapistByClinic(profile.clinic_id).then(res => {
         if (res.data) {
           if (res.data.therapistTotal < getTotalTherapistLimit(profile.clinic_id, clinics)) {
             setIsTherapistLimit(true);
+          } else {
+            setIsTherapistLimit(false);
           }
         }
       });
     }
-  }, [profile, countries, clinics]);
+  }, [profile, clinics, therapists]);
 
   const handleShow = () => setShow(true);
 

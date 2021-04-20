@@ -61,9 +61,9 @@ const countTherapistLimitByCountry = (countryId) => {
     });
 };
 
-const countTherapistLimitByClinic = (clinicId) => {
+const countTherapistByClinic = (clinicId) => {
   const params = { clinic_id: clinicId };
-  return axios.get('clinic/therapist-limit/count/by-clinic', { params })
+  return axios.get('clinic/therapist/count/by-clinic', { params })
     .then(
       res => {
         return res.data;
@@ -80,5 +80,5 @@ export const Clinic = {
   updateClinic,
   deleteClinic,
   countTherapistLimitByCountry,
-  countTherapistLimitByClinic
+  countTherapistByClinic
 };

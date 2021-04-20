@@ -19,9 +19,9 @@ const CreateClinic = ({ show, editId, handleClose }) => {
   const [errorRegion, setErrorRegion] = useState(false);
   const [errorTherapistLimitMessage, setErrorTherapistLimitMessage] = useState('');
   const [errorTherapistLimit, setErrorTherapistLimit] = useState(false);
-  const [countryId, setCountryId] = useState('');
   const [therapistLimit, setTherapistLimit] = useState(0);
   const [totalTherapistLimitByCountry, setTotalTherapistLimitByCountry] = useState(0);
+  const [totalTherapistByClinic, setTotalTherapistByClinic] = useState(0);
 
   const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
@@ -39,21 +39,18 @@ const CreateClinic = ({ show, editId, handleClose }) => {
 
   useEffect(() => {
     if (profile !== undefined) {
-      setCountryId(profile.country_id);
-    }
-  }, [profile]);
-
-  useEffect(() => {
-    if (countryId && countries.length) {
-      clinicService.countTherapistLimitByCountry(countryId).then(res => {
+      clinicService.countTherapistLimitByCountry(profile.country_id).then(res => {
         if (res.data) {
           setTotalTherapistLimitByCountry(res.data.total);
         }
       });
 
-      setTherapistLimit(getTotalTherapistLimit(countryId, countries));
+      if (countries.length) {
+        setTherapistLimit(getTotalTherapistLimit(profile.country_id, countries));
+      }
     }
-  }, [countryId, countries]);
+  }, [profile, countries]);
+
   useEffect(() => {
     if (editId && clinics.length) {
       const clinic = clinics.find(clinic => clinic.id === editId);
@@ -65,6 +62,12 @@ const CreateClinic = ({ show, editId, handleClose }) => {
         city: clinic.city,
         country_iso: getCountryISO(profile.country_id, countries),
         therapist_limit: clinic.therapist_limit
+      });
+
+      clinicService.countTherapistByClinic(clinic.id).then(res => {
+        if (res.data) {
+          setTotalTherapistByClinic(res.data.therapistTotal);
+        }
       });
     } else if (profile) {
       setFormFields({
@@ -104,31 +107,34 @@ const CreateClinic = ({ show, editId, handleClose }) => {
     } else {
       setErrorCity(false);
     }
-
+    const pattern = new RegExp(/^[0-9\b]+$/);
     if (formFields.therapist_limit === '') {
       canSave = false;
       setErrorTherapistLimit(true);
       setErrorTherapistLimitMessage(translate('error.country.therapist_limit'));
-    }
-
-    const pattern = new RegExp(/^[0-9\b]+$/);
-    if (!pattern.test(formFields.therapist_limit)) {
+    } else if (!pattern.test(formFields.therapist_limit)) {
       canSave = false;
       setErrorTherapistLimit(true);
       setErrorTherapistLimitMessage(translate('error.country.therapist_limit.format'));
-    }
-
-    if (editId && clinics.length) {
+    } else if (editId && clinics.length) {
       const clinic = clinics.find(clinic => clinic.id === editId);
       if ((parseInt(totalTherapistLimitByCountry) + parseInt(formFields.therapist_limit) - parseInt(clinic.therapist_limit)) > therapistLimit) {
         setErrorTherapistLimitMessage(translate('error.country.therapist_limit.reached'));
         canSave = false;
         setErrorTherapistLimit(true);
+      } else if (parseInt(formFields.therapist_limit) < totalTherapistByClinic) {
+        setErrorTherapistLimitMessage(translate('error.country.therapist_limit.lessthan.therapist'));
+        canSave = false;
+        setErrorTherapistLimit(true);
+      } else {
+        setErrorTherapistLimit(false);
       }
     } else if ((parseInt(totalTherapistLimitByCountry) + parseInt(formFields.therapist_limit)) > therapistLimit) {
       setErrorTherapistLimitMessage(translate('error.country.therapist_limit.reached'));
       canSave = false;
       setErrorTherapistLimit(true);
+    } else {
+      setErrorTherapistLimit(false);
     }
 
     if (canSave) {

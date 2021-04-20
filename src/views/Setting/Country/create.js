@@ -6,6 +6,7 @@ import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import { createCountry, updateCountry } from 'store/country/actions';
 import settings from 'settings';
+import { Clinic as clinicService } from 'services/clinic';
 
 const CreateCountry = ({ show, editId, handleClose }) => {
   const localize = useSelector((state) => state.localize);
@@ -18,6 +19,8 @@ const CreateCountry = ({ show, editId, handleClose }) => {
   const [errorName, setErrorName] = useState(false);
   const languages = useSelector(state => state.language.languages);
   const countries = useSelector(state => state.country.countries);
+  const [totalTherapistLimitByCountry, setTotalTherapistLimitByCountry] = useState(0);
+  const [errorTherapistLimitMessage, setErrorTherapistLimitMessage] = useState('');
 
   const [formFields, setFormFields] = useState({
     name: '',
@@ -36,6 +39,12 @@ const CreateCountry = ({ show, editId, handleClose }) => {
         phone_code: country.phone_code,
         language: country.language_id,
         therapist_limit: country.therapist_limit
+      });
+
+      clinicService.countTherapistLimitByCountry(country.id).then(res => {
+        if (res.data) {
+          setTotalTherapistLimitByCountry(res.data.total);
+        }
       });
     }
   }, [editId, countries]);
@@ -70,9 +79,18 @@ const CreateCountry = ({ show, editId, handleClose }) => {
       setErrorPhoneCode(false);
     }
 
-    if (formFields.therapist_limit === '' || !pattern.test(formFields.therapist_limit)) {
+    if (formFields.therapist_limit === '') {
       canSave = false;
       setErrorTherapistLimit(true);
+      setErrorTherapistLimitMessage(translate('error.country.therapist_limit'));
+    } else if (!pattern.test(formFields.therapist_limit)) {
+      canSave = false;
+      setErrorTherapistLimit(true);
+      setErrorTherapistLimitMessage(translate('error.country.therapist_limit.format'));
+    } else if (editId && parseInt(formFields.therapist_limit) < parseInt(totalTherapistLimitByCountry)) {
+      canSave = false;
+      setErrorTherapistLimit(true);
+      setErrorTherapistLimitMessage(translate('error.country.therapist_limit.lessthan.theraist_limit_clinic'));
     } else {
       setErrorTherapistLimit(false);
     }
@@ -179,7 +197,7 @@ const CreateCountry = ({ show, editId, handleClose }) => {
             value={formFields.therapist_limit}
           />
           <Form.Control.Feedback type="invalid">
-            { errorTherapistLimit && formFields.therapist_limit === '' ? translate('error.country.therapist_limit') : translate('error.country.therapist_limit.format') }
+            { errorTherapistLimitMessage }
           </Form.Control.Feedback>
         </Form.Group>
       </Form>
