@@ -25,6 +25,7 @@ import { useKeycloak } from '@react-keycloak/web';
 import _ from 'lodash';
 import { Therapist as therapistService } from 'services/therapist';
 import { Clinic as clinicService } from 'services/clinic';
+import { getProfessionName } from 'utils/profession';
 
 let timer = null;
 
@@ -34,6 +35,7 @@ const Therapist = ({ translate }) => {
   const therapists = useSelector(state => state.therapist.therapists);
   const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
+  const professions = useSelector(state => state.profession.professions);
   const { profile } = useSelector((state) => state.auth);
 
   const [show, setShow] = useState(false);
@@ -50,6 +52,7 @@ const Therapist = ({ translate }) => {
     { name: 'last_name', title: translate('common.last_name') },
     { name: 'first_name', title: translate('common.first_name') },
     { name: 'email', title: translate('common.email') },
+    { name: 'profession', title: translate('common.profession') },
     { name: 'therapist_country', title: translate('common.country') },
     { name: 'therapist_clinic', title: translate('common.clinic') },
     { name: 'limit_patient', title: translate('common.on_going.treatment_let') },
@@ -61,6 +64,7 @@ const Therapist = ({ translate }) => {
 
   const globalAdminTherapistColumns = [
     { name: 'id', title: translate('common.id') },
+    { name: 'profession', title: translate('common.profession') },
     { name: 'therapist_country', title: translate('common.country') },
     { name: 'region', title: translate('common.region') },
     { name: 'therapist_clinic', title: translate('common.clinic') },
@@ -231,6 +235,7 @@ const Therapist = ({ translate }) => {
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,
+            profession: getProfessionName(user.profession_id, professions),
             therapist_country: getCountryName(user.country_id, countries),
             region: getClinicRegion(user.clinic_id, clinics),
             therapist_clinic: getClinicName(user.clinic_id, clinics),
