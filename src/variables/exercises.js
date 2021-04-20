@@ -4,5 +4,5 @@ export const TABS = {
 };
 
 export const TEMPLATE_URL = {
-  EXERCISE: '/templates/exercises.csv'
+  EXERCISE: '/templates/exercises.xls'
 };

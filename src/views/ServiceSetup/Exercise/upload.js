@@ -68,7 +68,7 @@ const UploadExercise = ({ translate }) => {
                     name='file'
                     onChange={handleFileChange}
                     isInvalid={fileError}
-                    accept=".csv"
+                    accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                   />
                   <Form.File.Label>{renderUploadFileName()}</Form.File.Label>
                   <Form.Control.Feedback type="invalid">
