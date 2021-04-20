@@ -24,6 +24,7 @@ const Clinic = ({ translate, handleRowEdit }) => {
     { name: 'region', title: translate('common.region.state') },
     { name: 'province', title: translate('common.province') },
     { name: 'city', title: translate('common.city') },
+    { name: 'therapist_limit', title: translate('common.therapist_limit') },
     { name: 'action', title: translate('common.action') }
   ]);
 
@@ -62,6 +63,7 @@ const Clinic = ({ translate, handleRowEdit }) => {
             region: clinic.region,
             province: clinic.province,
             city: clinic.city,
+            therapist_limit: clinic.therapist_limit,
             action
           };
         })}

@@ -6,7 +6,8 @@ import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import { createClinic, updateClinic } from 'store/clinic/actions';
 import settings from 'settings';
-import { getCountryISO } from 'utils/country';
+import { getCountryISO, getTotalTherapistLimit } from 'utils/country';
+import { Clinic as clinicService } from 'services/clinic';
 
 const CreateClinic = ({ show, editId, handleClose }) => {
   const localize = useSelector((state) => state.localize);
@@ -16,6 +17,11 @@ const CreateClinic = ({ show, editId, handleClose }) => {
   const [errorName, setErrorName] = useState(false);
   const [errorCity, setErrorCity] = useState(false);
   const [errorRegion, setErrorRegion] = useState(false);
+  const [errorTherapistLimitMessage, setErrorTherapistLimitMessage] = useState('');
+  const [errorTherapistLimit, setErrorTherapistLimit] = useState(false);
+  const [countryId, setCountryId] = useState('');
+  const [therapistLimit, setTherapistLimit] = useState(0);
+  const [totalTherapistLimitByCountry, setTotalTherapistLimitByCountry] = useState(0);
 
   const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
@@ -27,9 +33,27 @@ const CreateClinic = ({ show, editId, handleClose }) => {
     region: '',
     province: '',
     city: '',
-    country_iso: ''
+    country_iso: '',
+    therapist_limit: 0
   });
 
+  useEffect(() => {
+    if (profile !== undefined) {
+      setCountryId(profile.country_id);
+    }
+  }, [profile]);
+
+  useEffect(() => {
+    if (countryId && countries.length) {
+      clinicService.countTherapistLimitByCountry(countryId).then(res => {
+        if (res.data) {
+          setTotalTherapistLimitByCountry(res.data.total);
+        }
+      });
+
+      setTherapistLimit(getTotalTherapistLimit(countryId, countries));
+    }
+  }, [countryId, countries]);
   useEffect(() => {
     if (editId && clinics.length) {
       const clinic = clinics.find(clinic => clinic.id === editId);
@@ -39,7 +63,8 @@ const CreateClinic = ({ show, editId, handleClose }) => {
         region: clinic.region,
         province: clinic.province,
         city: clinic.city,
-        country_iso: getCountryISO(profile.country_id, countries)
+        country_iso: getCountryISO(profile.country_id, countries),
+        therapist_limit: clinic.therapist_limit
       });
     } else if (profile) {
       setFormFields({
@@ -49,7 +74,7 @@ const CreateClinic = ({ show, editId, handleClose }) => {
       });
     }
     // eslint-disable-next-line
-  }, [editId, profile, countries]);
+  }, [editId, profile, countries, clinics]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -78,6 +103,32 @@ const CreateClinic = ({ show, editId, handleClose }) => {
       setErrorCity(true);
     } else {
       setErrorCity(false);
+    }
+
+    if (formFields.therapist_limit === '') {
+      canSave = false;
+      setErrorTherapistLimit(true);
+      setErrorTherapistLimitMessage(translate('error.country.therapist_limit'));
+    }
+
+    const pattern = new RegExp(/^[0-9\b]+$/);
+    if (!pattern.test(formFields.therapist_limit)) {
+      canSave = false;
+      setErrorTherapistLimit(true);
+      setErrorTherapistLimitMessage(translate('error.country.therapist_limit.format'));
+    }
+
+    if (editId && clinics.length) {
+      const clinic = clinics.find(clinic => clinic.id === editId);
+      if ((parseInt(totalTherapistLimitByCountry) + parseInt(formFields.therapist_limit) - parseInt(clinic.therapist_limit)) > therapistLimit) {
+        setErrorTherapistLimitMessage(translate('error.country.therapist_limit.reached'));
+        canSave = false;
+        setErrorTherapistLimit(true);
+      }
+    } else if ((parseInt(totalTherapistLimitByCountry) + parseInt(formFields.therapist_limit)) > therapistLimit) {
+      setErrorTherapistLimitMessage(translate('error.country.therapist_limit.reached'));
+      canSave = false;
+      setErrorTherapistLimit(true);
     }
 
     if (canSave) {
@@ -174,6 +225,22 @@ const CreateClinic = ({ show, editId, handleClose }) => {
             />
           </Form.Group>
         </Form.Row>
+
+        <Form.Group controlId="formTherapistLimit">
+          <Form.Label>{translate('common.therapist_limit')}</Form.Label>
+          <span className="text-dark ml-1">*</span>
+          <Form.Control
+            name="therapist_limit"
+            onChange={handleChange}
+            type="text"
+            placeholder={translate('placeholder.country.therapist_limit')}
+            isInvalid={errorTherapistLimit}
+            value={formFields.therapist_limit}
+          />
+          <Form.Control.Feedback type="invalid">
+            { errorTherapistLimitMessage }
+          </Form.Control.Feedback>
+        </Form.Group>
       </Form>
     </Dialog>
   );

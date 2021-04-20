@@ -20,6 +20,7 @@ const Country = ({ translate, handleRowEdit }) => {
     { name: 'iso_code', title: translate('common.iso_code') },
     { name: 'phone_code', title: translate('common.phone_code') },
     { name: 'language', title: translate('common.language') },
+    { name: 'therapist_limit', title: translate('common.therapist_limit') },
     { name: 'action', title: translate('common.action') }
   ];
 
@@ -64,6 +65,7 @@ const Country = ({ translate, handleRowEdit }) => {
             iso_code: country.iso_code,
             phone_code: country.phone_code,
             language: getLanguageName(country.language_id, languages),
+            therapist_limit: country.therapist_limit,
             action
           };
         })}

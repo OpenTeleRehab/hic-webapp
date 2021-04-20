@@ -14,6 +14,7 @@ const CreateCountry = ({ show, editId, handleClose }) => {
 
   const [errorIsoCode, setErrorIsoCode] = useState(false);
   const [errorPhoneCode, setErrorPhoneCode] = useState(false);
+  const [errorTherapistLimit, setErrorTherapistLimit] = useState(false);
   const [errorName, setErrorName] = useState(false);
   const languages = useSelector(state => state.language.languages);
   const countries = useSelector(state => state.country.countries);
@@ -22,7 +23,8 @@ const CreateCountry = ({ show, editId, handleClose }) => {
     name: '',
     iso_code: '',
     phone_code: '',
-    language: ''
+    language: '',
+    therapist_limit: 50
   });
 
   useEffect(() => {
@@ -32,7 +34,8 @@ const CreateCountry = ({ show, editId, handleClose }) => {
         name: country.name,
         iso_code: country.iso_code,
         phone_code: country.phone_code,
-        language: country.language_id
+        language: country.language_id,
+        therapist_limit: country.therapist_limit
       });
     }
   }, [editId, countries]);
@@ -65,6 +68,13 @@ const CreateCountry = ({ show, editId, handleClose }) => {
       setErrorPhoneCode(true);
     } else {
       setErrorPhoneCode(false);
+    }
+
+    if (formFields.therapist_limit === '' || !pattern.test(formFields.therapist_limit)) {
+      canSave = false;
+      setErrorTherapistLimit(true);
+    } else {
+      setErrorTherapistLimit(false);
     }
 
     if (canSave) {
@@ -157,6 +167,21 @@ const CreateCountry = ({ show, editId, handleClose }) => {
             </Form.Control>
           </Form.Group>
         </Form.Row>
+        <Form.Group controlId="formTherapistLimit">
+          <Form.Label>{translate('common.therapist_limit')}</Form.Label>
+          <span className="text-dark ml-1">*</span>
+          <Form.Control
+            name="therapist_limit"
+            onChange={handleChange}
+            type="text"
+            placeholder={translate('placeholder.country.therapist_limit')}
+            isInvalid={errorTherapistLimit}
+            value={formFields.therapist_limit}
+          />
+          <Form.Control.Feedback type="invalid">
+            { errorTherapistLimit && formFields.therapist_limit === '' ? translate('error.country.therapist_limit') : translate('error.country.therapist_limit.format') }
+          </Form.Control.Feedback>
+        </Form.Group>
       </Form>
     </Dialog>
   );

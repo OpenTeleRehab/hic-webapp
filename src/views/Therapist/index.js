@@ -10,7 +10,7 @@ import { DeleteAction, EditAction, EnabledAction, DisabledAction } from 'compone
 import CreateTherapist from 'views/Therapist/create';
 import { getTherapists, deleteTherapistUser, updateTherapistStatus } from 'store/therapist/actions';
 import { getCountryName } from 'utils/country';
-import { getClinicName, getClinicRegion } from 'utils/clinic';
+import { getClinicName, getClinicRegion, getTotalTherapistLimit } from 'utils/clinic';
 import * as moment from 'moment';
 import settings from 'settings';
 import Dialog from 'components/Dialog';
@@ -24,6 +24,7 @@ import { USER_ROLES } from '../../variables/user';
 import { useKeycloak } from '@react-keycloak/web';
 import _ from 'lodash';
 import { Therapist as therapistService } from 'services/therapist';
+import { Clinic as clinicService } from 'services/clinic';
 
 let timer = null;
 
@@ -38,6 +39,7 @@ const Therapist = ({ translate }) => {
   const [show, setShow] = useState(false);
   const [editId, setEditId] = useState('');
   const [isGlobalAdmin, setIsGlobalAdmin] = useState(false);
+  const [isTherapistLimit, setIsTherapistLimit] = useState(false);
 
   const [formFields, setFormFields] = useState({
     enabled: 0
@@ -125,6 +127,19 @@ const Therapist = ({ translate }) => {
     };
   }, [therapists, totalCount]);
 
+  useEffect(() => {
+    if (profile !== undefined) {
+      clinicService.countTherapistLimitByClinic(profile.clinic_id).then(res => {
+        console.log(getTotalTherapistLimit(profile.clinic_id, clinics));
+        if (res.data) {
+          if (res.data.therapistTotal < getTotalTherapistLimit(profile.clinic_id, clinics)) {
+            setIsTherapistLimit(true);
+          }
+        }
+      });
+    }
+  }, [profile, countries]);
+
   const handleShow = () => setShow(true);
 
   const handleEdit = (id) => {
@@ -178,7 +193,7 @@ const Therapist = ({ translate }) => {
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1>{translate('therapist.list')}</h1>
-        {!isGlobalAdmin &&
+        {(!isGlobalAdmin && isTherapistLimit) &&
           <div className="btn-toolbar mb-2 mb-md-0">
             <Button variant="primary" onClick={handleShow}>
               <BsPlus size={20} className="mr-1" />
