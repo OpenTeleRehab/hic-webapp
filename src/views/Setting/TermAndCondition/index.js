@@ -54,6 +54,7 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
       <BasicTable
         rows={termAndConditions.map(term => {
           const publishedDate = term.published_date;
+          const contentPainText = term.content.replace(/<[^>]+>/g, '').replace('&nbsp;', ' ');
           const action = (
             <>
               <PublishAction onClick={() => handlePublish(term.id)} disabled={publishedDate} />
@@ -68,7 +69,7 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
           );
           return {
             version: term.version,
-            content: <div dangerouslySetInnerHTML={{ __html: term.content }} />,
+            content: contentPainText,
             status: status,
             published_date: publishedDate ? moment(publishedDate).format(settings.date_format) : '',
             action
