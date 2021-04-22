@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Tabs, Tab } from 'react-bootstrap';
 import { BsPlus } from 'react-icons/bs';
 import { useKeycloak } from '@react-keycloak/web';
@@ -19,8 +19,11 @@ const Admin = ({ translate }) => {
   const [show, setShow] = useState(false);
   const [type, setType] = useState(undefined);
   const [editId, setEditId] = useState('');
+  const [errorCountryInUsed, setErrorCountryInUsed] = useState('');
+  const [countryId, setCountryId] = useState('');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showSwitchStatusDialog, setShowSwitchStatusDialog] = useState(false);
+  const users = useSelector(state => state.user.users);
   const [id, setId] = useState(null);
   const [formFields, setFormFields] = useState({
     enabled: 0,
@@ -67,10 +70,14 @@ const Admin = ({ translate }) => {
     });
   };
 
-  const handleSwitchStatus = (id, enabled) => {
+  const handleSwitchStatus = (id, enabled, countryId) => {
     setId(id);
     setFormFields({ ...formFields, enabled: enabled, type: type });
     setShowSwitchStatusDialog(true);
+    if (countryId) {
+      setCountryId(countryId);
+    }
+    setErrorCountryInUsed('');
   };
 
   const handleSwitchStatusDialogClose = () => {
@@ -79,11 +86,24 @@ const Admin = ({ translate }) => {
   };
 
   const handleSwitchStatusDialogConfirm = () => {
-    dispatch(updateUserStatus(id, formFields)).then(result => {
-      if (result) {
-        handleSwitchStatusDialogClose();
+    if (countryId) {
+      const user = users.find(user => user.country_id === countryId);
+      if (user && user.id !== id && user.enabled === 1) {
+        setErrorCountryInUsed(translate('error.country.in_used'));
+      } else {
+        dispatch(updateUserStatus(id, formFields)).then(result => {
+          if (result) {
+            handleSwitchStatusDialogClose();
+          }
+        });
       }
-    });
+    } else {
+      dispatch(updateUserStatus(id, formFields)).then(result => {
+        if (result) {
+          handleSwitchStatusDialogClose();
+        }
+      });
+    }
   };
 
   return (
@@ -135,7 +155,10 @@ const Admin = ({ translate }) => {
         confirmLabel={translate('common.yes')}
         onConfirm={handleSwitchStatusDialogConfirm}
       >
-        <p>{translate('common.switchStatus_confirmation_message')}</p>
+        <div>
+          <p>{translate('common.switchStatus_confirmation_message')}</p>
+          <p className="error-feedback">{errorCountryInUsed}</p>
+        </div>
       </Dialog>
     </>
   );
