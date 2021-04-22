@@ -20,7 +20,7 @@ import {
   getTotalOnGoingTreatment,
   getTotalPatient
 } from 'utils/patient';
-import { USER_ROLES } from '../../variables/user';
+import { USER_ROLES, USER_GROUPS } from '../../variables/user';
 import { useKeycloak } from '@react-keycloak/web';
 import _ from 'lodash';
 import { Therapist as therapistService } from 'services/therapist';
@@ -132,7 +132,7 @@ const Therapist = ({ translate }) => {
   }, [therapists, totalCount]);
 
   useEffect(() => {
-    if (profile !== undefined) {
+    if (profile !== undefined && profile.type === USER_GROUPS.CLINIC_ADMIN) {
       clinicService.countTherapistByClinic(profile.clinic_id).then(res => {
         if (res.data) {
           if (res.data.therapistTotal < getTotalTherapistLimit(profile.clinic_id, clinics)) {
