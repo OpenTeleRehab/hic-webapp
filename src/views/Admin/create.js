@@ -24,6 +24,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
 
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorCountry, setErrorCountry] = useState(false);
+  const [errorCountryMessage, setErrorCountryMessage] = useState('');
   const [errorClinic, setErrorClinic] = useState(false);
   const [errorFirstName, setErrorFirstName] = useState(false);
   const [errorLastName, setErrorLastName] = useState(false);
@@ -65,9 +66,16 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
         email: '',
         first_name: '',
         last_name: '',
-        country_id: profile.country_id,
+        country_id: '',
         clinic_id: ''
       });
+
+      if (formFields.type === USER_GROUPS.CLINIC_ADMIN) {
+        setFormFields({
+          ...formFields,
+          country_id: profile.country_id
+        });
+      }
     }
 
     if (formFields.type === USER_GROUPS.GLOBAL_ADMIN) {
@@ -100,6 +108,20 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
         formFields.country_id === '') {
       canSave = false;
       setErrorCountry(true);
+      setErrorCountryMessage(translate('error.country'));
+    } else if (formFields.country_id !== '') {
+      if (users.length) {
+        const user = users.find(user => user.country_id === formFields.country_id);
+        if (user && user.enabled === 1 && editId !== user.id) {
+          canSave = false;
+          setErrorCountry(true);
+          setErrorCountryMessage(translate('error.country.in_used'));
+        } else {
+          setErrorCountry(false);
+        }
+      } else {
+        setErrorCountry(false);
+      }
     } else {
       setErrorCountry(false);
     }
@@ -124,6 +146,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
     } else {
       setErrorLastName(false);
     }
+
     if (canSave) {
       setIsLoading(true);
       if (editId) {
@@ -231,7 +254,6 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
               as="select"
               isInvalid={errorCountry}
               value={formFields.country_id}
-              disabled={!!editId}
             >
               <option value="">{translate('placeholder.country')}</option>
               {countries.map((country) => (
@@ -239,7 +261,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
               ))}
             </Form.Control>
             <Form.Control.Feedback type="invalid">
-              {translate('error.country')}
+              { errorCountryMessage }
             </Form.Control.Feedback>
           </Form.Group>
         )}

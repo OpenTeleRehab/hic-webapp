@@ -86,8 +86,8 @@ const CountryAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) =>
           const action = (
             <>
               {user.enabled
-                ? <EnabledAction onClick={() => handleSwitchStatus(user.id, 0)} />
-                : <DisabledAction onClick={() => handleSwitchStatus(user.id, 1)} />
+                ? <EnabledAction onClick={() => handleSwitchStatus(user.id, 0, user.country_id)} />
+                : <DisabledAction onClick={() => handleSwitchStatus(user.id, 1, user.country_id)} />
               }
               <EditAction onClick={() => handleEdit(user.id)} />
               <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={user.enabled} />
