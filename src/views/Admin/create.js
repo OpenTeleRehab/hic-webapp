@@ -66,16 +66,9 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
         email: '',
         first_name: '',
         last_name: '',
-        country_id: '',
+        country_id: profile.country_id,
         clinic_id: ''
       });
-
-      if (formFields.type === USER_GROUPS.CLINIC_ADMIN) {
-        setFormFields({
-          ...formFields,
-          country_id: profile.country_id
-        });
-      }
     }
 
     if (formFields.type === USER_GROUPS.GLOBAL_ADMIN) {
@@ -86,7 +79,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
       setHintMessage(translate('admin.hint_message_clinic_admin'));
     }
     // eslint-disable-next-line
-  }, [formFields.type]);
+  }, [formFields.type, profile]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -103,14 +96,12 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
       setErrorEmail(false);
     }
 
-    if ((formFields.type === USER_GROUPS.COUNTRY_ADMIN ||
-        formFields.type === USER_GROUPS.CLINIC_ADMIN) &&
-        formFields.country_id === '') {
-      canSave = false;
-      setErrorCountry(true);
-      setErrorCountryMessage(translate('error.country'));
-    } else if (formFields.country_id !== '') {
-      if (users.length) {
+    if (formFields.type === USER_GROUPS.COUNTRY_ADMIN) {
+      if (formFields.country_id === '') {
+        canSave = false;
+        setErrorCountry(true);
+        setErrorCountryMessage(translate('error.country'));
+      } else if (users.length) {
         const user = users.find(user => user.country_id === formFields.country_id);
         if (user && user.enabled === 1 && editId !== user.id) {
           canSave = false;
@@ -122,6 +113,13 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
       } else {
         setErrorCountry(false);
       }
+    } else {
+      setErrorCountry(false);
+    }
+
+    if (formFields.type === USER_GROUPS.CLINIC_ADMIN && formFields.country_id === '') {
+      canSave = false;
+      setErrorCountry(true);
     } else {
       setErrorCountry(false);
     }
@@ -282,7 +280,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
               )}
             </Form.Control>
             <Form.Control.Feedback type="invalid">
-              {translate('error.country')}
+              { translate('error.country') }
             </Form.Control.Feedback>
           </Form.Group>
         )}
