@@ -147,9 +147,9 @@ const EdiInformation = ({ editId }) => {
               value={formFields.gender}
             >
               <option value="">{translate('placeholder.gender')}</option>
-              <option value="male">{translate('male')}</option>
-              <option value="female">{translate(('female'))}</option>
-              <option value="other">{translate(('other'))}</option>
+              <option value="male">{translate('common.male')}</option>
+              <option value="female">{translate(('common.female'))}</option>
+              <option value="other">{translate(('common.other'))}</option>
             </Form.Control>
 
           </Form.Group>
