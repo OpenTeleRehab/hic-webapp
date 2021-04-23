@@ -117,13 +117,6 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
       setErrorCountry(false);
     }
 
-    if (formFields.type === USER_GROUPS.CLINIC_ADMIN && formFields.country_id === '') {
-      canSave = false;
-      setErrorCountry(true);
-    } else {
-      setErrorCountry(false);
-    }
-
     if (formFields.type === USER_GROUPS.CLINIC_ADMIN && formFields.clinic_id === '') {
       canSave = false;
       setErrorClinic(true);
