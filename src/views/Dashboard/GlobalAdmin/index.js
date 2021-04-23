@@ -79,10 +79,13 @@ const GlobalAdminDashboard = () => {
       const clinicAdminsByCountry = [];
       const femalePatientByCountry = [];
       const malePatientByCountry = [];
+      const otherPatientByCountry = [];
       const femaleTreatmentByCountry = [];
       const maleTreatmentByCountry = [];
+      const otherTreatmentByCountry = [];
       const maleOngoingTreatmentByCountry = [];
       const femaleOngoingTreatmentByCountry = [];
+      const otherOngoingTreatmentByCountry = [];
 
       countries.forEach(country => {
         countryLabels.push(country.name);
@@ -94,14 +97,17 @@ const GlobalAdminDashboard = () => {
         const patientData = globalAdminData.patientData.patientsByGenderGroupedByCountry.find(c => parseInt(c.country_id) === country.id);
         malePatientByCountry.push(patientData ? patientData.male : 0);
         femalePatientByCountry.push(patientData ? patientData.female : 0);
+        otherPatientByCountry.push(patientData ? patientData.other : 0);
 
         const treatmentData = globalAdminData.patientData.treatmentsByGender.find(c => parseInt(c.country_id) === country.id);
         maleTreatmentByCountry.push(treatmentData ? treatmentData.male : 0);
         femaleTreatmentByCountry.push(treatmentData ? treatmentData.female : 0);
+        otherTreatmentByCountry.push(treatmentData ? treatmentData.other : 0);
 
         const onGoingTreatmentData = globalAdminData.patientData.onGoingTreatmentsByGenderGroupedByCountry.find(c => parseInt(c.country_id) === country.id);
         maleOngoingTreatmentByCountry.push(onGoingTreatmentData ? onGoingTreatmentData.male : 0);
         femaleOngoingTreatmentByCountry.push(onGoingTreatmentData ? onGoingTreatmentData.female : 0);
+        otherOngoingTreatmentByCountry.push(onGoingTreatmentData ? onGoingTreatmentData.other : 0);
       });
 
       setCountryLabel(countryLabels);
@@ -171,17 +177,20 @@ const GlobalAdminDashboard = () => {
 
       setPatientsByGenderByCountry([
         { label: translate('common.male'), data: malePatientByCountry, backgroundColor: '#06038D', borderColor: '#E35205', borderWidth: 1 },
-        { label: translate('common.female'), data: femalePatientByCountry, backgroundColor: '#64CCC9', borderColor: '#64CCC9', borderWidth: 1 }
+        { label: translate('common.female'), data: femalePatientByCountry, backgroundColor: '#64CCC9', borderColor: '#64CCC9', borderWidth: 1 },
+        { label: translate('common.other'), data: otherPatientByCountry, backgroundColor: '#eb1515', borderColor: '#eb1515', borderWidth: 1 }
       ]);
 
       setTreatmentsByGenderByCountry([
         { label: translate('common.male'), data: maleTreatmentByCountry, backgroundColor: '#06038D', borderColor: '#E35205', borderWidth: 1 },
-        { label: translate('common.female'), data: femaleTreatmentByCountry, backgroundColor: '#64CCC9', borderColor: '#64CCC9', borderWidth: 1 }
+        { label: translate('common.female'), data: femaleTreatmentByCountry, backgroundColor: '#64CCC9', borderColor: '#64CCC9', borderWidth: 1 },
+        { label: translate('common.other'), data: otherTreatmentByCountry, backgroundColor: '#eb1515', borderColor: '#eb1515', borderWidth: 1 }
       ]);
 
       setOngoingTreatmentsByGenderByCountry([
         { label: translate('common.male'), data: maleOngoingTreatmentByCountry, backgroundColor: '#06038D', borderColor: '#E35205', borderWidth: 1 },
-        { label: translate('common.female'), data: femaleOngoingTreatmentByCountry, backgroundColor: '#64CCC9', borderColor: '#64CCC9', borderWidth: 1 }
+        { label: translate('common.female'), data: femaleOngoingTreatmentByCountry, backgroundColor: '#64CCC9', borderColor: '#64CCC9', borderWidth: 1 },
+        { label: translate('common.other'), data: otherOngoingTreatmentByCountry, backgroundColor: '#eb1515', borderColor: '#eb1515', borderWidth: 1 }
       ]);
     }
   }, [globalAdminData, countries, translate]);

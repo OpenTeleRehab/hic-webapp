@@ -84,10 +84,12 @@ const CountryAdminDashboard = ({ translate }) => {
       const ongoingTreatmentByGender = patientData.onGoingTreatmentsByGenderGroupedByClinic;
       const clinicLabels = [];
       const therapistByClinic = [];
-      const femalePatientByClininc = [];
-      const malePatientByClininc = [];
-      const femaleOngoingByClininc = [];
-      const maleOngoingByClininc = [];
+      const femalePatientByClinic = [];
+      const malePatientByClinic = [];
+      const otherPatientByClinic = [];
+      const femaleOngoingByClinic = [];
+      const maleOngoingByClinic = [];
+      const otherOngoingByClinic = [];
       for (let i = 0; i < clinics.length; i++) {
         clinicLabels.push(clinics[i].name);
         const therapist = therapistsByClinic.find(
@@ -97,26 +99,32 @@ const CountryAdminDashboard = ({ translate }) => {
         const ongoingByGender = ongoingTreatmentByGender.find(
           o => o.clinic_id === clinics[i].id);
         therapistByClinic.push(therapist ? therapist.total : 0);
-        malePatientByClininc.push(
+        malePatientByClinic.push(
           patientsByGender ? patientsByGender.male : 0);
-        femalePatientByClininc.push(
+        femalePatientByClinic.push(
           patientsByGender ? patientsByGender.female : 0);
-        maleOngoingByClininc.push(
+        otherPatientByClinic.push(
+          patientsByGender ? patientsByGender.other : 0);
+        maleOngoingByClinic.push(
           ongoingByGender ? ongoingByGender.male : 0);
-        femaleOngoingByClininc.push(
+        femaleOngoingByClinic.push(
           ongoingByGender ? ongoingByGender.female : 0);
+        otherOngoingByClinic.push(
+          ongoingByGender ? ongoingByGender.other : 0);
       }
       setTotalClinicAdmin(clinicAdmin[0].total);
       setTotalTherapist(therapistData.therapistTotal);
       setClinicLabel(clinicLabels);
       setTherapistsByClinic(therapistByClinic);
       setPatientsByGenderByClinic([
-        { label: translate('common.male'), data: malePatientByClininc, backgroundColor: '#E35205', borderColor: '#E35205', borderWidth: 1 },
-        { label: translate('common.female'), data: femalePatientByClininc, backgroundColor: '#64CCC9', borderColor: '#64CCC9', borderWidth: 1 }
+        { label: translate('common.male'), data: malePatientByClinic, backgroundColor: '#E35205', borderColor: '#E35205', borderWidth: 1 },
+        { label: translate('common.female'), data: femalePatientByClinic, backgroundColor: '#64CCC9', borderColor: '#64CCC9', borderWidth: 1 },
+        { label: translate('common.other'), data: otherPatientByClinic, backgroundColor: '#eb1515', borderColor: '#eb1515', borderWidth: 1 }
       ]);
       setOngoingTreatmentByGenderByClinic([
-        { label: translate('common.male'), data: maleOngoingByClininc, backgroundColor: '#E35205', borderColor: '#E35205', borderWidth: 1 },
-        { label: translate('common.female'), data: femaleOngoingByClininc, backgroundColor: '#64CCC9', borderColor: '#64CCC9', borderWidth: 1 }
+        { label: translate('common.male'), data: maleOngoingByClinic, backgroundColor: '#E35205', borderColor: '#E35205', borderWidth: 1 },
+        { label: translate('common.female'), data: femaleOngoingByClinic, backgroundColor: '#64CCC9', borderColor: '#64CCC9', borderWidth: 1 },
+        { label: translate('common.other'), data: otherOngoingByClinic, backgroundColor: '#eb1515', borderColor: '#eb1515', borderWidth: 1 }
       ]);
     }
   }, [dashboardData, clinics, translate]);
