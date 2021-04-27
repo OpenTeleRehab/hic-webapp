@@ -18,7 +18,8 @@ const CreateLanguage = ({ show, editId, handleClose }) => {
 
   const [formFields, setFormFields] = useState({
     name: '',
-    code: ''
+    code: '',
+    rtl: false
   });
 
   useEffect(() => {
@@ -26,7 +27,8 @@ const CreateLanguage = ({ show, editId, handleClose }) => {
       const language = languages.find(language => language.id === editId);
       setFormFields({
         name: language.name,
-        code: language.code
+        code: language.code,
+        rtl: language.rtl
       });
     }
   }, [editId, languages]);
@@ -34,6 +36,11 @@ const CreateLanguage = ({ show, editId, handleClose }) => {
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
+  };
+
+  const handleCheck = e => {
+    const { name, checked } = e.target;
+    setFormFields({ ...formFields, [name]: checked });
   };
 
   const handleConfirm = () => {
@@ -110,6 +117,17 @@ const CreateLanguage = ({ show, editId, handleClose }) => {
             <Form.Control.Feedback type="invalid">
               { errorCode && formFields.code === '' ? translate('error.language.code') : translate('error.language.code.format') }
             </Form.Control.Feedback>
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group as={Col} controlId="rtl">
+            <Form.Check
+              name="rtl"
+              onChange={handleCheck}
+              value={true}
+              checked={formFields.rtl}
+              label={translate('language.rtl')}
+            />
           </Form.Group>
         </Form.Row>
       </Form>
