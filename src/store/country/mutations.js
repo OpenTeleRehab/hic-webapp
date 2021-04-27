@@ -11,6 +11,19 @@ const getCountriesFail = () => ({
   type: 'GET_COUNTRIES_FAIL'
 });
 
+const getDefinedCountriesRequest = () => ({
+  type: 'GET_DEFINED_COUNTRIES_REQUEST'
+});
+
+const getDefinedCountriesSuccess = (data) => ({
+  type: 'GET_DEFINED_COUNTRIES_SUCCESS',
+  data
+});
+
+const getDefinedCountriesFail = () => ({
+  type: 'GET_DEFINED_COUNTRIES_FAIL'
+});
+
 const createCountryRequest = () => ({
   type: 'CREATE_COUNTRY_REQUEST'
 });
@@ -59,5 +72,8 @@ export const mutation = {
   updateCountryFail,
   deleteCountryRequest,
   deleteCountrySuccess,
-  deleteCountryFail
+  deleteCountryFail,
+  getDefinedCountriesRequest,
+  getDefinedCountriesSuccess,
+  getDefinedCountriesFail
 };
