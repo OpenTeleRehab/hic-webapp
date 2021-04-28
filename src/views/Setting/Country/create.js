@@ -4,8 +4,7 @@ import Dialog from 'components/Dialog';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
-import { createCountry, updateCountry } from 'store/country/actions';
-import settings from 'settings';
+import { createCountry, updateCountry, getDefinedCountries } from 'store/country/actions';
 import { Clinic as clinicService } from 'services/clinic';
 
 const CreateCountry = ({ show, editId, handleClose }) => {
@@ -13,17 +12,17 @@ const CreateCountry = ({ show, editId, handleClose }) => {
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
 
-  const [errorIsoCode, setErrorIsoCode] = useState(false);
-  const [errorPhoneCode, setErrorPhoneCode] = useState(false);
   const [errorTherapistLimit, setErrorTherapistLimit] = useState(false);
   const [errorName, setErrorName] = useState(false);
   const languages = useSelector(state => state.language.languages);
   const countries = useSelector(state => state.country.countries);
+  const definedCountries = useSelector(state => state.country.definedCountries);
   const [totalTherapistLimitByCountry, setTotalTherapistLimitByCountry] = useState(0);
   const [errorTherapistLimitMessage, setErrorTherapistLimitMessage] = useState('');
 
   const [formFields, setFormFields] = useState({
     name: '',
+    country_code: '',
     iso_code: '',
     phone_code: '',
     language: '',
@@ -31,10 +30,15 @@ const CreateCountry = ({ show, editId, handleClose }) => {
   });
 
   useEffect(() => {
+    dispatch(getDefinedCountries());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (editId && countries.length) {
       const country = countries.find(country => country.id === editId);
       setFormFields({
         name: country.name,
+        country_code: country.iso_code,
         iso_code: country.iso_code,
         phone_code: country.phone_code,
         language: country.language_id,
@@ -54,31 +58,32 @@ const CreateCountry = ({ show, editId, handleClose }) => {
     setFormFields({ ...formFields, [name]: value });
   };
 
+  const handleCountryChange = e => {
+    const { value } = e.target;
+
+    const definedCountry = definedCountries.find(definedCountry => definedCountry.iso_code === value);
+    if (definedCountry) {
+      setFormFields({
+        ...formFields,
+        iso_code: definedCountry.iso_code,
+        phone_code: definedCountry.phone_code,
+        country_code: definedCountry.iso_code,
+        name: definedCountry.name
+      });
+    }
+  };
+
   const handleConfirm = () => {
     let canSave = true;
 
-    if (formFields.name === '') {
+    if (formFields.country_code === '') {
       canSave = false;
       setErrorName(true);
     } else {
       setErrorName(false);
     }
 
-    if (formFields.iso_code === '' || formFields.iso_code.length !== settings.isoCodeLength) {
-      canSave = false;
-      setErrorIsoCode(true);
-    } else {
-      setErrorIsoCode(false);
-    }
-
     const pattern = new RegExp(/^[0-9\b]+$/);
-    if (formFields.phone_code === '' || !pattern.test(formFields.phone_code)) {
-      canSave = false;
-      setErrorPhoneCode(true);
-    } else {
-      setErrorPhoneCode(false);
-    }
-
     if (formFields.therapist_limit === '') {
       canSave = false;
       setErrorTherapistLimit(true);
@@ -126,14 +131,17 @@ const CreateCountry = ({ show, editId, handleClose }) => {
             <Form.Label>{translate('country.name')}</Form.Label>
             <span className="text-dark ml-1">*</span>
             <Form.Control
-              name="name"
-              onChange={handleChange}
-              type="text"
-              placeholder={translate('placeholder.country.name')}
+              name="country_code"
+              onChange={handleCountryChange}
+              as="select"
+              value={formFields.country_code}
               isInvalid={errorName}
-              value={formFields.name}
-              maxLength={settings.textMaxLength}
-            />
+            >
+              <option value="">{translate('placeholder.country')}</option>
+              {definedCountries.map((country, index) => (
+                <option key={index} value={country.iso_code}>{country.name}</option>
+              ))}
+            </Form.Control>
             <Form.Control.Feedback type="invalid">
               {translate('error.country.name')}
             </Form.Control.Feedback>
@@ -143,14 +151,10 @@ const CreateCountry = ({ show, editId, handleClose }) => {
             <span className="text-dark ml-1">*</span>
             <Form.Control
               name="iso_code"
-              onChange={handleChange}
               placeholder={translate('placeholder.country.iso_code')}
-              isInvalid={errorIsoCode}
               value={formFields.iso_code}
+              disabled={true}
             />
-            <Form.Control.Feedback type="invalid">
-              { errorIsoCode && formFields.iso_code === '' ? translate('error.country.iso_code') : translate('error.country.iso_code.format') }
-            </Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
         <Form.Row>
@@ -159,16 +163,11 @@ const CreateCountry = ({ show, editId, handleClose }) => {
             <span className="text-dark ml-1">*</span>
             <Form.Control
               name="phone_code"
-              onChange={handleChange}
               type="text"
               placeholder={translate('placeholder.country.phone_code')}
-              isInvalid={errorPhoneCode}
               value={formFields.phone_code}
-              maxLength={settings.phoneCodeMaxLength}
+              disabled={true}
             />
-            <Form.Control.Feedback type="invalid">
-              { errorPhoneCode && formFields.phone_code === '' ? translate('error.country.phone_code') : translate('error.country.phone_code.format') }
-            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} controlId="formLanguage">
             <Form.Label>{translate('common.language')}</Form.Label>
