@@ -6,16 +6,11 @@ import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import validateEmail from 'utils/validateEmail';
 import { createTherapist, updateTherapist } from 'store/therapist/actions';
-import { useKeycloak } from '@react-keycloak/web';
-
 import { getCountryName, getCountryIdentity } from 'utils/country';
 import { getClinicName, getClinicIdentity } from 'utils/clinic';
-
-import { getProfile } from 'store/auth/actions';
 import { getProfessions } from 'store/profession/actions';
 
 const CreateTherapist = ({ show, handleClose, editId }) => {
-  const { keycloak } = useKeycloak();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
@@ -24,6 +19,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
   const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
 
+  const { profile } = useSelector((state) => state.auth);
   const professions = useSelector(state => state.profession.professions);
   const languages = useSelector(state => state.language.languages);
   const defaultLimitedPatients = useSelector(state => state.defaultLimitedPatient.defaultLimitedPatients);
@@ -35,9 +31,6 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
   const [errorLastName, setErrorLastName] = useState(false);
   const [errorFirstName, setErrorFirstName] = useState(false);
 
-  const [isProfileLoaded, setIsProfileLoaded] = useState(false);
-  const { profile } = useSelector((state) => state.auth);
-
   const [formFields, setFormFields] = useState({
     email: '',
     first_name: '',
@@ -48,17 +41,6 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
     clinic_identity: '',
     country_identity: ''
   });
-  useEffect(() => {
-    if (show) {
-      if (!isProfileLoaded && keycloak.authenticated) {
-        dispatch(getProfile());
-        setIsProfileLoaded(true);
-      }
-    } else {
-      resetData();
-    }
-    // eslint-disable-next-line
-  }, [show]);
 
   useEffect(() => {
     dispatch(getProfessions());

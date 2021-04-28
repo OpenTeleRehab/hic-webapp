@@ -134,7 +134,7 @@ const Therapist = ({ translate }) => {
   useEffect(() => {
     if (profile !== undefined && profile.type === USER_GROUPS.CLINIC_ADMIN) {
       clinicService.countTherapistByClinic(profile.clinic_id).then(res => {
-        if (res.data) {
+        if (res.success) {
           if (res.data.therapistTotal < getTotalTherapistLimit(profile.clinic_id, clinics)) {
             setIsTherapistLimit(true);
           } else {
