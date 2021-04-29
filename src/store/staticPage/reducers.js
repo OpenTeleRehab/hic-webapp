@@ -14,6 +14,12 @@ export const staticPage = (state = initialState, action) => {
         loading: false
       });
     }
+    case 'GET_PARTNER_LOGO_SUCCESS': {
+      return Object.assign({}, state, {
+        partnerLogoFile: action.data,
+        loading: false
+      });
+    }
     default:
       return state;
   }
