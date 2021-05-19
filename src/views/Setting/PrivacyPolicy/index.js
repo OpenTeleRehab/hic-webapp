@@ -21,7 +21,6 @@ const PrivacyPolicy = ({ translate, handleRowEdit }) => {
 
   const columns = [
     { name: 'version', title: translate('privacy_policy.version') },
-    { name: 'content', title: translate('privacy_policy.content') },
     { name: 'status', title: translate('common.status') },
     { name: 'published_date', title: translate('privacy_policy.published_date') },
     { name: 'action', title: translate('common.action') }
@@ -68,7 +67,6 @@ const PrivacyPolicy = ({ translate, handleRowEdit }) => {
           );
           return {
             version: privacyPolicy.version,
-            content: <div dangerouslySetInnerHTML={{ __html: privacyPolicy.content }} />,
             status: status,
             published_date: publishedDate ? moment(publishedDate).format(settings.date_format) : '',
             action
