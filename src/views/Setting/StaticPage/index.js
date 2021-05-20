@@ -29,7 +29,6 @@ const StaticPage = ({ translate, handleRowEdit }) => {
   const [fileError, setFileError] = useState(false);
   const columns = [
     { name: 'title', title: translate('static_page.title') },
-    { name: 'content', title: translate('term_and_condition.content') },
     { name: 'platform', title: translate('setting.translations.platform') },
     { name: 'action', title: translate('common.action') }
   ];
@@ -137,7 +136,6 @@ const StaticPage = ({ translate, handleRowEdit }) => {
             );
             return {
               title: staticPage.title,
-              content: <div dangerouslySetInnerHTML={{ __html: staticPage.content }} />,
               platform: staticPage.platform,
               action
             };
