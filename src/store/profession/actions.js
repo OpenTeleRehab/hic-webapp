@@ -4,6 +4,9 @@ import {
   showErrorNotification,
   showSuccessNotification
 } from 'store/notification/actions';
+import {
+  showSpinner
+} from 'store/spinnerOverlay/actions';
 
 export const getProfessions = () => async dispatch => {
   dispatch(mutation.getProfessionRequest());
@@ -19,15 +22,18 @@ export const getProfessions = () => async dispatch => {
 // Actions
 export const createProfession = payload => async (dispatch) => {
   dispatch(mutation.createProfessionRequest());
+  dispatch(showSpinner(true));
   const data = await Profession.createProfession(payload);
   if (data.success) {
     dispatch(mutation.createProfessionsSuccess());
     dispatch(getProfessions());
     dispatch(showSuccessNotification('toast_title.new_profession', data.message));
+    dispatch(showSpinner(false));
     return true;
   } else {
     dispatch(mutation.createProfessionsFail());
     dispatch(showErrorNotification('toast_title.new_profession', data.message));
+    dispatch(showSpinner(false));
     return false;
   }
 };

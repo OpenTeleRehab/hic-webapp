@@ -4,6 +4,9 @@ import {
   showErrorNotification,
   showSuccessNotification
 } from 'store/notification/actions';
+import {
+  showSpinner
+} from 'store/spinnerOverlay/actions';
 
 export const getCountries = () => async dispatch => {
   dispatch(mutation.getCountriesRequest());
@@ -30,15 +33,18 @@ export const getDefinedCountries = () => async dispatch => {
 // Actions
 export const createCountry = payload => async (dispatch) => {
   dispatch(mutation.createCountryRequest());
+  dispatch(showSpinner(true));
   const data = await Country.createCountry(payload);
   if (data.success) {
     dispatch(mutation.createCountrySuccess());
     dispatch(getCountries());
     dispatch(showSuccessNotification('toast_title.new_country', data.message));
+    dispatch(showSpinner(false));
     return true;
   } else {
     dispatch(mutation.createCountryFail());
     dispatch(showErrorNotification('toast_title.new_country', data.message));
+    dispatch(showSpinner(false));
     return false;
   }
 };

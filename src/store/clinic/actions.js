@@ -4,6 +4,9 @@ import {
   showErrorNotification,
   showSuccessNotification
 } from 'store/notification/actions';
+import {
+  showSpinner
+} from 'store/spinnerOverlay/actions';
 
 export const getClinics = () => async dispatch => {
   dispatch(mutation.getClinicsRequest());
@@ -19,15 +22,18 @@ export const getClinics = () => async dispatch => {
 // Actions
 export const createClinic = payload => async (dispatch) => {
   dispatch(mutation.createClinicRequest());
+  dispatch(showSpinner(true));
   const data = await Clinic.createClinic(payload);
   if (data.success) {
     dispatch(mutation.createClinicSuccess());
     dispatch(getClinics());
     dispatch(showSuccessNotification('toast_title.new_clinic', data.message));
+    dispatch(showSpinner(false));
     return true;
   } else {
     dispatch(mutation.createClinicFail());
     dispatch(showErrorNotification('toast_title.new_clinic', data.message));
+    dispatch(showSpinner(false));
     return false;
   }
 };

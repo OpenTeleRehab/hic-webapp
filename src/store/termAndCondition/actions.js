@@ -4,6 +4,9 @@ import {
   showErrorNotification,
   showSuccessNotification
 } from 'store/notification/actions';
+import {
+  showSpinner
+} from 'store/spinnerOverlay/actions';
 
 export const getTermAndConditions = () => async dispatch => {
   dispatch(mutation.getTermAndConditionsRequest());
@@ -19,15 +22,18 @@ export const getTermAndConditions = () => async dispatch => {
 // Actions
 export const createTermAndCondition = payload => async (dispatch) => {
   dispatch(mutation.createTermAndConditionRequest());
+  dispatch(showSpinner(true));
   const data = await TermAndCondition.createTermAndCondition(payload);
   if (data.success) {
     dispatch(mutation.createTermAndConditionSuccess());
     dispatch(getTermAndConditions());
     dispatch(showSuccessNotification('toast_title.new_term_and_condition', data.message));
+    dispatch(showSpinner(false));
     return true;
   } else {
     dispatch(mutation.createTermAndConditionFail());
     dispatch(showErrorNotification('toast_title.new_term_and_condition', data.message));
+    dispatch(showSpinner(false));
     return false;
   }
 };

@@ -52,15 +52,18 @@ export const updateStaticPage = (id, payload) => async dispatch => {
 // Actions
 export const createStaticPage = (payload) => async (dispatch) => {
   dispatch(mutation.createStaticPageRequest());
+  dispatch(showSpinner(true));
   const data = await staticPage.createStaticPage(payload);
   if (data.success) {
     dispatch(mutation.createStaticPageSuccess());
     dispatch(getStaticPages(payload));
     dispatch(showSuccessNotification('toast_title.new_static_page', data.message));
+    dispatch(showSpinner(false));
     return true;
   } else {
     dispatch(mutation.createStaticPagesFail());
     dispatch(showErrorNotification('toast_title.new_static_page', data.message));
+    dispatch(showSpinner(false));
     return false;
   }
 };
