@@ -8,16 +8,19 @@ import { showSpinner } from 'store/spinnerOverlay/actions';
 
 // Actions
 export const createTherapist = payload => async (dispatch, getState) => {
+  dispatch(showSpinner(true));
   const data = await Therapist.createTherapist(payload);
   if (data.success) {
     dispatch(mutation.createTherapistSuccess());
     const filters = getState().therapist.filters;
     dispatch(getTherapists(filters));
     dispatch(showSuccessNotification('New therapist', data.message));
+    dispatch(showSpinner(false));
     return true;
   } else {
     dispatch(mutation.createTherapistFail());
     dispatch(showErrorNotification('New therapist', data.message));
+    dispatch(showSpinner(false));
     return false;
   }
 };

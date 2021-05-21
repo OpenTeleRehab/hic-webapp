@@ -4,6 +4,9 @@ import {
   showErrorNotification,
   showSuccessNotification
 } from 'store/notification/actions';
+import {
+  showSpinner
+} from 'store/spinnerOverlay/actions';
 
 export const getPrivacyPolicies = () => async dispatch => {
   dispatch(mutation.getPrivacyPoliciesRequest());
@@ -19,15 +22,18 @@ export const getPrivacyPolicies = () => async dispatch => {
 // Actions
 export const createPrivacyPolicy = payload => async (dispatch) => {
   dispatch(mutation.createPrivacyPolicyRequest());
+  dispatch(showSpinner(true));
   const data = await PrivacyPolicy.createPrivacyPolicy(payload);
   if (data.success) {
     dispatch(mutation.createPrivacyPolicySuccess());
     dispatch(getPrivacyPolicies());
     dispatch(showSuccessNotification('toast_title.new_privacy_policy', data.message));
+    dispatch(showSpinner(false));
     return true;
   } else {
     dispatch(mutation.createPrivacyPolicyFail());
     dispatch(showErrorNotification('toast_title.new_privacy_policy', data.message));
+    dispatch(showSpinner(false));
     return false;
   }
 };

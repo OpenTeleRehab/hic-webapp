@@ -44,15 +44,18 @@ export const getCategory = (id, language) => async dispatch => {
 
 export const createCategory = payload => async (dispatch) => {
   dispatch(mutation.createCategoryRequest());
+  dispatch(showSpinner(true));
   const data = await Category.createCategory(payload);
   if (data.success) {
     dispatch(mutation.createCategorySuccess());
     dispatch(getCategories({ type: payload.type }));
     dispatch(showSuccessNotification('toast_title.new_category', data.message));
+    dispatch(showSpinner(false));
     return true;
   } else {
     dispatch(mutation.createCategoryFail());
     dispatch(showErrorNotification('toast_title.new_category', data.message));
+    dispatch(showSpinner(false));
     return false;
   }
 };
