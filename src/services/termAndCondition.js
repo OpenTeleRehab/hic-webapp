@@ -12,6 +12,19 @@ const getTermAndConditions = () => {
     });
 };
 
+const getTermAndCondition = (id, language) => {
+  const langParam = language ? `?lang=${language}` : '';
+  return axios.get(`/term-condition/${id}` + langParam)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const createTermAndCondition = payload => {
   return axios.post('/term-condition', payload)
     .then(
@@ -50,6 +63,7 @@ const publishTermAndCondition = id => {
 
 export const TermAndCondition = {
   getTermAndConditions,
+  getTermAndCondition,
   createTermAndCondition,
   updateTermAndCondition,
   publishTermAndCondition

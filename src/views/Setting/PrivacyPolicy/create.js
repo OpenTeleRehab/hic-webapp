@@ -107,7 +107,7 @@ const CreatePrivacyPolicy = ({ show, editId, handleClose }) => {
       <Form>
         <Form.Group controlId="formLanguage">
           <Form.Label>{translate('common.show_language.version')}</Form.Label>
-          <Form.Control as="select" value={editId ? language : ''} onChange={handleLanguageChange} disabled>
+          <Form.Control as="select" value={editId ? language : ''} onChange={handleLanguageChange} disabled={!editId}>
             {languages.map((language, index) => (
               <option key={index} value={language.id}>
                 {language.name} {language.code === language.fallback && `(${translate('common.default')})`}

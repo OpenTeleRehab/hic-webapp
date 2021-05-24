@@ -35,10 +35,26 @@ const updateTermAndConditionFail = () => ({
   type: 'UPDATE_TERM_AND_CONDITION_FAIL'
 });
 
+const getTermAndConditionRequest = () => ({
+  type: 'GET_TERM_AND_CONDITION_REQUEST'
+});
+
+const getTermAndConditionSuccess = (data) => ({
+  type: 'GET_TERM_AND_CONDITION_SUCCESS',
+  data
+});
+
+const getTermAndConditionFail = () => ({
+  type: 'GET_TERM_AND_CONDITION_FAIL'
+});
+
 export const mutation = {
   getTermAndConditionsRequest,
   getTermAndConditionsSuccess,
   getTermAndConditionsFail,
+  getTermAndConditionRequest,
+  getTermAndConditionSuccess,
+  getTermAndConditionFail,
   createTermAndConditionRequest,
   createTermAndConditionSuccess,
   createTermAndConditionFail,

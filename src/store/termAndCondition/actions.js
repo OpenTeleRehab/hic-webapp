@@ -19,6 +19,17 @@ export const getTermAndConditions = () => async dispatch => {
   }
 };
 
+export const getTermAndCondition = (id, language) => async (dispatch) => {
+  dispatch(mutation.getTermAndConditionRequest());
+  const res = await TermAndCondition.getTermAndCondition(id, language);
+  if (res) {
+    dispatch(mutation.getTermAndConditionSuccess(res.data));
+  } else {
+    dispatch(mutation.getTermAndConditionFail());
+    dispatch(showErrorNotification('toast_title.error_message', res.message));
+  }
+};
+
 // Actions
 export const createTermAndCondition = payload => async (dispatch) => {
   dispatch(mutation.createTermAndConditionRequest());
