@@ -7,7 +7,7 @@ import * as moment from 'moment';
 
 import settings from 'settings';
 import BasicTable from 'components/Table/basic';
-import { DeleteAction, EditAction, PublishAction } from 'components/ActionIcons';
+import { DeleteAction, EditAction, PublishAction, ViewAction } from 'components/ActionIcons';
 import { getPrivacyPolicies, publishPrivacyPolicy } from 'store/privacyPolicy/actions';
 import { STATUS_VARIANTS } from 'variables/privacyPolicy';
 import Dialog from 'components/Dialog';
@@ -18,6 +18,8 @@ const PrivacyPolicy = ({ translate, handleRowEdit }) => {
 
   const [showPublishedDialog, setShowPublishedDialog] = useState(false);
   const [publishedId, setPublishedId] = useState(null);
+  const [showViewDialog, setShowViewDialog] = useState(false);
+  const [viewContent, setViewContent] = useState(null);
 
   const columns = [
     { name: 'version', title: translate('privacy_policy.version') },
@@ -48,6 +50,15 @@ const PrivacyPolicy = ({ translate, handleRowEdit }) => {
     setShowPublishedDialog(false);
   };
 
+  const handleViewContent = (content) => {
+    setShowViewDialog(true);
+    setViewContent(content);
+  };
+
+  const handleViewContentClose = () => {
+    setShowViewDialog(false);
+  };
+
   return (
     <div className="card">
       <BasicTable
@@ -55,7 +66,8 @@ const PrivacyPolicy = ({ translate, handleRowEdit }) => {
           const publishedDate = privacyPolicy.published_date;
           const action = (
             <>
-              <PublishAction onClick={() => handlePublish(privacyPolicy.id)} disabled={publishedDate} />
+              <ViewAction onClick={() => handleViewContent(privacyPolicy.content)}/>
+              <PublishAction className="ml-1" onClick={() => handlePublish(privacyPolicy.id)} disabled={publishedDate} />
               <EditAction className="ml-1" onClick={() => handleRowEdit(privacyPolicy.id)} disabled={publishedDate} />
               <DeleteAction className="ml-1" disabled />
             </>
@@ -84,6 +96,15 @@ const PrivacyPolicy = ({ translate, handleRowEdit }) => {
         onConfirm={handlePublishedDialogConfirm}
       >
         <p>{translate('privacy_policy.publish_confirmation_message')}</p>
+      </Dialog>
+
+      <Dialog
+        show={showViewDialog}
+        title={translate('privacy_policy.view_title')}
+        cancelLabel={translate('common.close')}
+        onCancel={handleViewContentClose}
+      >
+        <div dangerouslySetInnerHTML={{ __html: viewContent }} />
       </Dialog>
     </div>
   );
