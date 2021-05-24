@@ -7,6 +7,11 @@ export const termAndCondition = (state = initialState, action) => {
         termAndConditions: action.data
       });
     }
+    case 'GET_TERM_AND_CONDITION_SUCCESS': {
+      return Object.assign({}, state, {
+        termAndCondition: action.data
+      });
+    }
     default:
       return state;
   }

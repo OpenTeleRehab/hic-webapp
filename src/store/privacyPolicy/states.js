@@ -1,3 +1,4 @@
 export const initialState = {
-  privacyPolicies: []
+  privacyPolicies: [],
+  privacyPolicy: {}
 };

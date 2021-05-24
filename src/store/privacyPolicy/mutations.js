@@ -11,6 +11,19 @@ const getPrivacyPoliciesFail = () => ({
   type: 'GET_PRIVACY_POLICIES_FAIL'
 });
 
+const getPrivacyPolicyRequest = () => ({
+  type: 'GET_PRIVACY_POLICY_REQUEST'
+});
+
+const getPrivacyPolicySuccess = (data) => ({
+  type: 'GET_PRIVACY_POLICY_SUCCESS',
+  data
+});
+
+const getPrivacyPolicyFail = () => ({
+  type: 'GET_PRIVACY_POLICY_FAIL'
+});
+
 const createPrivacyPolicyRequest = () => ({
   type: 'CREATE_PRIVACY_POLICY_REQUEST'
 });
@@ -39,6 +52,9 @@ export const mutation = {
   getPrivacyPoliciesRequest,
   getPrivacyPoliciesSuccess,
   getPrivacyPoliciesFail,
+  getPrivacyPolicyRequest,
+  getPrivacyPolicySuccess,
+  getPrivacyPolicyFail,
   createPrivacyPolicyRequest,
   createPrivacyPolicySuccess,
   createPrivacyPolicyFail,

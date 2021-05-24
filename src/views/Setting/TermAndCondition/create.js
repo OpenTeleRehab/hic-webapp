@@ -6,7 +6,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import settings from 'settings';
-import { createTermAndCondition, updateTermAndCondition } from 'store/termAndCondition/actions';
+import {
+  createTermAndCondition,
+  getTermAndCondition,
+  updateTermAndCondition
+} from 'store/termAndCondition/actions';
 
 const CreateTermAndCondition = ({ show, editId, handleClose }) => {
   const localize = useSelector((state) => state.localize);
@@ -18,9 +22,9 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
   const [errorContentMessage, setErrorContentMessage] = useState('');
   const [errorVersion, setVersion] = useState(false);
   const { languages } = useSelector(state => state.language);
-  const { termAndConditions } = useSelector(state => state.termAndCondition);
+  const { termAndCondition } = useSelector(state => state.termAndCondition);
 
-  const [language, setLanguage] = useState('');
+  const [language, setLanguage] = useState();
   const [formFields, setFormFields] = useState({
     version: ''
   });
@@ -34,14 +38,19 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
   }, [languages]);
 
   useEffect(() => {
-    if (editId && termAndConditions.length) {
-      const termAndCondition = termAndConditions.find(term => term.id === editId);
+    if (editId && language) {
+      dispatch(getTermAndCondition(editId, language));
+    }
+  }, [editId, language, dispatch]);
+
+  useEffect(() => {
+    if (editId && termAndCondition.id) {
       setFormFields({
         version: termAndCondition.version
       });
       setContent(termAndCondition.content);
     }
-  }, [editId, termAndConditions]);
+  }, [editId, termAndCondition]);
 
   const handleLanguageChange = e => {
     const { value } = e.target;
@@ -66,7 +75,7 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
     if (content === '') {
       canSave = false;
       setErrorContent(true);
-      setErrorContentMessage(translate('error.privacy_policy.version'));
+      setErrorContentMessage(translate('error.term_and_condition.content'));
       setErrorClass('error-feedback');
     } else {
       setErrorContent(false);
@@ -107,7 +116,7 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
       <Form>
         <Form.Group controlId="formLanguage">
           <Form.Label>{translate('common.show_language.version')}</Form.Label>
-          <Form.Control as="select" value={editId ? language : ''} onChange={handleLanguageChange} disabled>
+          <Form.Control as="select" value={editId ? language : ''} onChange={handleLanguageChange} disabled={!editId}>
             {languages.map((language, index) => (
               <option key={index} value={language.id}>
                 {language.name} {language.code === language.fallback && `(${translate('common.default')})`}

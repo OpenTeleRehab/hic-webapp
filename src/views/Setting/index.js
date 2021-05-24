@@ -41,7 +41,7 @@ const Setting = ({ translate }) => {
   const [view, setView] = useState(undefined);
   const [show, setShow] = useState(false);
 
-  const [editId, setEditId] = useState('');
+  const [editId, setEditId] = useState();
 
   useEffect(() => {
     if (hash.includes('#' + VIEW_TRANSLATION)) {
@@ -91,7 +91,7 @@ const Setting = ({ translate }) => {
         {[VIEW_COUNTRY, VIEW_LANGUAGE, VIEW_TERM_AND_CONDITION, VIEW_PRIVACY_POLICY, VIEW_CLINIC, VIEW_STATIC_PAGE, VIEW_PROFESSION].map(v => {
           if (v === view) {
             return (
-              <div className="btn-toolbar mb-2 mb-md-0">
+              <div key={v} className="btn-toolbar mb-2 mb-md-0">
                 <Button variant="primary" onClick={handleShow}>
                   <BsPlus size={20} className="mr-1" />
                   { translate(`${view}.new`) }

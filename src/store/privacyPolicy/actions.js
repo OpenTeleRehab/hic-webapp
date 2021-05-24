@@ -19,6 +19,17 @@ export const getPrivacyPolicies = () => async dispatch => {
   }
 };
 
+export const getPrivacyPolicy = (id, language) => async dispatch => {
+  dispatch(mutation.getPrivacyPolicyRequest());
+  const res = await PrivacyPolicy.getPrivacyPolicy(id, language);
+  if (res) {
+    dispatch(mutation.getPrivacyPolicySuccess(res.data));
+  } else {
+    dispatch(mutation.getPrivacyPolicyFail());
+    dispatch(showErrorNotification('toast_title.error_message', res.message));
+  }
+};
+
 // Actions
 export const createPrivacyPolicy = payload => async (dispatch) => {
   dispatch(mutation.createPrivacyPolicyRequest());

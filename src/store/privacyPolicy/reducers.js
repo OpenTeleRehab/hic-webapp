@@ -7,6 +7,11 @@ export const privacyPolicy = (state = initialState, action) => {
         privacyPolicies: action.data
       });
     }
+    case 'GET_PRIVACY_POLICY_SUCCESS': {
+      return Object.assign({}, state, {
+        privacyPolicy: action.data
+      });
+    }
     default:
       return state;
   }
