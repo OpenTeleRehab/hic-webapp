@@ -7,7 +7,7 @@ import * as moment from 'moment';
 
 import settings from 'settings';
 import BasicTable from 'components/Table/basic';
-import { DeleteAction, EditAction, PublishAction } from 'components/ActionIcons';
+import { DeleteAction, EditAction, PublishAction, ViewAction } from 'components/ActionIcons';
 import { getTermAndConditions, publishTermAndCondition } from 'store/termAndCondition/actions';
 import { STATUS_VARIANTS } from 'variables/termAndCondition';
 import Dialog from 'components/Dialog';
@@ -18,6 +18,8 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
 
   const [showPublishedDialog, setShowPublishedDialog] = useState(false);
   const [publishedId, setPublishedId] = useState(null);
+  const [showViewDialog, setShowViewDialog] = useState(false);
+  const [viewContent, setViewContent] = useState(null);
 
   const columns = [
     { name: 'version', title: translate('term_and_condition.version') },
@@ -48,6 +50,15 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
     setShowPublishedDialog(false);
   };
 
+  const handleViewContent = (content) => {
+    setShowViewDialog(true);
+    setViewContent(content);
+  };
+
+  const handleViewContentClose = () => {
+    setShowViewDialog(false);
+  };
+
   return (
     <div className="card">
       <BasicTable
@@ -55,7 +66,8 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
           const publishedDate = term.published_date;
           const action = (
             <>
-              <PublishAction onClick={() => handlePublish(term.id)} disabled={publishedDate} />
+              <ViewAction onClick={() => handleViewContent(term.content)} />
+              <PublishAction className="ml-1" onClick={() => handlePublish(term.id)} disabled={publishedDate} />
               <EditAction className="ml-1" onClick={() => handleRowEdit(term.id)} disabled={publishedDate} />
               <DeleteAction className="ml-1" disabled />
             </>
@@ -84,6 +96,15 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
         onConfirm={handlePublishedDialogConfirm}
       >
         <p>{translate('term_and_condition.publish_confirmation_message')}</p>
+      </Dialog>
+
+      <Dialog
+        show={showViewDialog}
+        title={translate('term_and_condition.view_title')}
+        cancelLabel={translate('common.close')}
+        onCancel={handleViewContentClose}
+      >
+        <div dangerouslySetInnerHTML={{ __html: viewContent }} />
       </Dialog>
     </div>
   );
