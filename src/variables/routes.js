@@ -29,5 +29,4 @@ export const SETTING_STATIC_PAGE = SETTING + '#static_page';
 export const SETTING_LANGUAGE = SETTING + '#language';
 
 export const PROFILE = '/profile';
-export const PROFILE_EDIT = PROFILE + '#edit';
 export const PROFILE_PASSWORD = PROFILE + '#password';

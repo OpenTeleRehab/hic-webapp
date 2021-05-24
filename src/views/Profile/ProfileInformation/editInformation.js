@@ -4,6 +4,7 @@ import { getTranslate } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
+import { FaGlobe } from 'react-icons/fa';
 import { updateUserProfile } from 'store/auth/actions';
 import { USER_GROUPS } from 'variables/user';
 
@@ -156,7 +157,10 @@ const EdiInformation = ({ editId }) => {
         </Form.Row>
         <Form.Row>
           <Form.Group className="col-sm-4 md-4" controlId="formLanguage">
-            <Form.Label>{translate('common.language')}</Form.Label>
+            <Form.Label>
+              <FaGlobe className="mr-1" />
+              {translate('common.language')}
+            </Form.Label>
             <Form.Control
               name="language_id"
               as="select"
