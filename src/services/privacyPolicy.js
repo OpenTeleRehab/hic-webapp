@@ -12,6 +12,19 @@ const getPrivacyPolicies = () => {
     });
 };
 
+const getPrivacyPolicy = (id, language) => {
+  const langParam = language ? `?lang=${language}` : '';
+  return axios.get(`/privacy-policy/${id}` + langParam)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const createPrivacyPolicy = payload => {
   return axios.post('/privacy-policy', payload)
     .then(
@@ -50,6 +63,7 @@ const publishPrivacyPolicy = id => {
 
 export const PrivacyPolicy = {
   getPrivacyPolicies,
+  getPrivacyPolicy,
   createPrivacyPolicy,
   updatePrivacyPolicy,
   publishPrivacyPolicy

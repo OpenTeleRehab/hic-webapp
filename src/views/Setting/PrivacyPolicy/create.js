@@ -6,7 +6,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import settings from 'settings';
-import { createPrivacyPolicy, updatePrivacyPolicy } from 'store/privacyPolicy/actions';
+import {
+  createPrivacyPolicy,
+  getPrivacyPolicy,
+  updatePrivacyPolicy
+} from 'store/privacyPolicy/actions';
 
 const CreatePrivacyPolicy = ({ show, editId, handleClose }) => {
   const localize = useSelector((state) => state.localize);
@@ -18,7 +22,7 @@ const CreatePrivacyPolicy = ({ show, editId, handleClose }) => {
   const [errorClass, setErrorClass] = useState('');
   const [errorVersion, setVersion] = useState(false);
   const { languages } = useSelector(state => state.language);
-  const { privacyPolicies } = useSelector(state => state.privacyPolicy);
+  const { privacyPolicy } = useSelector(state => state.privacyPolicy);
 
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
@@ -34,14 +38,19 @@ const CreatePrivacyPolicy = ({ show, editId, handleClose }) => {
   }, [languages]);
 
   useEffect(() => {
-    if (editId && privacyPolicies.length) {
-      const privacyPolicy = privacyPolicies.find(privacyPolicy => privacyPolicy.id === editId);
+    if (editId && language) {
+      dispatch(getPrivacyPolicy(editId, language));
+    }
+  }, [editId, language, dispatch]);
+
+  useEffect(() => {
+    if (editId && privacyPolicy.id) {
       setFormFields({
         version: privacyPolicy.version
       });
       setContent(privacyPolicy.content);
     }
-  }, [editId, privacyPolicies]);
+  }, [editId, privacyPolicy]);
 
   const handleLanguageChange = e => {
     const { value } = e.target;
