@@ -75,7 +75,7 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
     if (content === '') {
       canSave = false;
       setErrorContent(true);
-      setErrorContentMessage(translate('error.privacy_policy.version'));
+      setErrorContentMessage(translate('error.term_and_condition.content'));
       setErrorClass('error-feedback');
     } else {
       setErrorContent(false);

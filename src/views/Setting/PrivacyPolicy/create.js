@@ -75,7 +75,7 @@ const CreatePrivacyPolicy = ({ show, editId, handleClose }) => {
     if (content === '') {
       canSave = false;
       setErrorContent(true);
-      setErrorContentMessage(translate('error.privacy_policy.version'));
+      setErrorContentMessage(translate('error.privacy_policy.content'));
       setErrorClass('error-feedback');
     } else {
       setErrorContent(false);
