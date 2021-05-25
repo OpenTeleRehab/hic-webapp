@@ -141,7 +141,7 @@ const CreatePrivacyPolicy = ({ show, editId, handleClose }) => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group controlId="version">
-          <Form.Label>Content</Form.Label>
+          <Form.Label>{translate('privacy_policy.content')}</Form.Label>
           <span className="text-dark ml-1">*</span>
           <Editor
             apiKey={settings.tinymce.apiKey}

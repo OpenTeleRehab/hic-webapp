@@ -1,25 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withLocalize } from 'react-localize-redux';
-import { Badge } from 'react-bootstrap';
+import { Badge, Form } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import * as moment from 'moment';
 
 import settings from 'settings';
 import BasicTable from 'components/Table/basic';
 import { DeleteAction, EditAction, PublishAction, ViewAction } from 'components/ActionIcons';
-import { getTermAndConditions, publishTermAndCondition } from 'store/termAndCondition/actions';
+import {
+  getTermAndCondition,
+  getTermAndConditions,
+  publishTermAndCondition
+} from 'store/termAndCondition/actions';
 import { STATUS_VARIANTS } from 'variables/termAndCondition';
 import Dialog from 'components/Dialog';
 
 const TermAndCondition = ({ translate, handleRowEdit }) => {
   const dispatch = useDispatch();
-  const { termAndConditions } = useSelector(state => state.termAndCondition);
+  const { termAndConditions, termAndCondition } = useSelector(state => state.termAndCondition);
+  const { languages } = useSelector(state => state.language);
+  const { profile } = useSelector(state => state.auth);
 
   const [showPublishedDialog, setShowPublishedDialog] = useState(false);
   const [publishedId, setPublishedId] = useState(null);
   const [showViewDialog, setShowViewDialog] = useState(false);
-  const [viewContent, setViewContent] = useState(null);
+  const [viewId, setViewId] = useState(null);
+  const [language, setLanguage] = useState();
 
   const columns = [
     { name: 'version', title: translate('term_and_condition.version') },
@@ -27,6 +34,18 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
     { name: 'published_date', title: translate('term_and_condition.published_date') },
     { name: 'action', title: translate('common.action') }
   ];
+
+  useEffect(() => {
+    if (profile) {
+      setLanguage(profile.language_id);
+    }
+  }, [profile]);
+
+  useEffect(() => {
+    if (viewId && language) {
+      dispatch(getTermAndCondition(viewId, language));
+    }
+  }, [viewId, language, dispatch]);
 
   useEffect(() => {
     dispatch(getTermAndConditions());
@@ -50,13 +69,18 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
     setShowPublishedDialog(false);
   };
 
-  const handleViewContent = (content) => {
+  const handleViewContent = (id) => {
     setShowViewDialog(true);
-    setViewContent(content);
+    setViewId(id);
   };
 
   const handleViewContentClose = () => {
     setShowViewDialog(false);
+  };
+
+  const handleLanguageChange = e => {
+    const { value } = e.target;
+    setLanguage(value);
   };
 
   return (
@@ -66,7 +90,7 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
           const publishedDate = term.published_date;
           const action = (
             <>
-              <ViewAction onClick={() => handleViewContent(term.content)} />
+              <ViewAction onClick={() => handleViewContent(term.id)} />
               <PublishAction className="ml-1" onClick={() => handlePublish(term.id)} disabled={publishedDate} />
               <EditAction className="ml-1" onClick={() => handleRowEdit(term.id)} disabled={publishedDate} />
               <DeleteAction className="ml-1" disabled />
@@ -104,7 +128,17 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
         cancelLabel={translate('common.close')}
         onCancel={handleViewContentClose}
       >
-        <div dangerouslySetInnerHTML={{ __html: viewContent }} />
+        <Form.Group controlId="formLanguage">
+          <Form.Label>{translate('common.language')}</Form.Label>
+          <Form.Control as="select" value={language} onChange={handleLanguageChange}>
+            {languages.map((language, index) => (
+              <option key={index} value={language.id}>
+                {language.name}
+              </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
+        <div dangerouslySetInnerHTML={{ __html: termAndCondition.content }} />
       </Dialog>
     </div>
   );
