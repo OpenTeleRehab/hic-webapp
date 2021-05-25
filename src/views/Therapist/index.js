@@ -55,8 +55,8 @@ const Therapist = ({ translate }) => {
     { name: 'profession', title: translate('common.profession') },
     { name: 'therapist_country', title: translate('common.country') },
     { name: 'therapist_clinic', title: translate('common.clinic') },
+    { name: 'total_patient', title: translate('common.total_patient') },
     { name: 'limit_patient', title: translate('common.on_going.treatment_let') },
-    { name: 'assigned_patients', title: translate('common.assign_patient') },
     { name: 'status', title: translate('common.status') },
     { name: 'last_login', title: translate('common.last_login') },
     { name: 'action', title: translate('common.action') }
@@ -69,14 +69,14 @@ const Therapist = ({ translate }) => {
     { name: 'region', title: translate('common.region') },
     { name: 'therapist_clinic', title: translate('common.clinic') },
     { name: 'total_patient', title: translate('common.total_patient') },
-    { name: 'on_going_treatment', title: translate('common.ongoing_treatment_plan') }
+    { name: 'on_going_treatment', title: translate('common.ongoing_treatment_plan') },
+    { name: 'limit_patient', title: translate('common.on_going.treatment_let') }
   ];
 
   const columnExtensions = [
     { columnName: 'last_name', wordWrapEnabled: true },
     { columnName: 'first_name', wordWrapEnabled: true },
     { columnName: 'limit_patient', wordWrapEnabled: true },
-    { columnName: 'assigned_patients', wordWrapEnabled: true },
     { columnName: 'last_login', wordWrapEnabled: true, width: 250 },
     { columnName: 'total_patient', wordWrapEnabled: true },
     { columnName: 'on_going_treatment', wordWrapEnabled: true }
@@ -242,6 +242,7 @@ const Therapist = ({ translate }) => {
             therapist_clinic: getClinicName(user.clinic_id, clinics),
             total_patient: getTotalPatient(user.id, patients),
             on_going_treatment: getTotalOnGoingTreatment(user.id, patients),
+            limit_patient: user.limit_patient,
             status: <EnabledStatus enabled={user.enabled} />,
             last_login: user.last_login ? moment.utc(user.last_login).local().format(settings.datetime_format) : '',
             action
