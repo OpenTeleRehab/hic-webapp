@@ -136,7 +136,8 @@ const CountryAdminDashboard = ({ translate }) => {
     scales: {
       yAxes: [{
         ticks: {
-          beginAtZero: true
+          beginAtZero: true,
+          precision: 0
         },
         gridLines: {
           drawOnChartArea: false
@@ -160,7 +161,8 @@ const CountryAdminDashboard = ({ translate }) => {
     scales: {
       yAxes: [{
         ticks: {
-          beginAtZero: true
+          beginAtZero: true,
+          precision: 0
         },
         gridLines: {
           drawOnChartArea: false
@@ -186,7 +188,8 @@ const CountryAdminDashboard = ({ translate }) => {
     scales: {
       yAxes: [{
         ticks: {
-          beginAtZero: true
+          beginAtZero: true,
+          precision: 0
         },
         stacked: true,
         gridLines: {

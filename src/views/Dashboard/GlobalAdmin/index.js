@@ -202,7 +202,8 @@ const GlobalAdminDashboard = () => {
     scales: {
       yAxes: [{
         ticks: {
-          beginAtZero: true
+          beginAtZero: true,
+          precision: 0
         },
         gridLines: {
           drawOnChartArea: false
@@ -226,7 +227,8 @@ const GlobalAdminDashboard = () => {
     scales: {
       yAxes: [{
         ticks: {
-          beginAtZero: true
+          beginAtZero: true,
+          precision: 0
         },
         gridLines: {
           drawOnChartArea: false
@@ -308,7 +310,8 @@ const GlobalAdminDashboard = () => {
     scales: {
       yAxes: [{
         ticks: {
-          beginAtZero: true
+          beginAtZero: true,
+          precision: 0
         },
         stacked: true,
         gridLines: {
@@ -499,6 +502,9 @@ const GlobalAdminDashboard = () => {
                     yAxes: [{
                       gridLines: {
                         display: false
+                      },
+                      ticks: {
+                        precision: 0
                       }
                     }]
                   }
