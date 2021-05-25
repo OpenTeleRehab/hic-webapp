@@ -107,7 +107,7 @@ const Navigation = ({ translate }) => {
                   to={to}
                   exact={exact}
                   key={key}
-                  className="nav-link"
+                  className="d-flex align-items-center nav-link"
                 >
                   {translate(label)}
                 </NavLink>
