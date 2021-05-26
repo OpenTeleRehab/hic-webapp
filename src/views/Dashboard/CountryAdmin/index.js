@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card } from 'react-bootstrap';
+import { Row, Col, Card, Accordion } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaClinicMedical, FaUserMd } from 'react-icons/fa';
@@ -9,6 +9,7 @@ import _ from 'lodash';
 import { withLocalize } from 'react-localize-redux';
 import settings from 'settings';
 import { CHART } from '../../../variables/dashboard';
+import { ContextAwareToggle } from '../../../components/Accordion/ContextAwareToggle';
 
 const CountryAdminDashboard = ({ translate }) => {
   const dispatch = useDispatch();
@@ -273,53 +274,95 @@ const CountryAdminDashboard = ({ translate }) => {
           </Card>
         </Col>
       </Row>
-      <Row className="top-card-container">
-        <Col className="container-fluid content-row">
-          <Card className="h-100">
-            <Card.Header as="h5" className="chart-header">{translate('dashboard.therapist_per_clinic')}</Card.Header>
+      <Accordion defaultActiveKey="0" className="mb-3">
+        <Card>
+          <Accordion.Toggle as={Card.Header} variant="link" eventKey="0" className="d-flex align-items-center">
+            {translate('patient')}
+            <div className="ml-auto text-nowrap">
+              <ContextAwareToggle eventKey="0" />
+            </div>
+          </Accordion.Toggle>
+          <Accordion.Collapse eventKey="0">
             <Card.Body>
-              <Bar data={therapistsByClinicData} options={barChartOptions}/>
+              <Row className="top-card-container">
+                <Col className="container-fluid content-row">
+                  <Card className="h-100">
+                    <Card.Header as="h5" className="chart-header">{translate('dashboard.patient_by_gender_per_clinic')}</Card.Header>
+                    <Card.Body>
+                      <Bar data={patientsByGenderByClinicData} options={groupStackedBarChartOptions} />
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col className="container-fluid content-row">
+                  <Card className="h-100">
+                    <Card.Header as="h5" className="chart-header">{translate('dashboard.patient_by_age_per_clinic')}</Card.Header>
+                    <Card.Body>
+                      <Bar data={patientsByAgeByClinicData} options={groupBarChartOptions}/>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
             </Card.Body>
-          </Card>
-        </Col>
-        <Col className="container-fluid content-row">
-          <Card className="h-100">
-            <Card.Header as="h5" className="chart-header">{translate('dashboard.patient_by_gender_per_clinic')}</Card.Header>
+          </Accordion.Collapse>
+        </Card>
+      </Accordion>
+      <Accordion defaultActiveKey="1" className="mb-3">
+        <Card>
+          <Accordion.Toggle as={Card.Header} variant="link" eventKey="1" className="d-flex align-items-center">
+            {translate('common.ongoing_treatment')}
+            <div className="ml-auto text-nowrap">
+              <ContextAwareToggle eventKey="1" />
+            </div>
+          </Accordion.Toggle>
+          <Accordion.Collapse eventKey="1">
             <Card.Body>
-              <Bar data={patientsByGenderByClinicData} options={groupStackedBarChartOptions} />
+              <Row className="top-card-container">
+                <Col className="container-fluid content-row">
+                  <Card className="h-100">
+                    <Card.Header as="h5" className="chart-header">{translate('dashboard.ongoing_treatment_by_gender_per_clinic')}</Card.Header>
+                    <Card.Body>
+                      <Bar data={ongoingTreatmentsByGenderByClinicData} options={groupStackedBarChartOptions} />
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col className="container-fluid content-row">
+                  <Card className="h-100">
+                    <Card.Header as="h5" className="chart-header">{translate('dashboard.ongoing_treatment_by_age_per_clinic')}</Card.Header>
+                    <Card.Body>
+                      <Bar data={ongoingTreatmentsByAgeByClinicData} options={groupBarChartOptions}/>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
             </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-      <Row className="top-card-container">
-        <Col className="container-fluid content-row">
-          <Card className="h-100">
-            <Card.Header as="h5" className="chart-header">{translate('dashboard.patient_by_age_per_clinic')}</Card.Header>
+          </Accordion.Collapse>
+        </Card>
+      </Accordion>
+      <Accordion defaultActiveKey="2" className="mb-3">
+        <Card>
+          <Accordion.Toggle as={Card.Header} variant="link" eventKey="2" className="d-flex align-items-center">
+            {translate('therapist')}
+            <div className="ml-auto text-nowrap">
+              <ContextAwareToggle eventKey="2" />
+            </div>
+          </Accordion.Toggle>
+          <Accordion.Collapse eventKey="2">
             <Card.Body>
-              <Bar data={patientsByAgeByClinicData} options={groupBarChartOptions}/>
+              <Row className="top-card-container">
+                <Col className="container-fluid content-row">
+                  <Card className="h-100">
+                    <Card.Header as="h5" className="chart-header">{translate('dashboard.therapist_per_clinic')}</Card.Header>
+                    <Card.Body>
+                      <Bar data={therapistsByClinicData} options={barChartOptions}/>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col></Col>
+              </Row>
             </Card.Body>
-          </Card>
-        </Col>
-        <Col className="container-fluid content-row">
-          <Card className="h-100">
-            <Card.Header as="h5" className="chart-header">{translate('dashboard.ongoing_treatment_by_gender_per_clinic')}</Card.Header>
-            <Card.Body>
-              <Bar data={ongoingTreatmentsByGenderByClinicData} options={groupStackedBarChartOptions} />
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-      <Row className="top-card-container">
-        <Col className="container-fluid content-row">
-          <Card className="h-100">
-            <Card.Header as="h5" className="chart-header">{translate('dashboard.ongoing_treatment_by_age_per_clinic')}</Card.Header>
-            <Card.Body>
-              <Bar data={ongoingTreatmentsByAgeByClinicData} options={groupBarChartOptions}/>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col></Col>
-      </Row>
+          </Accordion.Collapse>
+        </Card>
+      </Accordion>
     </>
   );
 };
