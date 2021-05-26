@@ -87,160 +87,156 @@ const EdiInformation = ({ editId }) => {
   }
 
   return (
-    <>
-      <Form
-        className="mt-4"
-      >
-        <Form.Row >
-          <Form.Group className="col-sm-2 md-4" controlId="formLastName">
-            <Form.Label>{translate('common.last_name')}</Form.Label>
-            <span className="text-dark ml-1">*</span>
-            <Form.Control
-              name="last_name"
-              placeholder={translate('placeholder.last_name')}
-              onChange={handleChange}
-              isInvalid={errorLastName}
-              value={formFields.last_name}
+    <Form className="my-4">
+      <Form.Row >
+        <Form.Group className="col-sm-2 md-4" controlId="formLastName">
+          <Form.Label>{translate('common.last_name')}</Form.Label>
+          <span className="text-dark ml-1">*</span>
+          <Form.Control
+            name="last_name"
+            placeholder={translate('placeholder.last_name')}
+            onChange={handleChange}
+            isInvalid={errorLastName}
+            value={formFields.last_name}
 
-            />
-            <Form.Control.Feedback type="invalid">
-              {translate('error.last_name')}
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group className="col-sm-2 md-4" controlId="formFirstName">
-            <Form.Label>{translate('common.first_name')}</Form.Label>
-            <span className="text-dark ml-1">*</span>
-            <Form.Control
-              name="first_name"
-              placeholder={translate('placeholder.first_name')}
-              onChange={handleChange}
-              isInvalid={errorFirstName}
-              value={formFields.first_name}
+          />
+          <Form.Control.Feedback type="invalid">
+            {translate('error.last_name')}
+          </Form.Control.Feedback>
+        </Form.Group>
+        <Form.Group className="col-sm-2 md-4" controlId="formFirstName">
+          <Form.Label>{translate('common.first_name')}</Form.Label>
+          <span className="text-dark ml-1">*</span>
+          <Form.Control
+            name="first_name"
+            placeholder={translate('placeholder.first_name')}
+            onChange={handleChange}
+            isInvalid={errorFirstName}
+            value={formFields.first_name}
 
-            />
-            <Form.Control.Feedback type="invalid">
-              {translate('error.first_name')}
-            </Form.Control.Feedback>
-          </Form.Group>
-        </Form.Row>
+          />
+          <Form.Control.Feedback type="invalid">
+            {translate('error.first_name')}
+          </Form.Control.Feedback>
+        </Form.Group>
+      </Form.Row>
+      <Form.Row>
+        <Form.Group className="col-sm-4 md-4" controlId="formEmail">
+          <Form.Label>{translate('common.email')}</Form.Label>
+          <Form.Control
+            name="email"
+            type="email"
+            value={formFields.email}
+            disabled
+
+          />
+          <Form.Control.Feedback type="invalid">
+            {translate('error.email')}
+          </Form.Control.Feedback>
+        </Form.Group>
+      </Form.Row>
+      <Form.Row>
+        <Form.Group className="col-sm-4 md-4" controlId="formGender">
+          <Form.Label>{translate('gender')}</Form.Label>
+          <Form.Control
+            name="gender"
+            as="select"
+            onChange={handleChange}
+            value={formFields.gender}
+          >
+            <option value="">{translate('placeholder.gender')}</option>
+            <option value="male">{translate('common.male')}</option>
+            <option value="female">{translate(('common.female'))}</option>
+            <option value="other">{translate(('common.other'))}</option>
+          </Form.Control>
+
+        </Form.Group>
+      </Form.Row>
+      <Form.Row>
+        <Form.Group className="col-sm-4 md-4" controlId="formLanguage">
+          <Form.Label>
+            <FaGlobe className="mr-1" />
+            {translate('common.language')}
+          </Form.Label>
+          <Form.Control
+            name="language_id"
+            as="select"
+            onChange={handleChange}
+            value={formFields.language_id}
+          >
+            <option value="">{translate('placeholder.language')}</option>
+            {languages.map((language, index) => (
+              <option key={index} value={language.id}>{language.name}</option>
+            ))}
+          </Form.Control>
+        </Form.Group>
+      </Form.Row>
+
+      { profile.type !== USER_GROUPS.GLOBAL_ADMIN && (
         <Form.Row>
-          <Form.Group className="col-sm-4 md-4" controlId="formEmail">
-            <Form.Label>{translate('common.email')}</Form.Label>
+          <Form.Group className="col-sm-4 md-4" controlId="formCountry">
+            <Form.Label>{translate('common.country')}</Form.Label>
             <Form.Control
-              name="email"
-              type="email"
-              value={formFields.email}
+              name="country_id"
+              as="select"
+              value={formFields.country_id}
               disabled
 
-            />
+            >
+              <option value="">{translate('placeholder.country')}</option>
+              {countries.map((country, index) => (
+                <option key={index} value={country.id}>{country.name}</option>
+              ))}
+            </Form.Control>
             <Form.Control.Feedback type="invalid">
-              {translate('error.email')}
+              {translate('error.country')}
             </Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
-        <Form.Row>
-          <Form.Group className="col-sm-4 md-4" controlId="formGender">
-            <Form.Label>{translate('gender')}</Form.Label>
-            <Form.Control
-              name="gender"
-              as="select"
-              onChange={handleChange}
-              value={formFields.gender}
-            >
-              <option value="">{translate('placeholder.gender')}</option>
-              <option value="male">{translate('common.male')}</option>
-              <option value="female">{translate(('common.female'))}</option>
-              <option value="other">{translate(('common.other'))}</option>
-            </Form.Control>
+      )}
 
-          </Form.Group>
-        </Form.Row>
+      {profile.type === USER_GROUPS.CLINIC_ADMIN && (
         <Form.Row>
-          <Form.Group className="col-sm-4 md-4" controlId="formLanguage">
-            <Form.Label>
-              <FaGlobe className="mr-1" />
-              {translate('common.language')}
-            </Form.Label>
+          <Form.Group className="col-sm-4 md-4" controlId="formClinic">
+            <Form.Label>{translate('common.clinic')}</Form.Label>
             <Form.Control
-              name="language_id"
+              name="clinic_id"
               as="select"
-              onChange={handleChange}
-              value={formFields.language_id}
+              value={formFields.clinic_id}
+              disabled
+
             >
-              <option value="">{translate('placeholder.language')}</option>
-              {languages.map((language, index) => (
-                <option key={index} value={language.id}>{language.name}</option>
+              <option value="">{translate('placeholder.clinic')}</option>
+              {clinics.map((clinic, index) => (
+                <option key={index} value={clinic.id}>{clinic.name}</option>
               ))}
             </Form.Control>
+            <Form.Control.Feedback type="invalid">
+              {translate('error.clinic')}
+            </Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
+      )}
 
-        { profile.type !== USER_GROUPS.GLOBAL_ADMIN && (
-          <Form.Row>
-            <Form.Group className="col-sm-4 md-4" controlId="formCountry">
-              <Form.Label>{translate('common.country')}</Form.Label>
-              <Form.Control
-                name="country_id"
-                as="select"
-                value={formFields.country_id}
-                disabled
+      <Form.Row>
+        <Button
+          disabled={disabled}
+          type="button"
+          className="btn btn-primary"
+          onClick={handleSave}
+        >
+          {translate('common.save')}
+        </Button>
 
-              >
-                <option value="">{translate('placeholder.country')}</option>
-                {countries.map((country, index) => (
-                  <option key={index} value={country.id}>{country.name}</option>
-                ))}
-              </Form.Control>
-              <Form.Control.Feedback type="invalid">
-                {translate('error.country')}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Form.Row>
-        )}
-
-        {profile.type === USER_GROUPS.CLINIC_ADMIN && (
-          <Form.Row>
-            <Form.Group className="col-sm-4 md-4" controlId="formClinic">
-              <Form.Label>{translate('common.clinic')}</Form.Label>
-              <Form.Control
-                name="clinic_id"
-                as="select"
-                value={formFields.clinic_id}
-                disabled
-
-              >
-                <option value="">{translate('placeholder.clinic')}</option>
-                {clinics.map((clinic, index) => (
-                  <option key={index} value={clinic.id}>{clinic.name}</option>
-                ))}
-              </Form.Control>
-              <Form.Control.Feedback type="invalid">
-                {translate('error.clinic')}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Form.Row>
-        )}
-
-        <Form.Row>
-          <Button
-            disabled={disabled}
-            type="button"
-            className="btn btn-primary"
-            onClick={handleSave}
-          >
-            {translate('common.save')}
-          </Button>
-
-          <Button
-            className="ml-2"
-            variant="outline-dark"
-            onClick={handleCancel}
-          >
-            {translate('common.cancel')}
-          </Button>
-        </Form.Row>
-      </Form>
-    </>
+        <Button
+          className="ml-2"
+          variant="outline-dark"
+          onClick={handleCancel}
+        >
+          {translate('common.cancel')}
+        </Button>
+      </Form.Row>
+    </Form>
   );
 };
 
