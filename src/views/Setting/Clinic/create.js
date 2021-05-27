@@ -162,7 +162,7 @@ const CreateClinic = ({ show, editId, handleClose }) => {
       onConfirm={handleConfirm}
       confirmLabel={editId ? translate('common.save') : translate('common.create')}
     >
-      <Form>
+      <Form onSubmit={handleConfirm}>
         <Form.Row>
           <Form.Group as={Col} controlId="countryIso">
             <Form.Label>{translate('clinic.country.iso_code')}: {formFields.country_iso}</Form.Label>
