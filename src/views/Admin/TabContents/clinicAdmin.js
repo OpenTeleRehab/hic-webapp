@@ -7,7 +7,6 @@ import EnabledStatus from 'components/EnabledStatus';
 import { EditAction, DeleteAction, EnabledAction, DisabledAction } from 'components/ActionIcons';
 import { USER_GROUPS } from 'variables/user';
 import { getUsers } from 'store/user/actions';
-import { getCountryName } from 'utils/country';
 import { getClinicName } from 'utils/clinic';
 import * as moment from 'moment';
 import settings from 'settings';
@@ -17,7 +16,6 @@ let timer = null;
 const ClinicAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) => {
   const dispatch = useDispatch();
   const users = useSelector(state => state.user.users);
-  const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
@@ -26,7 +24,6 @@ const ClinicAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) => 
     { name: 'last_name', title: translate('common.last_name') },
     { name: 'first_name', title: translate('common.first_name') },
     { name: 'email', title: translate('common.email') },
-    { name: 'country', title: translate('common.country') },
     { name: 'clinic', title: translate('common.clinic') },
     { name: 'status', title: translate('common.status') },
     { name: 'last_login', title: translate('common.last_login') },
@@ -99,7 +96,6 @@ const ClinicAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) => 
             last_name: user.last_name,
             first_name: user.first_name,
             email: user.email,
-            country: getCountryName(user.country_id, countries),
             clinic: getClinicName(user.clinic_id, clinics),
             status: <EnabledStatus enabled={!!user.enabled} />,
             last_login: user.last_login ? moment.utc(user.last_login).local().format(settings.datetime_format) : '',
