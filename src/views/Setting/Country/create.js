@@ -125,7 +125,7 @@ const CreateCountry = ({ show, editId, handleClose }) => {
       onConfirm={handleConfirm}
       confirmLabel={editId ? translate('common.save') : translate('common.create')}
     >
-      <Form>
+      <Form onSubmit={handleConfirm}>
         <Form.Row>
           <Form.Group as={Col} controlId="name">
             <Form.Label>{translate('country.name')}</Form.Label>

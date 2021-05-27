@@ -293,7 +293,7 @@ const CreateExercise = ({ translate }) => {
         <h1>{id ? translate('exercise.edit') : translate('exercise.create')}</h1>
       </div>
 
-      <Form>
+      <Form onSubmit={handleSave}>
         {
           !id && (
             <Form.Group as={Row}>

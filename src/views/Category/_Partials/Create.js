@@ -123,7 +123,7 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
       onConfirm={handleConfirm}
       confirmLabel={editId ? translate('common.save') : translate('common.create')}
     >
-      <Form>
+      <Form onSubmit={handleConfirm}>
         <Form.Group controlId="formLanguage">
           <Form.Label>{translate('common.show_language.version')}</Form.Label>
           <Form.Control as="select" value={editId ? language : ''} onChange={handleLanguageChange} disabled={!editId}>

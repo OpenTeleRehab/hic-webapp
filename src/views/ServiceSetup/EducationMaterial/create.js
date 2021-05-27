@@ -175,7 +175,7 @@ const CreateEducationMaterial = ({ translate }) => {
         <h1>{id ? translate('education_material.edit') : translate('education_material.create')}</h1>
       </div>
 
-      <Form>
+      <Form onSubmit={handleSave}>
         <Row>
           <Col sm={12} xl={11}>
             <Form.Group controlId="formLanguage">

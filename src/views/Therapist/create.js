@@ -165,7 +165,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
       onConfirm={handleConfirm}
       confirmLabel={editId ? translate('common.save') : translate('common.create')}
     >
-      <Form>
+      <Form onSubmit={handleConfirm}>
         <Form.Group controlId="formEmail">
           <Form.Label>{translate('common.email')}</Form.Label>
           <span className="text-dark ml-1">*</span>
