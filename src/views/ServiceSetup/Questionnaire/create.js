@@ -19,7 +19,7 @@ import {
   BsCaretDownFill,
   BsCaretRightFill,
   BsSquare,
-  BsDashSquare
+  BsDashSquare, BsPlusCircle
 } from 'react-icons/bs';
 import { FaRegCheckSquare } from 'react-icons/fa';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
@@ -174,6 +174,18 @@ const CreateQuestionnaire = ({ translate }) => {
     setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
   };
 
+  const enableButtons = () => {
+    const languageObj = languages.find(item => item.id === parseInt(language, 10));
+    return languageObj && languageObj.code === languageObj.fallback && (!questionnaire.is_used || !id);
+  };
+
+  const handleAddQuestion = () => {
+    setQuestions([...questions, { title: '', type: 'checkbox', answers: [{ description: '' }, { description: '' }], file: null }]);
+    setTimeout(() => {
+      window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: 'smooth' });
+    }, 300);
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
@@ -266,7 +278,7 @@ const CreateQuestionnaire = ({ translate }) => {
           </Col>
         </Row>
         <Row>
-          <Col sm={12} xl={11}>
+          <Col sm={12} xl={11} className="question-wrapper">
             <Question
               questions={questions}
               setQuestions={setQuestions}
@@ -275,23 +287,36 @@ const CreateQuestionnaire = ({ translate }) => {
               answerFieldError={answerFieldError}
               modifiable={!questionnaire.is_used || !id}
             />
-            <Form.Group>
-              <Button
-                onClick={handleSave}
-                disabled={isLoading}
-              >
-                {translate('common.save')}
-              </Button>
-              <Button
-                className="ml-2"
-                variant="outline-dark"
-                as={Link}
-                to={ROUTES.SERVICE_SETUP_QUESTIONNAIRE}
-                disabled={isLoading}
-              >
-                {translate('common.cancel')}
-              </Button>
-            </Form.Group>
+            <div className="questionnaire-sticky-btn d-flex justify-content-between">
+              {enableButtons() &&
+                <div className="py-1 px-1">
+                  <Button
+                    variant="link btn-lg"
+                    onClick={handleAddQuestion}
+                    className="py-1"
+                  >
+                    <BsPlusCircle size={20} /> {translate('questionnaire.new.question')}
+                  </Button>
+                </div>
+              }
+              <div className="py-2 questionnaire-save-cancel-wrapper px-3">
+                <Button
+                  onClick={handleSave}
+                  disabled={isLoading}
+                >
+                  {translate('common.save')}
+                </Button>
+                <Button
+                  className="ml-2"
+                  variant="outline-dark"
+                  as={Link}
+                  to={ROUTES.SERVICE_SETUP_QUESTIONNAIRE}
+                  disabled={isLoading}
+                >
+                  {translate('common.cancel')}
+                </Button>
+              </div>
+            </div>
           </Col>
         </Row>
       </Form>
