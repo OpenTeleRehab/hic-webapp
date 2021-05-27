@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 import CustomTable from 'components/Table';
 import { getCountryName } from 'utils/country';
 import { getClinicName, getClinicRegion } from 'utils/clinic';
-import * as moment from 'moment';
-import settings from 'settings';
 import AgeCalculation from 'utils/age';
 import { getPatients } from 'store/therapist/actions';
 import { renderStatusBadge } from 'utils/treatmentPlan';
@@ -20,12 +18,10 @@ const Patient = ({ translate }) => {
 
   const columns = [
     { name: 'identity', title: translate('common.id') },
-    { name: 'date_of_birth', title: translate('common.date_of_birth') },
     { name: 'age', title: translate('common.age') },
     { name: 'country', title: translate('common.country') },
     { name: 'clinic', title: translate('common.clinic') },
     { name: 'region', title: translate('common.region') },
-    { name: 'treatment_plan', title: translate('common.ongoing_treatment_plan') },
     { name: 'treatment_status', title: translate('common.ongoing_treatment_status') }
   ];
 
@@ -81,12 +77,10 @@ const Patient = ({ translate }) => {
           return {
             identity: patient.identity,
             email: patient.email,
-            date_of_birth: patient.date_of_birth !== null ? moment(patient.date_of_birth, 'YYYY-MM-DD').format(settings.date_format) : '',
             age: patient.date_of_birth !== null ? AgeCalculation(patient.date_of_birth, translate) : '',
             country: getCountryName(patient.country_id, countries),
             clinic: getClinicName(patient.clinic_id, clinics),
             region: getClinicRegion(patient.clinic_id, clinics),
-            treatment_plan: patient.upcomingTreatmentPlan ? patient.upcomingTreatmentPlan.name : '',
             treatment_status: renderStatusBadge(patient.upcomingTreatmentPlan)
           };
         })}

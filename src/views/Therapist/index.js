@@ -52,10 +52,8 @@ const Therapist = ({ translate }) => {
     { name: 'last_name', title: translate('common.last_name') },
     { name: 'first_name', title: translate('common.first_name') },
     { name: 'email', title: translate('common.email') },
-    { name: 'profession', title: translate('common.profession') },
-    { name: 'therapist_country', title: translate('common.country') },
-    { name: 'therapist_clinic', title: translate('common.clinic') },
     { name: 'total_patient', title: translate('common.total_patient') },
+    { name: 'assigned_patient', title: translate('common.assigned_patient') },
     { name: 'limit_patient', title: translate('common.on_going.treatment_let') },
     { name: 'status', title: translate('common.status') },
     { name: 'last_login', title: translate('common.last_login') },
@@ -79,6 +77,7 @@ const Therapist = ({ translate }) => {
     { columnName: 'limit_patient', wordWrapEnabled: true },
     { columnName: 'last_login', wordWrapEnabled: true, width: 250 },
     { columnName: 'total_patient', wordWrapEnabled: true },
+    { columnName: 'assigned_patient', wordWrapEnabled: true },
     { columnName: 'on_going_treatment', wordWrapEnabled: true }
   ];
 
@@ -242,6 +241,7 @@ const Therapist = ({ translate }) => {
             therapist_clinic: getClinicName(user.clinic_id, clinics),
             total_patient: getTotalPatient(user.id, patients),
             on_going_treatment: getTotalOnGoingTreatment(user.id, patients),
+            assigned_patient: getTotalOnGoingTreatment(user.id, patients),
             limit_patient: user.limit_patient,
             status: <EnabledStatus enabled={user.enabled} />,
             last_login: user.last_login ? moment.utc(user.last_login).local().format(settings.datetime_format) : '',
