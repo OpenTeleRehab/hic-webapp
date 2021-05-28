@@ -14,7 +14,7 @@ const Translation = ({ translate }) => {
   const dispatch = useDispatch();
   const { localizations, loading } = useSelector(state => state.localization);
   const languages = useSelector(state => state.language.languages);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [filterPlatform, setFilterPlatform] = useState(settings.platforms.options[0].value);
