@@ -7,11 +7,12 @@ import { FaFlag, FaClinicMedical } from 'react-icons/fa';
 import { getChartDataGlobalAdmin } from 'store/dashboard/actions';
 import { getTranslate } from 'react-localize-redux';
 import { Bar, Line } from 'react-chartjs-2';
+import ReactTooltip from 'react-tooltip';
 import _ from 'lodash';
 import { CHART } from '../../../variables/dashboard';
 import settings from '../../../settings';
-import { Chart } from 'react-google-charts';
 import { ContextAwareToggle } from '../../../components/Accordion/ContextAwareToggle';
+import MapChart from '../../../components/MapChart';
 
 const GlobalAdminDashboard = () => {
   const localize = useSelector((state) => state.localize);
@@ -23,31 +24,20 @@ const GlobalAdminDashboard = () => {
   const [totalCountryAdmin, setTotalCountryAdmin] = useState(0);
   const [totalClinicAdmin, setTotalClinicAdmin] = useState(0);
   const [totalTherapist, setTotalTherapist] = useState(0);
-  const [countryAdminPerCountries, setCountryAdminPerCountries] = useState([]);
   const [clinicAdminPerCountries, setClinicAdminPerCountries] = useState([]);
   const [countryLabel, setCountryLabel] = useState([]);
   const [patientsByAgePerCountry, setPatientsByAgePerCounty] = useState([]);
   const [ongoingByAgePerCountry, setOngoingByAgePerCounty] = useState([]);
   const [treatmentByAgePerCountry, setTreatmentByAgePerCounty] = useState([]);
-  const [mapData, setMapData] = useState([['Country']]);
   const [patientsByGenderByCountry, setPatientsByGenderByCountry] = useState([]);
   const [treatmentsByGenderByCountry, setTreatmentsByGenderByCountry] = useState([]);
   const [ongoingTreatmentsByGenderByCountry, setOngoingTreatmentsByGenderByCountry] = useState([]);
   const [therapistsByCountry, setTherapistsByCountry] = useState([]);
+  const [mapChartContent, setMapChartContent] = useState('');
 
   useEffect(() => {
     dispatch(getChartDataGlobalAdmin());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (countries.length) {
-      const data = [['Country']];
-      countries.forEach(country => {
-        data.push([country.name]);
-      });
-      setMapData(data);
-    }
-  }, [countries]);
 
   useEffect(() => {
     if (!_.isEmpty(globalAdminData) && countries.length) {
@@ -112,7 +102,6 @@ const GlobalAdminDashboard = () => {
       });
 
       setCountryLabel(countryLabels);
-      setCountryAdminPerCountries(countryAdminsPerCountry);
       setClinicAdminPerCountries(clinicAdminsByCountry);
 
       if (!_.isEmpty(globalAdminData.therapistData)) {
@@ -243,19 +232,6 @@ const GlobalAdminDashboard = () => {
         barPercentage: 1.0
       }]
     }
-  };
-
-  const countryAdminPerCountryData = {
-    labels: countryLabel,
-    datasets: [
-      {
-        fill: false,
-        lineTension: 0.5,
-        backgroundColor: '#06038D',
-        borderWidth: 2,
-        data: countryAdminPerCountries
-      }
-    ]
   };
 
   const clinicAdminPerCountryData = {
@@ -394,23 +370,6 @@ const GlobalAdminDashboard = () => {
           </Card>
         </Col>
       </Row>
-      <Row className="top-card-container mt-5">
-        <Col sm={12}>
-          <Chart
-            chartType="GeoChart"
-            width="100%"
-            height="600px"
-            data={mapData}
-            options={{
-              colorAxis: { colors: ['#0077c8'] },
-              legend: 'none',
-              datalessRegionColor: '#edc8a3',
-              stroke: '#0077c8'
-            }}
-            mapsApiKey={process.env.REACT_APP_MAP_API_KEY}
-          />
-        </Col>
-      </Row>
       <Accordion defaultActiveKey="0" className="mb-3">
         <Card>
           <Accordion.Toggle as={Card.Header} variant="link" eventKey="0" className="d-flex align-items-center">
@@ -422,15 +381,18 @@ const GlobalAdminDashboard = () => {
           <Accordion.Collapse eventKey="0">
             <Card.Body>
               <Row className="top-card-container">
-                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
+                <Col className="container-fluid content-row" lg={6}>
                   <Card className="h-100">
-                    <Card.Header as="h5" className="chart-header">{translate('common.country_admin_per_country')}</Card.Header>
+                    <Card.Header as="h5" className="chart-header">{process.env.REACT_APP_SITE_TITLE} {translate('setting.countries')}</Card.Header>
                     <Card.Body>
-                      <Bar data={countryAdminPerCountryData} options={barChartOptions}/>
+                      <div className="map-chart">
+                        <MapChart setTooltipContent={setMapChartContent} countries={countries} />
+                        <ReactTooltip>{mapChartContent}</ReactTooltip>
+                      </div>
                     </Card.Body>
                   </Card>
                 </Col>
-                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
+                <Col className="container-fluid content-row" lg={6}>
                   <Card className="h-100">
                     <Card.Header as="h5" className="chart-header">{translate('common.clinic_admin_per_country')}</Card.Header>
                     <Card.Body>

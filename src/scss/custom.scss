@@ -29,6 +29,16 @@ $theme-colors: (
 	"dark": $dark
 );
 
+:export {
+	primary: $primary;
+	secondary: $secondary;
+	success: $green;
+	info: $info;
+	danger: $danger;
+	orangeLight: #EDC8A3;
+};
+
+
 // Toasts
 $toast-background-color: $teal;
 $toast-header-background-color: $teal;
