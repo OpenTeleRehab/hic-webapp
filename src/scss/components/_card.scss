@@ -111,3 +111,17 @@
 	margin-right: 8%;
 	display: flex;
 }
+
+.questionnaire-header {
+	background-color: $secondary;
+	color: $white;
+}
+
+.activity-weekend-header-column-background {
+	background-color: $orange;
+}
+
+.activity-card-wrapper {
+	width: 100%;
+	min-height: 250px;
+}

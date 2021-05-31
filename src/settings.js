@@ -25,7 +25,8 @@ const settings = {
   },
   minAge: 0,
   maxAge: 80,
-  ageGap: 10
+  ageGap: 10,
+  noteMaxLength: 50
 };
 
 export default settings;
