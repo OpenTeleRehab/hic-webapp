@@ -2,13 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Col, Form } from 'react-bootstrap';
 import Dialog from 'components/Dialog';
 import { useSelector, useDispatch } from 'react-redux';
-import { getTranslate } from 'react-localize-redux';
+import { getTranslate, Translate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import validateEmail from 'utils/validateEmail';
 import { createTherapist, updateTherapist } from 'store/therapist/actions';
 import { getCountryName, getCountryIdentity } from 'utils/country';
 import { getClinicName, getClinicIdentity } from 'utils/clinic';
 import { getProfessions } from 'store/profession/actions';
+import { Therapist as therapistService } from 'services/therapist';
+
+import {
+  getTotalOnGoingTreatment
+} from 'utils/patient';
 
 const CreateTherapist = ({ show, handleClose, editId }) => {
   const localize = useSelector((state) => state.localize);
@@ -19,6 +24,9 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
   const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
 
+  const [patients, setPatients] = useState([]);
+  const [onGoingPatients, setOngoingPatient] = useState(0);
+
   const { profile } = useSelector((state) => state.auth);
   const professions = useSelector(state => state.profession.professions);
   const languages = useSelector(state => state.language.languages);
@@ -27,6 +35,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorCountry, setErrorCountry] = useState(false);
   const [errorLimitPatient, setErrorLimitPatient] = useState(false);
+  const [errorLimitPatientMessage, setErrorLimitPatientMessage] = useState('');
   const [errorClinic, setErrorClinic] = useState(false);
   const [errorLastName, setErrorLastName] = useState(false);
   const [errorFirstName, setErrorFirstName] = useState(false);
@@ -36,7 +45,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
     first_name: '',
     last_name: '',
     country: '',
-    limit_patient: '',
+    limit_patient: defaultLimitedPatients.value,
     clinic: '',
     clinic_identity: '',
     country_identity: ''
@@ -60,6 +69,22 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
       country: ''
     });
   };
+
+  useEffect(() => {
+    if (editId) {
+      therapistService.getPatientByTherapistId(editId).then(res => {
+        if (res.data) {
+          setPatients(res.data);
+        }
+      });
+    }
+  }, [editId]);
+
+  useEffect(() => {
+    if (patients.length) {
+      setOngoingPatient(getTotalOnGoingTreatment(editId, patients));
+    }
+  }, [patients, editId]);
 
   useEffect(() => {
     if (editId && therapists.length) {
@@ -136,8 +161,15 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
     if (formFields.limit_patient === '') {
       canSave = false;
       setErrorLimitPatient(true);
+      setErrorLimitPatientMessage(translate('error.limit_patient'));
     } else {
-      setErrorLimitPatient(false);
+      if (onGoingPatients > 0 && formFields.limit_patient < onGoingPatients) {
+        canSave = false;
+        setErrorLimitPatient(true);
+        setErrorLimitPatientMessage(translate('error.limit_patient.lessthan'));
+      } else {
+        setErrorLimitPatient(false);
+      }
     }
 
     if (canSave) {
@@ -203,7 +235,12 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} controlId="patient" className="mb-0">
-            <Form.Label>{translate('common.limit_treatment')}</Form.Label>
+            <Form.Label>
+              <Translate
+                id="common.limit_treatment"
+                data={{ defaultLimitedPatients: defaultLimitedPatients.value }}
+              />
+            </Form.Label>
             <span className="text-dark ml-1">*</span>
             <Form.Control
               name="limit_patient"
@@ -213,9 +250,14 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
               value={formFields.limit_patient}
             />
             <Form.Control.Feedback type="invalid">
-              {translate('error.limit_patient')}
+              {errorLimitPatientMessage}
             </Form.Control.Feedback>
-            <p className="mt-1">{translate('common.on_going.treatment')}</p>
+            <p className="mt-1">
+              <Translate
+                id="common.on_going.treatment"
+                data={{ onGoingPatients: onGoingPatients }}
+              />
+            </p>
           </Form.Group>
         </Form.Row>
         <hr />
