@@ -39,7 +39,7 @@ const EducationMaterial = ({ translate }) => {
   const { educationMaterials, filters } = useSelector(state => state.educationMaterial);
   const { profile } = useSelector((state) => state.auth);
   const { categoryTreeData } = useSelector((state) => state.category);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [id, setId] = useState(null);

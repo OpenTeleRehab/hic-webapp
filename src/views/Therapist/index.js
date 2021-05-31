@@ -81,7 +81,7 @@ const Therapist = ({ translate }) => {
     { columnName: 'on_going_treatment', wordWrapEnabled: true }
   ];
 
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [searchValue, setSearchValue] = useState('');
