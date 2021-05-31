@@ -104,6 +104,19 @@ const getPatientByTherapistIds = (therapistIds) => {
     });
 };
 
+const getPatientByTherapistId = (therapistId) => {
+  const params = { therapist_id: therapistId };
+  return patientAxios.get('patient/list/by-therapist-id', { params })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Therapist = {
   createTherapist,
   updateTherapist,
@@ -111,5 +124,6 @@ export const Therapist = {
   deleteTherapistUser,
   getPatients,
   updateTherapistStatus,
-  getPatientByTherapistIds
+  getPatientByTherapistIds,
+  getPatientByTherapistId
 };
