@@ -18,6 +18,7 @@ $light: #EBEBEB;
 $dark: #5C5C5C;
 $light-blue: #f0f6fc;
 $light-grey: #cacfcc;
+$orange: #E35205;
 
 $theme-colors: (
 	"primary": $primary,
@@ -36,6 +37,7 @@ $theme-colors: (
 	info: $info;
 	danger: $danger;
 	orangeLight: #EDC8A3;
+	orange: $orange;
 };
 
 
