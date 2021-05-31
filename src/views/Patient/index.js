@@ -9,9 +9,12 @@ import AgeCalculation from 'utils/age';
 import { getPatients } from 'store/therapist/actions';
 import { renderStatusBadge } from 'utils/treatmentPlan';
 import { USER_GROUPS } from 'variables/user';
+import * as ROUTES from 'variables/routes';
+import { useHistory } from 'react-router-dom';
 
 const Patient = ({ translate }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const patients = useSelector(state => state.patient.patients);
   const countries = useSelector(state => state.country.countries);
   const clinics = useSelector(state => state.clinic.clinics);
@@ -57,6 +60,10 @@ const Patient = ({ translate }) => {
     });
   }, [currentPage, pageSize, dispatch, filters, searchValue, orderBy]);
 
+  const handleRowClick = (row) => {
+    history.push(ROUTES.VIEW_PATIENT_DETAIL.replace(':patientId', row.id));
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
@@ -73,8 +80,11 @@ const Patient = ({ translate }) => {
         filters={filters}
         columns={columns}
         columnExtensions={columnExtensions}
+        onRowClick={handleRowClick}
+        hover="hover-primary"
         rows={patients.map(patient => {
           return {
+            id: patient.id,
             identity: patient.identity,
             email: patient.email,
             age: patient.date_of_birth !== null ? AgeCalculation(patient.date_of_birth, translate) : '',

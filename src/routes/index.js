@@ -19,6 +19,8 @@ import ProfilePage from 'views/Profile';
 
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES, SETTING_ROLES } from 'variables/user';
+import ViewPatient from 'views/Patient/viewPatient';
+import ViewTreatmentPlan from 'views/TreatmentPlan/detail';
 const PRIVATE = 'private';
 const PUBLIC = 'public';
 
@@ -57,6 +59,20 @@ const routes = [
     exact: true,
     type: PRIVATE,
     roles: [USER_ROLES.MANAGE_GLOBAL_ADMIN]
+  },
+  {
+    title: 'patient.detail',
+    path: ROUTES.VIEW_PATIENT_DETAIL,
+    component: ViewPatient,
+    exact: true,
+    type: PRIVATE
+  },
+  {
+    title: 'treatment_plan.detail',
+    path: ROUTES.VIEW_TREATMENT_PLAN_DETAIL,
+    component: ViewTreatmentPlan,
+    exact: true,
+    type: PRIVATE
   },
   {
     title: 'service_setup',

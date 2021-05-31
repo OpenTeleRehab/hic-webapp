@@ -26,6 +26,7 @@ import { staticPage } from 'store/staticPage/reducers';
 import { dashboard } from 'store/dashboard/reducers';
 import { systemLimit } from 'store/systemLimit/reducers';
 import { privacyPolicy } from 'store/privacyPolicy/reducers';
+import { treatmentPlan } from 'store/treatmentPlan/reducers';
 
 export const rootReducer = {
   localize: localizeReducer,
@@ -49,7 +50,8 @@ export const rootReducer = {
   staticPage,
   dashboard,
   systemLimit,
-  privacyPolicy
+  privacyPolicy,
+  treatmentPlan
 };
 
 const devTool =
