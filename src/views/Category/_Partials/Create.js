@@ -6,6 +6,8 @@ import { Form } from 'react-bootstrap';
 import { createCategory, updateCategory, getCategory } from 'store/category/actions';
 import PropTypes from 'prop-types';
 import settings from 'settings';
+import Select from 'react-select';
+import scssColors from '../../../scss/custom.scss';
 
 const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) => {
   const dispatch = useDispatch();
@@ -62,14 +64,17 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
     // eslint-disable-next-line
   }, [allowNew, editId, activeCategory]);
 
-  const handleLanguageChange = e => {
-    const { value } = e.target;
+  const handleLanguageChange = (value) => {
     setLanguage(value);
   };
 
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
+  };
+
+  const handleSingleSelectChange = (key, value) => {
+    setFormFields({ ...formFields, [key]: value });
   };
 
   const handleConfirm = () => {
@@ -115,6 +120,17 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
     }
   };
 
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
+  };
+
   return (
     <Dialog
       show={show}
@@ -126,35 +142,36 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
       <Form onSubmit={handleConfirm}>
         <Form.Group controlId="formLanguage">
           <Form.Label>{translate('common.show_language.version')}</Form.Label>
-          <Form.Control as="select" value={editId ? language : ''} onChange={handleLanguageChange} disabled={!editId}>
-            {languages.map((language, index) => (
-              <option key={index} value={language.id}>
-                {language.name} {language.code === language.fallback && `(${translate('common.default')})`}
-              </option>
-            ))}
-          </Form.Control>
+          <Select
+            isDisabled={!editId}
+            classNamePrefix="filter"
+            value={languages.filter(option => option.id === language)}
+            getOptionLabel={option => `${option.name} ${option.code === option.fallback ? translate('common.default') : ''}`}
+            options={languages}
+            onChange={(e) => handleLanguageChange(e.id)}
+            styles={customSelectStyles}
+          />
         </Form.Group>
         <Form.Group>
           <Form.Label>{translate(editId ? 'category.title' : 'category.category')}</Form.Label>
           <span className="text-dark ml-1">*</span>
           {!allowNew && !editId &&
-            <Form.Control
-              as="select"
-              name="current_category"
-              value={formFields.current_category}
-              isInvalid={errorCurrentCategory}
-              onChange={handleChange}
-              disabled={!allowNew}
-            >
-              <option value="">{translate('placeholder.category')}</option>
-              {selectableCategories.length &&
-                selectableCategories.map(selectableCategory => {
-                  return (
-                    <option key={selectableCategory.id} value={selectableCategory.id}>{selectableCategory.title}</option>
-                  );
-                })
-              }
-            </Form.Control>
+          <Select
+            placeholder={translate('placeholder.category')}
+            isDisabled={!allowNew}
+            classNamePrefix="filter"
+            value={selectableCategories.filter(option => option.id === formFields.current_category)}
+            getOptionLabel={option => option.title}
+            options={[
+              {
+                id: '',
+                title: translate('placeholder.category')
+              },
+              ...selectableCategories
+            ]}
+            onChange={(e) => handleSingleSelectChange('current_category', e.id)}
+            styles={customSelectStyles}
+          />
           }
           {allowNew &&
             <Form.Control

@@ -37,6 +37,8 @@ import {
 import { FaRegCheckSquare } from 'react-icons/fa';
 import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
+import Select from 'react-select';
+import scssColors from '../../../scss/custom.scss';
 
 let timer = null;
 const Exercise = ({ translate }) => {
@@ -113,11 +115,6 @@ const Exercise = ({ translate }) => {
     setCurrentPage(1);
   };
 
-  const handleLanguageChange = e => {
-    const { value } = e.target;
-    setLanguage(value);
-  };
-
   const handleClearSearch = () => {
     setFormFields({ ...formFields, search_value: '' });
     setCurrentPage(1);
@@ -170,6 +167,17 @@ const Exercise = ({ translate }) => {
       .then(() => { setDownloading(false); });
   };
 
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
+  };
+
   return (
     <>
       <Row>
@@ -187,13 +195,14 @@ const Exercise = ({ translate }) => {
             <Card.Body>
               <Form.Group>
                 <Form.Label>{translate('common.language')}</Form.Label>
-                <Form.Control as="select" value={language} onChange={handleLanguageChange}>
-                  {languages.map((language, index) => (
-                    <option key={index} value={language.id}>
-                      {language.name}
-                    </option>
-                  ))}
-                </Form.Control>
+                <Select
+                  classNamePrefix="filter"
+                  value={languages.filter(option => option.id === language)}
+                  getOptionLabel={option => option.name}
+                  options={languages}
+                  onChange={(e) => setLanguage(e.id)}
+                  styles={customSelectStyles}
+                />
               </Form.Group>
               <Accordion>
                 {

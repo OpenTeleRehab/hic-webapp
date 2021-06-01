@@ -10,6 +10,8 @@ import { getCountryName, getCountryIdentity } from 'utils/country';
 import { getClinicName, getClinicIdentity } from 'utils/clinic';
 import { getProfessions } from 'store/profession/actions';
 import { Therapist as therapistService } from 'services/therapist';
+import Select from 'react-select';
+import scssColors from '../../scss/custom.scss';
 
 import {
   getTotalOnGoingTreatment
@@ -113,6 +115,10 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
     setFormFields({ ...formFields, [name]: value });
   };
 
+  const handleSingleSelectChange = (key, value) => {
+    setFormFields({ ...formFields, [key]: value });
+  };
+
   const handleConfirm = () => {
     let canSave = true;
 
@@ -189,9 +195,21 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
     }
   };
 
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
+  };
+
   return (
     <Dialog
       show={show}
+      size="lg"
       title={translate(editId ? 'admin.edit' : 'therapist.new')}
       onCancel={handleClose}
       onConfirm={handleConfirm}
@@ -218,18 +236,15 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
           <Form.Group as={Col} controlId="formCountry" className="mb-0">
             <Form.Label>{translate('common.country')}</Form.Label>
             <span className="text-dark ml-1">*</span>
-            <Form.Control
-              name="country"
-              onChange={handleChange}
-              as="select"
-              value={formFields.country}
-              disabled
-              isInvalid={errorCountry}
-            >
-              { profile !== undefined && (
-                <option value={profile.country_id}>{getCountryName(profile.country_id, countries)}</option>
-              )}
-            </Form.Control>
+            <Select
+              isDisabled={true}
+              placeholder={profile !== undefined && getCountryName(profile.country_id, countries)}
+              classNamePrefix="filter"
+              className={errorCountry ? 'is-invalid' : ''}
+              value={profile !== undefined && getCountryName(profile.country_id, countries)}
+              getOptionLabel={option => option.label}
+              styles={customSelectStyles}
+            />
             <Form.Control.Feedback type="invalid">
               {translate('error.country')}
             </Form.Control.Feedback>
@@ -294,17 +309,21 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
         <Form.Row>
           <Form.Group as={Col} controlId="formProfession">
             <Form.Label>{translate('common.profession')}</Form.Label>
-            <Form.Control
-              name="profession"
-              onChange={handleChange}
-              as="select"
-              value={formFields.profession}
-            >
-              <option value="">{translate('placeholder.profession')}</option>
-              {professions.map((profession, index) => (
-                <option key={index} value={profession.id}>{profession.name}</option>
-              ))}
-            </Form.Control>
+            <Select
+              placeholder={translate('placeholder.profession')}
+              classNamePrefix="filter"
+              value={professions.filter(option => option.id === formFields.profession)}
+              getOptionLabel={option => option.name}
+              options={[
+                {
+                  id: '',
+                  name: translate('placeholder.profession')
+                },
+                ...professions
+              ]}
+              onChange={(e) => handleSingleSelectChange('profession', e.id)}
+              styles={customSelectStyles}
+            />
             <Form.Control.Feedback type="invalid">
               {translate('error.profession')}
             </Form.Control.Feedback>
@@ -312,37 +331,30 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
           <Form.Group as={Col} controlId="clinic">
             <Form.Label>{translate('common.clinic')}</Form.Label>
             <span className="text-dark ml-1">*</span>
-            <Form.Control
-              name="clinic"
-              onChange={handleChange}
-              as="select"
+            <Select
               value={formFields.clinic}
-              disabled
-              isInvalid={errorClinic}
-            >
-              { profile !== undefined && (
-                <option value={profile.clinic_id}>{getClinicName(profile.clinic_id, clinics)}</option>
-              )}
-            </Form.Control>
+              placeholder={getClinicName(profile.clinic_id, clinics)}
+              classNamePrefix="filter"
+              className={errorClinic ? 'is-invalid' : ''}
+              isDisabled={true}
+            />
             <Form.Control.Feedback type="invalid">
               {translate('error.clinic')}
             </Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
         <Form.Row>
-          <Form.Group controlId="formLanguage">
+          <Form.Group as={Col} controlId="formLanguage">
             <Form.Label>{translate('common.language')}</Form.Label>
-            <Form.Control
-              name="language"
-              onChange={handleChange}
-              as="select"
-              value={formFields.language}
-            >
-              <option value="">{translate('placeholder.language')}</option>
-              {languages.map((language, index) => (
-                <option key={index} value={language.id}>{language.name}</option>
-              ))}
-            </Form.Control>
+            <Select
+              placeholder={translate('placeholder.language')}
+              classNamePrefix="filter"
+              value={languages.filter(option => option.id === formFields.language_id)}
+              getOptionLabel={option => option.name}
+              options={[{ id: '', name: translate('placeholder.language') }, ...languages]}
+              onChange={(e) => handleSingleSelectChange('language_id', e.id)}
+              styles={customSelectStyles}
+            />
           </Form.Group>
         </Form.Row>
       </Form>

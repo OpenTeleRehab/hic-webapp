@@ -37,6 +37,8 @@ import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import { TABS } from 'variables/exercises';
 import Upload from './upload';
+import Select from 'react-select';
+import scssColors from '../../../scss/custom.scss';
 
 const CreateExercise = ({ translate }) => {
   const dispatch = useDispatch();
@@ -127,11 +129,6 @@ const CreateExercise = ({ translate }) => {
       }
     }
   }, [id, exercise, categoryTreeData]);
-
-  const handleLanguageChange = e => {
-    const { value } = e.target;
-    setLanguage(value);
-  };
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -289,6 +286,17 @@ const CreateExercise = ({ translate }) => {
     setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
   };
 
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
@@ -367,13 +375,15 @@ const CreateExercise = ({ translate }) => {
             <Col sm={7} xl={8} className="mb-5">
               <Form.Group controlId="formLanguage">
                 <Form.Label>{translate('common.show_language.version')}</Form.Label>
-                <Form.Control as="select" value={id ? language : ''} onChange={handleLanguageChange} disabled={!id}>
-                  {languages.map((language, index) => (
-                    <option key={index} value={language.id}>
-                      {language.name}
-                    </option>
-                  ))}
-                </Form.Control>
+                <Select
+                  isDisabled={!id}
+                  classNamePrefix="filter"
+                  value={languages.filter(option => option.id === language)}
+                  getOptionLabel={option => option.name}
+                  options={languages}
+                  onChange={(e) => setLanguage(e.id)}
+                  styles={customSelectStyles}
+                />
               </Form.Group>
               <h4>{translate('exercise.information')}</h4>
               <Form.Group controlId="formTitle">
