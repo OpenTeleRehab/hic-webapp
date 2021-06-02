@@ -117,6 +117,18 @@ const getPatientByTherapistId = (therapistId) => {
     });
 };
 
+const resendEmail = (id) => {
+  return customAxios.post(`/therapist/resend-email/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Therapist = {
   createTherapist,
   updateTherapist,
@@ -125,5 +137,6 @@ export const Therapist = {
   getPatients,
   updateTherapistStatus,
   getPatientByTherapistIds,
-  getPatientByTherapistId
+  getPatientByTherapistId,
+  resendEmail
 };

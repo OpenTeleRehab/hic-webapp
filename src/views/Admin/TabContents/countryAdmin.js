@@ -6,11 +6,11 @@ import PropTypes from 'prop-types';
 import CustomTable from 'components/Table';
 import EnabledStatus from 'components/EnabledStatus';
 import { USER_GROUPS } from 'variables/user';
-import { getUsers } from 'store/user/actions';
+import { getUsers, resendEmail } from 'store/user/actions';
 import { getCountryName } from 'utils/country';
 import * as moment from 'moment';
 import settings from 'settings';
-import { DeleteAction, EditAction, EnabledAction, DisabledAction } from 'components/ActionIcons';
+import { DeleteAction, EditAction, EnabledAction, DisabledAction, MailSendAction } from 'components/ActionIcons';
 import { getTranslate } from 'react-localize-redux';
 
 let timer = null;
@@ -40,6 +40,10 @@ const CountryAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) =>
   useEffect(() => {
     setCurrentPage(0);
   }, [pageSize, searchValue, filters]);
+
+  const handleSendMail = (id) => {
+    dispatch(resendEmail(id, type));
+  };
 
   useEffect(() => {
     if (type === USER_GROUPS.COUNTRY_ADMIN) {
@@ -91,6 +95,7 @@ const CountryAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) =>
               }
               <EditAction onClick={() => handleEdit(user.id)} />
               <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={user.enabled} />
+              <MailSendAction onClick={() => handleSendMail(user.id)} disabled={user.last_login} />
             </>
           );
 

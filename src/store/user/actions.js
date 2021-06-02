@@ -94,3 +94,19 @@ export const deleteUser = (id, type) => async (dispatch, getState) => {
     return false;
   }
 };
+
+export const resendEmail = (id, type) => async (dispatch, getState) => {
+  dispatch(mutation.resendEmailRequest());
+  const data = await User.resendEmail(id);
+  if (data.success) {
+    dispatch(mutation.resendEmailSuccess());
+    const filters = getState().user.filters;
+    dispatch(getUsers({ ...filters, admin_type: type }));
+    dispatch(showSuccessNotification('toast_title.rensend_admin_account', data.message));
+    return true;
+  } else {
+    dispatch(mutation.resendEmailFail());
+    dispatch(showErrorNotification('toast_title.rensend_admin_account', data.message));
+    return false;
+  }
+};
