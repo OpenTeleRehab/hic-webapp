@@ -14,6 +14,7 @@ import Clinic from 'views/Setting/Clinic';
 import Profession from 'views/Setting/Profession';
 import Language from 'views/Setting/Language';
 import StaticPage from 'views/Setting/StaticPage';
+import GuidancePage from 'views/Setting/Guidance';
 
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES, SETTING_ROLES } from 'variables/user';
@@ -24,6 +25,7 @@ import CreateTermAndCondition from 'views/Setting/TermAndCondition/create';
 import CreateStaticPage from 'views/Setting/StaticPage/create';
 import CreateProfession from 'views/Setting/Profession/create';
 import CreatePrivacyPolicy from 'views/Setting/PrivacyPolicy/create';
+import CreateGuidancePage from 'views/Setting/Guidance/create';
 
 const VIEW_COUNTRY = 'country';
 const VIEW_TRANSLATION = 'translation';
@@ -34,6 +36,7 @@ const VIEW_CLINIC = 'clinic';
 const VIEW_PROFESSION = 'profession';
 const VIEW_LANGUAGE = 'language';
 const VIEW_STATIC_PAGE = 'static_page';
+const VIEW_GUIDANCE_PAGE = 'guidance_page';
 
 const Setting = ({ translate }) => {
   const { keycloak } = useKeycloak();
@@ -60,6 +63,8 @@ const Setting = ({ translate }) => {
       setView(VIEW_LANGUAGE);
     } else if (hash.includes('#' + VIEW_STATIC_PAGE)) {
       setView(VIEW_STATIC_PAGE);
+    } else if (hash.includes('#' + VIEW_GUIDANCE_PAGE)) {
+      setView(VIEW_GUIDANCE_PAGE);
     } else {
       for (const role of SETTING_ROLES) {
         if (keycloak.hasRealmRole(role)) {
@@ -88,7 +93,7 @@ const Setting = ({ translate }) => {
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1>{translate('setting')}</h1>
-        {[VIEW_COUNTRY, VIEW_LANGUAGE, VIEW_TERM_AND_CONDITION, VIEW_PRIVACY_POLICY, VIEW_CLINIC, VIEW_STATIC_PAGE, VIEW_PROFESSION].map(v => {
+        {[VIEW_COUNTRY, VIEW_LANGUAGE, VIEW_TERM_AND_CONDITION, VIEW_PRIVACY_POLICY, VIEW_CLINIC, VIEW_STATIC_PAGE, VIEW_PROFESSION, VIEW_GUIDANCE_PAGE].map(v => {
           if (v === view) {
             return (
               <div key={v} className="btn-toolbar mb-2 mb-md-0">
@@ -109,6 +114,7 @@ const Setting = ({ translate }) => {
       {show && view === VIEW_PRIVACY_POLICY && <CreatePrivacyPolicy show={show} editId={editId} handleClose={handleClose} />}
       {show && view === VIEW_CLINIC && <CreateClinic show={show} editId={editId} handleClose={handleClose} />}
       {show && view === VIEW_STATIC_PAGE && <CreateStaticPage show={show} editId={editId} handleClose={handleClose} />}
+      {show && view === VIEW_GUIDANCE_PAGE && <CreateGuidancePage show={show} editId={editId} handleClose={handleClose} />}
       {show && view === VIEW_PROFESSION && <CreateProfession show={show} editId={editId} handleClose={handleClose} />}
 
       <Nav variant="tabs" activeKey={view} className="mb-3">
@@ -175,6 +181,13 @@ const Setting = ({ translate }) => {
             </Nav.Link>
           </Nav.Item>
         )}
+        { keycloak.hasRealmRole(USER_ROLES.MANAGE_GUIDANCE_PAGE) && (
+          <Nav.Item>
+            <Nav.Link as={Link} to={ROUTES.SETTING_GUIDANCE_PAGE} eventKey={VIEW_GUIDANCE_PAGE}>
+              {translate('setting.guidance_page')}
+            </Nav.Link>
+          </Nav.Item>
+        )}
       </Nav>
 
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY) && view === VIEW_COUNTRY && <Country handleRowEdit={handleEdit} /> }
@@ -186,6 +199,7 @@ const Setting = ({ translate }) => {
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_PROFESSION) && view === VIEW_PROFESSION && <Profession handleRowEdit={handleEdit} /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_STATIC_PAGE) && view === VIEW_STATIC_PAGE && <StaticPage handleRowEdit={handleEdit} /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_PRIVACY_POLICY) && view === VIEW_PRIVACY_POLICY && <PrivacyPolicy handleRowEdit={handleEdit} /> }
+      { keycloak.hasRealmRole(USER_ROLES.MANAGE_GUIDANCE_PAGE) && view === VIEW_GUIDANCE_PAGE && <GuidancePage handleRowEdit={handleEdit} /> }
 
     </>
   );
