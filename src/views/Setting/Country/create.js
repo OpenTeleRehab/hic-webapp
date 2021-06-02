@@ -6,6 +6,8 @@ import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import { createCountry, updateCountry, getDefinedCountries } from 'store/country/actions';
 import { Clinic as clinicService } from 'services/clinic';
+import Select from 'react-select';
+import scssColors from '../../../scss/custom.scss';
 
 const CreateCountry = ({ show, editId, handleClose }) => {
   const localize = useSelector((state) => state.localize);
@@ -58,9 +60,7 @@ const CreateCountry = ({ show, editId, handleClose }) => {
     setFormFields({ ...formFields, [name]: value });
   };
 
-  const handleCountryChange = e => {
-    const { value } = e.target;
-
+  const handleCountryChange = (value) => {
     const definedCountry = definedCountries.find(definedCountry => definedCountry.iso_code === value);
     if (definedCountry) {
       setFormFields({
@@ -71,6 +71,10 @@ const CreateCountry = ({ show, editId, handleClose }) => {
         name: definedCountry.name
       });
     }
+  };
+
+  const handleSingleSelectChange = (key, value) => {
+    setFormFields({ ...formFields, [key]: value });
   };
 
   const handleConfirm = () => {
@@ -117,6 +121,17 @@ const CreateCountry = ({ show, editId, handleClose }) => {
     }
   };
 
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
+  };
+
   return (
     <Dialog
       show={show}
@@ -130,18 +145,16 @@ const CreateCountry = ({ show, editId, handleClose }) => {
           <Form.Group as={Col} controlId="name">
             <Form.Label>{translate('country.name')}</Form.Label>
             <span className="text-dark ml-1">*</span>
-            <Form.Control
-              name="country_code"
-              onChange={handleCountryChange}
-              as="select"
-              value={formFields.country_code}
-              isInvalid={errorName}
-            >
-              <option value="">{translate('placeholder.country')}</option>
-              {definedCountries.map((country, index) => (
-                <option key={index} value={country.iso_code}>{country.name}</option>
-              ))}
-            </Form.Control>
+            <Select
+              placeholder={translate('placeholder.country')}
+              classNamePrefix="filter"
+              className={errorName ? 'is-invalid' : ''}
+              value={definedCountries.filter(option => option.iso_code === formFields.country_code)}
+              getOptionLabel={option => option.name}
+              options={definedCountries}
+              onChange={(e) => handleCountryChange(e.iso_code)}
+              styles={customSelectStyles}
+            />
             <Form.Control.Feedback type="invalid">
               {translate('error.country.name')}
             </Form.Control.Feedback>
@@ -171,17 +184,14 @@ const CreateCountry = ({ show, editId, handleClose }) => {
           </Form.Group>
           <Form.Group as={Col} controlId="formLanguage">
             <Form.Label>{translate('common.language')}</Form.Label>
-            <Form.Control
-              name="language"
-              onChange={handleChange}
-              as="select"
-              value={formFields.language}
-            >
-              <option value="">{translate('placeholder.language')}</option>
-              {languages.map((language, index) => (
-                <option key={index} value={language.id}>{language.name}</option>
-              ))}
-            </Form.Control>
+            <Select
+              classNamePrefix="filter"
+              value={languages.filter(option => option.id === parseInt(formFields.language))}
+              getOptionLabel={option => option.name}
+              options={languages}
+              onChange={(e) => handleSingleSelectChange('language', e.id)}
+              styles={customSelectStyles}
+            />
           </Form.Group>
         </Form.Row>
         <Form.Group controlId="formTherapistLimit">

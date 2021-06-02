@@ -23,6 +23,8 @@ import {
 } from 'react-icons/bs';
 import { FaRegCheckSquare } from 'react-icons/fa';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
+import scssColors from '../../../scss/custom.scss';
+import Select from 'react-select';
 
 const CreateQuestionnaire = ({ translate }) => {
   const dispatch = useDispatch();
@@ -97,11 +99,6 @@ const CreateQuestionnaire = ({ translate }) => {
       }
     }
   }, [id, questionnaire, categoryTreeData]);
-
-  const handleLanguageChange = e => {
-    const { value } = e.target;
-    setLanguage(value);
-  };
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -186,6 +183,17 @@ const CreateQuestionnaire = ({ translate }) => {
     }, 300);
   };
 
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
@@ -213,13 +221,15 @@ const CreateQuestionnaire = ({ translate }) => {
           <Col sm={6} xl={5}>
             <Form.Group controlId="formLanguage">
               <Form.Label>{translate('common.show_language.version')}</Form.Label>
-              <Form.Control as="select" value={language} onChange={handleLanguageChange} disabled={!id}>
-                {languages.map((language, index) => (
-                  <option key={index} value={language.id}>
-                    {language.name}
-                  </option>
-                ))}
-              </Form.Control>
+              <Select
+                isDisabled={!id}
+                classNamePrefix="filter"
+                value={languages.filter(option => option.id === language)}
+                getOptionLabel={option => option.name}
+                options={languages}
+                onChange={(e) => setLanguage(e.id)}
+                styles={customSelectStyles}
+              />
             </Form.Group>
           </Col>
         </Row>

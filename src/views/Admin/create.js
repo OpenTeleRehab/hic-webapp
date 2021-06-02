@@ -10,6 +10,8 @@ import { getCountryName } from 'utils/country';
 
 import { createUser, updateUser } from 'store/user/actions';
 import { useKeycloak } from '@react-keycloak/web';
+import Select from 'react-select';
+import scssColors from '../../scss/custom.scss';
 
 const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
   const dispatch = useDispatch();
@@ -86,6 +88,10 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
     setFormFields({ ...formFields, [name]: value });
   };
 
+  const handleSingleSelectChange = (key, value) => {
+    setFormFields({ ...formFields, [key]: value });
+  };
+
   const handleConfirm = () => {
     let canSave = true;
 
@@ -160,6 +166,17 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
           });
       }
     }
+  };
+
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
   };
 
   return (
@@ -239,18 +256,22 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
           <Form.Group controlId="formCountry">
             <Form.Label>{translate('common.country')}</Form.Label>
             <span className="text-dark ml-1">*</span>
-            <Form.Control
-              name="country_id"
-              onChange={handleChange}
-              as="select"
-              isInvalid={errorCountry}
-              value={formFields.country_id}
-            >
-              <option value="">{translate('placeholder.country')}</option>
-              {countries.map((country) => (
-                <option key={country.id} value={country.id}>{country.name}</option>
-              ))}
-            </Form.Control>
+            <Select
+              placeholder={translate('placeholder.country')}
+              classNamePrefix="filter"
+              className={errorCountry ? 'is-invalid' : ''}
+              value={countries.filter(option => option.id === parseInt(formFields.country_id))}
+              getOptionLabel={option => option.name}
+              options={[
+                {
+                  id: '',
+                  name: translate('placeholder.country')
+                },
+                ...countries
+              ]}
+              onChange={(e) => handleSingleSelectChange('country_id', e.id)}
+              styles={customSelectStyles}
+            />
             <Form.Control.Feedback type="invalid">
               { errorCountryMessage }
             </Form.Control.Feedback>
@@ -260,18 +281,15 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
           <Form.Group controlId="formCountry">
             <Form.Label>{translate('common.country')}</Form.Label>
             <span className="text-dark ml-1">*</span>
-            <Form.Control
-              name="country_id"
-              onChange={handleChange}
-              as="select"
-              isInvalid={errorCountry}
-              value={formFields.country_id}
-              disabled="disabled"
-            >
-              { profile !== undefined && (
-                <option value={profile.country_id}>{getCountryName(profile.country_id, countries)}</option>
-              )}
-            </Form.Control>
+            <Select
+              isDisabled={true}
+              placeholder={profile !== undefined && getCountryName(profile.country_id, countries)}
+              classNamePrefix="filter"
+              className={errorCountry ? 'is-invalid' : ''}
+              value={profile !== undefined && getCountryName(profile.country_id, countries)}
+              getOptionLabel={option => option.label}
+              styles={customSelectStyles}
+            />
             <Form.Control.Feedback type="invalid">
               { translate('error.country') }
             </Form.Control.Feedback>
@@ -281,18 +299,16 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
           <Form.Group controlId="formClinic">
             <Form.Label>{translate('common.clinic')}</Form.Label>
             <span className="text-dark ml-1">*</span>
-            <Form.Control
-              name="clinic_id"
-              onChange={handleChange}
-              as="select"
-              isInvalid={errorClinic}
-              value={formFields.clinic_id}
-            >
-              <option value="">{translate('placeholder.clinic')}</option>
-              {clinics.map((clinic) => (
-                <option key={clinic.id} value={clinic.id}>{clinic.name}</option>
-              ))}
-            </Form.Control>
+            <Select
+              placeholder={translate('placeholder.clinic')}
+              classNamePrefix="filter"
+              className={errorClinic ? 'is-invalid' : ''}
+              value={clinics.filter(option => option.id === parseInt(formFields.clinic_id))}
+              getOptionLabel={option => option.name}
+              options={clinics}
+              onChange={(e) => handleSingleSelectChange('clinic_id', e.id)}
+              styles={customSelectStyles}
+            />
             <Form.Control.Feedback type="invalid">
               {translate('error.clinic')}
             </Form.Control.Feedback>

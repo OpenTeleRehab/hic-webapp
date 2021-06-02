@@ -4,6 +4,13 @@ const settings = {
   textMaxLength: 255,
   phoneCodeMaxLength: 3,
   isoCodeLength: 2,
+  genders: {
+    options: [
+      { text: 'Male', value: 'male' },
+      { text: 'Female', value: 'female' },
+      { text: 'Other', value: 'other' }
+    ]
+  },
   platforms: {
     options: [
       { text: 'Admin portal', value: 'admin_portal' },

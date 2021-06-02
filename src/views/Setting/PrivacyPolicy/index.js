@@ -15,6 +15,8 @@ import {
 } from 'store/privacyPolicy/actions';
 import { STATUS_VARIANTS } from 'variables/privacyPolicy';
 import Dialog from 'components/Dialog';
+import Select from 'react-select';
+import scssColors from '../../../scss/custom.scss';
 
 const PrivacyPolicy = ({ translate, handleRowEdit }) => {
   const dispatch = useDispatch();
@@ -78,9 +80,15 @@ const PrivacyPolicy = ({ translate, handleRowEdit }) => {
     setShowViewDialog(false);
   };
 
-  const handleLanguageChange = e => {
-    const { value } = e.target;
-    setLanguage(value);
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.lightInfo
+      }
+    })
   };
 
   return (
@@ -130,13 +138,15 @@ const PrivacyPolicy = ({ translate, handleRowEdit }) => {
       >
         <Form.Group controlId="formLanguage">
           <Form.Label>{translate('common.language')}</Form.Label>
-          <Form.Control as="select" value={language} onChange={handleLanguageChange}>
-            {languages.map((language, index) => (
-              <option key={index} value={language.id}>
-                {language.name}
-              </option>
-            ))}
-          </Form.Control>
+          <Select
+            placeholder={translate('placeholder.language')}
+            classNamePrefix="filter"
+            value={languages.filter(option => option.id === language)}
+            getOptionLabel={option => option.name}
+            options={translate('placeholder.language')}
+            onChange={(e) => setLanguage(e.id)}
+            styles={customSelectStyles}
+          />
         </Form.Group>
         <div dangerouslySetInnerHTML={{ __html: privacyPolicy.content }} />
       </Dialog>

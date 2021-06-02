@@ -7,6 +7,9 @@ import { useHistory } from 'react-router-dom';
 import { FaGlobe } from 'react-icons/fa';
 import { updateUserProfile } from 'store/auth/actions';
 import { USER_GROUPS } from 'variables/user';
+import Select from 'react-select';
+import scssColors from '../../../scss/custom.scss';
+import settings from '../../../settings';
 
 const EdiInformation = ({ editId }) => {
   const dispatch = useDispatch();
@@ -34,6 +37,11 @@ const EdiInformation = ({ editId }) => {
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
+    setDisable(false);
+  };
+
+  const handleSingleSelectChange = (key, value) => {
+    setFormFields({ ...formFields, [key]: value });
     setDisable(false);
   };
 
@@ -86,6 +94,17 @@ const EdiInformation = ({ editId }) => {
     return React.Fragment;
   }
 
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.lightInfo
+      }
+    })
+  };
+
   return (
     <Form className="my-4">
       <Form.Row >
@@ -128,7 +147,6 @@ const EdiInformation = ({ editId }) => {
             type="email"
             value={formFields.email}
             disabled
-
           />
           <Form.Control.Feedback type="invalid">
             {translate('error.email')}
@@ -138,18 +156,14 @@ const EdiInformation = ({ editId }) => {
       <Form.Row>
         <Form.Group className="col-sm-4 md-4" controlId="formGender">
           <Form.Label>{translate('gender')}</Form.Label>
-          <Form.Control
-            name="gender"
-            as="select"
-            onChange={handleChange}
-            value={formFields.gender}
-          >
-            <option value="">{translate('placeholder.gender')}</option>
-            <option value="male">{translate('common.male')}</option>
-            <option value="female">{translate(('common.female'))}</option>
-            <option value="other">{translate(('common.other'))}</option>
-          </Form.Control>
-
+          <Select
+            placeholder={translate('placeholder.gender')}
+            classNamePrefix="filter"
+            value={settings.genders.options.filter(option => option.value === formFields.gender)}
+            getOptionLabel={option => option.text}
+            options={[{ value: '', text: translate('placeholder.gender') }, ...settings.genders.options]}
+            onChange={(e) => handleSingleSelectChange('gender', e.value)}
+          />
         </Form.Group>
       </Form.Row>
       <Form.Row>
@@ -158,17 +172,15 @@ const EdiInformation = ({ editId }) => {
             <FaGlobe className="mr-1" />
             {translate('common.language')}
           </Form.Label>
-          <Form.Control
-            name="language_id"
-            as="select"
-            onChange={handleChange}
-            value={formFields.language_id}
-          >
-            <option value="">{translate('placeholder.language')}</option>
-            {languages.map((language, index) => (
-              <option key={index} value={language.id}>{language.name}</option>
-            ))}
-          </Form.Control>
+          <Select
+            placeholder={translate('placeholder.language')}
+            classNamePrefix="filter"
+            value={languages.filter(option => option.id === formFields.language_id)}
+            getOptionLabel={option => option.name}
+            options={[{ id: '', name: translate('placeholder.language') }, ...languages]}
+            onChange={(e) => handleSingleSelectChange('language_id', e.id)}
+            styles={customSelectStyles}
+          />
         </Form.Group>
       </Form.Row>
 
@@ -176,21 +188,15 @@ const EdiInformation = ({ editId }) => {
         <Form.Row>
           <Form.Group className="col-sm-4 md-4" controlId="formCountry">
             <Form.Label>{translate('common.country')}</Form.Label>
-            <Form.Control
-              name="country_id"
-              as="select"
-              value={formFields.country_id}
-              disabled
-
-            >
-              <option value="">{translate('placeholder.country')}</option>
-              {countries.map((country, index) => (
-                <option key={index} value={country.id}>{country.name}</option>
-              ))}
-            </Form.Control>
-            <Form.Control.Feedback type="invalid">
-              {translate('error.country')}
-            </Form.Control.Feedback>
+            <Select
+              isDisabled={true}
+              placeholder={translate('placeholder.country')}
+              classNamePrefix="filter"
+              value={countries.filter(option => option.id === parseInt(formFields.country_id))}
+              getOptionLabel={option => option.name}
+              options={countries}
+              styles={customSelectStyles}
+            />
           </Form.Group>
         </Form.Row>
       )}
@@ -199,21 +205,15 @@ const EdiInformation = ({ editId }) => {
         <Form.Row>
           <Form.Group className="col-sm-4 md-4" controlId="formClinic">
             <Form.Label>{translate('common.clinic')}</Form.Label>
-            <Form.Control
-              name="clinic_id"
-              as="select"
-              value={formFields.clinic_id}
-              disabled
-
-            >
-              <option value="">{translate('placeholder.clinic')}</option>
-              {clinics.map((clinic, index) => (
-                <option key={index} value={clinic.id}>{clinic.name}</option>
-              ))}
-            </Form.Control>
-            <Form.Control.Feedback type="invalid">
-              {translate('error.clinic')}
-            </Form.Control.Feedback>
+            <Select
+              isDisabled={true}
+              placeholder={translate('placeholder.clinic')}
+              classNamePrefix="filter"
+              value={countries.filter(option => option.id === parseInt(formFields.clinic_id))}
+              getOptionLabel={option => option.name}
+              options={clinics}
+              styles={customSelectStyles}
+            />
           </Form.Group>
         </Form.Row>
       )}

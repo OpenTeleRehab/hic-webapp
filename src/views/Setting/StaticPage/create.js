@@ -15,6 +15,8 @@ import { BsUpload, BsXCircle } from 'react-icons/bs/index';
 import { Editor } from '@tinymce/tinymce-react';
 
 import { SketchPicker } from 'react-color';
+import Select from 'react-select';
+import scssColors from '../../../scss/custom.scss';
 
 const CreateStaticPage = ({ show, editId, handleClose }) => {
   const localize = useSelector((state) => state.localize);
@@ -80,14 +82,17 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
     }
   }, [editId, staticPage]);
 
-  const handleLanguageChange = e => {
-    const { value } = e.target;
+  const handleLanguageChange = (value) => {
     setLanguage(value);
   };
 
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
+  };
+
+  const handleSingleSelectChange = (key, value) => {
+    setFormFields({ ...formFields, [key]: value });
   };
 
   const handleCheck = e => {
@@ -192,6 +197,25 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
     }
   };
 
+  const platformOptions = [
+    {
+      value: '',
+      text: translate('placeholder.platform')
+    },
+    ...settings.platforms.options
+  ];
+
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
+  };
+
   return (
     <Dialog
       size="lg"
@@ -204,13 +228,15 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
       <Form onSubmit={handleConfirm}>
         <Form.Group controlId="formLanguage">
           <Form.Label>{translate('common.show_language.version')}</Form.Label>
-          <Form.Control as="select" value={editId ? language : ''} onChange={handleLanguageChange} disabled={!editId}>
-            {languages.map((language, index) => (
-              <option key={index} value={language.id}>
-                {language.name} {language.code === language.fallback && `(${translate('common.default')})`}
-              </option>
-            ))}
-          </Form.Control>
+          <Select
+            isDisabled={!editId}
+            classNamePrefix="filter"
+            value={languages.filter(option => option.id === language)}
+            getOptionLabel={option => `${option.name} ${option.code === option.fallback ? translate('common.default') : ''}`}
+            options={languages}
+            onChange={(e) => handleLanguageChange(e.id)}
+            styles={customSelectStyles}
+          />
         </Form.Group>
         <Form.Group controlId="formPrivate">
           <Form.Check
@@ -224,18 +250,16 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
         <Form.Group controlId="formPlateForm">
           <Form.Label>{translate('setting.translations.platform')}</Form.Label>
           <span className="text-dark ml-1">*</span>
-          <Form.Control
-            name="platform"
-            as="select"
-            value={formFields.platform}
-            onChange={handleChange}
-            isInvalid={errorPlatform}
-          >
-            <option value="">{translate('placeholder.platform')}</option>
-            {settings.platforms.options.map((platform, index) => (
-              <option key={index} value={platform.value}>{platform.text}</option>
-            ))}
-          </Form.Control>
+          <Select
+            placeholder={translate('placeholder.platform')}
+            classNamePrefix="filter"
+            className={errorPlatform ? 'is-invalid' : ''}
+            value={settings.platforms.options.filter(option => option.value === formFields.platform)}
+            getOptionLabel={option => option.text}
+            options={platformOptions}
+            onChange={(e) => handleSingleSelectChange('platform', e.value)}
+            styles={customSelectStyles}
+          />
           <Form.Control.Feedback type="invalid">
             {translate('error.static_page.platform')}
           </Form.Control.Feedback>

@@ -8,6 +8,8 @@ import CustomTable from 'components/Table';
 import settings from 'settings';
 import { getLocalizations, updateLocalization } from 'store/localization/actions';
 import Spinner from 'react-bootstrap/Spinner';
+import Select from 'react-select';
+import scssColors from '../../../scss/custom.scss';
 
 let timer = null;
 const Translation = ({ translate }) => {
@@ -43,10 +45,6 @@ const Translation = ({ translate }) => {
     }, 500);
   }, [currentPage, pageSize, searchValue, filters, filterPlatform, dispatch]);
 
-  const handleChange = e => {
-    setFilterPlatform(e.target.value);
-  };
-
   const commitChanges = ({ changed }) => {
     if (changed && editingRowIds) {
       const changedRows = localizations.map((row, index) => (changed[index] ? { ...row, ...changed[index] } : row));
@@ -62,22 +60,31 @@ const Translation = ({ translate }) => {
     columns.push({ name: lang.code, title: lang.name });
   });
 
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
+  };
+
   return (
     <>
       <Form>
         <Form.Row>
           <Form.Group controlId="formPlateForm" className="col-md-4">
             <Form.Label>{translate('setting.translations.platform')}</Form.Label>
-            <Form.Control
-              name="platform"
-              as="select"
-              value={filterPlatform}
-              onChange={handleChange}
-            >
-              {settings.platforms.options.map((platform, index) => (
-                <option key={index} value={platform.value}>{platform.text}</option>
-              ))}
-            </Form.Control>
+            <Select
+              classNamePrefix="filter"
+              value={settings.platforms.options.filter(option => option.value === filterPlatform)}
+              getOptionLabel={option => option.text}
+              options={settings.platforms.options}
+              onChange={(e) => setFilterPlatform(e.value)}
+              styles={customSelectStyles}
+            />
           </Form.Group>
         </Form.Row>
       </Form>

@@ -11,6 +11,8 @@ import {
   getTermAndCondition,
   updateTermAndCondition
 } from 'store/termAndCondition/actions';
+import Select from 'react-select';
+import scssColors from '../../../scss/custom.scss';
 
 const CreateTermAndCondition = ({ show, editId, handleClose }) => {
   const localize = useSelector((state) => state.localize);
@@ -51,11 +53,6 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
       setContent(termAndCondition.content);
     }
   }, [editId, termAndCondition]);
-
-  const handleLanguageChange = e => {
-    const { value } = e.target;
-    setLanguage(value);
-  };
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -104,6 +101,17 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
     setContent(value);
   };
 
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
+  };
+
   return (
     <Dialog
       size="lg"
@@ -115,14 +123,16 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
     >
       <Form onSubmit={handleConfirm}>
         <Form.Group controlId="formLanguage">
-          <Form.Label>{translate('common.show_language.version')}</Form.Label>
-          <Form.Control as="select" value={editId ? language : ''} onChange={handleLanguageChange} disabled={!editId}>
-            {languages.map((language, index) => (
-              <option key={index} value={language.id}>
-                {language.name} {language.code === language.fallback && `(${translate('common.default')})`}
-              </option>
-            ))}
-          </Form.Control>
+          <Form.Label>{translate('common.show_language.version')} {language}</Form.Label>
+          <Select
+            isDisabled={!editId}
+            classNamePrefix="filter"
+            value={languages.filter(option => option.id === language)}
+            getOptionLabel={option => `${option.name} ${option.code === option.fallback ? translate('common.default') : ''}`}
+            options={languages}
+            onChange={(e) => setLanguage(e.id)}
+            styles={customSelectStyles}
+          />
         </Form.Group>
         <Form.Group controlId="version">
           <Form.Label>{translate('term_and_condition.version')}</Form.Label>
