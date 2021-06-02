@@ -18,11 +18,14 @@ const CreateGuidancePage = ({ show, editId, handleClose }) => {
   const [errorContent, setErrorContent] = useState(false);
   const { languages } = useSelector(state => state.language);
   const { profile } = useSelector((state) => state.auth);
-
   const { guidancePage, filters } = useSelector(state => state.guidancePage);
+  const [errorTitle, setErrorTitle] = useState(false);
 
   const [language, setLanguage] = useState('');
   const [content, setContent] = useState('');
+  const [formFields, setFormFields] = useState({
+    title: ''
+  });
 
   useEffect(() => {
     if (languages.length) {
@@ -46,6 +49,7 @@ const CreateGuidancePage = ({ show, editId, handleClose }) => {
 
   useEffect(() => {
     if (editId && guidancePage.id) {
+      setFormFields({ title: guidancePage.title || '' });
       setContent(guidancePage.content || '');
     }
   }, [editId, guidancePage]);
@@ -59,8 +63,20 @@ const CreateGuidancePage = ({ show, editId, handleClose }) => {
     setContent(value);
   };
 
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setFormFields({ ...formFields, [name]: value });
+  };
+
   const handleConfirm = () => {
     let canSave = true;
+
+    if (formFields.title === '') {
+      canSave = false;
+      setErrorTitle(true);
+    } else {
+      setErrorTitle(false);
+    }
 
     if (content === '') {
       canSave = false;
@@ -71,14 +87,14 @@ const CreateGuidancePage = ({ show, editId, handleClose }) => {
 
     if (canSave) {
       if (editId) {
-        dispatch(updateGuidancePage(editId, { content, lang: language }))
+        dispatch(updateGuidancePage(editId, { ...formFields, content, lang: language }))
           .then(result => {
             if (result) {
               handleClose();
             }
           });
       } else {
-        dispatch(createGuidancePage({ content, lang: language }))
+        dispatch(createGuidancePage({ ...formFields, content, lang: language }))
           .then(result => {
             if (result) {
               handleClose();
@@ -107,6 +123,22 @@ const CreateGuidancePage = ({ show, editId, handleClose }) => {
               </option>
             ))}
           </Form.Control>
+        </Form.Group>
+        <Form.Group controlId="title">
+          <Form.Label>{translate('static_page.title')}</Form.Label>
+          <span className="text-dark ml-1">*</span>
+          <Form.Control
+            name="title"
+            onChange={handleChange}
+            type="text"
+            placeholder={translate('placeholder.static_page.title')}
+            value={formFields.title}
+            maxLength={settings.textMaxLength}
+            isInvalid={errorTitle}
+          />
+          <Form.Control.Feedback type="invalid">
+            {translate('error.static_page.title')}
+          </Form.Control.Feedback>
         </Form.Group>
         <Form.Group controlId="content">
           <Form.Label>{translate('term_and_condition.content')}</Form.Label>
