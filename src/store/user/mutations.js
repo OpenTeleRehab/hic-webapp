@@ -60,6 +60,18 @@ const deleteUserFail = () => ({
   type: 'DELETE_USER_FAIL'
 });
 
+const resendEmailRequest = () => ({
+  type: 'RESEND_EMAIL_REQUEST'
+});
+
+const resendEmailSuccess = () => ({
+  type: 'RESEND_EMAIL_SUCCESS'
+});
+
+const resendEmailFail = () => ({
+  type: 'RESEND_EMAIL_FAIL'
+});
+
 export const mutation = {
   createUserRequest,
   createUserSuccess,
@@ -75,5 +87,8 @@ export const mutation = {
   deleteUserFail,
   updateUserStatusRequest,
   updateUserStatusSuccess,
-  updateUserStatusFail
+  updateUserStatusFail,
+  resendEmailSuccess,
+  resendEmailRequest,
+  resendEmailFail
 };

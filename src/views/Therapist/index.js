@@ -6,9 +6,9 @@ import PropTypes from 'prop-types';
 
 import CustomTable from 'components/Table';
 import EnabledStatus from 'components/EnabledStatus';
-import { DeleteAction, EditAction, EnabledAction, DisabledAction } from 'components/ActionIcons';
+import { DeleteAction, EditAction, EnabledAction, DisabledAction, MailSendAction } from 'components/ActionIcons';
 import CreateTherapist from 'views/Therapist/create';
-import { getTherapists, deleteTherapistUser, updateTherapistStatus } from 'store/therapist/actions';
+import { getTherapists, deleteTherapistUser, updateTherapistStatus, resendEmail } from 'store/therapist/actions';
 import { getCountryName } from 'utils/country';
 import { getClinicName, getClinicRegion, getTotalTherapistLimit } from 'utils/clinic';
 import * as moment from 'moment';
@@ -193,6 +193,10 @@ const Therapist = ({ translate }) => {
     });
   };
 
+  const handleSendMail = (id) => {
+    dispatch(resendEmail(id));
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
@@ -227,6 +231,7 @@ const Therapist = ({ translate }) => {
               }
               <EditAction onClick={() => handleEdit(user.id)} />
               <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={!!getPatient(user.id, patients) || user.enabled }/>
+              <MailSendAction onClick={() => handleSendMail(user.id)} disabled={user.last_login} />
             </>
           );
 

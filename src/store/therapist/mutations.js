@@ -73,6 +73,18 @@ const getPatientFail = () => ({
   type: 'GET_PATIENT_FAIL'
 });
 
+const resendEmailRequest = () => ({
+  type: 'RESEND_EMAIL_REQUEST'
+});
+
+const resendEmailSuccess = () => ({
+  type: 'RESEND_EMAIL_SUCCESS'
+});
+
+const resendEmailFail = () => ({
+  type: 'RESEND_EMAIL_FAIL'
+});
+
 export const mutation = {
   createTherapistRequest,
   createTherapistSuccess,
@@ -91,5 +103,8 @@ export const mutation = {
   getPatientFail,
   updateTherapistStatusRequest,
   updateTherapistStatusSuccess,
-  updateTherapistStatusFail
+  updateTherapistStatusFail,
+  resendEmailRequest,
+  resendEmailSuccess,
+  resendEmailFail
 };

@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 
 import CustomTable from 'components/Table';
 import EnabledStatus from 'components/EnabledStatus';
-import { EditAction, DeleteAction, EnabledAction, DisabledAction } from 'components/ActionIcons';
+import { EditAction, DeleteAction, EnabledAction, DisabledAction, MailSendAction } from 'components/ActionIcons';
 import { USER_GROUPS } from 'variables/user';
-import { getUsers } from 'store/user/actions';
+import { getUsers, resendEmail } from 'store/user/actions';
 import { getClinicName } from 'utils/clinic';
 import * as moment from 'moment';
 import settings from 'settings';
@@ -64,6 +64,10 @@ const ClinicAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) => 
     { columnName: 'last_login', wordWrapEnabled: true, width: 250 }
   ];
 
+  const handleSendMail = (id) => {
+    dispatch(resendEmail(id, type));
+  };
+
   return (
     <div className="mt-3">
       <p>
@@ -89,6 +93,7 @@ const ClinicAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) => 
               }
               <EditAction onClick={() => handleEdit(user.id)} />
               <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={user.enabled} />
+              <MailSendAction onClick={() => handleSendMail(user.id)} disabled={user.last_login} />
             </>
           );
 

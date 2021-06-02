@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getUsers } from 'store/user/actions';
+import { getUsers, resendEmail } from 'store/user/actions';
 import { USER_GROUPS } from 'variables/user';
 import settings from 'settings';
 import * as moment from 'moment';
 
 import CustomTable from 'components/Table';
 import EnabledStatus from 'components/EnabledStatus';
-import { DeleteAction, EditAction, EnabledAction, DisabledAction } from 'components/ActionIcons';
+import { DeleteAction, EditAction, EnabledAction, DisabledAction, MailSendAction } from 'components/ActionIcons';
 import { getTranslate } from 'react-localize-redux';
 
 let timer = null;
@@ -62,6 +62,10 @@ const GlobalAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) => 
     { columnName: 'last_login', wordWrapEnabled: true, width: 250 }
   ];
 
+  const handleSendMail = (id) => {
+    dispatch(resendEmail(id, type));
+  };
+
   return (
     <div className="mt-3">
       <p>
@@ -87,6 +91,7 @@ const GlobalAdmin = ({ handleEdit, handleDelete, handleSwitchStatus, type }) => 
               }
               <EditAction onClick={() => handleEdit(user.id)} />
               <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={parseInt(user.id) === parseInt(profile.id) || user.enabled} />
+              <MailSendAction onClick={() => handleSendMail(user.id)} disabled={user.last_login} />
             </>
           );
 

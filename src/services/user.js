@@ -74,10 +74,23 @@ const deleteUser = (id, payload) => {
     });
 };
 
+const resendEmail = (id) => {
+  return customAxios.post(`/admin/resend-email/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const User = {
   createUser,
   getUsers,
   updateUser,
   deleteUser,
-  updateUserStatus
+  updateUserStatus,
+  resendEmail
 };
