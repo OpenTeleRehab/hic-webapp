@@ -31,9 +31,7 @@ const GuidancePage = ({ translate, handleRowEdit }) => {
   const [guidenceObjects, setGuidanceObjects] = useState([]);
 
   useEffect(() => {
-    if (filters && filters.lang) {
-      setLanguage(filters.lang);
-    } else if (profile && profile.language_id) {
+    if (profile && profile.language_id) {
       setLanguage(profile.language_id);
     }
   }, [filters, profile]);
@@ -89,29 +87,35 @@ const GuidancePage = ({ translate, handleRowEdit }) => {
                       {...provided.draggableProps}
                     >
                       <Card className="guidance-card mb-3">
-                        <Card.Body className="d-flex justify-content-between">
-                          <div dangerouslySetInnerHTML={{ __html: guidancePage.content }} />
-                          <>
-                            <div
-                              {...provided.dragHandleProps}
-                            >
+                        <Card.Header className="d-flex justify-content-between align-items-center">
+                          <h5>{guidancePage.title}</h5>
+
+                          <div className="d-flex align-items-center">
+                            <div {...provided.dragHandleProps}>
                               <Button
                                 variant="link"
                                 size="sm"
-                                className="text-dark p-0 mr-5 mb-3 drag-button"
+                                className="text-dark drag-button"
                               >
                                 <BsArrowsMove size={20}/>
                               </Button>
                             </div>
+
+                            <Button
+                              variant="link"
+                              size="sm"
+                              className="text-primary p-0"
+                              onClick={() => handleRowEdit(guidancePage.id)}
+                            >
+                              <FaEdit size={20} />
+                            </Button>
+                          </div>
+                        </Card.Header>
+                        <Card.Body className="d-flex justify-content-between">
+                          <div dangerouslySetInnerHTML={{ __html: guidancePage.content }} />
+                          <>
                             <div>
-                              <Button
-                                variant="link"
-                                size="sm"
-                                className="text-primary p-0"
-                                onClick={() => handleRowEdit(guidancePage.id)}
-                              >
-                                <FaEdit size={20} />
-                              </Button>
+
                             </div>
                           </>
                         </Card.Body>
