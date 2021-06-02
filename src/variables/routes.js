@@ -30,6 +30,7 @@ export const SETTING_STATIC_PAGE = SETTING + '#static_page';
 export const SETTING_LANGUAGE = SETTING + '#language';
 
 export const PROFILE = '/profile';
+export const FAQ = '/faq';
 export const PROFILE_PASSWORD = PROFILE + '#password';
 
 export const VIEW_TREATMENT_PLAN_DETAIL = VIEW_PATIENT_DETAIL + '/treatment-plan/:id';

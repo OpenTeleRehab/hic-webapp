@@ -87,11 +87,24 @@ const getPartnerLogo = () => {
     });
 };
 
+const getFaqPage = (payload) => {
+  return axios.get('/page/static-page-data', { params: payload })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const staticPage = {
   getStaticPages,
   createStaticPage,
   updateStaticPage,
   getStaticPage,
   createPartnerLogo,
-  getPartnerLogo
+  getPartnerLogo,
+  getFaqPage
 };

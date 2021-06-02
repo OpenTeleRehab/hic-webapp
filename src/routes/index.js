@@ -16,6 +16,7 @@ import CreateQuestionnaire from 'views/ServiceSetup/Questionnaire/create';
 import Therapist from 'views/Therapist';
 import Patient from 'views/Patient';
 import ProfilePage from 'views/Profile';
+import FaqPage from 'views/Faq';
 
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES, SETTING_ROLES } from 'variables/user';
@@ -150,6 +151,13 @@ const routes = [
     title: 'profile',
     path: ROUTES.PROFILE,
     component: ProfilePage,
+    exact: true,
+    type: PRIVATE
+  },
+  {
+    title: 'faq',
+    path: ROUTES.FAQ,
+    component: FaqPage,
     exact: true,
     type: PRIVATE
   },

@@ -96,3 +96,18 @@ export const getPartnerLogo = () => async dispatch => {
     dispatch(showErrorNotification('toast_title.error_message', data.message));
   }
 };
+
+export const getFaqPage = payload => async dispatch => {
+  dispatch(mutation.getFaqPageRequest());
+  dispatch(showSpinner(true));
+  const data = await staticPage.getFaqPage(payload);
+  if (data.success) {
+    dispatch(mutation.getFaqPageSuccess(data.data));
+    dispatch(showSpinner(false));
+  } else {
+    dispatch(mutation.getFaqPageFail());
+    dispatch(showSpinner(false));
+    console.log(data.message);
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
+  }
+};

@@ -20,6 +20,12 @@ export const staticPage = (state = initialState, action) => {
         loading: false
       });
     }
+    case 'GET_FAQ_PAGE_SUCCESS': {
+      return Object.assign({}, state, {
+        faqPage: action.data,
+        loading: false
+      });
+    }
     default:
       return state;
   }
