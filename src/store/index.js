@@ -25,6 +25,7 @@ import { category } from 'store/category/reducers';
 import { staticPage } from 'store/staticPage/reducers';
 import { dashboard } from 'store/dashboard/reducers';
 import { systemLimit } from 'store/systemLimit/reducers';
+import { guidancePage } from 'store/guidancePage/reducers';
 import { privacyPolicy } from 'store/privacyPolicy/reducers';
 import { treatmentPlan } from 'store/treatmentPlan/reducers';
 
@@ -51,7 +52,8 @@ export const rootReducer = {
   dashboard,
   systemLimit,
   privacyPolicy,
-  treatmentPlan
+  treatmentPlan,
+  guidancePage
 };
 
 const devTool =

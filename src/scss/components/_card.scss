@@ -25,6 +25,18 @@
 	}
 }
 
+.guidance-card {
+	background-color: $light-blue;
+
+	.card-body {
+		p {
+			&:last-child {
+				margin: 0;
+			}
+		}
+	}
+}
+
 .upload-btn {
 	opacity: 0;
 	right: 0;
