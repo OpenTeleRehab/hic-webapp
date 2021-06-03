@@ -34,9 +34,7 @@ const StaticPage = ({ translate, handleRowEdit }) => {
   ];
 
   useEffect(() => {
-    if (filters && filters.lang) {
-      setLanguage(filters.lang);
-    } else if (profile && profile.language_id) {
+    if (profile && profile.language_id) {
       setLanguage(profile.language_id);
     }
 
