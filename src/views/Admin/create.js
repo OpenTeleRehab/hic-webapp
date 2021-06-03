@@ -179,6 +179,13 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
     })
   };
 
+  const handleFormSubmit = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleConfirm();
+    }
+  };
+
   return (
     <Dialog
       show={show}
@@ -188,7 +195,7 @@ const CreateAdmin = ({ show, handleClose, editId, setType, type }) => {
       confirmLabel={editId ? translate('common.save') : translate('common.create')}
       disabled={isLoading}
     >
-      <Form>
+      <Form onKeyPress={(e) => handleFormSubmit(e)}>
         <Form.Group as={Row}>
           { keycloak.hasRealmRole(USER_ROLES.MANAGE_GLOBAL_ADMIN) && (
             <Col xs={5} md={4}>

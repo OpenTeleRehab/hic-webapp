@@ -69,6 +69,13 @@ const CreateProfession = ({ show, editId, handleClose }) => {
     }
   };
 
+  const handleFormSubmit = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleConfirm();
+    }
+  };
+
   return (
     <Dialog
       show={show}
@@ -77,7 +84,7 @@ const CreateProfession = ({ show, editId, handleClose }) => {
       onConfirm={handleConfirm}
       confirmLabel={editId ? translate('common.save') : translate('common.create')}
     >
-      <Form onSubmit={handleConfirm}>
+      <Form onKeyPress={(e) => handleFormSubmit(e)}>
         <Form.Row>
           <Form.Group as={Col} controlId="name">
             <Form.Label>{translate('profession.name')}</Form.Label>

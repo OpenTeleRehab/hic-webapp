@@ -104,6 +104,13 @@ const CreateGuidancePage = ({ show, editId, handleClose }) => {
     }
   };
 
+  const handleFormSubmit = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleConfirm();
+    }
+  };
+
   return (
     <Dialog
       size="lg"
@@ -113,7 +120,7 @@ const CreateGuidancePage = ({ show, editId, handleClose }) => {
       onConfirm={handleConfirm}
       confirmLabel={editId ? translate('common.save') : translate('common.create')}
     >
-      <Form onSubmit={handleConfirm}>
+      <Form onKeyPress={(e) => handleFormSubmit(e)}>
         <Form.Group controlId="formLanguage">
           <Form.Label>{translate('common.show_language.version')}</Form.Label>
           <Form.Control as="select" value={editId ? language : ''} onChange={handleLanguageChange} disabled={!editId}>

@@ -105,8 +105,15 @@ const EdiInformation = ({ editId }) => {
     })
   };
 
+  const handleFormSubmit = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSave();
+    }
+  };
+
   return (
-    <Form className="my-4">
+    <Form onKeyPress={(e) => handleFormSubmit(e)} className="my-4">
       <Form.Row >
         <Form.Group className="col-sm-2 md-4" controlId="formLastName">
           <Form.Label>{translate('common.last_name')}</Form.Label>

@@ -154,6 +154,13 @@ const CreateClinic = ({ show, editId, handleClose }) => {
     }
   };
 
+  const handleFormSubmit = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleConfirm();
+    }
+  };
+
   return (
     <Dialog
       show={show}
@@ -162,7 +169,7 @@ const CreateClinic = ({ show, editId, handleClose }) => {
       onConfirm={handleConfirm}
       confirmLabel={editId ? translate('common.save') : translate('common.create')}
     >
-      <Form onSubmit={handleConfirm}>
+      <Form onKeyPress={(e) => handleFormSubmit(e)}>
         <Form.Row>
           <Form.Group as={Col} controlId="countryIso">
             <Form.Label>{translate('clinic.country.iso_code')}: {formFields.country_iso}</Form.Label>
