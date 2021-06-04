@@ -209,7 +209,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
   return (
     <Dialog
       show={show}
-      size="lg"
+      size="md"
       title={translate(editId ? 'admin.edit' : 'therapist.new')}
       onCancel={handleClose}
       onConfirm={handleConfirm}

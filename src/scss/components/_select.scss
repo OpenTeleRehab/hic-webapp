@@ -2,6 +2,10 @@
 	&__menu {
 		z-index: 999 !important;
 	}
+
+	&__placeholder {
+		white-space: nowrap;
+	}
 }
 
 .is-invalid {
