@@ -67,7 +67,9 @@ const EdiInformation = ({ editId }) => {
     }
 
     if (canSave) {
-      dispatch(updateUserProfile(formFields))
+      const language = languages.find(item => item.id === formFields.language_id);
+      const data = { ...formFields, language_code: (language ? language.code : null) };
+      dispatch(updateUserProfile(data))
         .then((result) => {
           if (result) {
             history.goBack();
