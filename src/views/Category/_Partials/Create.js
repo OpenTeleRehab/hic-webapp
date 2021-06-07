@@ -131,6 +131,13 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
     })
   };
 
+  const handleFormSubmit = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleConfirm();
+    }
+  };
+
   return (
     <Dialog
       show={show}
@@ -139,7 +146,7 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
       onConfirm={handleConfirm}
       confirmLabel={editId ? translate('common.save') : translate('common.create')}
     >
-      <Form onSubmit={handleConfirm}>
+      <Form onKeyPress={(e) => handleFormSubmit(e)}>
         <Form.Group controlId="formLanguage">
           <Form.Label>{translate('common.show_language.version')}</Form.Label>
           <Select
