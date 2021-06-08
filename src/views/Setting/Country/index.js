@@ -56,7 +56,7 @@ const Country = ({ translate, handleRowEdit }) => {
           const action = (
             <>
               <EditAction onClick={() => handleRowEdit(country.id)} />
-              <DeleteAction className="ml-1" onClick={() => handleDelete(country.id)} disabled={country.is_used} />
+              <DeleteAction className="ml-1" onClick={() => handleDelete(country.id)} />
             </>
           );
           return {
