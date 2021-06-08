@@ -98,7 +98,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
         country: editingData.country_id || '',
         clinic: editingData.clinic_id || '',
         limit_patient: editingData.limit_patient || '',
-        language: editingData.language_id || '',
+        language_id: editingData.language_id || '',
         profession: editingData.profession_id || ''
       });
     } else {
@@ -179,14 +179,16 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
     }
 
     if (canSave) {
+      const language = languages.find(item => item.id === formFields.language_id);
+      const data = { ...formFields, language_code: (language ? language.code : null) };
       if (editId) {
-        dispatch(updateTherapist(editId, formFields)).then(result => {
+        dispatch(updateTherapist(editId, data)).then(result => {
           if (result) {
             handleClose();
           }
         });
       } else {
-        dispatch(createTherapist(formFields)).then(result => {
+        dispatch(createTherapist(data)).then(result => {
           if (result) {
             handleClose();
           }
