@@ -53,7 +53,7 @@ const Clinic = ({ translate, handleRowEdit }) => {
           const action = (
             <>
               <EditAction onClick={() => handleRowEdit(clinic.id)} />
-              <DeleteAction className="ml-1" onClick={() => handleDelete(clinic.id)} disabled={clinic.is_used} />
+              <DeleteAction className="ml-1" onClick={() => handleDelete(clinic.id)} />
             </>
           );
           return {
