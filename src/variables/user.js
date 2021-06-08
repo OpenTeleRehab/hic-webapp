@@ -37,7 +37,8 @@ export const USER_ROLES = {
   MANAGE_PROFESSION: 'manage_profession',
   MANAGE_LANGUAGE: 'manage_language',
   MANAGE_STATIC_PAGE: 'manage_static_page',
-  MANAGE_GUIDANCE_PAGE: 'manage_guidance_page'
+  MANAGE_GUIDANCE_PAGE: 'manage_guidance_page',
+  MANAGE_DISEASE: 'manage_disease'
 };
 
 export const SETTING_ROLES = [

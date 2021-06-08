@@ -28,6 +28,7 @@ import { systemLimit } from 'store/systemLimit/reducers';
 import { guidancePage } from 'store/guidancePage/reducers';
 import { privacyPolicy } from 'store/privacyPolicy/reducers';
 import { treatmentPlan } from 'store/treatmentPlan/reducers';
+import { disease } from 'store/disease/reducers';
 
 export const rootReducer = {
   localize: localizeReducer,
@@ -53,7 +54,8 @@ export const rootReducer = {
   systemLimit,
   privacyPolicy,
   treatmentPlan,
-  guidancePage
+  guidancePage,
+  disease
 };
 
 const devTool =

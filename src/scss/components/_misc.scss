@@ -64,3 +64,6 @@
 	margin-bottom: 6%;
 }
 
+.modal-backdrop.show, .modal.show {
+	z-index: 1051 !important;
+}
