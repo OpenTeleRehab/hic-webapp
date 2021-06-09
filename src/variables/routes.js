@@ -29,6 +29,7 @@ export const SETTING_PROFESSION = SETTING + '#profession';
 export const SETTING_STATIC_PAGE = SETTING + '#static_page';
 export const SETTING_GUIDANCE_PAGE = SETTING + '#guidance_page';
 export const SETTING_LANGUAGE = SETTING + '#language';
+export const SETTING_DISEASE = SETTING + '#disease';
 
 export const PROFILE = '/profile';
 export const FAQ = '/faq';

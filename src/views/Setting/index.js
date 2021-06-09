@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Nav } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
-import { BsPlus } from 'react-icons/bs';
+import { BsPlus, BsUpload } from 'react-icons/bs';
 import { useKeycloak } from '@react-keycloak/web';
 import PropTypes from 'prop-types';
 
@@ -15,6 +15,7 @@ import Profession from 'views/Setting/Profession';
 import Language from 'views/Setting/Language';
 import StaticPage from 'views/Setting/StaticPage';
 import GuidancePage from 'views/Setting/Guidance';
+import Disease from 'views/Setting/Disease';
 
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES, SETTING_ROLES } from 'variables/user';
@@ -26,6 +27,8 @@ import CreateStaticPage from 'views/Setting/StaticPage/create';
 import CreateProfession from 'views/Setting/Profession/create';
 import CreatePrivacyPolicy from 'views/Setting/PrivacyPolicy/create';
 import CreateGuidancePage from 'views/Setting/Guidance/create';
+import CreateDisease from 'views/Setting/Disease/create';
+import UploadDisease from './Disease/upload';
 
 const VIEW_COUNTRY = 'country';
 const VIEW_TRANSLATION = 'translation';
@@ -37,12 +40,14 @@ const VIEW_PROFESSION = 'profession';
 const VIEW_LANGUAGE = 'language';
 const VIEW_STATIC_PAGE = 'static_page';
 const VIEW_GUIDANCE_PAGE = 'guidance_page';
+const VIEW_DISEASE = 'disease';
 
 const Setting = ({ translate }) => {
   const { keycloak } = useKeycloak();
   const { hash } = useLocation();
   const [view, setView] = useState(undefined);
   const [show, setShow] = useState(false);
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
 
   const [editId, setEditId] = useState();
 
@@ -65,6 +70,8 @@ const Setting = ({ translate }) => {
       setView(VIEW_STATIC_PAGE);
     } else if (hash.includes('#' + VIEW_GUIDANCE_PAGE)) {
       setView(VIEW_GUIDANCE_PAGE);
+    } else if (hash.includes('#' + VIEW_DISEASE)) {
+      setView(VIEW_DISEASE);
     } else {
       for (const role of SETTING_ROLES) {
         if (keycloak.hasRealmRole(role)) {
@@ -89,18 +96,36 @@ const Setting = ({ translate }) => {
     setShow(false);
   };
 
+  const handleShowUploadDialog = () => {
+    setShowUploadDialog(true);
+  };
+
+  const handleCloseUploadDialog = () => {
+    setShowUploadDialog(false);
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1>{translate('setting')}</h1>
-        {[VIEW_COUNTRY, VIEW_LANGUAGE, VIEW_TERM_AND_CONDITION, VIEW_PRIVACY_POLICY, VIEW_CLINIC, VIEW_STATIC_PAGE, VIEW_PROFESSION, VIEW_GUIDANCE_PAGE].map(v => {
+        {[VIEW_COUNTRY, VIEW_LANGUAGE, VIEW_TERM_AND_CONDITION, VIEW_PRIVACY_POLICY, VIEW_CLINIC, VIEW_STATIC_PAGE, VIEW_PROFESSION, VIEW_GUIDANCE_PAGE, VIEW_DISEASE].map(v => {
           if (v === view) {
             return (
-              <div key={v} className="btn-toolbar mb-2 mb-md-0">
-                <Button variant="primary" onClick={handleShow}>
-                  <BsPlus size={20} className="mr-1" />
-                  { translate(`${view}.new`) }
-                </Button>
+              <div className="d-flex">
+                {view === VIEW_DISEASE && (
+                  <div key={v} className="btn-toolbar mb-2 mb-md-0 mr-2">
+                    <Button variant="primary" onClick={handleShowUploadDialog}>
+                      <BsUpload size={20} className="mr-1" />
+                      { translate('disease.upload') }
+                    </Button>
+                  </div>
+                )}
+                <div key={v} className="btn-toolbar mb-2 mb-md-0">
+                  <Button variant="primary" onClick={handleShow}>
+                    <BsPlus size={20} className="mr-1" />
+                    { translate(`${view}.new`) }
+                  </Button>
+                </div>
               </div>
             );
           }
@@ -116,6 +141,8 @@ const Setting = ({ translate }) => {
       {show && view === VIEW_STATIC_PAGE && <CreateStaticPage show={show} editId={editId} handleClose={handleClose} />}
       {show && view === VIEW_GUIDANCE_PAGE && <CreateGuidancePage show={show} editId={editId} handleClose={handleClose} />}
       {show && view === VIEW_PROFESSION && <CreateProfession show={show} editId={editId} handleClose={handleClose} />}
+      {show && view === VIEW_DISEASE && <CreateDisease show={show} editId={editId} handleClose={handleClose} />}
+      {showUploadDialog && view === VIEW_DISEASE && <UploadDisease showUploadDialog={showUploadDialog} handleCloseUploadDialog={handleCloseUploadDialog} setShowUploadDialog={setShowUploadDialog} />}
 
       <Nav variant="tabs" activeKey={view} className="mb-3">
         { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY) && (
@@ -188,6 +215,13 @@ const Setting = ({ translate }) => {
             </Nav.Link>
           </Nav.Item>
         )}
+        { keycloak.hasRealmRole(USER_ROLES.MANAGE_DISEASE) && (
+          <Nav.Item>
+            <Nav.Link as={Link} to={ROUTES.SETTING_DISEASE} eventKey={VIEW_DISEASE}>
+              {translate('setting.disease')}
+            </Nav.Link>
+          </Nav.Item>
+        )}
       </Nav>
 
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_COUNTRY) && view === VIEW_COUNTRY && <Country handleRowEdit={handleEdit} /> }
@@ -200,6 +234,7 @@ const Setting = ({ translate }) => {
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_STATIC_PAGE) && view === VIEW_STATIC_PAGE && <StaticPage handleRowEdit={handleEdit} /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_PRIVACY_POLICY) && view === VIEW_PRIVACY_POLICY && <PrivacyPolicy handleRowEdit={handleEdit} /> }
       { keycloak.hasRealmRole(USER_ROLES.MANAGE_GUIDANCE_PAGE) && view === VIEW_GUIDANCE_PAGE && <GuidancePage handleRowEdit={handleEdit} /> }
+      { keycloak.hasRealmRole(USER_ROLES.MANAGE_DISEASE) && view === VIEW_DISEASE && <Disease handleRowEdit={handleEdit} /> }
 
     </>
   );
