@@ -8,12 +8,13 @@ import CustomTable from 'components/Table';
 import EnabledStatus from 'components/EnabledStatus';
 import { DeleteAction, EditAction, EnabledAction, DisabledAction, MailSendAction } from 'components/ActionIcons';
 import CreateTherapist from 'views/Therapist/create';
-import { getTherapists, deleteTherapistUser, updateTherapistStatus, resendEmail } from 'store/therapist/actions';
-import { getCountryName } from 'utils/country';
+import { getTherapists, updateTherapistStatus, resendEmail } from 'store/therapist/actions';
+import { getCountryName, getCountryISO } from 'utils/country';
 import { getClinicName, getClinicRegion, getTotalTherapistLimit } from 'utils/clinic';
 import * as moment from 'moment';
 import settings from 'settings';
 import Dialog from 'components/Dialog';
+import DeleteTherapist from './Partials/delete';
 
 import {
   getPatient,
@@ -26,6 +27,7 @@ import _ from 'lodash';
 import { Therapist as therapistService } from 'services/therapist';
 import { Clinic as clinicService } from 'services/clinic';
 import { getProfessionName } from 'utils/profession';
+import { getChatRooms } from 'utils/therapist';
 
 let timer = null;
 
@@ -40,8 +42,10 @@ const Therapist = ({ translate }) => {
 
   const [show, setShow] = useState(false);
   const [editId, setEditId] = useState('');
+  const [therapistChatRooms, setTherapistChatRooms] = useState('');
   const [isGlobalAdmin, setIsGlobalAdmin] = useState(false);
   const [isTherapistLimit, setIsTherapistLimit] = useState(false);
+  const [countryCode, setCountryCode] = useState('');
 
   const [formFields, setFormFields] = useState({
     enabled: 0
@@ -90,6 +94,7 @@ const Therapist = ({ translate }) => {
   const [showSwitchStatusDialog, setShowSwitchStatusDialog] = useState(false);
   const [id, setId] = useState(null);
   const [patients, setPatients] = useState([]);
+  const [patientTherapists, setPatientTherapists] = useState([]);
 
   useEffect(() => {
     setCurrentPage(0);
@@ -132,6 +137,7 @@ const Therapist = ({ translate }) => {
 
   useEffect(() => {
     if (profile !== undefined && profile.type === USER_GROUPS.CLINIC_ADMIN) {
+      setCountryCode(getCountryISO(profile.country_id, countries));
       clinicService.countTherapistByClinic(profile.clinic_id).then(res => {
         if (res.success) {
           if (res.data.therapistTotal < getTotalTherapistLimit(profile.clinic_id, clinics)) {
@@ -142,7 +148,7 @@ const Therapist = ({ translate }) => {
         }
       });
     }
-  }, [profile, clinics, therapists]);
+  }, [profile, clinics, therapists, countries]);
 
   const handleShow = () => setShow(true);
 
@@ -157,21 +163,19 @@ const Therapist = ({ translate }) => {
   };
 
   const handleDelete = (id) => {
+    therapistService.getPatientForTherapistRemove(id, true).then(res => {
+      if (res.data) {
+        setPatientTherapists(res.data);
+      }
+    });
     setId(id);
     setShowDeleteDialog(true);
+    setTherapistChatRooms(getChatRooms(id, therapists));
   };
 
   const handleDeleteDialogClose = () => {
     setId(null);
     setShowDeleteDialog(false);
-  };
-
-  const handleDeleteDialogConfirm = () => {
-    dispatch(deleteTherapistUser(id)).then(result => {
-      if (result) {
-        handleDeleteDialogClose();
-      }
-    });
   };
 
   const handleSwitchStatus = (id, enabled) => {
@@ -230,7 +234,7 @@ const Therapist = ({ translate }) => {
                 : <DisabledAction onClick={() => handleSwitchStatus(user.id, 1)} disabled={!!getPatient(user.id, patients)} />
               }
               <EditAction onClick={() => handleEdit(user.id)} />
-              <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={!!getPatient(user.id, patients) || user.enabled }/>
+              <DeleteAction className="ml-1" onClick={() => handleDelete(user.id, patients)} />
               <MailSendAction onClick={() => handleSendMail(user.id)} disabled={user.last_login} />
             </>
           );
@@ -254,16 +258,7 @@ const Therapist = ({ translate }) => {
           };
         })}
       />
-      <Dialog
-        show={showDeleteDialog}
-        title={translate('therapist.delete_confirmation_title')}
-        cancelLabel={translate('common.no')}
-        onCancel={handleDeleteDialogClose}
-        confirmLabel={translate('common.yes')}
-        onConfirm={handleDeleteDialogConfirm}
-      >
-        <p>{translate('common.delete_confirmation_message')}</p>
-      </Dialog>
+      <DeleteTherapist countryCode={countryCode} setShowDeleteDialog={setShowDeleteDialog} chatRooms={therapistChatRooms} handleDeleteDialogClose={handleDeleteDialogClose} showDeleteDialog={showDeleteDialog} patientTherapists={patientTherapists} therapistId={id} clinicId={profile ? profile.clinic_id : null} />
       <Dialog
         show={showSwitchStatusDialog}
         title={translate('user.switchStatus_confirmation_title')}

@@ -5,10 +5,12 @@ export const getPatient = (id, patients) => {
 
   return patient ? 1 : 0;
 };
+
 export const getTotalPatient = (therapisId, patients) => {
   const totalPatients = patients.filter(p => p.therapist_id === therapisId).length;
   return totalPatients;
 };
+
 export const getTotalOnGoingTreatment = (therapisId, patients) => {
   const totalOnGoing = patients.filter(p => p.therapist_id === therapisId && !_.isEmpty(p.ongoingTreatmentPlan)).length;
   return totalOnGoing;

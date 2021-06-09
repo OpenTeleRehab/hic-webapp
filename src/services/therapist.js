@@ -65,8 +65,8 @@ const getTherapists = payload => {
     });
 };
 
-const deleteTherapistUser = (id) => {
-  return customAxios.delete(`/therapist/${id}`)
+const deleteTherapistUser = (id, payload) => {
+  return customAxios.post(`/therapist/delete/by-id/${id}`, { country_code: payload.country_code })
     .then(
       res => {
         return res.data;
@@ -104,9 +104,35 @@ const getPatientByTherapistIds = (therapistIds) => {
     });
 };
 
-const getPatientByTherapistId = (therapistId) => {
-  const params = { therapist_id: therapistId };
+const getPatientByTherapistId = (therapistId, isTherapistRemove = false) => {
+  const params = { therapist_id: therapistId, is_therapist_remove: isTherapistRemove };
   return patientAxios.get('patient/list/by-therapist-id', { params })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const getPatientForTherapistRemove = (therapistId) => {
+  const params = { therapist_id: therapistId };
+  return patientAxios.get('patient/list/for-therapist-remove', { params })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const getTherapistsByClinic = (clinicId) => {
+  const params = { clinic_id: clinicId };
+  return customAxios.get('therapist/list/by-clinic-id', { params })
     .then(
       res => {
         return res.data;
@@ -129,6 +155,18 @@ const resendEmail = (id) => {
     });
 };
 
+const transferPatientToTherapist = (patientId, payload) => {
+  return patientAxios.post(`/patient/transfer-to-therapist/${patientId}`, { therapist_id: payload.therapist_id, therapist_identity: payload.therapist_identity, chat_rooms: payload.chat_rooms, new_chat_rooms: payload.new_chat_rooms })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Therapist = {
   createTherapist,
   updateTherapist,
@@ -138,5 +176,8 @@ export const Therapist = {
   updateTherapistStatus,
   getPatientByTherapistIds,
   getPatientByTherapistId,
-  resendEmail
+  resendEmail,
+  getPatientForTherapistRemove,
+  getTherapistsByClinic,
+  transferPatientToTherapist
 };
