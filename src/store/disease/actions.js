@@ -78,7 +78,7 @@ export const uploadDiseases = payload => async dispatch => {
     return { success: true, info: data.info };
   } else {
     dispatch(mutation.uploadDiseasesFail());
-    dispatch(showErrorNotification('toast_title.upload_diseases', data.message, { number: data.errors.row }));
+    dispatch(showErrorNotification('toast_title.upload_diseases', data.message));
     return { success: false, info: data.errors };
   }
 };
