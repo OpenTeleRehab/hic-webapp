@@ -10,6 +10,7 @@ import { withLocalize } from 'react-localize-redux';
 import settings from 'settings';
 import { CHART } from '../../../variables/dashboard';
 import { ContextAwareToggle } from '../../../components/Accordion/ContextAwareToggle';
+import scssColors from 'scss/custom.scss';
 
 const CountryAdminDashboard = ({ translate }) => {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ const CountryAdminDashboard = ({ translate }) => {
   const clinics = useSelector(state => state.clinic.clinics);
   const [totalClinicAdmin, setTotalClinicAdmin] = useState(0);
   const [totalTherapist, setTotalTherapist] = useState(0);
+  const [therapistLimit, setTherapistLimit] = useState(0);
   const [clinicLabel, setClinicLabel] = useState([]);
   const [therapistsByClinic, setTherapistsByClinic] = useState([]);
   const [patientsByGenderByClinic, setPatientsByGenderByClinic] = useState([]);
@@ -85,6 +87,7 @@ const CountryAdminDashboard = ({ translate }) => {
       const ongoingTreatmentByGender = patientData.onGoingTreatmentsByGenderGroupedByClinic;
       const clinicLabels = [];
       const therapistByClinic = [];
+      const therapistLimitByClinic = [];
       const femalePatientByClinic = [];
       const malePatientByClinic = [];
       const otherPatientByClinic = [];
@@ -93,6 +96,7 @@ const CountryAdminDashboard = ({ translate }) => {
       const otherOngoingByClinic = [];
       for (let i = 0; i < clinics.length; i++) {
         clinicLabels.push(clinics[i].name);
+        therapistLimitByClinic.push(clinics[i].therapist_limit);
         const therapist = therapistsByClinic.find(
           t => t.clinic_id === clinics[i].id);
         const patientsByGender = patientsByGenderByClinic.find(
@@ -115,8 +119,12 @@ const CountryAdminDashboard = ({ translate }) => {
       }
       setTotalClinicAdmin(clinicAdmin[0].total);
       setTotalTherapist(therapistData.therapistTotal);
+      setTherapistLimit(therapistData.therapistLimit);
       setClinicLabel(clinicLabels);
-      setTherapistsByClinic(therapistByClinic);
+      setTherapistsByClinic([
+        { label: translate('common.total_therapist'), data: therapistByClinic, backgroundColor: '#06038D', borderColor: '#06038D', borderWidth: 1 },
+        { label: translate('common.therapist_limit'), data: therapistLimitByClinic, backgroundColor: scssColors.orangeLight, borderColor: scssColors.orangeLight, borderWidth: 1 }
+      ]);
       setPatientsByGenderByClinic([
         { label: translate('common.male'), data: malePatientByClinic, backgroundColor: '#E35205', borderColor: '#E35205', borderWidth: 1 },
         { label: translate('common.female'), data: femalePatientByClinic, backgroundColor: '#64CCC9', borderColor: '#64CCC9', borderWidth: 1 },
@@ -129,28 +137,6 @@ const CountryAdminDashboard = ({ translate }) => {
       ]);
     }
   }, [dashboardData, clinics, translate]);
-
-  const barChartOptions = {
-    legend: {
-      display: false
-    },
-    scales: {
-      yAxes: [{
-        ticks: {
-          beginAtZero: true,
-          precision: 0
-        },
-        gridLines: {
-          drawOnChartArea: false
-        }
-      }],
-      xAxes: [{
-        gridLines: {
-          drawOnChartArea: false
-        }
-      }]
-    }
-  };
 
   const groupBarChartOptions = {
     legend: {
@@ -208,16 +194,38 @@ const CountryAdminDashboard = ({ translate }) => {
     }
   };
 
+  const therapistStackedBarChartOptions = {
+    legend: {
+      labels: {
+        boxWidth: 10,
+        fontColor: '#000000'
+      }
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          precision: 0
+        },
+        stacked: false,
+        gridLines: {
+          drawOnChartArea: false
+        },
+        fontColor: '#000000'
+      }],
+      xAxes: [{
+        gridLines: {
+          drawOnChartArea: false
+        },
+        barPercentage: 1.0,
+        stacked: true
+      }]
+    }
+  };
+
   const therapistsByClinicData = {
     labels: clinicLabel,
-    datasets: [
-      {
-        data: therapistsByClinic,
-        backgroundColor: '#06038D',
-        borderColor: '#06038D',
-        borderWidth: 1
-      }
-    ]
+    datasets: therapistsByClinic
   };
 
   const patientsByGenderByClinicData = {
@@ -267,7 +275,7 @@ const CountryAdminDashboard = ({ translate }) => {
                 </Col>
                 <Col sm={7} md={8} lg={9}>
                   <h6 className="card-text">{translate('dashboard.total_therapist')}</h6>
-                  <h5 className="card-number">{totalTherapist}</h5>
+                  <h5 className="card-number">{totalTherapist + '/' + therapistLimit}</h5>
                 </Col>
               </Row>
             </Card.Body>
@@ -285,7 +293,7 @@ const CountryAdminDashboard = ({ translate }) => {
           <Accordion.Collapse eventKey="0">
             <Card.Body>
               <Row className="top-card-container">
-                <Col className="container-fluid content-row">
+                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
                   <Card className="h-100">
                     <Card.Header as="h5" className="chart-header">{translate('dashboard.patient_by_gender_per_clinic')}</Card.Header>
                     <Card.Body>
@@ -293,7 +301,7 @@ const CountryAdminDashboard = ({ translate }) => {
                     </Card.Body>
                   </Card>
                 </Col>
-                <Col className="container-fluid content-row">
+                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
                   <Card className="h-100">
                     <Card.Header as="h5" className="chart-header">{translate('dashboard.patient_by_age_per_clinic')}</Card.Header>
                     <Card.Body>
@@ -317,7 +325,7 @@ const CountryAdminDashboard = ({ translate }) => {
           <Accordion.Collapse eventKey="1">
             <Card.Body>
               <Row className="top-card-container">
-                <Col className="container-fluid content-row">
+                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
                   <Card className="h-100">
                     <Card.Header as="h5" className="chart-header">{translate('dashboard.ongoing_treatment_by_gender_per_clinic')}</Card.Header>
                     <Card.Body>
@@ -325,7 +333,7 @@ const CountryAdminDashboard = ({ translate }) => {
                     </Card.Body>
                   </Card>
                 </Col>
-                <Col className="container-fluid content-row">
+                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
                   <Card className="h-100">
                     <Card.Header as="h5" className="chart-header">{translate('dashboard.ongoing_treatment_by_age_per_clinic')}</Card.Header>
                     <Card.Body>
@@ -349,11 +357,11 @@ const CountryAdminDashboard = ({ translate }) => {
           <Accordion.Collapse eventKey="2">
             <Card.Body>
               <Row className="top-card-container">
-                <Col className="container-fluid content-row">
+                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
                   <Card className="h-100">
                     <Card.Header as="h5" className="chart-header">{translate('dashboard.therapist_per_clinic')}</Card.Header>
                     <Card.Body>
-                      <Bar data={therapistsByClinicData} options={barChartOptions}/>
+                      <Bar data={therapistsByClinicData} options={therapistStackedBarChartOptions}/>
                     </Card.Body>
                   </Card>
                 </Col>

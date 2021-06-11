@@ -17,6 +17,7 @@ const ClinicAdminDashboard = () => {
   const [totalTherapist, setTotalTherapist] = useState(0);
   const [totalPatient, setTotalPatient] = useState(0);
   const [totalOngoingTreatment, setTotalOngoingTreatment] = useState(0);
+  const [therapistLimit, setTherapistLimit] = useState(0);
 
   useEffect(() => {
     if (profile !== undefined) {
@@ -30,6 +31,7 @@ const ClinicAdminDashboard = () => {
     if (!_.isEmpty(dashboardData)) {
       if (dashboardData.therapistData) {
         setTotalTherapist(dashboardData.therapistData.therapistTotal);
+        setTherapistLimit(dashboardData.therapistData.therapistLimit);
       }
 
       if (dashboardData.patientData) {
@@ -51,7 +53,7 @@ const ClinicAdminDashboard = () => {
                 </Col>
                 <Col sm={7} md={8} lg={9}>
                   <h6 className="card-text">{translate('common.total_therapist')}</h6>
-                  <h5 className="card-number">{ totalTherapist }</h5>
+                  <h5 className="card-number">{ totalTherapist + '/' + therapistLimit }</h5>
                 </Col>
               </Row>
             </Card.Body>
