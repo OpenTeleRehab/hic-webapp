@@ -74,9 +74,9 @@ export const getTherapists = payload => async dispatch => {
   }
 };
 
-export const deleteTherapistUser = (id, type) => async (dispatch, getState) => {
+export const deleteTherapistUser = (id, payload) => async (dispatch, getState) => {
   dispatch(mutation.deleteTherapistsRequest());
-  const data = await Therapist.deleteTherapistUser(id);
+  const data = await Therapist.deleteTherapistUser(id, payload);
   if (data.success) {
     dispatch(mutation.deleteTherapistsSuccess());
     const filters = getState().therapist.filters;
