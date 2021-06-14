@@ -6,13 +6,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FaFlag, FaClinicMedical } from 'react-icons/fa';
 import { getChartDataGlobalAdmin } from 'store/dashboard/actions';
 import { getTranslate } from 'react-localize-redux';
-import { Bar, Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import ReactTooltip from 'react-tooltip';
 import _ from 'lodash';
 import { CHART } from '../../../variables/dashboard';
 import settings from '../../../settings';
 import { ContextAwareToggle } from '../../../components/Accordion/ContextAwareToggle';
 import MapChart from '../../../components/MapChart';
+import scssColors from 'scss/custom.scss';
 
 const GlobalAdminDashboard = () => {
   const localize = useSelector((state) => state.localize);
@@ -42,21 +43,19 @@ const GlobalAdminDashboard = () => {
   useEffect(() => {
     if (!_.isEmpty(globalAdminData) && countries.length) {
       const labels = [];
-      const data = [];
+      const totalTherapistByCountryData = [];
+      const therapistLimitByCountryData = [];
       countries.forEach(country => {
         labels.push(country.name);
         const numberByCountry = globalAdminData.therapistData.data.therapistsByCountry.find(item => item.country_id === country.id);
-        data.push(numberByCountry ? numberByCountry.total : 0);
+        totalTherapistByCountryData.push(numberByCountry ? numberByCountry.total : 0);
+        therapistLimitByCountryData.push(country.therapist_limit);
       });
 
-      setTherapistsByCountry({
-        labels,
-        datasets: [{
-          data,
-          fill: true,
-          backgroundColor: CHART.COLOR[0]
-        }]
-      });
+      setTherapistsByCountry([
+        { label: translate('common.total_therapist'), data: totalTherapistByCountryData, backgroundColor: '#06038D', borderColor: '#06038D', borderWidth: 1 },
+        { label: translate('common.therapist_limit'), data: therapistLimitByCountryData, backgroundColor: scssColors.orangeLight, borderColor: scssColors.orangeLight, borderWidth: 1 }
+      ]);
     }
   }, [globalAdminData, countries]);
 
@@ -277,6 +276,11 @@ const GlobalAdminDashboard = () => {
     datasets: ongoingTreatmentsByGenderByCountry
   };
 
+  const therapistsByCountryData = {
+    labels: countryLabel,
+    datasets: therapistsByCountry
+  };
+
   const groupStackedBarChartOptions = {
     legend: {
       labels: {
@@ -291,6 +295,35 @@ const GlobalAdminDashboard = () => {
           precision: 0
         },
         stacked: true,
+        gridLines: {
+          drawOnChartArea: false
+        },
+        fontColor: '#000000'
+      }],
+      xAxes: [{
+        gridLines: {
+          drawOnChartArea: false
+        },
+        barPercentage: 1.0,
+        stacked: true
+      }]
+    }
+  };
+
+  const therapistStackedBarChartOptions = {
+    legend: {
+      labels: {
+        boxWidth: 10,
+        fontColor: '#000000'
+      }
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          precision: 0
+        },
+        stacked: false,
         gridLines: {
           drawOnChartArea: false
         },
@@ -381,7 +414,7 @@ const GlobalAdminDashboard = () => {
           <Accordion.Collapse eventKey="0">
             <Card.Body>
               <Row className="top-card-container">
-                <Col className="container-fluid content-row" lg={6}>
+                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
                   <Card className="h-100">
                     <Card.Header as="h5" className="chart-header">{process.env.REACT_APP_SITE_TITLE} {translate('setting.countries')}</Card.Header>
                     <Card.Body>
@@ -392,7 +425,7 @@ const GlobalAdminDashboard = () => {
                     </Card.Body>
                   </Card>
                 </Col>
-                <Col className="container-fluid content-row" lg={6}>
+                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
                   <Card className="h-100">
                     <Card.Header as="h5" className="chart-header">{translate('common.clinic_admin_per_country')}</Card.Header>
                     <Card.Body>
@@ -416,7 +449,7 @@ const GlobalAdminDashboard = () => {
           <Accordion.Collapse eventKey="1">
             <Card.Body>
               <Row className="top-card-container">
-                <Col className="container-fluid content-row">
+                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
                   <Card className="h-100">
                     <Card.Header as="h5" className="chart-header">{translate('common.patient_by_gender_per_country')}</Card.Header>
                     <Card.Body>
@@ -424,7 +457,7 @@ const GlobalAdminDashboard = () => {
                     </Card.Body>
                   </Card>
                 </Col>
-                <Col className="container-fluid content-row">
+                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
                   <Card className="h-100">
                     <Card.Header as="h5" className="chart-header">{translate('common.patient_by_age_per_country')}</Card.Header>
                     <Card.Body>
@@ -448,7 +481,7 @@ const GlobalAdminDashboard = () => {
           <Accordion.Collapse eventKey="2">
             <Card.Body>
               <Row className="top-card-container">
-                <Col className="container-fluid content-row">
+                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
                   <Card className="h-100">
                     <Card.Header as="h5" className="chart-header">{translate('common.treatment_by_gender_per_country')}</Card.Header>
                     <Card.Body>
@@ -456,7 +489,7 @@ const GlobalAdminDashboard = () => {
                     </Card.Body>
                   </Card>
                 </Col>
-                <Col className="container-fluid content-row">
+                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
                   <Card className="h-100">
                     <Card.Header as="h5" className="chart-header">{translate('common.treatment_by_age_per_country')}</Card.Header>
                     <Card.Body>
@@ -480,7 +513,7 @@ const GlobalAdminDashboard = () => {
           <Accordion.Collapse eventKey="3">
             <Card.Body>
               <Row className="top-card-container">
-                <Col className="container-fluid content-row">
+                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
                   <Card className="h-100">
                     <Card.Header as="h5" className="chart-header">{translate('common.ongoing_treatement_by_gender_per_country')}</Card.Header>
                     <Card.Body>
@@ -488,7 +521,7 @@ const GlobalAdminDashboard = () => {
                     </Card.Body>
                   </Card>
                 </Col>
-                <Col className="container-fluid content-row">
+                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
                   <Card className="h-100">
                     <Card.Header as="h5" className="chart-header">{translate('common.ongoing_by_age_per_country')}</Card.Header>
                     <Card.Body>
@@ -512,33 +545,11 @@ const GlobalAdminDashboard = () => {
           <Accordion.Collapse eventKey="4">
             <Card.Body>
               <Row>
-                <Col className="container-fluid content-row">
+                <Col className="container-fluid content-row" sm={6} md={6} lg={6}>
                   <Card className="h-100">
                     <Card.Header as="h5" className="chart-header">{translate('common.therapist_per_country')}</Card.Header>
                     <Card.Body>
-                      <Line
-                        data={therapistsByCountry}
-                        options={{
-                          legend: {
-                            display: false
-                          },
-                          scales: {
-                            xAxes: [{
-                              gridLines: {
-                                display: false
-                              }
-                            }],
-                            yAxes: [{
-                              gridLines: {
-                                display: false
-                              },
-                              ticks: {
-                                precision: 0
-                              }
-                            }]
-                          }
-                        }}
-                      />
+                      <Bar data={therapistsByCountryData} options={therapistStackedBarChartOptions} />
                     </Card.Body>
                   </Card>
                 </Col>
