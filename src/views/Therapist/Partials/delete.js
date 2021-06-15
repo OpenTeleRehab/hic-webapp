@@ -55,16 +55,24 @@ const DeleteTherapist = ({ countryCode, setShowDeleteDialog, chatRooms, handleDe
   });
 
   const handleDeleteConfirm = () => {
-    therapistService.transferPatientToTherapist(lastPatientId || '', formFields).then(res => {
-      if (res) {
-        setFormFields({ ...formFields, therapist_id: '', therapist_identity: '', new_chat_rooms: '', chat_rooms: chatRooms });
-        dispatch(deleteTherapistUser(therapistId, { country_code: countryCode })).then(result => {
-          if (result) {
-            setShowDeleteDialog(false);
-          }
-        });
-      }
-    });
+    if (patientTherapists.length === 0) {
+      dispatch(deleteTherapistUser(therapistId, { country_code: countryCode })).then(result => {
+        if (result) {
+          setShowDeleteDialog(false);
+        }
+      });
+    } else {
+      therapistService.transferPatientToTherapist(lastPatientId, formFields).then(res => {
+        if (res) {
+          setFormFields({ ...formFields, therapist_id: '', therapist_identity: '', new_chat_rooms: '', chat_rooms: chatRooms });
+          dispatch(deleteTherapistUser(therapistId, { country_code: countryCode })).then(result => {
+            if (result) {
+              setShowDeleteDialog(false);
+            }
+          });
+        }
+      });
+    }
   };
 
   const handleDeleteConfirmClose = () => {
@@ -106,29 +114,31 @@ const DeleteTherapist = ({ countryCode, setShowDeleteDialog, chatRooms, handleDe
 
   return (
     <>
-      <Modal size="lg" show={showDeleteDialog} onHide={handleDeleteDialogClose} scrollable={true}>
+      <Modal size="lg" show={showDeleteDialog} onHide={handleDeleteDialogClose}>
         <Modal.Header closeButton>
-          <Modal.Title>{patientTherapists.length > 0 && !isLastPatient ? patientTherapists[currentIndex].last_name + ' ' + patientTherapists[currentIndex].id : translate('therapist.delete_confirmation_title')}</Modal.Title>
+          <Modal.Title>{patientTherapists.length > 0 && !isLastPatient ? <Translate id="patient_transfer_therapist" data={{ patientName: patientTherapists[currentIndex].last_name + ' ' + patientTherapists[currentIndex].first_name }} /> : translate('therapist.delete_confirmation_title')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {therapistsSameClinic.length > 0 && patientTherapists.length > 0 && !isLastPatient &&
-          <Form.Group as={Col} controlId="formProfession">
-            <Form.Label>{translate('common.therapist')}</Form.Label>
-            <span className="text-dark ml-1">*</span>
-            <Select
-              placeholder={translate('placeholder.therapist')}
-              classNamePrefix="filter"
-              value={therapistsSameClinic.filter(option => option.id === formFields.therapist_id)}
-              getOptionLabel={option => `${option.last_name} ${option.first_name}`}
-              options={therapistsSameClinic}
-              onChange={(e) => handleSingleSelectChange('therapist_id', e.id)}
-              styles={customSelectStyles}
-              className={errorTherapist ? 'is-invalid' : ''}
-            />
-            <Form.Control.Feedback type="invalid">
-              {translate('error.therapist')}
-            </Form.Control.Feedback>
-          </Form.Group>
+            <Form.Row>
+              <Form.Group as={Col} controlId="formProfession">
+                <Form.Label>{translate('common.therapist')}</Form.Label>
+                <span className="text-dark ml-1">*</span>
+                <Select
+                  placeholder={translate('placeholder.therapist')}
+                  classNamePrefix="filter"
+                  value={therapistsSameClinic.filter(option => option.id === formFields.therapist_id)}
+                  getOptionLabel={option => `${option.last_name} ${option.first_name}`}
+                  options={therapistsSameClinic}
+                  onChange={(e) => handleSingleSelectChange('therapist_id', e.id)}
+                  styles={customSelectStyles}
+                  className={errorTherapist ? 'is-invalid' : ''}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {translate('error.therapist')}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Form.Row>
           }
           {(patientTherapists.length === 0 || isLastPatient) &&
           <p>{translate('common.delete_confirmation_message')}</p>
