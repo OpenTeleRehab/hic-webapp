@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import Select from 'react-select';
 import scssColors from '../../../../scss/custom.scss';
+import { STATUS } from 'variables/treatmentPlan';
 
-const ProfessionFilterCell = ({ filter, onFilter }) => {
+const StatusFilterCell = ({ filter, onFilter }) => {
   const localize = useSelector((state) => state.localize);
-  const professions = useSelector(state => state.profession.professions);
   const translate = getTranslate(localize);
-  const [profession, setProfession] = useState('');
+  const [status, setStatus] = useState('');
 
   const customSelectStyles = {
     option: (provided) => ({
@@ -22,32 +22,45 @@ const ProfessionFilterCell = ({ filter, onFilter }) => {
     })
   };
 
-  const handleFilter = (value) => {
-    setProfession(value);
-    onFilter(value === '' ? null : { value });
-  };
-  const optionData = [
+  const treatmentStatusData = [
     {
-      id: '',
+      value: '',
       name: translate('common.all')
     },
-    ...professions
+    {
+      value: 1,
+      name: translate(`common.${STATUS.finished}`)
+    },
+    {
+      value: 2,
+      name: translate(`common.${STATUS.planned}`)
+    },
+    {
+      value: 3,
+      name: translate(`common.${STATUS.on_going}`)
+    }
   ];
+
+  const handleFilter = (value) => {
+    setStatus(value);
+    onFilter(value === '' ? null : { value });
+  };
+
   return (
     <th>
       <Select
         classNamePrefix="filter"
-        value={optionData.filter(item => item.id === profession)}
+        value={treatmentStatusData.filter(item => item.value === status) }
         getOptionLabel={option => option.name}
-        options={optionData}
-        onChange={(e) => handleFilter(e.id)}
+        options={treatmentStatusData}
+        onChange={(e) => handleFilter(e.value)}
         styles={customSelectStyles}
       />
     </th>
   );
 };
 
-ProfessionFilterCell.propTypes = {
+StatusFilterCell.propTypes = {
   filter: PropTypes.shape({
     value: PropTypes.oneOfType([
       PropTypes.string,
@@ -57,4 +70,4 @@ ProfessionFilterCell.propTypes = {
   onFilter: PropTypes.func.isRequired
 };
 
-export default ProfessionFilterCell;
+export default StatusFilterCell;
