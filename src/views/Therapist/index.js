@@ -95,6 +95,7 @@ const Therapist = ({ translate }) => {
   const [id, setId] = useState(null);
   const [patients, setPatients] = useState([]);
   const [patientTherapists, setPatientTherapists] = useState([]);
+  const [therapistsSameClinic, setTherapistsSameClinic] = useState([]);
 
   useEffect(() => {
     setCurrentPage(0);
@@ -168,14 +169,16 @@ const Therapist = ({ translate }) => {
         setPatientTherapists(res.data);
       }
     });
+
+    therapistService.getTherapistsByClinic(profile.clinic_id).then(res => {
+      if (res.data) {
+        setTherapistsSameClinic(res.data);
+      }
+    });
+
     setId(id);
     setShowDeleteDialog(true);
     setTherapistChatRooms(getChatRooms(id, therapists));
-  };
-
-  const handleDeleteDialogClose = () => {
-    setId(null);
-    setShowDeleteDialog(false);
   };
 
   const handleSwitchStatus = (id, enabled) => {
@@ -258,7 +261,7 @@ const Therapist = ({ translate }) => {
           };
         })}
       />
-      <DeleteTherapist countryCode={countryCode} setShowDeleteDialog={setShowDeleteDialog} chatRooms={therapistChatRooms} handleDeleteDialogClose={handleDeleteDialogClose} showDeleteDialog={showDeleteDialog} patientTherapists={patientTherapists} therapistId={id} clinicId={profile ? profile.clinic_id : null} />
+      <DeleteTherapist countryCode={countryCode} setShowDeleteDialog={setShowDeleteDialog} chatRooms={therapistChatRooms} showDeleteDialog={showDeleteDialog} patientTherapists={patientTherapists} therapistId={id} therapistsSameClinic={therapistsSameClinic} />
       <Dialog
         show={showSwitchStatusDialog}
         title={translate('user.switchStatus_confirmation_title')}

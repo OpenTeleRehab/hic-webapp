@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
@@ -11,10 +11,9 @@ import { getIdentity, getChatRooms } from 'utils/therapist';
 import PropTypes from 'prop-types';
 import { deleteTherapistUser } from 'store/therapist/actions';
 
-const DeleteTherapist = ({ countryCode, setShowDeleteDialog, chatRooms, handleDeleteDialogClose, patientTherapists, showDeleteDialog, therapistId, clinicId }) => {
+const DeleteTherapist = ({ countryCode, setShowDeleteDialog, chatRooms, patientTherapists, therapistsSameClinic, showDeleteDialog, therapistId, clinicId }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
-  const [therapistsSameClinic, setTherapistsSameClinic] = useState([]);
   const therapists = useSelector(state => state.therapist.therapists);
   const [errorTherapist, setErrorTherapist] = useState(false);
   const dispatch = useDispatch();
@@ -33,18 +32,8 @@ const DeleteTherapist = ({ countryCode, setShowDeleteDialog, chatRooms, handleDe
   };
 
   _.remove(patientTherapists, patient => (patient.ongoingTreatmentPlan.length === 0 && _.isEmpty(patient.upcomingTreatmentPlan)) || patient.is_secondary_therapist);
-
-  useEffect(() => {
-    if (clinicId) {
-      therapistService.getTherapistsByClinic(clinicId).then(res => {
-        if (res.data) {
-          setTherapistsSameClinic(res.data);
-        }
-      });
-    }
-  }, [clinicId]);
-
   _.remove(therapistsSameClinic, therapist => therapist.id === therapistId);
+
   const [currentIndex, SetCurrentIndex] = useState(0);
 
   const [formFields, setFormFields] = useState({
@@ -76,11 +65,12 @@ const DeleteTherapist = ({ countryCode, setShowDeleteDialog, chatRooms, handleDe
   };
 
   const handleDeleteConfirmClose = () => {
+    setFormFields({ ...formFields, therapist_id: '', therapist_identity: '', new_chat_rooms: '', chat_rooms: chatRooms });
     if (isLastPatient) {
       therapistService.transferPatientToTherapist(lastPatientId, formFields).then(res => {
         if (res) {
-          setFormFields({ ...formFields, therapist_id: '', therapist_identity: '', new_chat_rooms: '', chat_rooms: chatRooms });
           setShowDeleteDialog(false);
+          setIsLastPatient(false);
         }
       });
     } else {
@@ -114,7 +104,7 @@ const DeleteTherapist = ({ countryCode, setShowDeleteDialog, chatRooms, handleDe
 
   return (
     <>
-      <Modal size="lg" show={showDeleteDialog} onHide={handleDeleteDialogClose}>
+      <Modal size="lg" show={showDeleteDialog} onHide={handleDeleteConfirmClose}>
         <Modal.Header closeButton>
           <Modal.Title>{patientTherapists.length > 0 && !isLastPatient ? <Translate id="patient_transfer_therapist" data={{ patientName: patientTherapists[currentIndex].last_name + ' ' + patientTherapists[currentIndex].first_name }} /> : translate('therapist.delete_confirmation_title')}</Modal.Title>
         </Modal.Header>
@@ -166,7 +156,7 @@ const DeleteTherapist = ({ countryCode, setShowDeleteDialog, chatRooms, handleDe
             <Button
               className="ml-1"
               variant="outline-dark"
-              onClick={(patientTherapists.length === 0 || isLastPatient) ? handleDeleteConfirmClose : handleDeleteDialogClose}
+              onClick={handleDeleteConfirmClose}
             >
               <Translate id={(isLastPatient || patientTherapists.length === 0) ? 'common.no' : 'common.close'} />
             </Button>
@@ -181,6 +171,7 @@ DeleteTherapist.propTypes = {
   chatRooms: PropTypes.array,
   handleDeleteDialogClose: PropTypes.func,
   patientTherapists: PropTypes.array,
+  therapistsSameClinic: PropTypes.array,
   showDeleteDialog: PropTypes.func,
   therapistId: PropTypes.number,
   clinicId: PropTypes.number,
