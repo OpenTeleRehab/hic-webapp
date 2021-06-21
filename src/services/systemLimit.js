@@ -24,7 +24,20 @@ const updateSystemLimit = (id, payload) => {
     });
 };
 
+const getSystemLimitByType = payload => {
+  return axios.get('/system-limit/list/by-type', { params: payload })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const SystemLimit = {
   getSystemLimits,
-  updateSystemLimit
+  updateSystemLimit,
+  getSystemLimitByType
 };

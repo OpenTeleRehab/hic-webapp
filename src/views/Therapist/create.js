@@ -17,7 +17,7 @@ import {
   getTotalOnGoingTreatment
 } from 'utils/patient';
 
-const CreateTherapist = ({ show, handleClose, editId }) => {
+const CreateTherapist = ({ show, handleClose, editId, defaultOnGoingLimitPatient }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
@@ -32,22 +32,23 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
   const { profile } = useSelector((state) => state.auth);
   const professions = useSelector(state => state.profession.professions);
   const languages = useSelector(state => state.language.languages);
-  const defaultLimitedPatients = useSelector(state => state.defaultLimitedPatient.defaultLimitedPatients);
 
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorCountry, setErrorCountry] = useState(false);
   const [errorLimitPatient, setErrorLimitPatient] = useState(false);
   const [errorLimitPatientMessage, setErrorLimitPatientMessage] = useState('');
+  const [errorOverLimitMessage, setErrorOverLimitMessage] = useState('');
   const [errorClinic, setErrorClinic] = useState(false);
   const [errorLastName, setErrorLastName] = useState(false);
   const [errorFirstName, setErrorFirstName] = useState(false);
+  const [errorOverDefaultLimit, setErrorOverDefaultLimit] = useState(false);
 
   const [formFields, setFormFields] = useState({
     email: '',
     first_name: '',
     last_name: '',
     country: '',
-    limit_patient: defaultLimitedPatients.value,
+    limit_patient: defaultOnGoingLimitPatient,
     clinic: '',
     clinic_identity: '',
     country_identity: ''
@@ -61,12 +62,13 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
     setErrorEmail(false);
     setErrorCountry(false);
     setErrorLimitPatient(false);
+    setErrorOverDefaultLimit(false);
     setErrorClinic(false);
     setFormFields({
       email: '',
       first_name: '',
       last_name: '',
-      limit_patient: defaultLimitedPatients.value,
+      limit_patient: defaultOnGoingLimitPatient,
       clinic: '',
       country: ''
     });
@@ -175,6 +177,13 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
         setErrorLimitPatientMessage(translate('error.limit_patient.lessthan'));
       } else {
         setErrorLimitPatient(false);
+        if (formFields.limit_patient > defaultOnGoingLimitPatient) {
+          canSave = false;
+          setErrorOverDefaultLimit(true);
+          setErrorOverLimitMessage(translate('error.over_default_limit_patient'));
+        } else {
+          setErrorOverDefaultLimit(false);
+        }
       }
     }
 
@@ -262,7 +271,7 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
             <Form.Label>
               <Translate
                 id="common.limit_treatment"
-                data={{ defaultLimitedPatients: defaultLimitedPatients.value }}
+                data={{ defaultLimitedPatients: defaultOnGoingLimitPatient }}
               />
             </Form.Label>
             <span className="text-dark ml-1">*</span>
@@ -270,11 +279,12 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
               name="limit_patient"
               onChange={handleChange}
               placeholder={translate('placeholder.limit_patient')}
-              isInvalid={errorLimitPatient}
+              isInvalid={errorLimitPatient || errorOverDefaultLimit}
               value={formFields.limit_patient}
             />
             <Form.Control.Feedback type="invalid">
               {errorLimitPatientMessage}
+              {errorOverLimitMessage}
             </Form.Control.Feedback>
             <p className="mt-1">
               <Translate
@@ -374,7 +384,8 @@ const CreateTherapist = ({ show, handleClose, editId }) => {
 CreateTherapist.propTypes = {
   show: PropTypes.bool,
   handleClose: PropTypes.func,
-  editId: PropTypes.string
+  editId: PropTypes.string,
+  defaultOnGoingLimitPatient: PropTypes.number
 };
 
 export default CreateTherapist;

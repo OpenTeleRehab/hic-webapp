@@ -15,6 +15,8 @@ import * as moment from 'moment';
 import settings from 'settings';
 import Dialog from 'components/Dialog';
 import DeleteTherapist from './Partials/delete';
+import { SystemLimit as systemLimitService } from 'services/systemLimit';
+import { SYSTEM_LIMIT_TYPES } from 'variables/systemLimit';
 
 import {
   getPatient,
@@ -46,6 +48,7 @@ const Therapist = ({ translate }) => {
   const [isGlobalAdmin, setIsGlobalAdmin] = useState(false);
   const [isTherapistLimit, setIsTherapistLimit] = useState(false);
   const [countryCode, setCountryCode] = useState('');
+  const [defaultOnGoingLimitPatient, setDefaultOnGoingLimitPatient] = useState(0);
 
   const [formFields, setFormFields] = useState({
     enabled: 0
@@ -150,6 +153,15 @@ const Therapist = ({ translate }) => {
     }
   }, [profile, clinics, therapists, countries]);
 
+  useEffect(() => {
+    systemLimitService.getSystemLimitByType({ type: SYSTEM_LIMIT_TYPES.NUMBER_OF_ONGOING_TREATMENT_PER_THERAPIST }).then(res => {
+      if (res.data) {
+        setDefaultOnGoingLimitPatient(res.data.value);
+      }
+    });
+    // eslint-disable-next-line
+  }, []);
+
   const handleShow = () => setShow(true);
 
   const handleEdit = (id) => {
@@ -214,7 +226,7 @@ const Therapist = ({ translate }) => {
           </div>
         }
       </div>
-      {show && <CreateTherapist show={show} handleClose={handleClose} editId={editId} />}
+      {show && <CreateTherapist show={show} handleClose={handleClose} editId={editId} defaultOnGoingLimitPatient={defaultOnGoingLimitPatient} />}
       <CustomTable
         pageSize={pageSize}
         setPageSize={setPageSize}
