@@ -57,6 +57,7 @@ const GlobalAdminDashboard = () => {
         { label: translate('common.therapist_limit'), data: therapistLimitByCountryData, backgroundColor: scssColors.orangeLight, borderColor: scssColors.orangeLight, borderWidth: 1 }
       ]);
     }
+    // eslint-disable-next-line
   }, [globalAdminData, countries]);
 
   useEffect(() => {
