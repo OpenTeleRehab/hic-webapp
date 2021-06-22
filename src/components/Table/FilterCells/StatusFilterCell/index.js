@@ -1,23 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
+import Select from 'react-select';
+import scssColors from '../../../../scss/custom.scss';
 
 const StatusFilterCell = ({ filter, onFilter }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
+  const [status, setStatus] = useState('');
+
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
+  };
+  const statusData = [
+    {
+      value: '',
+      name: translate('common.all')
+    },
+    {
+      value: 1,
+      name: translate('common.active')
+    },
+    {
+      value: 0,
+      name: translate('common.inactive')
+    }
+  ];
+
+  const handleFilter = (value) => {
+    setStatus(value);
+    onFilter(value === '' ? null : { value });
+  };
 
   return (
     <th>
-      <select
-        className="form-control"
-        value={filter ? filter.value : ''}
-        onChange={e => onFilter(e.target.value ? { value: e.target.value } : null)}
-      >
-        <option value={null}>{ translate('common.all') }</option>
-        <option value="1">{ translate('common.active') }</option>
-        <option value="0">{ translate('common.inactive') }</option>
-      </select>
+      <Select
+        classNamePrefix="filter"
+        value={statusData.filter(item => item.value === status)}
+        getOptionLabel={option => option.name}
+        options={statusData}
+        onChange={(e) => handleFilter(e.value)}
+        styles={customSelectStyles}
+      />
     </th>
   );
 };
