@@ -41,7 +41,7 @@ const GlobalAdminDashboard = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!_.isEmpty(globalAdminData) && countries.length) {
+    if (!_.isEmpty(globalAdminData) && countries.length && !_.isEmpty(globalAdminData.therapistData)) {
       const labels = [];
       const totalTherapistByCountryData = [];
       const therapistLimitByCountryData = [];
