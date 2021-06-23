@@ -40,7 +40,7 @@ const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, c
   const translate = getTranslate(localize);
   const [showFilter, setShowFilter] = useState(false);
 
-  const pageSizes = [50, 100, 150, 200];
+  const pageSizes = [60, 120, 180, 240];
   const rightColumns = ['action'];
   const tableColumnExtensions = [...columnExtensions, { columnName: 'action', align: 'center', width: 120 }];
   const tableColumnVisibilityColumnExtensions = [{ columnName: 'action', togglingEnabled: false }];
