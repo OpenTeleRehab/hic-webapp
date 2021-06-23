@@ -40,7 +40,7 @@ const Questionnaire = ({ translate }) => {
   const { questionnaires, filters } = useSelector(state => state.questionnaire);
   const { profile } = useSelector((state) => state.auth);
   const { categoryTreeData } = useSelector((state) => state.category);
-  const [pageSize, setPageSize] = useState(50);
+  const [pageSize, setPageSize] = useState(60);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [id, setId] = useState('');

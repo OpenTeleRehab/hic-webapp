@@ -34,7 +34,7 @@ const Patient = ({ translate }) => {
     { columnName: 'treatment_status', wordWrapEnabled: true }
   ];
 
-  const [pageSize, setPageSize] = useState(50);
+  const [pageSize, setPageSize] = useState(60);
   const [currentPage, setCurrentPage] = useState(0);
   const [searchValue, setSearchValue] = useState('');
   const [filters, setFilters] = useState([]);
