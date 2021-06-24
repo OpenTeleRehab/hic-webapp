@@ -304,8 +304,8 @@ const CreateQuestionnaire = ({ translate }) => {
               answerFieldError={answerFieldError}
               modifiable={!questionnaire.is_used || !id}
             />
-            <div className="sticky-btn d-flex justify-content-between">
-              {enableButtons() &&
+            {enableButtons() &&
+              <div className="sticky-btn d-flex justify-content-between">
                 <div className="py-1 px-1">
                   <Button
                     variant="link btn-lg"
@@ -315,25 +315,46 @@ const CreateQuestionnaire = ({ translate }) => {
                     <BsPlusCircle size={20} /> {translate('questionnaire.new.question')}
                   </Button>
                 </div>
-              }
-              <div className="py-2 questionnaire-save-cancel-wrapper px-3">
-                <Button
-                  onClick={handleSave}
-                  disabled={isLoading}
-                >
-                  {translate('common.save')}
-                </Button>
-                <Button
-                  className="ml-2"
-                  variant="outline-dark"
-                  as={Link}
-                  to={ROUTES.SERVICE_SETUP_QUESTIONNAIRE}
-                  disabled={isLoading}
-                >
-                  {translate('common.cancel')}
-                </Button>
+                <div className="py-2 questionnaire-save-cancel-wrapper px-3">
+                  <Button
+                    onClick={handleSave}
+                    disabled={isLoading}
+                  >
+                    {translate('common.save')}
+                  </Button>
+                  <Button
+                    className="ml-2"
+                    variant="outline-dark"
+                    as={Link}
+                    to={ROUTES.SERVICE_SETUP_QUESTIONNAIRE}
+                    disabled={isLoading}
+                  >
+                    {translate('common.cancel')}
+                  </Button>
+                </div>
               </div>
-            </div>
+            }
+            {!enableButtons() &&
+              <div className="sticky-btn d-flex justify-content-end">
+                <div className="py-2 questionnaire-save-cancel-wrapper px-3">
+                  <Button
+                    onClick={handleSave}
+                    disabled={isLoading}
+                  >
+                    {translate('common.save')}
+                  </Button>
+                  <Button
+                    className="ml-2"
+                    variant="outline-dark"
+                    as={Link}
+                    to={ROUTES.SERVICE_SETUP_QUESTIONNAIRE}
+                    disabled={isLoading}
+                  >
+                    {translate('common.cancel')}
+                  </Button>
+                </div>
+              </div>
+            }
           </Col>
         </Row>
       </Form>
