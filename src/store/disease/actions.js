@@ -8,11 +8,11 @@ import {
   showSpinner
 } from 'store/spinnerOverlay/actions';
 
-export const getDiseases = () => async dispatch => {
+export const getDiseases = payload => async dispatch => {
   dispatch(mutation.getDiseasesRequest());
-  const data = await Disease.getDiseases();
+  const data = await Disease.getDiseases(payload);
   if (data.success) {
-    dispatch(mutation.getDiseasesSuccess(data.data));
+    dispatch(mutation.getDiseasesSuccess(data.data, payload));
   } else {
     dispatch(mutation.getDiseasesFail());
     dispatch(showErrorNotification('toast_title.error_message', data.message));
@@ -80,5 +80,19 @@ export const uploadDiseases = payload => async dispatch => {
     dispatch(mutation.uploadDiseasesFail());
     dispatch(showErrorNotification('toast_title.upload_diseases', data.message));
     return { success: false, info: data.errors };
+  }
+};
+
+export const getDisease = (id, language) => async dispatch => {
+  dispatch(mutation.getDiseaseRequest());
+  dispatch(showSpinner(true));
+  const data = await Disease.getDisease(id, language);
+  if (data) {
+    dispatch(mutation.getDiseaseSuccess(data.data));
+    dispatch(showSpinner(false));
+  } else {
+    dispatch(mutation.getDiseaseFail());
+    dispatch(showSpinner(false));
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
   }
 };

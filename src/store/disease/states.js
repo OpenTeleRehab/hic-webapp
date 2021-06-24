@@ -1,3 +1,5 @@
 export const initialState = {
-  diseases: []
+  diseases: [],
+  disease: {},
+  filters: {}
 };
