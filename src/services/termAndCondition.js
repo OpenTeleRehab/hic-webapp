@@ -61,10 +61,23 @@ const publishTermAndCondition = id => {
     });
 };
 
+const getPublishTermConditionPage = id => {
+  return axios.get('/user-term-condition')
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const TermAndCondition = {
   getTermAndConditions,
   getTermAndCondition,
   createTermAndCondition,
   updateTermAndCondition,
-  publishTermAndCondition
+  publishTermAndCondition,
+  getPublishTermConditionPage
 };

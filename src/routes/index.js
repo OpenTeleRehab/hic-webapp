@@ -17,6 +17,8 @@ import Therapist from 'views/Therapist';
 import Patient from 'views/Patient';
 import ProfilePage from 'views/Profile';
 import FaqPage from 'views/Faq';
+import TermConditionPage from 'views/TermCondition';
+import PrivacyPolicyPage from 'views/PrivacyPolicy';
 
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES, SETTING_ROLES } from 'variables/user';
@@ -161,7 +163,20 @@ const routes = [
     exact: true,
     type: PRIVATE
   },
-
+  {
+    title: 'term-condition',
+    path: ROUTES.TC,
+    component: TermConditionPage,
+    exact: true,
+    type: PRIVATE
+  },
+  {
+    title: 'privacy-policy',
+    path: ROUTES.PP,
+    component: PrivacyPolicyPage,
+    exact: true,
+    type: PRIVATE
+  },
   {
     title: 'not_found_page',
     path: '*',

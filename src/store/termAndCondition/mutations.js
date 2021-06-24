@@ -48,6 +48,19 @@ const getTermAndConditionFail = () => ({
   type: 'GET_TERM_AND_CONDITION_FAIL'
 });
 
+const getPublishTermConditionRequest = () => ({
+  type: 'GET_PUBLISH_TERM_CONDITION_REQUEST'
+});
+
+const getPublishTermConditionSuccess = (data) => ({
+  type: 'GET_PUBLISH_TERM_CONDITION_SUCCESS',
+  data
+});
+
+const getPublishTermConditionFail = () => ({
+  type: 'GET_PUBLISH_TERM_CONDITION_FAIL'
+});
+
 export const mutation = {
   getTermAndConditionsRequest,
   getTermAndConditionsSuccess,
@@ -60,5 +73,8 @@ export const mutation = {
   createTermAndConditionFail,
   updateTermAndConditionRequest,
   updateTermAndConditionSuccess,
-  updateTermAndConditionFail
+  updateTermAndConditionFail,
+  getPublishTermConditionRequest,
+  getPublishTermConditionSuccess,
+  getPublishTermConditionFail
 };
