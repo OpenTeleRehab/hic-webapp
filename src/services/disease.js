@@ -1,8 +1,8 @@
 import axios from 'utils/axios';
 import _ from 'lodash';
 
-const getDiseases = () => {
-  return axios.get('/disease')
+const getDiseases = payload => {
+  return axios.get('/disease', { params: payload })
     .then(
       res => {
         return res.data;
@@ -66,10 +66,24 @@ const uploadDiseases = payload => {
     });
 };
 
+const getDisease = (id, language) => {
+  const langParam = language ? `?lang=${language}` : '';
+  return axios.get(`/disease/${id}` + langParam)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Disease = {
   getDiseases,
   createDisease,
   updateDisease,
   deleteDisease,
-  uploadDiseases
+  uploadDiseases,
+  getDisease
 };

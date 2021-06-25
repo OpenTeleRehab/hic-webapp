@@ -11,6 +11,20 @@ const getDiseasesFail = () => ({
   type: 'GET_DISEASES_FAIL'
 });
 
+const getDiseaseRequest = () => ({
+  type: 'GET_DISEASE_REQUEST'
+});
+
+const getDiseaseSuccess = (data, filters) => ({
+  type: 'GET_DISEASE_SUCCESS',
+  data,
+  filters
+});
+
+const getDiseaseFail = () => ({
+  type: 'GET_DISEASE_FAIL'
+});
+
 const createDiseaseRequest = () => ({
   type: 'CREATE_DISEASE_REQUEST'
 });
@@ -75,5 +89,8 @@ export const mutation = {
   deleteDiseaseFail,
   uploadDiseasesFail,
   uploadDiseasesSuccess,
-  uploadDiseasesRequest
+  uploadDiseasesRequest,
+  getDiseaseRequest,
+  getDiseaseFail,
+  getDiseaseSuccess
 };

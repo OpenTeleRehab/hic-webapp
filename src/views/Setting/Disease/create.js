@@ -4,7 +4,7 @@ import Dialog from 'components/Dialog';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
-import { createDisease, updateDisease } from 'store/disease/actions';
+import { createDisease, updateDisease, getDisease } from 'store/disease/actions';
 import settings from 'settings';
 
 const CreateDisease = ({ show, editId, handleClose }) => {
@@ -13,16 +13,37 @@ const CreateDisease = ({ show, editId, handleClose }) => {
   const dispatch = useDispatch();
   const { profile } = useSelector((state) => state.auth);
 
-  const diseases = useSelector(state => state.disease.diseases);
+  const { disease, filters } = useSelector(state => state.disease);
+  const { languages } = useSelector(state => state.language);
   const [errorName, setErrorName] = useState(false);
+  const [language, setLanguage] = useState('');
 
   const [formFields, setFormFields] = useState({
     name: ''
   });
 
   useEffect(() => {
-    if (editId && diseases.length) {
-      const disease = diseases.find(disease => disease.id === editId);
+    if (languages.length) {
+      if (editId) {
+        if (filters && filters.lang) {
+          setLanguage(filters.lang);
+        } else if (profile && profile.language_id) {
+          setLanguage(profile.language_id);
+        }
+      } else {
+        setLanguage(languages[0].id);
+      }
+    }
+  }, [languages, filters, editId, profile]);
+
+  useEffect(() => {
+    if (editId && language) {
+      dispatch(getDisease(editId, language));
+    }
+  }, [editId, language, dispatch]);
+
+  useEffect(() => {
+    if (editId && disease.id) {
       setFormFields({
         name: disease.name
       });
@@ -32,7 +53,7 @@ const CreateDisease = ({ show, editId, handleClose }) => {
       });
     }
     // eslint-disable-next-line
-  }, [editId, diseases, profile]);
+  }, [editId, disease, profile]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -51,13 +72,13 @@ const CreateDisease = ({ show, editId, handleClose }) => {
 
     if (canSave) {
       if (editId) {
-        dispatch(updateDisease(editId, formFields)).then(result => {
+        dispatch(updateDisease(editId, { ...formFields, lang: language })).then(result => {
           if (result) {
             handleClose();
           }
         });
       } else {
-        dispatch(createDisease(formFields)).then(result => {
+        dispatch(createDisease({ ...formFields, lang: language })).then(result => {
           if (result) {
             handleClose();
           }
@@ -73,6 +94,11 @@ const CreateDisease = ({ show, editId, handleClose }) => {
     }
   };
 
+  const handleLanguageChange = e => {
+    const { value } = e.target;
+    setLanguage(value);
+  };
+
   return (
     <Dialog
       show={show}
@@ -82,6 +108,16 @@ const CreateDisease = ({ show, editId, handleClose }) => {
       confirmLabel={editId ? translate('common.save') : translate('common.create')}
     >
       <Form onKeyPress={(e) => handleFormSubmit(e)}>
+        <Form.Group controlId="formLanguage">
+          <Form.Label>{translate('common.show_language.version')}</Form.Label>
+          <Form.Control as="select" value={editId ? language : ''} onChange={handleLanguageChange} disabled={!editId}>
+            {languages.map((language, index) => (
+              <option key={index} value={language.id}>
+                {language.name} {language.code === language.fallback && `(${translate('common.default')})`}
+              </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
         <Form.Row>
           <Form.Group as={Col} controlId="name">
             <Form.Label>{translate('disease.name')}</Form.Label>
