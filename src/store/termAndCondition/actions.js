@@ -78,3 +78,17 @@ export const publishTermAndCondition = id => async (dispatch) => {
     return false;
   }
 };
+
+export const getPublishTermCondition = () => async dispatch => {
+  dispatch(mutation.getPublishTermConditionRequest());
+  dispatch(showSpinner(true));
+  const data = await TermAndCondition.getPublishTermConditionPage();
+  if (data) {
+    dispatch(mutation.getPublishTermConditionSuccess(data.data));
+    dispatch(showSpinner(false));
+  } else {
+    dispatch(mutation.getPublishTermConditionFail());
+    dispatch(showSpinner(false));
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
+  }
+};

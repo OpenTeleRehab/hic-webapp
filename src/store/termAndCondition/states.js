@@ -1,4 +1,5 @@
 export const initialState = {
   termAndConditions: [],
-  termAndCondition: {}
+  termAndCondition: {},
+  publishTermAndConditionPage: {}
 };

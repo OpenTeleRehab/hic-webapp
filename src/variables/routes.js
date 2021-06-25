@@ -33,6 +33,8 @@ export const SETTING_DISEASE = SETTING + '#disease';
 
 export const PROFILE = '/profile';
 export const FAQ = '/faq';
+export const TC = '/term-condition';
+export const PP = '/privacy-policy';
 export const PROFILE_PASSWORD = PROFILE + '#password';
 
 export const VIEW_TREATMENT_PLAN_DETAIL = VIEW_PATIENT_DETAIL + '/treatment-plan/:id';

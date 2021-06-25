@@ -12,6 +12,11 @@ export const termAndCondition = (state = initialState, action) => {
         termAndCondition: action.data
       });
     }
+    case 'GET_PUBLISH_TERM_CONDITION_SUCCESS': {
+      return Object.assign({}, state, {
+        publishTermAndConditionPage: action.data
+      });
+    }
     default:
       return state;
   }

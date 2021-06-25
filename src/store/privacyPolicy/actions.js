@@ -76,3 +76,14 @@ export const publishPrivacyPolicy = id => async (dispatch) => {
     return false;
   }
 };
+
+export const getPublishPrivacyPolicy = () => async dispatch => {
+  dispatch(mutation.getPublishPrivacyPolicyRequest());
+  const res = await PrivacyPolicy.getPublishPrivacyPolicy();
+  if (res) {
+    dispatch(mutation.getPublishPrivacyPolicySuccess(res.data));
+  } else {
+    dispatch(mutation.getPublishPrivacyPolicyFail());
+    dispatch(showErrorNotification('toast_title.error_message', res.message));
+  }
+};
