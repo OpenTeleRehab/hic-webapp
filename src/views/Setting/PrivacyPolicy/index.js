@@ -143,7 +143,7 @@ const PrivacyPolicy = ({ translate, handleRowEdit }) => {
             classNamePrefix="filter"
             value={languages.filter(option => option.id === language)}
             getOptionLabel={option => option.name}
-            options={translate('placeholder.language')}
+            options={languages}
             onChange={(e) => setLanguage(e.id)}
             styles={customSelectStyles}
           />
