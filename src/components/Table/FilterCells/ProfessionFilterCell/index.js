@@ -19,7 +19,8 @@ const ProfessionFilterCell = ({ filter, onFilter }) => {
       '&:hover': {
         backgroundColor: scssColors.infoLight
       }
-    })
+    }),
+    menuPortal: base => ({ ...base, zIndex: 1000 })
   };
 
   const handleFilter = (value) => {
@@ -41,6 +42,7 @@ const ProfessionFilterCell = ({ filter, onFilter }) => {
         getOptionLabel={option => option.name}
         options={optionData}
         onChange={(e) => handleFilter(e.id)}
+        menuPortalTarget={document.body}
         styles={customSelectStyles}
       />
     </th>
