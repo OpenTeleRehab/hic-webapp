@@ -19,7 +19,8 @@ const StatusFilterCell = ({ filter, onFilter }) => {
       '&:hover': {
         backgroundColor: scssColors.infoLight
       }
-    })
+    }),
+    menuPortal: base => ({ ...base, zIndex: 1000 })
   };
 
   const treatmentStatusData = [
@@ -49,6 +50,7 @@ const StatusFilterCell = ({ filter, onFilter }) => {
   return (
     <th>
       <Select
+        menuPortalTarget={document.body}
         classNamePrefix="filter"
         value={treatmentStatusData.filter(item => item.value === status) }
         getOptionLabel={option => option.name}
