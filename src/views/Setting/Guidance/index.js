@@ -39,9 +39,7 @@ const GuidancePage = ({ translate, handleRowEdit }) => {
   useEffect(() => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      dispatch(getGuidancePages({
-        lang: language
-      }));
+      dispatch(getGuidancePages());
     }, 500);
   }, [language, dispatch]);
 

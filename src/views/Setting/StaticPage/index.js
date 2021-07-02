@@ -46,9 +46,7 @@ const StaticPage = ({ translate, handleRowEdit }) => {
   useEffect(() => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      dispatch(getStaticPages({
-        lang: language
-      }));
+      dispatch(getStaticPages());
     }, 500);
   }, [language, dispatch]);
 

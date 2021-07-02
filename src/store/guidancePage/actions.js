@@ -38,7 +38,7 @@ export const createGuidancePage = (payload) => async (dispatch) => {
   const data = await guidancePage.createGuidancePage(payload);
   if (data.success) {
     dispatch(mutation.createGuidancePageSuccess());
-    dispatch(getGuidancePages(payload));
+    dispatch(getGuidancePages());
     dispatch(showSuccessNotification('toast_title.new_guidance_page', data.message));
     dispatch(showSpinner(false));
     return true;
@@ -55,7 +55,7 @@ export const updateGuidancePage = (id, payload) => async dispatch => {
   const data = await guidancePage.updateGuidancePage(id, payload);
   if (data.success) {
     dispatch(mutation.updateGuidancePageSuccess());
-    dispatch(getGuidancePages(payload));
+    dispatch(getGuidancePages());
     dispatch(showSuccessNotification('toast_title.update_guidance_page', data.message));
     return true;
   } else {
