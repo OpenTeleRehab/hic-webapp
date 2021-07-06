@@ -29,6 +29,8 @@ const CreateDisease = ({ show, editId, handleClose }) => {
           setLanguage(filters.lang);
         } else if (profile && profile.language_id) {
           setLanguage(profile.language_id);
+        } else {
+          setLanguage(languages[0].id);
         }
       } else {
         setLanguage(languages[0].id);

@@ -38,10 +38,16 @@ const PrivacyPolicy = ({ translate, handleRowEdit }) => {
   ];
 
   useEffect(() => {
-    if (profile) {
-      setLanguage(profile.language_id);
+    if (languages.length) {
+      if (viewId) {
+        if (profile && profile.language_id) {
+          setLanguage(profile.language_id);
+        } else {
+          setLanguage(languages[0].id);
+        }
+      }
     }
-  }, [profile]);
+  }, [profile, languages, viewId]);
 
   useEffect(() => {
     if (viewId && language) {
@@ -78,6 +84,8 @@ const PrivacyPolicy = ({ translate, handleRowEdit }) => {
 
   const handleViewContentClose = () => {
     setShowViewDialog(false);
+    setLanguage('');
+    setViewId(null);
   };
 
   const customSelectStyles = {

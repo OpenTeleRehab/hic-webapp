@@ -25,6 +25,7 @@ const CreatePrivacyPolicy = ({ show, editId, handleClose }) => {
   const [errorVersion, setVersion] = useState(false);
   const { languages } = useSelector(state => state.language);
   const { privacyPolicy } = useSelector(state => state.privacyPolicy);
+  const { profile } = useSelector((state) => state.auth);
 
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
@@ -35,9 +36,17 @@ const CreatePrivacyPolicy = ({ show, editId, handleClose }) => {
 
   useEffect(() => {
     if (languages.length) {
-      setLanguage(languages[0].id);
+      if (editId) {
+        if (profile && profile.language_id) {
+          setLanguage(profile.language_id);
+        } else {
+          setLanguage(languages[0].id);
+        }
+      } else {
+        setLanguage(languages[0].id);
+      }
     }
-  }, [languages]);
+  }, [languages, profile, editId]);
 
   useEffect(() => {
     if (editId && language) {
