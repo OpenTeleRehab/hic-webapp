@@ -28,7 +28,7 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
   const [publishedId, setPublishedId] = useState(null);
   const [showViewDialog, setShowViewDialog] = useState(false);
   const [viewId, setViewId] = useState(null);
-  const [language, setLanguage] = useState();
+  const [language, setLanguage] = useState('');
 
   const columns = [
     { name: 'version', title: translate('term_and_condition.version') },
@@ -38,10 +38,16 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
   ];
 
   useEffect(() => {
-    if (profile) {
-      setLanguage(profile.language_id);
+    if (languages.length) {
+      if (viewId) {
+        if (profile && profile.language_id) {
+          setLanguage(profile.language_id);
+        } else {
+          setLanguage(languages[0].id);
+        }
+      }
     }
-  }, [profile]);
+  }, [profile, viewId, languages]);
 
   useEffect(() => {
     if (viewId && language) {
@@ -78,6 +84,8 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
 
   const handleViewContentClose = () => {
     setShowViewDialog(false);
+    setLanguage('');
+    setViewId(null);
   };
 
   const customSelectStyles = {
