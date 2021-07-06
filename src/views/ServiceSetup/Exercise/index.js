@@ -45,7 +45,7 @@ const Exercise = ({ translate }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { loading, exercises, filters } = useSelector(state => state.exercise);
+  const { loading, exercises, filters, totalCount } = useSelector(state => state.exercise);
   const { profile } = useSelector((state) => state.auth);
   const { languages } = useSelector(state => state.language);
   const { categoryTreeData } = useSelector((state) => state.category);
@@ -56,7 +56,6 @@ const Exercise = ({ translate }) => {
   const [show, setShow] = useState(false);
   const [pageSize, setPageSize] = useState(60);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
     search_value: ''
@@ -101,11 +100,7 @@ const Exercise = ({ translate }) => {
         categories: serializedSelectedCats,
         page_size: pageSize,
         page: currentPage
-      })).then(result => {
-        if (result) {
-          setTotalCount(result.total_count);
-        }
-      });
+      }));
     }, 500);
   }, [language, formFields, selectedCategories, currentPage, pageSize, dispatch]);
 
