@@ -30,7 +30,7 @@ const Create = ({ show, handleClose, editId, activeCategory, type, allowNew }) =
 
   useEffect(() => {
     if (languages.length) {
-      if (editId && profile) {
+      if (editId && profile && profile.language_id) {
         setLanguage(profile.language_id);
       } else {
         setLanguage(languages[0].id);
