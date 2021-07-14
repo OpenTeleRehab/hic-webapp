@@ -31,7 +31,7 @@ const Pagination = ({ pageSize, totalCount, currentPage, setCurrentPage, pageSiz
         />
       </span>
 
-      <div className="float-right mr-3">
+      <div className="float-right mr-3 exercise-pagination">
         <ReactPaginate
           previousLabel={'⟨'}
           nextLabel={'⟩'}
