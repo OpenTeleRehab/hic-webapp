@@ -9,31 +9,23 @@ import { useSelector } from 'react-redux';
 
 import { USER_ROLES, SETTING_ROLES } from 'variables/user';
 
-const navItems = [
+const publicNavItems = [
   {
     label: 'dashboard',
     to: ROUTES.DASHBOARD,
     exact: true
   },
   {
-    label: 'admin',
-    to: ROUTES.ADMIN,
-    exact: true,
-    roles: [
-      USER_ROLES.MANAGE_GLOBAL_ADMIN,
-      USER_ROLES.MANAGE_COUNTRY_ADMIN,
-      USER_ROLES.MANAGE_CLINIC_ADMIN
-    ]
-  },
+    label: 'library',
+    to: ROUTES.LIBRARY,
+    exact: true
+  }
+];
+
+const navItems = [
   {
-    label: 'therapist',
-    to: ROUTES.THERAPIST,
-    exact: true,
-    roles: [USER_ROLES.MANAGE_THERAPIST, USER_ROLES.MANAGE_GLOBAL_ADMIN]
-  },
-  {
-    label: 'patient',
-    to: ROUTES.PATIENT,
+    label: 'dashboard',
+    to: ROUTES.ADMIN_DASHBOARD,
     exact: true,
     roles: [USER_ROLES.MANAGE_GLOBAL_ADMIN]
   },
@@ -48,6 +40,16 @@ const navItems = [
     to: ROUTES.CATEGORY,
     exact: true,
     roles: [USER_ROLES.SETUP_CATEGORY]
+  },
+  {
+    label: 'admin',
+    to: ROUTES.ADMIN,
+    exact: true,
+    roles: [
+      USER_ROLES.MANAGE_GLOBAL_ADMIN,
+      USER_ROLES.MANAGE_COUNTRY_ADMIN,
+      USER_ROLES.MANAGE_CLINIC_ADMIN
+    ]
   },
   {
     label: 'setting',
@@ -85,9 +87,6 @@ const Navigation = ({ translate }) => {
           />
         </Link>
       </Navbar.Brand>
-      <span className="portal-name ml-3">
-        {translate('portal.name')}
-      </span>
       <Navbar.Toggle aria-controls="basic-navbar-nav ml-auto" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto" variant="pills">
@@ -103,6 +102,21 @@ const Navigation = ({ translate }) => {
                 }
               }
 
+              return (
+                <NavLink
+                  to={to}
+                  exact={exact}
+                  key={key}
+                  className="d-flex align-items-center nav-link"
+                >
+                  {translate(label)}
+                </NavLink>
+              );
+            })
+          }
+
+          {
+            !keycloak.authenticated && publicNavItems.map(({ label, to, exact }, key) => {
               return (
                 <NavLink
                   to={to}

@@ -4,6 +4,10 @@ import { Spinner } from 'react-bootstrap';
 
 import PageLayout from 'layout/layout';
 import PrivateRoute from 'routes/privateRoute';
+
+import PublicDashboardPage from 'views/_public/Dashboard';
+import LibraryPage from 'views/_public/Library';
+
 import DashboardPage from 'views/Dashboard';
 import NotFoundPage from 'views/NotFound';
 import AdminPage from 'views/Admin';
@@ -13,8 +17,6 @@ import ServiceSetupPage from 'views/ServiceSetup';
 import CreateExercise from 'views/ServiceSetup/Exercise/create';
 import CreateEducationMaterial from 'views/ServiceSetup/EducationMaterial/create';
 import CreateQuestionnaire from 'views/ServiceSetup/Questionnaire/create';
-import Therapist from 'views/Therapist';
-import Patient from 'views/Patient';
 import ProfilePage from 'views/Profile';
 import FaqPage from 'views/Faq';
 import TermConditionPage from 'views/TermCondition';
@@ -22,15 +24,31 @@ import PrivacyPolicyPage from 'views/PrivacyPolicy';
 
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES, SETTING_ROLES } from 'variables/user';
-import ViewPatient from 'views/Patient/viewPatient';
-import ViewTreatmentPlan from 'views/TreatmentPlan/detail';
 const PRIVATE = 'private';
 const PUBLIC = 'public';
 
-const routes = [
+const publicRoutes = [
   {
     title: 'dashboard',
     path: ROUTES.DASHBOARD,
+    component: PublicDashboardPage,
+    exact: true,
+    type: PUBLIC
+  },
+  {
+    title: 'dashboard',
+    path: ROUTES.LIBRARY,
+    component: LibraryPage,
+    exact: true,
+    type: PUBLIC
+  }
+];
+
+const routes = [
+  ...publicRoutes,
+  {
+    title: 'dashboard',
+    path: ROUTES.ADMIN_DASHBOARD,
     component: DashboardPage,
     exact: true,
     type: PRIVATE
@@ -46,36 +64,6 @@ const routes = [
       USER_ROLES.MANAGE_COUNTRY_ADMIN,
       USER_ROLES.MANAGE_CLINIC_ADMIN
     ]
-  },
-  {
-    title: 'therapist',
-    path: ROUTES.THERAPIST,
-    component: Therapist,
-    exact: true,
-    type: PRIVATE,
-    roles: [USER_ROLES.MANAGE_THERAPIST, USER_ROLES.MANAGE_GLOBAL_ADMIN]
-  },
-  {
-    title: 'patient',
-    path: ROUTES.PATIENT,
-    component: Patient,
-    exact: true,
-    type: PRIVATE,
-    roles: [USER_ROLES.MANAGE_GLOBAL_ADMIN]
-  },
-  {
-    title: 'patient.detail',
-    path: ROUTES.VIEW_PATIENT_DETAIL,
-    component: ViewPatient,
-    exact: true,
-    type: PRIVATE
-  },
-  {
-    title: 'treatment_plan.detail',
-    path: ROUTES.VIEW_TREATMENT_PLAN_DETAIL,
-    component: ViewTreatmentPlan,
-    exact: true,
-    type: PRIVATE
   },
   {
     title: 'service_setup',

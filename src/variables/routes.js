@@ -1,6 +1,8 @@
 export const DASHBOARD = '/';
-export const ADMIN = '/admin';
+export const LIBRARY = '/library';
 
+export const ADMIN_DASHBOARD = '/dashboard';
+export const ADMIN = '/admin';
 export const SERVICE_SETUP = '/service-setup';
 export const SERVICE_SETUP_EDUCATION = SERVICE_SETUP + '#education';
 export const SERVICE_SETUP_QUESTIONNAIRE = SERVICE_SETUP + '#questionnaire';
@@ -12,9 +14,6 @@ export const EDUCATION_MATERIAL_EDIT = SERVICE_SETUP + '/education_material/edit
 export const QUESTIONNAIRE_CREATE = SERVICE_SETUP + '/questionnaire/create';
 export const QUESTIONNAIRE_EDIT = SERVICE_SETUP + '/questionnaire/edit/:id';
 
-export const THERAPIST = '/therapist';
-export const PATIENT = '/patient';
-export const VIEW_PATIENT_DETAIL = `${PATIENT}/:patientId`;
 export const CATEGORY = '/category';
 export const CATEGORY_EDUCATION = CATEGORY + '#education';
 export const CATEGORY_QUESTIONNAIRE = CATEGORY + '#questionnaire';
@@ -36,5 +35,3 @@ export const FAQ = '/faq';
 export const TC = '/term-condition';
 export const PP = '/privacy-policy';
 export const PROFILE_PASSWORD = PROFILE + '#password';
-
-export const VIEW_TREATMENT_PLAN_DETAIL = VIEW_PATIENT_DETAIL + '/treatment-plan/:id';

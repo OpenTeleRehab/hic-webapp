@@ -23,7 +23,7 @@ const PrivateRoute = ({ children, title, roles, ...rest }) => {
           });
 
           if (!role) {
-            return <Redirect to={ROUTES.DASHBOARD} />;
+            return <Redirect to={ROUTES.ADMIN_DASHBOARD} />;
           }
         }
 
