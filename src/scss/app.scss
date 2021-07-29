@@ -1,8 +1,12 @@
 @import '~bootstrap/scss/bootstrap';
 @import './custom';
 @import '~react-checkbox-tree/src/scss/react-checkbox-tree.scss';
+@import './functions';
+@import './utilities';
 
 @import './components/navbar',
+		'./components/banner',
+		'./components/section',
 		'./components/toast',
 		'./components/dx_table',
 		'./components/card',
@@ -13,4 +17,5 @@
 		'./components/table',
 		'./components/static_page',
 		'./components/select',
-		'/components/pagination';
+		'./components/pagination',
+		'./components/footer';

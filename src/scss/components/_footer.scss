@@ -1,0 +1,10 @@
+.footer {
+	background-color: $primary;
+	padding: toRem(16) 0;
+
+	p {
+		color: $white;
+		text-align: center;
+		margin: 0;
+	}
+}

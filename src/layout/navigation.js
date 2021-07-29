@@ -11,8 +11,8 @@ import { USER_ROLES, SETTING_ROLES } from 'variables/user';
 
 const publicNavItems = [
   {
-    label: 'dashboard',
-    to: ROUTES.DASHBOARD,
+    label: 'home',
+    to: ROUTES.HOME,
     exact: true
   },
   {
@@ -78,7 +78,7 @@ const Navigation = ({ translate }) => {
   return (
     <Navbar bg="primary" variant="dark" expand="xl" sticky="top" className="main-nav">
       <Navbar.Brand>
-        <Link to={ROUTES.DASHBOARD}>
+        <Link to={ROUTES.HOME}>
           <img
             src="/images/logo.png"
             className="d-inline-block align-top"

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Nav, Button } from 'react-bootstrap';
+import { Nav, Button, Container } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -28,7 +28,7 @@ const Library = ({ translate }) => {
   }, [hash]);
 
   return (
-    <>
+    <Container fluid>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1>{translate('service_setup')}</h1>
         <div className="btn-toolbar mb-2 mb-md-0">
@@ -76,7 +76,7 @@ const Library = ({ translate }) => {
       { view === VIEW_EXERCISE && <Exercise /> }
       { view === VIEW_EDUCATION && <EducationMaterial /> }
       { view === VIEW_QUESTIONNAIRE && <Questionnaire /> }
-    </>
+    </Container>
   );
 };
 

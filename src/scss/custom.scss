@@ -22,6 +22,7 @@ $light-grey: #cacfcc;
 $orange: #E35205;
 $error: #DC3545;
 $light-grey1: #ced4da;
+$blue-10: #E6F1FA;
 
 $theme-colors: (
 	"primary": $primary,
@@ -67,6 +68,8 @@ $zindex-toast: 1080;
 // Font size
 $h1-font-size: 1.5rem;
 $headings-line-height: 1.5rem;
+$headings-font-weight: 700 !default;
+
 
 /* import bootstrap to set changes */
 @import '~bootstrap/scss/bootstrap';
