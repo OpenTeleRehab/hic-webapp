@@ -13,10 +13,8 @@ import {
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Spinner from 'react-bootstrap/Spinner';
 
 import Dialog from 'components/Dialog';
-import Pagination from 'components/Pagination';
 import { EditAction, DeleteAction } from 'components/ActionIcons';
 import {
   deleteExercise, downloadExercises,
@@ -39,13 +37,14 @@ import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import Select from 'react-select';
 import scssColors from 'scss/custom.scss';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 let timer = null;
 const Exercise = ({ translate }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { loading, exercises, filters, totalCount } = useSelector(state => state.exercise);
+  const { loading, exercises, filters } = useSelector(state => state.exercise);
   const { profile } = useSelector((state) => state.auth);
   const { languages } = useSelector(state => state.language);
   const { categoryTreeData } = useSelector((state) => state.category);
@@ -54,8 +53,7 @@ const Exercise = ({ translate }) => {
 
   const [deletedId, setDeletedId] = useState(null);
   const [show, setShow] = useState(false);
-  const [pageSize, setPageSize] = useState(60);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(8);
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
     search_value: ''
@@ -98,21 +96,20 @@ const Exercise = ({ translate }) => {
         lang: language,
         filter: formFields,
         categories: serializedSelectedCats,
-        page_size: pageSize,
-        page: currentPage
+        page_size: pageSize
       }));
     }, 500);
-  }, [language, formFields, selectedCategories, currentPage, pageSize, dispatch]);
+  }, [language, formFields, selectedCategories, pageSize, dispatch]);
 
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
-    setCurrentPage(1);
+    setPageSize(8);
   };
 
   const handleClearSearch = () => {
     setFormFields({ ...formFields, search_value: '' });
-    setCurrentPage(1);
+    setPageSize(8);
   };
 
   const handleDelete = (id) => {
@@ -149,7 +146,7 @@ const Exercise = ({ translate }) => {
 
   const handleSetSelectedCategories = (parent, checked) => {
     setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
-    setCurrentPage(1);
+    setPageSize(8);
   };
 
   const handleDownload = () => {
@@ -171,6 +168,9 @@ const Exercise = ({ translate }) => {
         backgroundColor: scssColors.infoLight
       }
     })
+  };
+  const fetchMoreData = () => {
+    setPageSize(pageSize + 8);
   };
 
   return (
@@ -249,74 +249,72 @@ const Exercise = ({ translate }) => {
           )}
           { exercises.length > 0 && (
             <>
-              <Row>
-                { exercises.map(exercise => (
-                  <Col key={exercise.id} md={6} lg={3}>
-                    <div className="position-absolute delete-btn">
-                      <DeleteAction disabled={exercise.is_used} onClick={() => handleDelete(exercise.id)} />
-                    </div>
-                    <div className="position-absolute edit-btn">
-                      <EditAction onClick={() => handleEdit(exercise.id)} />
-                    </div>
-                    <Card className="exercise-card shadow-sm mb-4" onClick={() => handleView(exercise.id)}>
-                      <div className="card-img bg-light">
-                        {
-                          exercise.files.length > 0 && (
-                            (exercise.files[0].fileType === 'audio/mpeg' &&
-                              <div className="w-100 pt-5 pl-3 pr-3">
-                                <audio controls className="w-100">
-                                  <source src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} type="audio/ogg" />
-                                </audio>
-                              </div>
-                            ) ||
-                            (exercise.files[0].fileType === 'video/mp4' &&
-                              <img className="img-fluid mx-auto d-block" src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}?thumbnail=1`} alt="Exercise"
-                              />
-                            ) ||
-                            ((exercise.files[0].fileType !== 'audio/mpeg' && exercise.files[0].fileType !== 'video/mp4') &&
-                              <img className="img-fluid mx-auto d-block" src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} alt="Exercise"
-                              />
-                            )
-                          )
-                        }
+              <InfiniteScroll
+                dataLength={exercises.length}
+                next={fetchMoreData}
+                hasMore={true}
+                loader={loading && <h4>Loading...</h4>}
+                style={{ overflowX: 'hidden' }}
+                scrollThreshold="100px"
+              >
+                <Row>
+                  { exercises.map(exercise => (
+                    <Col key={exercise.id} md={6} lg={3}>
+                      <div className="position-absolute delete-btn">
+                        <DeleteAction disabled={exercise.is_used} onClick={() => handleDelete(exercise.id)} />
                       </div>
-                      <Card.Body className="d-flex flex-column justify-content-between">
-                        <Card.Title>
+                      <div className="position-absolute edit-btn">
+                        <EditAction onClick={() => handleEdit(exercise.id)} />
+                      </div>
+                      <Card className="exercise-card shadow-sm mb-4" onClick={() => handleView(exercise.id)}>
+                        <div className="card-img bg-light">
                           {
-                            exercise.title.length <= 50
-                              ? <h5 className="card-title">{ exercise.title }</h5>
-                              : (
-                                <OverlayTrigger
-                                  overlay={<Tooltip id="button-tooltip-2">{ exercise.title }</Tooltip>}
-                                >
-                                  <h5 className="card-title">{ exercise.title }</h5>
-                                </OverlayTrigger>
+                            exercise.files.length > 0 && (
+                              (exercise.files[0].fileType === 'audio/mpeg' &&
+                                <div className="w-100 pt-5 pl-3 pr-3">
+                                  <audio controls className="w-100">
+                                    <source src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} type="audio/ogg" />
+                                  </audio>
+                                </div>
+                              ) ||
+                              (exercise.files[0].fileType === 'video/mp4' &&
+                                <img className="img-fluid mx-auto d-block" src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}?thumbnail=1`} alt="Exercise"
+                                />
+                              ) ||
+                              ((exercise.files[0].fileType !== 'audio/mpeg' && exercise.files[0].fileType !== 'video/mp4') &&
+                                <img className="img-fluid mx-auto d-block" src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} alt="Exercise"
+                                />
                               )
+                            )
                           }
-                        </Card.Title>
-                        {exercise.sets > 0 && (
-                          <Card.Text>
-                            {translate('exercise.number_of_sets_and_reps', { sets: exercise.sets, reps: exercise.reps })}
-                          </Card.Text>
-                        )}
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-
-              <Pagination
-                totalCount={totalCount}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                pageSize={pageSize}
-                setPageSize={setPageSize}
-                pageSizes={[60, 120, 180, 240]}
-              />
+                        </div>
+                        <Card.Body className="d-flex flex-column justify-content-between">
+                          <Card.Title>
+                            {
+                              exercise.title.length <= 50
+                                ? <h5 className="card-title">{ exercise.title }</h5>
+                                : (
+                                  <OverlayTrigger
+                                    overlay={<Tooltip id="button-tooltip-2">{ exercise.title }</Tooltip>}
+                                  >
+                                    <h5 className="card-title">{ exercise.title }</h5>
+                                  </OverlayTrigger>
+                                )
+                            }
+                          </Card.Title>
+                          {exercise.sets > 0 && (
+                            <Card.Text>
+                              {translate('exercise.number_of_sets_and_reps', { sets: exercise.sets, reps: exercise.reps })}
+                            </Card.Text>
+                          )}
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  ))}
+                </Row>
+              </InfiniteScroll>
             </>
           )}
-
-          { loading && <Spinner className="loading-icon" animation="border" variant="primary" /> }
         </Col>
       </Row>
       {showView && <ViewExercise showView={showView} handleViewClose={handleViewClose} id={id} />}

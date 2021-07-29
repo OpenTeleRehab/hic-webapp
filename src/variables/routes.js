@@ -1,5 +1,7 @@
 export const HOME = '/';
 export const LIBRARY = '/library';
+export const LIBRARY_EDUCATION = LIBRARY + '#education';
+export const LIBRARY_QUESTIONNAIRE = LIBRARY + '#questionnaire';
 
 export const ADMIN_DASHBOARD = '/dashboard';
 export const ADMIN = '/admin';
