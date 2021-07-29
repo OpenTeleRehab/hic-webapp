@@ -5,7 +5,6 @@ import {
   Row,
   Col,
   Card,
-  Form,
   Accordion,
   OverlayTrigger,
   Tooltip
@@ -27,8 +26,6 @@ import {
 import { FaRegCheckSquare } from 'react-icons/fa';
 import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
-import Select from 'react-select';
-import scssColors from 'scss/custom.scss';
 import { MdDescription } from 'react-icons/md';
 import { MATERIAL_TYPE } from '../../../../variables/activity';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -40,7 +37,6 @@ const EducationMaterial = ({ translate }) => {
   const [formFields, setFormFields] = useState({
     search_value: ''
   });
-  const { languages } = useSelector(state => state.language);
   const [language, setLanguage] = useState('');
   const { loading, educationMaterials, filters } = useSelector(state => state.educationMaterial);
   const { profile } = useSelector((state) => state.auth);
@@ -116,17 +112,6 @@ const EducationMaterial = ({ translate }) => {
     setPageSize(8);
   };
 
-  const customSelectStyles = {
-    option: (provided) => ({
-      ...provided,
-      color: 'black',
-      backgroundColor: 'white',
-      '&:hover': {
-        backgroundColor: scssColors.infoLight
-      }
-    })
-  };
-
   const fetchMoreData = () => {
     setPageSize(pageSize + 8);
   };
@@ -146,17 +131,6 @@ const EducationMaterial = ({ translate }) => {
               />
             </Card.Header>
             <Card.Body>
-              <Form.Group>
-                <Form.Label>{translate('common.language')}</Form.Label>
-                <Select
-                  classNamePrefix="filter"
-                  value={languages.filter(option => option.id === language)}
-                  getOptionLabel={option => option.name}
-                  options={languages}
-                  onChange={(e) => setLanguage(e.id)}
-                  styles={customSelectStyles}
-                />
-              </Form.Group>
               <Accordion>
                 {
                   categoryTreeData.map(category => (
