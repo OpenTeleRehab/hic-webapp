@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import { Row, Col, Card, Form, Accordion } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Accordion,
+  OverlayTrigger,
+  Tooltip
+} from 'react-bootstrap';
 import Dialog from 'components/Dialog';
-import * as ROUTES from 'variables/routes';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 
-import CustomTable from 'components/Table';
-import { EditAction, DeleteAction, ViewAction } from 'components/ActionIcons';
 import SearchInput from 'components/Form/SearchInput';
 import { getQuestionnaires, deleteQuestionnaire } from 'store/questionnaire/actions';
 import ViewQuestionnaire from './viewQuestionnaire';
@@ -26,23 +30,21 @@ import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import Select from 'react-select';
 import scssColors from 'scss/custom.scss';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 let timer = null;
 const Questionnaire = ({ translate }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const [formFields, setFormFields] = useState({
     search_value: ''
   });
   const { languages } = useSelector(state => state.language);
   const [language, setLanguage] = useState('');
-  const { questionnaires, filters } = useSelector(state => state.questionnaire);
+  const { loading, questionnaires, filters } = useSelector(state => state.questionnaire);
   const { profile } = useSelector((state) => state.auth);
   const { categoryTreeData } = useSelector((state) => state.category);
-  const [pageSize, setPageSize] = useState(60);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
+  const [pageSize, setPageSize] = useState(8);
   const [id, setId] = useState('');
   const [show, setShow] = useState(false);
   const [questionnaire, setQuestionnaire] = useState([]);
@@ -84,40 +86,20 @@ const Questionnaire = ({ translate }) => {
         lang: language,
         filter: formFields,
         categories: serializedSelectedCats,
-        page_size: pageSize,
-        page: currentPage + 1
-      })).then(result => {
-        if (result) {
-          setTotalCount(result.total_count);
-        }
-      });
+        page_size: pageSize
+      }));
     }, 500);
-  }, [language, formFields, selectedCategories, currentPage, pageSize, dispatch]);
+  }, [language, formFields, selectedCategories, pageSize, dispatch]);
 
   const handleClearSearch = () => {
     setFormFields({ ...formFields, search_value: '' });
-    setCurrentPage(0);
+    setPageSize(8);
   };
 
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
-    setCurrentPage(0);
-  };
-
-  const handleEdit = (id) => {
-    history.push(ROUTES.QUESTIONNAIRE_EDIT.replace(':id', id));
-  };
-
-  const columns = [
-    { name: 'title', title: translate('questionnaire.title') + '/' + translate('questionnaire.description') },
-    { name: 'number_of_question', title: translate('questionnaire.number_of_question') },
-    { name: 'action', title: translate('common.action') }
-  ];
-
-  const handleDelete = (id) => {
-    setId(id);
-    setShow(true);
+    setPageSize(8);
   };
 
   const handleClose = () => {
@@ -144,7 +126,7 @@ const Questionnaire = ({ translate }) => {
 
   const handleSetSelectedCategories = (parent, checked) => {
     setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
-    setCurrentPage(0);
+    setPageSize(8);
   };
 
   const customSelectStyles = {
@@ -156,6 +138,10 @@ const Questionnaire = ({ translate }) => {
         backgroundColor: scssColors.infoLight
       }
     })
+  };
+
+  const fetchMoreData = () => {
+    setPageSize(pageSize + 8);
   };
 
   return (
@@ -224,34 +210,61 @@ const Questionnaire = ({ translate }) => {
           </Card>
         </Col>
         <Col sm={7} md={8} lg={9}>
-          <CustomTable
-            pageSize={pageSize}
-            setPageSize={setPageSize}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            totalCount={totalCount}
-            columns={columns}
-            hideSearchFilter={true}
-            rows={questionnaires.map(questionnaire => {
-              const action = (
-                <>
-                  <ViewAction onClick={() => handleView(questionnaire)} />
-                  <EditAction className="ml-1" onClick={() => handleEdit(questionnaire.id)} />
-                  <DeleteAction className="ml-1" onClick={() => handleDelete(questionnaire.id)} disabled={questionnaire.is_used} />
-                </>
-              );
-              return {
-                title: <span
-                  className="questionnaire-title"
-                  dangerouslySetInnerHTML={{
-                    __html: `<strong>${questionnaire.title}</strong><div class="description">${questionnaire.description}</div>`
-                  }}
-                />,
-                number_of_question: questionnaire.questions.length,
-                action
-              };
-            })}
-          />
+          { questionnaires.length === 0 && (
+            <div className="card h-100 d-flex justify-content-center align-items-center">
+              <big className="text-muted">{translate('common.no_data')}</big>
+            </div>
+          )}
+          { questionnaires.length > 0 && (
+            <>
+              <InfiniteScroll
+                dataLength={questionnaires.length}
+                next={fetchMoreData}
+                hasMore={true}
+                loader={loading && <h4>Loading...</h4>}
+                style={{ overflowX: 'hidden' }}
+              >
+                <Row>
+                  { questionnaires.map(questionnaire => (
+                    <Col key={questionnaire.id} md={6} lg={3}>
+                      <Card className="exercise-card shadow-sm mb-4">
+                        <div id={`questionnaire-${questionnaire.id}`} className="card-container" onClick={() => handleView(questionnaire)}>
+                          <div className="card-img bg-light">
+                            <div className="w-100 h-100 px-2 py-4 text-center questionnaire-header">
+                              <img src={'/images/questionnaire.svg'} alt='questionnaire' />
+                              <p>{translate('activity.questionnaire').toUpperCase()}</p>
+                            </div>
+                          </div>
+                          <Card.Body className="d-flex flex-column justify-content-between">
+                            <Card.Title>
+                              {
+                                questionnaire.title.length <= 50
+                                  ? <h5 className="card-title">
+                                    { questionnaire.title }
+                                  </h5>
+                                  : (
+                                    <OverlayTrigger
+                                      overlay={<Tooltip id="button-tooltip-2">{ questionnaire.title }</Tooltip>}
+                                    >
+                                      <h5 className="card-title">
+                                        { questionnaire.title }
+                                      </h5>
+                                    </OverlayTrigger>
+                                  )
+                              }
+                            </Card.Title>
+                            <Card.Text>
+                              <b>{questionnaire.questions.length}</b> {translate('activity.questionnaire.questions')}
+                            </Card.Text>
+                          </Card.Body>
+                        </div>
+                      </Card>
+                    </Col>
+                  ))}
+                </Row>
+              </InfiniteScroll>
+            </>
+          )}
         </Col>
       </Row>
       <Dialog
