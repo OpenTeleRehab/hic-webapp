@@ -5,7 +5,6 @@ import {
   Row,
   Col,
   Card,
-  Form,
   Accordion,
   OverlayTrigger,
   Tooltip
@@ -28,8 +27,6 @@ import {
 import { FaRegCheckSquare } from 'react-icons/fa';
 import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
-import Select from 'react-select';
-import scssColors from 'scss/custom.scss';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 let timer = null;
@@ -39,7 +36,6 @@ const Questionnaire = ({ translate }) => {
   const [formFields, setFormFields] = useState({
     search_value: ''
   });
-  const { languages } = useSelector(state => state.language);
   const [language, setLanguage] = useState('');
   const { loading, questionnaires, filters } = useSelector(state => state.questionnaire);
   const { profile } = useSelector((state) => state.auth);
@@ -129,17 +125,6 @@ const Questionnaire = ({ translate }) => {
     setPageSize(8);
   };
 
-  const customSelectStyles = {
-    option: (provided) => ({
-      ...provided,
-      color: 'black',
-      backgroundColor: 'white',
-      '&:hover': {
-        backgroundColor: scssColors.infoLight
-      }
-    })
-  };
-
   const fetchMoreData = () => {
     setPageSize(pageSize + 8);
   };
@@ -153,23 +138,12 @@ const Questionnaire = ({ translate }) => {
               <SearchInput
                 name="search_value"
                 value={formFields.search_value}
-                placeholder={translate('education_material.search')}
+                placeholder={translate('questionnaire.search')}
                 onChange={handleChange}
                 onClear={handleClearSearch}
               />
             </Card.Header>
             <Card.Body>
-              <Form.Group>
-                <Form.Label>{translate('common.language')}</Form.Label>
-                <Select
-                  classNamePrefix="filter"
-                  value={languages.filter(option => option.id === language)}
-                  getOptionLabel={option => option.name}
-                  options={languages}
-                  onChange={(e) => setLanguage(e.id)}
-                  styles={customSelectStyles}
-                />
-              </Form.Group>
               <Accordion>
                 {
                   categoryTreeData.map(category => (
