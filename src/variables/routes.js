@@ -1,4 +1,4 @@
-export const DASHBOARD = '/';
+export const HOME = '/';
 export const LIBRARY = '/library';
 
 export const ADMIN_DASHBOARD = '/dashboard';

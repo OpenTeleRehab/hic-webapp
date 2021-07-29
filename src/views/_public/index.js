@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useKeycloak } from '@react-keycloak/web';
 import { useHistory } from 'react-router-dom';
 import * as ROUTES from 'variables/routes';
+import { Container } from 'react-bootstrap';
 
 const Dashboard = () => {
   const { keycloak } = useKeycloak();
@@ -15,7 +16,17 @@ const Dashboard = () => {
 
   return (
     <>
-      Public Dashboard
+      <section className="section__wrapper section__highlight">
+        <Container fluid>
+          <h2>Access hundreds of rehabilitation resources...</h2>
+        </Container>
+      </section>
+
+      <section className="section__wrapper">
+        <Container fluid>
+          <h2>Our Partners</h2>
+        </Container>
+      </section>
     </>
   );
 };

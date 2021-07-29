@@ -5,7 +5,7 @@ import { Spinner } from 'react-bootstrap';
 import PageLayout from 'layout/layout';
 import PrivateRoute from 'routes/privateRoute';
 
-import PublicDashboardPage from 'views/_public/Dashboard';
+import PublicHomePage from 'views/_public';
 import LibraryPage from 'views/_public/Library';
 
 import DashboardPage from 'views/Dashboard';
@@ -29,14 +29,14 @@ const PUBLIC = 'public';
 
 const publicRoutes = [
   {
-    title: 'dashboard',
-    path: ROUTES.DASHBOARD,
-    component: PublicDashboardPage,
+    title: 'home',
+    path: ROUTES.HOME,
+    component: PublicHomePage,
     exact: true,
     type: PUBLIC
   },
   {
-    title: 'dashboard',
+    title: 'library',
     path: ROUTES.LIBRARY,
     component: LibraryPage,
     exact: true,

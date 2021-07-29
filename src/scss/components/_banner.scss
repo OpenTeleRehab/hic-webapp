@@ -1,0 +1,70 @@
+.header-banner {
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	color: $white;
+	padding: toRem(40) 0;
+	position: relative;
+
+	&:before {
+		content: '';
+		background: linear-gradient(180deg, rgba(10, 32, 4, 0) -0.09%, rgba(0, 0, 0, 0.41) 65.53%);
+		transform: rotate(-180deg);
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+	}
+
+	&__wrapper {
+		text-align: center;
+		position: relative;
+		z-index: 1;
+
+		h1 {
+			font-size: toRem(28);
+			line-height: normal;
+			font-weight: 700;
+			margin: 0 0 toRem(15) 0;
+		}
+
+		.lead {
+			font-size: toRem(18);
+		}
+	}
+
+	.search-form {
+		max-width: toRem(620);
+		margin: toRem(40) auto 0 auto;
+
+		.search {
+			&-field {
+				padding-left: toRem(44);
+			}
+
+			&-button {
+				color: $dark;
+
+				&:hover {
+					color: $primary;
+				}
+			}
+		}
+	}
+}
+
+@include media-breakpoint-up(lg) {
+	.header-banner {
+		padding: toRem(80) 0;
+
+		&__wrapper {
+			max-width: 80%;
+
+			h1 {
+				font-size: toRem(42);
+				margin: 0 0 toRem(32) 0;
+			}
+		}
+	}
+}
