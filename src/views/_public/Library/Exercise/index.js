@@ -11,17 +11,11 @@ import {
   Button
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-
-import Dialog from 'components/Dialog';
-import { EditAction, DeleteAction } from 'components/ActionIcons';
 import {
-  deleteExercise, downloadExercises,
+  downloadExercises,
   getExercises
 } from 'store/exercise/actions';
 import SearchInput from 'components/Form/SearchInput';
-import * as ROUTES from 'variables/routes';
-import ViewExercise from './view';
 import { getCategoryTreeData } from 'store/category/actions';
 import { CATEGORY_TYPES } from 'variables/category';
 import CheckboxTree from 'react-checkbox-tree';
@@ -39,16 +33,10 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 let timer = null;
 const Exercise = ({ translate }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const { loading, exercises, filters } = useSelector(state => state.exercise);
   const { profile } = useSelector((state) => state.auth);
   const { categoryTreeData } = useSelector((state) => state.category);
-  const [id, setId] = useState(null);
-  const [showView, setShowView] = useState(false);
-
-  const [deletedId, setDeletedId] = useState(null);
-  const [show, setShow] = useState(false);
   const [pageSize, setPageSize] = useState(8);
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
@@ -106,38 +94,6 @@ const Exercise = ({ translate }) => {
   const handleClearSearch = () => {
     setFormFields({ ...formFields, search_value: '' });
     setPageSize(8);
-  };
-
-  const handleDelete = (id) => {
-    setDeletedId(id);
-    setShow(true);
-  };
-
-  const handleClose = () => {
-    setDeletedId(null);
-    setShow(false);
-  };
-
-  const handleConfirm = () => {
-    dispatch(deleteExercise(deletedId)).then(result => {
-      if (result) {
-        handleClose();
-      }
-    });
-  };
-
-  const handleEdit = (id) => {
-    history.push(ROUTES.EXERCISE_EDIT.replace(':id', id));
-  };
-
-  const handleView = (id) => {
-    setId(id);
-    setShowView(true);
-  };
-
-  const handleViewClose = () => {
-    setId('');
-    setShowView(false);
   };
 
   const handleSetSelectedCategories = (parent, checked) => {
@@ -235,13 +191,7 @@ const Exercise = ({ translate }) => {
                 <Row>
                   { exercises.map(exercise => (
                     <Col key={exercise.id} md={6} lg={3}>
-                      <div className="position-absolute delete-btn">
-                        <DeleteAction disabled={exercise.is_used} onClick={() => handleDelete(exercise.id)} />
-                      </div>
-                      <div className="position-absolute edit-btn">
-                        <EditAction onClick={() => handleEdit(exercise.id)} />
-                      </div>
-                      <Card className="exercise-card shadow-sm mb-4" onClick={() => handleView(exercise.id)}>
+                      <Card className="exercise-card shadow-sm mb-4">
                         <div className="card-img bg-light">
                           {
                             exercise.files.length > 0 && (
@@ -283,6 +233,9 @@ const Exercise = ({ translate }) => {
                             </Card.Text>
                           )}
                         </Card.Body>
+                        <Card.Footer>
+                          <Button variant="link">{translate('exercise.learn_more')}</Button>
+                        </Card.Footer>
                       </Card>
                     </Col>
                   ))}
@@ -292,17 +245,6 @@ const Exercise = ({ translate }) => {
           )}
         </Col>
       </Row>
-      {showView && <ViewExercise showView={showView} handleViewClose={handleViewClose} id={id} />}
-      <Dialog
-        show={show}
-        title={translate('exercise.delete_confirmation_title')}
-        cancelLabel={translate('common.no')}
-        onCancel={handleClose}
-        confirmLabel={translate('common.yes')}
-        onConfirm={handleConfirm}
-      >
-        <p>{translate('common.delete_confirmation_message')}</p>
-      </Dialog>
     </>
   );
 };
