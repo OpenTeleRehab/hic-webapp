@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { FaGlobe } from 'react-icons/fa';
 import { updateUserProfile } from 'store/auth/actions';
-import { USER_GROUPS } from 'variables/user';
 import Select from 'react-select';
 import scssColors from '../../../scss/custom.scss';
 import settings from '../../../settings';
@@ -17,9 +16,7 @@ const EdiInformation = ({ editId }) => {
   const translate = getTranslate(localize);
   const history = useHistory();
   const { profile } = useSelector((state) => state.auth);
-  const countries = useSelector(state => state.country.countries);
   const languages = useSelector(state => state.language.languages);
-  const clinics = useSelector(state => state.clinic.clinics);
 
   const [errorLastName, setErrorLastName] = useState(false);
   const [errorFirstName, setErrorFirstName] = useState(false);
@@ -192,40 +189,6 @@ const EdiInformation = ({ editId }) => {
           />
         </Form.Group>
       </Form.Row>
-
-      { profile.type !== USER_GROUPS.GLOBAL_ADMIN && (
-        <Form.Row>
-          <Form.Group className="col-sm-4 md-4" controlId="formCountry">
-            <Form.Label>{translate('common.country')}</Form.Label>
-            <Select
-              isDisabled={true}
-              placeholder={translate('placeholder.country')}
-              classNamePrefix="filter"
-              value={countries.filter(option => option.id === parseInt(formFields.country_id))}
-              getOptionLabel={option => option.name}
-              options={countries}
-              styles={customSelectStyles}
-            />
-          </Form.Group>
-        </Form.Row>
-      )}
-
-      {profile.type === USER_GROUPS.CLINIC_ADMIN && (
-        <Form.Row>
-          <Form.Group className="col-sm-4 md-4" controlId="formClinic">
-            <Form.Label>{translate('common.clinic')}</Form.Label>
-            <Select
-              isDisabled={true}
-              placeholder={translate('placeholder.clinic')}
-              classNamePrefix="filter"
-              value={countries.filter(option => option.id === parseInt(formFields.clinic_id))}
-              getOptionLabel={option => option.name}
-              options={clinics}
-              styles={customSelectStyles}
-            />
-          </Form.Group>
-        </Form.Row>
-      )}
 
       <Form.Row>
         <Button

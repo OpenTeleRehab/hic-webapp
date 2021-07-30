@@ -20,8 +20,7 @@ const sidebarNavItems = [
     label: 'dashboard',
     to: ROUTES.ADMIN_DASHBOARD,
     icon: <BsHouse />,
-    exact: true,
-    roles: [USER_ROLES.MANAGE_RESOURCE]
+    exact: true
   },
   {
     label: 'resources',

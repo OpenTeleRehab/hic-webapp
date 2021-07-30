@@ -23,7 +23,7 @@ import TermConditionPage from 'views/TermCondition';
 import PrivacyPolicyPage from 'views/PrivacyPolicy';
 
 import * as ROUTES from 'variables/routes';
-import { USER_ROLES, SETTING_ROLES } from 'variables/user';
+import { USER_ROLES } from 'variables/user';
 const PRIVATE = 'private';
 const PUBLIC = 'public';
 
@@ -124,12 +124,12 @@ const routes = [
     roles: [USER_ROLES.SETUP_CATEGORY]
   },
   {
-    title: 'setting',
-    path: ROUTES.SETTING,
+    title: 'translation',
+    path: ROUTES.ADMIN_TRANSLATIONS,
     component: Setting,
     exact: true,
     type: PRIVATE,
-    roles: SETTING_ROLES
+    roles: [USER_ROLES.MANAGE_TRANSLATION]
   },
   {
     title: 'profile',
