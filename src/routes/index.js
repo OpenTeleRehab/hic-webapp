@@ -14,7 +14,6 @@ import NotFoundPage from 'views/NotFound';
 import AdminPage from 'views/Admin';
 import CategoryPage from 'views/Category';
 import Setting from 'views/Setting';
-import ServiceSetupPage from 'views/ServiceSetup';
 import CreateExercise from 'views/ServiceSetup/Exercise/create';
 import CreateEducationMaterial from 'views/ServiceSetup/EducationMaterial/create';
 import CreateQuestionnaire from 'views/ServiceSetup/Questionnaire/create';
