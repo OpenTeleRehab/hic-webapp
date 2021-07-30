@@ -10,8 +10,9 @@ import SpinnerOverlay from 'components/SpinnerOverlay';
 import Footer from './footer';
 import Banner from '../components/Banner/banner';
 import * as ROUTES from '../variables/routes';
+import { Container } from 'react-bootstrap';
 
-const Layout = ({ component: Component, title }) => {
+const Layout = ({ component: Component, title, defaultTemplate }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const location = useLocation();
@@ -37,9 +38,18 @@ const Layout = ({ component: Component, title }) => {
         <Navigation translate={translate} />
         {showBanner && <Banner bannerImagePath={bannerImagePath} isHome={isHome} />}
       </header>
-      <main className="mt-3 mb-3">
-        <Component translate={translate} />
-      </main>
+
+      {defaultTemplate ? (
+        <main className="main">
+          <Component translate={translate} />
+        </main>
+      ) : (
+        <main className="main pt-4 pb-4 bg-white">
+          <Container fluid>
+            <Component translate={translate} />
+          </Container>
+        </main>
+      )}
       <Footer />
 
       <ToastNotification />
@@ -50,7 +60,8 @@ const Layout = ({ component: Component, title }) => {
 
 Layout.propTypes = {
   component: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
-  title: PropTypes.string
+  title: PropTypes.string,
+  defaultTemplate: PropTypes.bool
 };
 
 export default Layout;

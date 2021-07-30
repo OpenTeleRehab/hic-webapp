@@ -16,13 +16,13 @@ const Dashboard = () => {
 
   return (
     <>
-      <section className="section__wrapper section__highlight">
+      <section className="section__wrapper">
         <Container fluid>
           <h2>Access hundreds of rehabilitation resources...</h2>
         </Container>
       </section>
 
-      <section className="section__wrapper">
+      <section className="section__wrapper bg-white">
         <Container fluid>
           <h2>Our Partners</h2>
         </Container>

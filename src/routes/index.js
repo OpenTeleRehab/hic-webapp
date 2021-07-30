@@ -2,7 +2,8 @@ import React, { Suspense } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap';
 
-import PageLayout from 'layout/layout';
+import DefaultLayout from 'layout/layout';
+import AdminLayout from 'layout/Admin/layout';
 import PrivateRoute from 'routes/privateRoute';
 
 import PublicHomePage from 'views/_public';
@@ -33,14 +34,16 @@ const publicRoutes = [
     path: ROUTES.HOME,
     component: PublicHomePage,
     exact: true,
-    type: PUBLIC
+    type: PUBLIC,
+    defaultTemplate: true
   },
   {
     title: 'library',
     path: ROUTES.LIBRARY,
     component: LibraryPage,
     exact: true,
-    type: PUBLIC
+    type: PUBLIC,
+    defaultTemplate: false
   }
 ];
 
@@ -64,14 +67,6 @@ const routes = [
       USER_ROLES.MANAGE_COUNTRY_ADMIN,
       USER_ROLES.MANAGE_CLINIC_ADMIN
     ]
-  },
-  {
-    title: 'service_setup',
-    path: ROUTES.SERVICE_SETUP,
-    component: ServiceSetupPage,
-    exact: true,
-    type: PRIVATE,
-    roles: [USER_ROLES.SETUP_EXERCISE]
   },
   {
     title: 'exercise.create',
@@ -169,19 +164,19 @@ const routes = [
     title: 'not_found_page',
     path: '*',
     component: NotFoundPage,
-    type: PUBLIC
+    type: PRIVATE
   }
 ];
 
 const RouteSwitch = () => {
-  const routeComponents = routes.map(({ path, component, exact, type, title, roles }, key) => {
+  const routeComponents = routes.map(({ path, component, exact, type, title, roles, defaultTemplate }, key) => {
     return type === PUBLIC ? (
       <Route exact={!!exact} path={path} key={key}>
-        <PageLayout component={component} title={title} />
+        <DefaultLayout component={component} title={title} defaultTemplate={defaultTemplate} />
       </Route>
     ) : (
       <PrivateRoute exact={!!exact} path={path} key={key} roles={roles}>
-        <PageLayout component={component} title={title} />
+        <AdminLayout component={component} title={title} />
       </PrivateRoute>
     );
   });

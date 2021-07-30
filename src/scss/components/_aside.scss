@@ -1,0 +1,52 @@
+.aside {
+	padding-left: 0;
+	padding-right: 0;
+	overflow-y: auto;
+	width: toRem(265);
+
+	.navbar-nav {
+		width: 100%;
+
+		.nav-link {
+			color: $body-color;
+			padding-left: toRem(15);
+			padding-right: toRem(15);
+
+			&:hover,
+			&:focus,
+			&:active,
+			&.active {
+				background-color: $primary;
+				color: $white;
+			}
+
+			svg {
+				margin: 0 toRem(6) 0 0;
+			}
+		}
+
+		.dropdown {
+			&-menu {
+				border: 0 none;
+				padding: 0 0 0 toRem(15);
+				position: static;
+			}
+
+			&-item {
+				color: lighten($body-color, 20%);
+				padding: toRem(8) toRem(15);
+
+				&:hover,
+				&:focus,
+				&:active {
+					background-color: $blue-10;
+					color: lighten($body-color, 20%);
+				}
+			}
+		}
+	}
+}
+
+@include media-breakpoint-up(lg) {
+
+}

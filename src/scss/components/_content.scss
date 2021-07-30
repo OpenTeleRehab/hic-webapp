@@ -1,0 +1,18 @@
+.main {
+	background-color: $blue-10;
+
+	&-content {
+		padding: toRem(20);
+		height: calc(100vh - #{toRem(101)});
+		overflow-y: auto;
+		width: calc(100% - #{toRem(265)});
+	}
+}
+
+@include media-breakpoint-up(xl) {
+	.main {
+		&-content {
+			height: calc(100vh - #{toRem(111)});
+		}
+	}
+}

@@ -3,8 +3,14 @@ export const LIBRARY = '/library';
 export const LIBRARY_EDUCATION = LIBRARY + '#education';
 export const LIBRARY_QUESTIONNAIRE = LIBRARY + '#questionnaire';
 
-export const ADMIN_DASHBOARD = '/dashboard';
 export const ADMIN = '/admin';
+export const ADMIN_DASHBOARD = '/admin';
+export const ADMIN_RESOURCES = '/admin/resources';
+export const ADMIN_CATEGORIES = '/admin/categories';
+export const ADMIN_TRANSLATIONS = '/admin/translations';
+export const ADMIN_USERS = '/admin/users';
+export const ADMIN_STATIC_PAGES = '/admin/static-pages';
+
 export const SERVICE_SETUP = '/service-setup';
 export const SERVICE_SETUP_EDUCATION = SERVICE_SETUP + '#education';
 export const SERVICE_SETUP_QUESTIONNAIRE = SERVICE_SETUP + '#questionnaire';
