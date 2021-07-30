@@ -1,6 +1,6 @@
 .exercise-card {
 	overflow: hidden;
-	height: 325px;
+	height: 350px;
 	&:hover {
 		cursor: pointer;
 	}
@@ -22,6 +22,18 @@
 
 	.action {
 		z-index: 1;
+	}
+
+	.card-footer {
+		background-color: $white;
+		padding-top: toRem(4);
+		padding-bottom: toRem(8);
+		padding-left: toRem(10);
+		border: 0;
+	}
+
+	.card-text {
+		margin-bottom: toRem(-25);
 	}
 }
 
