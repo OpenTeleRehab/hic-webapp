@@ -10,6 +10,8 @@ export const ADMIN_CATEGORIES = '/admin/categories';
 export const ADMIN_TRANSLATIONS = '/admin/translations';
 export const ADMIN_USERS = '/admin/users';
 export const ADMIN_STATIC_PAGES = '/admin/static-pages';
+export const ADMIN_CATEGORY_EDUCATION = ADMIN_CATEGORIES + '#education';
+export const ADMIN_CATEGORY_QUESTIONNAIRE = ADMIN_CATEGORIES + '#questionnaire';
 
 export const SERVICE_SETUP = '/service-setup';
 export const SERVICE_SETUP_EDUCATION = SERVICE_SETUP + '#education';
@@ -22,19 +24,12 @@ export const EDUCATION_MATERIAL_EDIT = SERVICE_SETUP + '/education_material/edit
 export const QUESTIONNAIRE_CREATE = SERVICE_SETUP + '/questionnaire/create';
 export const QUESTIONNAIRE_EDIT = SERVICE_SETUP + '/questionnaire/edit/:id';
 
-export const CATEGORY = '/category';
-export const CATEGORY_EDUCATION = CATEGORY + '#education';
-export const CATEGORY_QUESTIONNAIRE = CATEGORY + '#questionnaire';
-
 export const SETTING = '/setting';
 export const SETTING_TRANSLATIONS = SETTING + '#translation';
 export const SETTING_TERM_AND_CONDITION = SETTING + '#term_and_condition';
 export const SETTING_PRIVACY_POLICY = SETTING + '#privacy_policy';
-export const SETTING_SYSTEM_LIMIT = SETTING + '#system_limit';
 export const SETTING_CLINIC = SETTING + '#clinic';
-export const SETTING_PROFESSION = SETTING + '#profession';
 export const SETTING_STATIC_PAGE = SETTING + '#static_page';
-export const SETTING_GUIDANCE_PAGE = SETTING + '#guidance_page';
 export const SETTING_LANGUAGE = SETTING + '#language';
 export const SETTING_DISEASE = SETTING + '#disease';
 
