@@ -1,7 +1,6 @@
 export const USER_GROUPS = {
-  GLOBAL_ADMIN: 'global_admin',
-  COUNTRY_ADMIN: 'country_admin',
-  CLINIC_ADMIN: 'clinic_admin'
+  ADMIN: 'admin',
+  MODERATOR: 'moderator'
 };
 
 export const USER_ROLES = {
@@ -10,6 +9,10 @@ export const USER_ROLES = {
   MANAGE_CLINIC_ADMIN: 'manage_clinic_admin',
   MANAGE_THERAPIST: 'manage_therapist',
   MANAGE_PATIENT: 'manage_patient',
+  MANAGE_RESOURCE: 'manage_resource',
+  MANAGE_TRANSLATION: 'manage_translation',
+  MANAGE_STATIC_PAGE: 'manage_static_page',
+  MANAGE_USER: 'manage_user',
   SETUP_CATEGORY: 'setup_category',
   SETUP_EXERCISE: 'setup_exercise',
   SETUP_EDUCATIONAL_MATERIAL: 'setup_educational_material',
@@ -29,14 +32,12 @@ export const USER_ROLES = {
   MESSAGE_CALL_BETWEEN_THERAPIST_PATIENT: 'message_call_between_therapist_patient',
   VIEW_EDIT_OWN_PROFILE: 'view_edit_own_profile',
   MANAGE_COUNTRY: 'manage_country',
-  MANAGE_TRANSLATION: 'manage_translation',
   MANAGE_SYSTEM_LIMIT: 'manage_system_limit',
   MANAGE_TERM_CONDITION: 'manage_term_condition',
   MANAGE_PRIVACY_POLICY: 'manage_privacy_policy',
   MANAGE_CLINIC: 'manage_clinic',
   MANAGE_PROFESSION: 'manage_profession',
   MANAGE_LANGUAGE: 'manage_language',
-  MANAGE_STATIC_PAGE: 'manage_static_page',
   MANAGE_GUIDANCE_PAGE: 'manage_guidance_page',
   MANAGE_DISEASE: 'manage_disease'
 };

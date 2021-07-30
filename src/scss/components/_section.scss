@@ -3,10 +3,6 @@
 		padding-bottom: toRem(30);
 		padding-top: toRem(30);
 	}
-
-	&__highlight {
-		background-color: $blue-10;
-	}
 }
 
 @include media-breakpoint-up(lg) {

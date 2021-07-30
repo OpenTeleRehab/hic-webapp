@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Nav, Container } from 'react-bootstrap';
+import { Nav } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -27,7 +27,7 @@ const Library = ({ translate }) => {
   }, [hash]);
 
   return (
-    <Container fluid>
+    <>
       <Nav variant="tabs" activeKey={view} className="mb-3">
         <Nav.Item>
           <Nav.Link as={Link} to={ROUTES.LIBRARY} eventKey={VIEW_EXERCISE}>
@@ -49,7 +49,7 @@ const Library = ({ translate }) => {
       { view === VIEW_EXERCISE && <Exercise /> }
       { view === VIEW_EDUCATION && <EducationMaterial /> }
       { view === VIEW_QUESTIONNAIRE && <Questionnaire /> }
-    </Container>
+    </>
   );
 };
 

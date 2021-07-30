@@ -7,8 +7,6 @@ import Dialog from 'components/Dialog';
 import { useKeycloak } from '@react-keycloak/web';
 import { useSelector } from 'react-redux';
 
-import { USER_ROLES, SETTING_ROLES } from 'variables/user';
-
 const publicNavItems = [
   {
     label: 'home',
@@ -22,42 +20,7 @@ const publicNavItems = [
   }
 ];
 
-const navItems = [
-  {
-    label: 'dashboard',
-    to: ROUTES.ADMIN_DASHBOARD,
-    exact: true,
-    roles: [USER_ROLES.MANAGE_GLOBAL_ADMIN]
-  },
-  {
-    label: 'service_setup',
-    to: ROUTES.SERVICE_SETUP,
-    exact: false,
-    roles: [USER_ROLES.MANAGE_GLOBAL_ADMIN]
-  },
-  {
-    label: 'category',
-    to: ROUTES.CATEGORY,
-    exact: true,
-    roles: [USER_ROLES.SETUP_CATEGORY]
-  },
-  {
-    label: 'admin',
-    to: ROUTES.ADMIN,
-    exact: true,
-    roles: [
-      USER_ROLES.MANAGE_GLOBAL_ADMIN,
-      USER_ROLES.MANAGE_COUNTRY_ADMIN,
-      USER_ROLES.MANAGE_CLINIC_ADMIN
-    ]
-  },
-  {
-    label: 'setting',
-    to: ROUTES.SETTING,
-    exact: true,
-    roles: SETTING_ROLES
-  }
-];
+const navItems = [];
 
 const Navigation = ({ translate }) => {
   const { keycloak } = useKeycloak();
@@ -70,9 +33,6 @@ const Navigation = ({ translate }) => {
     if (keycloak.authenticated) {
       keycloak.logout();
     }
-  };
-  const handleShowRole = (role) => {
-    return translate(`common.${role}`);
   };
 
   return (
@@ -135,25 +95,16 @@ const Navigation = ({ translate }) => {
               <Dropdown.Toggle variant="link" id="dropdown-basic">
                 {translate('common.welcome')} {profile.last_name} {profile.first_name}
                 <br/>
-                {handleShowRole(profile.type)}
+                {profile.email}
               </Dropdown.Toggle>
 
               <Dropdown.Menu
                 alignRight={true}
               >
                 <Dropdown.Item as={Link} to={ROUTES.PROFILE}>
-                  {translate('profile.setting')}
+                  {translate('common.profile.update')}
                 </Dropdown.Item>
-                <Dropdown.Item as={Link} to={ROUTES.FAQ}>
-                  {translate('profile.faq')}
-                </Dropdown.Item>
-                <Dropdown.Item as={Link} to={ROUTES.TC}>
-                  {translate('profile.tc')}
-                </Dropdown.Item>
-                <Dropdown.Item as={Link} to={ROUTES.PP}>
-                  {translate('profile.pp')}
-                </Dropdown.Item>
-                <Dropdown.Item onClick={handleShow}>{translate('logout')}</Dropdown.Item>
+                <Dropdown.Item onClick={handleShow}>{translate('common.logout')}</Dropdown.Item>
                 <Dialog
                   show={show}
                   title={translate('logout.confirmation')}
