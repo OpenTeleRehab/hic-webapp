@@ -12,7 +12,7 @@ import Select from 'react-select';
 import scssColors from '../../../scss/custom.scss';
 
 let timer = null;
-const Translation = ({ translate }) => {
+const Label = ({ translate }) => {
   const dispatch = useDispatch();
   const { localizations, loading } = useSelector(state => state.localization);
   const languages = useSelector(state => state.language.languages);
@@ -118,8 +118,8 @@ const Translation = ({ translate }) => {
   );
 };
 
-Translation.propTypes = {
+Label.propTypes = {
   translate: PropTypes.func
 };
 
-export default withLocalize(Translation);
+export default withLocalize(Label);

@@ -13,7 +13,8 @@ import DashboardPage from 'views/Dashboard';
 import NotFoundPage from 'views/NotFound';
 import AdminPage from 'views/Admin';
 import CategoryPage from 'views/Category';
-import Setting from 'views/Setting';
+import Translation from 'views/Translation';
+import Language from 'views/Translation/Language';
 import CreateExercise from 'views/ServiceSetup/Exercise/create';
 import CreateEducationMaterial from 'views/ServiceSetup/EducationMaterial/create';
 import CreateQuestionnaire from 'views/ServiceSetup/Questionnaire/create';
@@ -126,7 +127,15 @@ const routes = [
   {
     title: 'translation',
     path: ROUTES.ADMIN_TRANSLATIONS,
-    component: Setting,
+    component: Translation,
+    exact: true,
+    type: PRIVATE,
+    roles: [USER_ROLES.MANAGE_TRANSLATION]
+  },
+  {
+    title: 'language',
+    path: ROUTES.ADMIN_TRANSLATIONS_LANGUAGE,
+    component: Language,
     exact: true,
     type: PRIVATE,
     roles: [USER_ROLES.MANAGE_TRANSLATION]

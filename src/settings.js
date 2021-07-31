@@ -13,9 +13,7 @@ const settings = {
   },
   platforms: {
     options: [
-      { text: 'Admin portal', value: 'admin_portal' },
-      { text: 'Therapist portal', value: 'therapist_portal' },
-      { text: 'Patient app', value: 'patient_app' }
+      { text: 'Admin portal', value: 'admin_portal' }
     ]
   },
   contentTypes: {
