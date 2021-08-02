@@ -55,12 +55,6 @@
 	top: 0;
 }
 
-.remove-btn-wrapper {
-	right: -10px;
-	top: -10px;
-	bottom: 0;
-}
-
 .delete-btn {
 	bottom: 27px;
 	right: 20px;
@@ -122,18 +116,15 @@
 	margin-bottom: 120px;
 }
 
-.sticky-btn {
+.sticky-bottom {
+	border-top: 1px solid $light-grey;
+	background-color: $white;
+	padding: toRem(10) toRem(15);
 	position: fixed;
 	bottom: 0;
-	background-color: $white;
+	left: 0;
 	width: 100%;
-	border-top: 1px solid $light-grey;
-	margin-left: -13px;
-}
-
-.questionnaire-save-cancel-wrapper {
-	margin-right: 8%;
-	display: flex;
+	z-index: 999;
 }
 
 .questionnaire-header {

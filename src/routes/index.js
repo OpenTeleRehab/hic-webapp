@@ -8,6 +8,7 @@ import PrivateRoute from 'routes/privateRoute';
 
 import PublicHomePage from 'views/_public';
 import LibraryPage from 'views/_public/Library';
+import ContributePage from 'views/_public/Contribute';
 
 import DashboardPage from 'views/Dashboard';
 import NotFoundPage from 'views/NotFound';
@@ -40,6 +41,14 @@ const publicRoutes = [
     title: 'library',
     path: ROUTES.LIBRARY,
     component: LibraryPage,
+    exact: true,
+    type: PUBLIC,
+    defaultTemplate: false
+  },
+  {
+    title: 'contribute',
+    path: ROUTES.CONTRIBUTE,
+    component: ContributePage,
     exact: true,
     type: PUBLIC,
     defaultTemplate: false
