@@ -2,6 +2,7 @@ export const HOME = '/';
 export const LIBRARY = '/library';
 export const LIBRARY_EDUCATION = LIBRARY + '#education';
 export const LIBRARY_QUESTIONNAIRE = LIBRARY + '#questionnaire';
+export const LIBRARY_EXERCISE_DETAIL = LIBRARY + '/exercise/detail/:id';
 
 export const CONTRIBUTE = '/contribute';
 

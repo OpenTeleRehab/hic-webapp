@@ -9,6 +9,7 @@ import PrivateRoute from 'routes/privateRoute';
 import PublicHomePage from 'views/_public';
 import LibraryPage from 'views/_public/Library';
 import ContributePage from 'views/_public/Contribute';
+import ExerciseDetail from 'views/_public/Library/Exercise/detail';
 
 import DashboardPage from 'views/Dashboard';
 import NotFoundPage from 'views/NotFound';
@@ -49,6 +50,14 @@ const publicRoutes = [
     title: 'contribute',
     path: ROUTES.CONTRIBUTE,
     component: ContributePage,
+    exact: true,
+    type: PUBLIC,
+    defaultTemplate: false
+  },
+  {
+    title: 'exercise.detail',
+    path: ROUTES.LIBRARY_EXERCISE_DETAIL,
+    component: ExerciseDetail,
     exact: true,
     type: PUBLIC,
     defaultTemplate: false
