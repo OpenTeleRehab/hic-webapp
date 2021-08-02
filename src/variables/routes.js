@@ -10,6 +10,7 @@ export const ADMIN_DASHBOARD = '/admin';
 export const ADMIN_RESOURCES = '/admin/resources';
 export const ADMIN_CATEGORIES = '/admin/categories';
 export const ADMIN_TRANSLATIONS = '/admin/translations';
+export const ADMIN_TRANSLATIONS_LANGUAGE = ADMIN_TRANSLATIONS + '#language';
 export const ADMIN_USERS = '/admin/users';
 export const ADMIN_STATIC_PAGES = '/admin/static-pages';
 export const ADMIN_CATEGORY_EDUCATION = ADMIN_CATEGORIES + '#education';

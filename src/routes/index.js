@@ -14,7 +14,8 @@ import DashboardPage from 'views/Dashboard';
 import NotFoundPage from 'views/NotFound';
 import AdminPage from 'views/Admin';
 import CategoryPage from 'views/Category';
-import Setting from 'views/Setting';
+import Translation from 'views/Translation';
+import Language from 'views/Translation/Language';
 import CreateExercise from 'views/ServiceSetup/Exercise/create';
 import CreateEducationMaterial from 'views/ServiceSetup/EducationMaterial/create';
 import CreateQuestionnaire from 'views/ServiceSetup/Questionnaire/create';
@@ -24,7 +25,7 @@ import TermConditionPage from 'views/TermCondition';
 import PrivacyPolicyPage from 'views/PrivacyPolicy';
 
 import * as ROUTES from 'variables/routes';
-import { USER_ROLES, SETTING_ROLES } from 'variables/user';
+import { USER_ROLES } from 'variables/user';
 const PRIVATE = 'private';
 const PUBLIC = 'public';
 
@@ -133,12 +134,20 @@ const routes = [
     roles: [USER_ROLES.SETUP_CATEGORY]
   },
   {
-    title: 'setting',
-    path: ROUTES.SETTING,
-    component: Setting,
+    title: 'translation',
+    path: ROUTES.ADMIN_TRANSLATIONS,
+    component: Translation,
     exact: true,
     type: PRIVATE,
-    roles: SETTING_ROLES
+    roles: [USER_ROLES.MANAGE_TRANSLATION]
+  },
+  {
+    title: 'language',
+    path: ROUTES.ADMIN_TRANSLATIONS_LANGUAGE,
+    component: Language,
+    exact: true,
+    type: PRIVATE,
+    roles: [USER_ROLES.MANAGE_TRANSLATION]
   },
   {
     title: 'profile',
