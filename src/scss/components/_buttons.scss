@@ -20,3 +20,12 @@
 		border-radius: 20px;
 	}
 }
+
+.btn-remove {
+	background-color: $white;
+	border: 0 none;
+	border-radius: 50%;
+	padding: 0;
+	top: toRem(-10);
+	right: toRem(-10);
+}

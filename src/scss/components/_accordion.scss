@@ -1,0 +1,23 @@
+.accordion {
+	.card {
+		&-header {
+			button {
+				color: $body-color;
+				padding: 0;
+				text-decoration: none;
+				width: 100%;
+
+				&:hover,
+				&:focus,
+				&:active {
+					color: $primary;
+					box-shadow: none;
+				}
+			}
+		}
+	}
+}
+
+@include media-breakpoint-up(lg) {
+
+}

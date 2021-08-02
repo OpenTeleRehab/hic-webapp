@@ -3,6 +3,8 @@ export const LIBRARY = '/library';
 export const LIBRARY_EDUCATION = LIBRARY + '#education';
 export const LIBRARY_QUESTIONNAIRE = LIBRARY + '#questionnaire';
 
+export const CONTRIBUTE = '/contribute';
+
 export const ADMIN = '/admin';
 export const ADMIN_DASHBOARD = '/admin';
 export const ADMIN_RESOURCES = '/admin/resources';

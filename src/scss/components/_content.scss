@@ -7,6 +7,31 @@
 		overflow-y: auto;
 		width: calc(100% - #{toRem(265)});
 	}
+
+	&-entry {
+		&__header {
+			h1 {
+				color: $primary;
+				font-size: toRem(28);
+				line-height: normal;
+				font-weight: 700;
+				margin: 0 0 toRem(15) 0;
+			}
+		}
+	}
+}
+
+@include media-breakpoint-up(lg) {
+	.main {
+		&-entry {
+			&__header {
+				h1 {
+					font-size: toRem(42);
+					margin: 0 0 toRem(32) 0;
+				}
+			}
+		}
+	}
 }
 
 @include media-breakpoint-up(xl) {

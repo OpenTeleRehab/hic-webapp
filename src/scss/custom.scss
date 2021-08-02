@@ -67,8 +67,4 @@ $zindex-toast: 1080;
 // Font size
 $h1-font-size: 1.5rem;
 $headings-line-height: 1.5rem;
-$headings-font-weight: 700 !default;
-
-
-/* import bootstrap to set changes */
-@import '~bootstrap/scss/bootstrap';
+$headings-font-weight: 700;
