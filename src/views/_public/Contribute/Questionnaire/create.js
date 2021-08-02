@@ -344,9 +344,8 @@ const CreateQuestionnaire = ({ translate }) => {
               </Button>
               <Button
                 className="ml-2"
-                variant="outline-dark"
-                as={Link}
-                to={ROUTES.SERVICE_SETUP_QUESTIONNAIRE}
+                variant="outline-primary"
+                onClick={() => history.goBack()}
                 disabled={isLoading}
               >
                 {translate('common.cancel')}

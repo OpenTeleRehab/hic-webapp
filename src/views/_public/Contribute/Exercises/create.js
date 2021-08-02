@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import _ from 'lodash';
 import {
   Accordion,
   Button,
@@ -9,14 +10,36 @@ import {
   Row,
   Tooltip
 } from 'react-bootstrap';
-import { BsPlusCircle, BsUpload, BsX, BsXCircle } from 'react-icons/bs';
+import {
+  BsCaretDownFill,
+  BsCaretRightFill,
+  BsDashSquare,
+  BsPlusCircle,
+  BsSquare,
+  BsUpload,
+  BsX,
+  BsXCircle
+} from 'react-icons/bs';
+import { FaRegCheckSquare } from 'react-icons/fa';
 import scssColors from '../../../../scss/custom.scss';
 import { ContextAwareToggle } from '../../../../components/Accordion/ContextAwareToggle';
-import * as ROUTES from '../../../../variables/routes';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import {
+  addMoreExercise,
+  deleteExercise
+} from '../../../../store/contribute/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import CheckboxTree from 'react-checkbox-tree';
+import Dialog from '../../../../components/Dialog';
+import { getCategoryTreeData } from '../../../../store/category/actions';
+import { CATEGORY_TYPES } from '../../../../variables/category';
 
 const CreateExercise = ({ translate, showReviewModal }) => {
+  const dispatch = useDispatch();
+  const { categoryTreeData } = useSelector((state) => state.category);
+  const { exercises } = useSelector(state => state.contribute);
+  const [getExercises, setGetExercises] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [mediaUploads, setMediaUploads] = useState([]);
   const [additionalFields, setAdditionalFields] = useState([]);
@@ -24,26 +47,39 @@ const CreateExercise = ({ translate, showReviewModal }) => {
     title: '',
     show_sets_reps: false,
     sets: '',
-    reps: ''
+    reps: '',
+    additional_fields: [],
+    media_uploads: []
   });
 
+  const [showCancelModal, setShowCancelModal] = useState(false);
   const [titleError, setTitleError] = useState(false);
   const [setsError, setSetsError] = useState(false);
   const [repsError, setRepsError] = useState(false);
   const [mediaUploadsError, setMediaUploadsError] = useState(false);
   const [inputFieldError, setInputFieldError] = useState([]);
   const [inputValueError, setInputValueError] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [expanded, setExpanded] = useState([]);
+  const history = useHistory();
 
-  // TODO: Move to stage after api ready
-  const categoryTreeData = [
-    { value: 0, label: 'Difficulty', children: [] },
-    { value: 1, label: 'Health condition', children: [] },
-    { value: 2, label: 'Body part', children: [] },
-    { value: 3, label: 'Equipment', children: [] },
-    { value: 4, label: 'Age', children: [] },
-    { value: 5, label: 'Activities and participation', children: [] },
-    { value: 6, label: 'Body function', children: [] }
-  ];
+  useEffect(() => {
+    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: '' }));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (categoryTreeData.length) {
+      const rootCategoryStructure = {};
+      categoryTreeData.forEach(category => {
+        rootCategoryStructure[category.value] = [];
+      });
+      setSelectedCategories(rootCategoryStructure);
+    }
+  }, [categoryTreeData]);
+
+  useEffect(() => {
+    setGetExercises(exercises);
+  }, [exercises]);
 
   const handleCheck = (e) => {
     const { name, checked } = e.target;
@@ -92,6 +128,10 @@ const CreateExercise = ({ translate, showReviewModal }) => {
     const values = [...additionalFields];
     values.splice(index, 1);
     setAdditionalFields(values);
+  };
+
+  const handleSetSelectedCategories = (parent, checked) => {
+    setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
   };
 
   const handleAddFields = () => {
@@ -161,9 +201,47 @@ const CreateExercise = ({ translate, showReviewModal }) => {
       setRepsError(false);
     }
 
+    let serializedSelectedCats = [];
+
+    Object.keys(selectedCategories).forEach(function (key) {
+      serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
+    });
+
     if (canAddMore) {
       setIsLoading(true);
+      const payload = {
+        ...formFields,
+        sets: formFields.show_sets_reps ? formFields.sets : 0,
+        reps: formFields.show_sets_reps ? formFields.reps : 0,
+        show_sets_reps: formFields.show_sets_reps,
+        additional_fields: JSON.stringify(additionalFields),
+        categories: serializedSelectedCats,
+        media_uploads: mediaUploads
+      };
+      dispatch(addMoreExercise(payload)).then(() => {
+        setIsLoading(false);
+        handleResetForm();
+      });
     }
+  };
+
+  const handleResetForm = () => {
+    setMediaUploads([]);
+    setSelectedCategories([]);
+    setAdditionalFields([]);
+    setFormFields({
+      title: '',
+      show_sets_reps: false,
+      sets: '',
+      reps: '',
+      additional_fields: [],
+      media_uploads: []
+    });
+  };
+
+  const handleConfirmCancelModal = () => {
+    dispatch(deleteExercise());
+    history.goBack();
   };
 
   return (
@@ -286,11 +364,27 @@ const CreateExercise = ({ translate, showReviewModal }) => {
                     <Card.Header>
                       <Accordion.Toggle as={Button} variant="link" eventKey={index + 1} className="d-flex justify-content-between align-items-center">
                         <span>{category.label}</span>
-                        <span>0 {translate('common.selected')} <ContextAwareToggle eventKey={index + 1} /></span>
+                        <span>{selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('common.selected')} <ContextAwareToggle eventKey={index + 1} /></span>
                       </Accordion.Toggle>
                     </Card.Header>
                     <Accordion.Collapse eventKey={index + 1}>
-                      <Card.Body>Hello! I am the body</Card.Body>
+                      <Card.Body>
+                        <CheckboxTree
+                          nodes={category.children || []}
+                          checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
+                          expanded={expanded}
+                          onCheck={(checked) => handleSetSelectedCategories(category.value, checked)}
+                          onExpand={expanded => setExpanded(expanded)}
+                          icons={{
+                            check: <FaRegCheckSquare size={40} color="black" />,
+                            uncheck: <BsSquare size={40} color="black" />,
+                            halfCheck: <BsDashSquare size={40} color="black" />,
+                            expandClose: <BsCaretRightFill size={40} color="black" />,
+                            expandOpen: <BsCaretDownFill size={40} color="black" />
+                          }}
+                          showNodeIcon={false}
+                        />
+                      </Card.Body>
                     </Accordion.Collapse>
                   </Card>
                 ))}
@@ -361,11 +455,10 @@ const CreateExercise = ({ translate, showReviewModal }) => {
         <div className="sticky-bottom d-flex justify-content-end">
           <Button
             onClick={handleSave}
-            disabled={isLoading}
+            disabled={isLoading || !getExercises.length}
           >
             {translate('common.submit')}
           </Button>
-
           <Button
             className="ml-2"
             variant="outline-primary"
@@ -374,18 +467,27 @@ const CreateExercise = ({ translate, showReviewModal }) => {
           >
             {translate('common.add_more')}
           </Button>
-
           <Button
             className="ml-2"
             variant="outline-primary"
-            as={Link}
-            to={ROUTES.SERVICE_SETUP}
+            onClick={() => setShowCancelModal(true)}
             disabled={isLoading}
           >
             {translate('common.cancel')}
           </Button>
         </div>
       </Form>
+
+      <Dialog
+        show={showCancelModal}
+        title={translate('common.cancel_confirmation_title')}
+        cancelLabel={translate('common.no')}
+        onCancel={() => setShowCancelModal(false)}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handleConfirmCancelModal}
+      >
+        <p>{translate('common.cancel_confirmation_message')}</p>
+      </Dialog>
     </>
   );
 };

@@ -272,7 +272,6 @@ const CreateEducationMaterial = ({ translate }) => {
           >
             {translate('common.submit')}
           </Button>
-
           <Button
             className="ml-2"
             variant="outline-primary"
@@ -282,12 +281,10 @@ const CreateEducationMaterial = ({ translate }) => {
           >
             {translate('common.add_more')}
           </Button>
-
           <Button
             className="ml-2"
             variant="outline-primary"
-            as={Link}
-            to={ROUTES.SERVICE_SETUP}
+            onClick={() => history.goBack()}
             disabled={isLoading}
           >
             {translate('common.cancel')}
