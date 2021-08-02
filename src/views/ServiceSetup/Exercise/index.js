@@ -1,31 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Tooltip,
-  OverlayTrigger,
-  Accordion,
-  Button
-} from 'react-bootstrap';
+import { Row, Col, Card, Form, Accordion } from 'react-bootstrap';
+
+import * as ROUTES from 'variables/routes';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Spinner from 'react-bootstrap/Spinner';
 
-import Dialog from 'components/Dialog';
-import Pagination from 'components/Pagination';
-import { EditAction, DeleteAction } from 'components/ActionIcons';
-import {
-  deleteExercise, downloadExercises,
-  getExercises
-} from 'store/exercise/actions';
+import CustomTable from 'components/Table';
+import { EditAction } from 'components/ActionIcons';
 import SearchInput from 'components/Form/SearchInput';
-import * as ROUTES from 'variables/routes';
-import ViewExercise from './view';
 import { getCategoryTreeData } from 'store/category/actions';
+import { getContributors } from 'store/contributor/actions';
 import { CATEGORY_TYPES } from 'variables/category';
 import CheckboxTree from 'react-checkbox-tree';
 import {
@@ -39,30 +25,29 @@ import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import Select from 'react-select';
 import scssColors from '../../../scss/custom.scss';
+import { getExercises } from '../../../store/exercise/actions';
+import { renderStatusBadge } from 'utils/resource';
+import { getContributorName } from 'utils/contributor';
 
 let timer = null;
 const Exercise = ({ translate }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { loading, exercises, filters, totalCount } = useSelector(state => state.exercise);
-  const { profile } = useSelector((state) => state.auth);
-  const { languages } = useSelector(state => state.language);
-  const { categoryTreeData } = useSelector((state) => state.category);
-  const [id, setId] = useState(null);
-  const [showView, setShowView] = useState(false);
-
-  const [deletedId, setDeletedId] = useState(null);
-  const [show, setShow] = useState(false);
-  const [pageSize, setPageSize] = useState(60);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
     search_value: ''
   });
+  const { languages } = useSelector(state => state.language);
+  const { contributors } = useSelector(state => state.contributor);
+  const [language, setLanguage] = useState('');
+  const { exercises, filters } = useSelector(state => state.exercise);
+  const { profile } = useSelector((state) => state.auth);
+  const { categoryTreeData } = useSelector((state) => state.category);
+  const [pageSize, setPageSize] = useState(60);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
-  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     if (filters && filters.lang) {
@@ -73,6 +58,7 @@ const Exercise = ({ translate }) => {
   }, [filters, profile]);
 
   useEffect(() => {
+    dispatch(getContributors());
     dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: language }));
   }, [language, dispatch]);
 
@@ -100,66 +86,41 @@ const Exercise = ({ translate }) => {
         categories: serializedSelectedCats,
         page_size: pageSize,
         page: currentPage
-      }));
+      })).then(result => {
+        if (result) {
+          setTotalCount(result.total_count);
+        }
+      });
     }, 500);
   }, [language, formFields, selectedCategories, currentPage, pageSize, dispatch]);
+
+  const handleClearSearch = () => {
+    setFormFields({ ...formFields, search_value: '' });
+    setCurrentPage(0);
+  };
 
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
-    setCurrentPage(1);
-  };
-
-  const handleClearSearch = () => {
-    setFormFields({ ...formFields, search_value: '' });
-    setCurrentPage(1);
-  };
-
-  const handleDelete = (id) => {
-    setDeletedId(id);
-    setShow(true);
-  };
-
-  const handleClose = () => {
-    setDeletedId(null);
-    setShow(false);
-  };
-
-  const handleConfirm = () => {
-    dispatch(deleteExercise(deletedId)).then(result => {
-      if (result) {
-        handleClose();
-      }
-    });
+    setCurrentPage(0);
   };
 
   const handleEdit = (id) => {
-    history.push(ROUTES.EXERCISE_EDIT.replace(':id', id));
+    history.push(ROUTES.EDUCATION_MATERIAL_EDIT.replace(':id', id));
   };
 
-  const handleView = (id) => {
-    setId(id);
-    setShowView(true);
-  };
-
-  const handleViewClose = () => {
-    setId('');
-    setShowView(false);
-  };
+  const columns = [
+    { name: 'title', title: translate('common.title') },
+    { name: 'status', title: translate('common.status') },
+    { name: 'uploaded_by', title: translate('common.uploaded_by') },
+    { name: 'uploaded_date', title: translate('common.uploaded_date') },
+    { name: 'approved_by', title: translate('common.approved_by') },
+    { name: 'action', title: translate('common.need_action') }
+  ];
 
   const handleSetSelectedCategories = (parent, checked) => {
     setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
-    setCurrentPage(1);
-  };
-
-  const handleDownload = () => {
-    setDownloading(true);
-    let serializedSelectedCats = [];
-    Object.keys(selectedCategories).forEach(function (key) {
-      serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
-    });
-    dispatch(downloadExercises({ lang: language, filter: formFields, categories: serializedSelectedCats }))
-      .then(() => { setDownloading(false); });
+    setCurrentPage(0);
   };
 
   const customSelectStyles = {
@@ -182,7 +143,7 @@ const Exercise = ({ translate }) => {
               <SearchInput
                 name="search_value"
                 value={formFields.search_value}
-                placeholder={translate('education_material.search')}
+                placeholder={translate('resource.search')}
                 onChange={handleChange}
                 onClear={handleClearSearch}
               />
@@ -235,101 +196,36 @@ const Exercise = ({ translate }) => {
                   ))
                 }
               </Accordion>
-              <Button block onClick={() => handleDownload()} disabled={downloading}>
-                {translate('exercise.download')}
-              </Button>
             </Card.Body>
           </Card>
         </Col>
         <Col sm={7} md={8} lg={9}>
-          { exercises.length === 0 && (
-            <div className="card h-100 d-flex justify-content-center align-items-center">
-              <big className="text-muted">{translate('common.no_data')}</big>
-            </div>
-          )}
-          { exercises.length > 0 && (
-            <>
-              <Row>
-                { exercises.map(exercise => (
-                  <Col key={exercise.id} md={6} lg={3}>
-                    <div className="position-absolute delete-btn">
-                      <DeleteAction disabled={exercise.is_used} onClick={() => handleDelete(exercise.id)} />
-                    </div>
-                    <div className="position-absolute edit-btn">
-                      <EditAction onClick={() => handleEdit(exercise.id)} />
-                    </div>
-                    <Card className="exercise-card shadow-sm mb-4" onClick={() => handleView(exercise.id)}>
-                      <div className="card-img bg-light">
-                        {
-                          exercise.files.length > 0 && (
-                            (exercise.files[0].fileType === 'audio/mpeg' &&
-                              <div className="w-100 pt-5 pl-3 pr-3">
-                                <audio controls className="w-100">
-                                  <source src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} type="audio/ogg" />
-                                </audio>
-                              </div>
-                            ) ||
-                            (exercise.files[0].fileType === 'video/mp4' &&
-                              <img className="img-fluid mx-auto d-block" src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}?thumbnail=1`} alt="Exercise"
-                              />
-                            ) ||
-                            ((exercise.files[0].fileType !== 'audio/mpeg' && exercise.files[0].fileType !== 'video/mp4') &&
-                              <img className="img-fluid mx-auto d-block" src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} alt="Exercise"
-                              />
-                            )
-                          )
-                        }
-                      </div>
-                      <Card.Body className="d-flex flex-column justify-content-between">
-                        <Card.Title>
-                          {
-                            exercise.title.length <= 50
-                              ? <h5 className="card-title">{ exercise.title }</h5>
-                              : (
-                                <OverlayTrigger
-                                  overlay={<Tooltip id="button-tooltip-2">{ exercise.title }</Tooltip>}
-                                >
-                                  <h5 className="card-title">{ exercise.title }</h5>
-                                </OverlayTrigger>
-                              )
-                          }
-                        </Card.Title>
-                        {exercise.sets > 0 && (
-                          <Card.Text>
-                            {translate('exercise.number_of_sets_and_reps', { sets: exercise.sets, reps: exercise.reps })}
-                          </Card.Text>
-                        )}
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-
-              <Pagination
-                totalCount={totalCount}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                pageSize={pageSize}
-                setPageSize={setPageSize}
-                pageSizes={[60, 120, 180, 240]}
-              />
-            </>
-          )}
-
-          { loading && <Spinner className="loading-icon" animation="border" variant="primary" /> }
+          <CustomTable
+            pageSize={pageSize}
+            setPageSize={setPageSize}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalCount={totalCount}
+            columns={columns}
+            hideSearchFilter={true}
+            rows={exercises.map(exercise => {
+              const action = (
+                <>
+                  <EditAction onClick={() => handleEdit(exercise.id)} className="mr-1" />
+                </>
+              );
+              return {
+                title: exercise.title,
+                status: renderStatusBadge(exercise),
+                uploaded_by: getContributorName(exercise.uploaded_by, contributors),
+                uploaded_date: '',
+                approved_by: 'Test',
+                action
+              };
+            })}
+          />
         </Col>
       </Row>
-      {showView && <ViewExercise showView={showView} handleViewClose={handleViewClose} id={id} />}
-      <Dialog
-        show={show}
-        title={translate('exercise.delete_confirmation_title')}
-        cancelLabel={translate('common.no')}
-        onCancel={handleClose}
-        confirmLabel={translate('common.yes')}
-        onConfirm={handleConfirm}
-      >
-        <p>{translate('common.delete_confirmation_message')}</p>
-      </Dialog>
     </>
   );
 };

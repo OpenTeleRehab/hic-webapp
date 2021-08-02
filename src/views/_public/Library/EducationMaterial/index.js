@@ -125,7 +125,7 @@ const EducationMaterial = ({ translate }) => {
               <SearchInput
                 name="search_value"
                 value={formFields.search_value}
-                placeholder={translate('education_material.search')}
+                placeholder={translate('resource.search')}
                 onChange={handleChange}
                 onClear={handleClearSearch}
               />

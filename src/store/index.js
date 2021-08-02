@@ -20,6 +20,7 @@ import { category } from 'store/category/reducers';
 import { staticPage } from 'store/staticPage/reducers';
 import { privacyPolicy } from 'store/privacyPolicy/reducers';
 import { contribute } from 'store/contribute/reducers';
+import { contributor } from 'store/contributor/reducers';
 
 export const rootReducer = {
   localize: localizeReducer,
@@ -36,7 +37,8 @@ export const rootReducer = {
   category,
   staticPage,
   privacyPolicy,
-  contribute
+  contribute,
+  contributor
 };
 
 const devTool =
