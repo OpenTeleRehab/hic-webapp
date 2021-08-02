@@ -12,8 +12,8 @@ import ContributePage from 'views/_public/Contribute';
 import ExerciseDetail from 'views/_public/Library/Exercise/detail';
 
 import DashboardPage from 'views/Dashboard';
+import ServiceSetupPage from 'views/ServiceSetup';
 import NotFoundPage from 'views/NotFound';
-import AdminPage from 'views/Admin';
 import CategoryPage from 'views/Category';
 import Translation from 'views/Translation';
 import Language from 'views/Translation/Language';
@@ -75,16 +75,12 @@ const routes = [
     type: PRIVATE
   },
   {
-    title: 'admin',
-    path: ROUTES.ADMIN,
-    component: AdminPage,
+    title: 'resources',
+    path: ROUTES.ADMIN_RESOURCES,
+    component: ServiceSetupPage,
     exact: true,
     type: PRIVATE,
-    roles: [
-      USER_ROLES.MANAGE_GLOBAL_ADMIN,
-      USER_ROLES.MANAGE_COUNTRY_ADMIN,
-      USER_ROLES.MANAGE_CLINIC_ADMIN
-    ]
+    roles: [USER_ROLES.MANAGE_RESOURCE]
   },
   {
     title: 'exercise.create',
@@ -92,7 +88,7 @@ const routes = [
     component: CreateExercise,
     exact: true,
     type: PRIVATE,
-    roles: [USER_ROLES.SETUP_EXERCISE]
+    roles: [USER_ROLES.MANAGE_RESOURCE]
   },
   {
     title: 'exercise.edit',

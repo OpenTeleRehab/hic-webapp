@@ -110,7 +110,7 @@ const EducationMaterial = ({ translate }) => {
   };
 
   const columns = [
-    { name: 'title', title: translate('education_material.title') },
+    { name: 'title', title: translate('common.title') },
     { name: 'type', title: translate('education_material.type') },
     { name: 'action', title: translate('common.action') }
   ];
@@ -168,7 +168,7 @@ const EducationMaterial = ({ translate }) => {
               <SearchInput
                 name="search_value"
                 value={formFields.search_value}
-                placeholder={translate('education_material.search')}
+                placeholder={translate('resource.search')}
                 onChange={handleChange}
                 onClear={handleClearSearch}
               />

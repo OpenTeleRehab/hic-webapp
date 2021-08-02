@@ -17,7 +17,7 @@ export const ADMIN_STATIC_PAGES = '/admin/static-pages';
 export const ADMIN_CATEGORY_EDUCATION = ADMIN_CATEGORIES + '#education';
 export const ADMIN_CATEGORY_QUESTIONNAIRE = ADMIN_CATEGORIES + '#questionnaire';
 
-export const SERVICE_SETUP = '/service-setup';
+export const SERVICE_SETUP = '/admin/resources';
 export const SERVICE_SETUP_EDUCATION = SERVICE_SETUP + '#education';
 export const SERVICE_SETUP_QUESTIONNAIRE = SERVICE_SETUP + '#questionnaire';
 

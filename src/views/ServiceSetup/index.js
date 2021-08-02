@@ -58,17 +58,17 @@ const ServiceSetup = ({ translate }) => {
       <Nav variant="tabs" activeKey={view} className="mb-3">
         <Nav.Item>
           <Nav.Link as={Link} to={ROUTES.SERVICE_SETUP} eventKey={VIEW_EXERCISE}>
-            {translate('service_setup.exercises')}
+            {translate('resource.exercises')}
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link as={Link} to={ROUTES.SERVICE_SETUP_EDUCATION} eventKey={VIEW_EDUCATION}>
-            {translate('service_setup.education_materials')}
+            {translate('resource.education_materials')}
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link as={Link} to={ROUTES.SERVICE_SETUP_QUESTIONNAIRE} eventKey={VIEW_QUESTIONNAIRE}>
-            {translate('service_setup.questionnaires')}
+            {translate('resource.questionnaires')}
           </Nav.Link>
         </Nav.Item>
       </Nav>
