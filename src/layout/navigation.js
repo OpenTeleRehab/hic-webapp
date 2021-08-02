@@ -16,7 +16,7 @@ const publicNavItems = [
   {
     label: 'library',
     to: ROUTES.LIBRARY,
-    exact: true
+    exact: false
   },
   {
     label: 'contribute',

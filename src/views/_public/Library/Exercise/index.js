@@ -29,10 +29,13 @@ import { FaRegCheckSquare } from 'react-icons/fa';
 import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import * as ROUTES from 'variables/routes';
+import { useHistory } from 'react-router-dom';
 
 let timer = null;
 const Exercise = ({ translate }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const { loading, exercises, filters } = useSelector(state => state.exercise);
   const { profile } = useSelector((state) => state.auth);
@@ -113,6 +116,10 @@ const Exercise = ({ translate }) => {
 
   const fetchMoreData = () => {
     setPageSize(pageSize + 8);
+  };
+
+  const handleViewDetail = (id) => {
+    history.push(ROUTES.LIBRARY_EXERCISE_DETAIL.replace(':id', id));
   };
 
   return (
@@ -234,7 +241,7 @@ const Exercise = ({ translate }) => {
                           )}
                         </Card.Body>
                         <Card.Footer>
-                          <Button variant="link">{translate('exercise.learn_more')}</Button>
+                          <Button variant="link" className="text-decoration-none" onClick={() => handleViewDetail(exercise.id)}>{translate('exercise.learn_more')}</Button>
                         </Card.Footer>
                       </Card>
                     </Col>

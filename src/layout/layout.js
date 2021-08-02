@@ -45,7 +45,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
         </main>
       ) : (
         <main className="main pt-4 pb-4 bg-white">
-          <Container fluid>
+          <Container>
             <Component translate={translate} />
           </Container>
         </main>
