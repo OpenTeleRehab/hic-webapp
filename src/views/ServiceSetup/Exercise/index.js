@@ -105,8 +105,8 @@ const Exercise = ({ translate }) => {
     setCurrentPage(0);
   };
 
-  const handleEdit = (id) => {
-    history.push(ROUTES.EDUCATION_MATERIAL_EDIT.replace(':id', id));
+  const handleRowClick = (row) => {
+    history.push(ROUTES.ADMIN_RESOURCES_EDIT.replace(':id', row.id));
   };
 
   const columns = [
@@ -136,9 +136,9 @@ const Exercise = ({ translate }) => {
 
   return (
     <>
-      <Row>
+      <Row className="no-gutters bg-white">
         <Col sm={5} md={4} lg={3}>
-          <Card bg="info">
+          <Card bg="info h-100">
             <Card.Header>
               <SearchInput
                 name="search_value"
@@ -199,7 +199,7 @@ const Exercise = ({ translate }) => {
             </Card.Body>
           </Card>
         </Col>
-        <Col sm={7} md={8} lg={9}>
+        <Col sm={7} md={8} lg={9} className="p-4">
           <CustomTable
             pageSize={pageSize}
             setPageSize={setPageSize}
@@ -208,13 +208,11 @@ const Exercise = ({ translate }) => {
             totalCount={totalCount}
             columns={columns}
             hideSearchFilter={true}
+            onRowClick={handleRowClick}
             rows={exercises.map(exercise => {
-              const action = (
-                <>
-                  <EditAction onClick={() => handleEdit(exercise.id)} className="mr-1" />
-                </>
-              );
+              const action = <EditAction className="mr-1" />;
               return {
+                id: exercise.id,
                 title: exercise.title,
                 status: renderStatusBadge(exercise),
                 uploaded_by: getContributorName(exercise.uploaded_by, contributors),

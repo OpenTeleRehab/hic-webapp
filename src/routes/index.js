@@ -92,11 +92,11 @@ const routes = [
   },
   {
     title: 'exercise.edit',
-    path: ROUTES.EXERCISE_EDIT,
+    path: ROUTES.ADMIN_RESOURCES_EDIT,
     component: CreateExercise,
     exact: true,
     type: PRIVATE,
-    roles: [USER_ROLES.SETUP_EXERCISE]
+    roles: [USER_ROLES.MANAGE_RESOURCE]
   },
   {
     title: 'education_material.create',

@@ -30,7 +30,7 @@ const ServiceSetup = ({ translate }) => {
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
-        <h1>{translate('service_setup')}</h1>
+        <h1 className="text-primary">{translate('resources')}</h1>
         <div className="btn-toolbar mb-2 mb-md-0">
           <div className="btn-toolbar mb-2 mb-md-0">
             {view === VIEW_EXERCISE
@@ -55,7 +55,7 @@ const ServiceSetup = ({ translate }) => {
         </div>
       </div>
 
-      <Nav variant="tabs" activeKey={view} className="mb-3">
+      <Nav variant="tabs" activeKey={view}>
         <Nav.Item>
           <Nav.Link as={Link} to={ROUTES.SERVICE_SETUP} eventKey={VIEW_EXERCISE}>
             {translate('resource.exercises')}

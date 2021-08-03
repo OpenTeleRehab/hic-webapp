@@ -26,7 +26,7 @@ const sidebarNavItems = [
     label: 'resources',
     to: ROUTES.ADMIN_RESOURCES,
     icon: <BsLayers />,
-    exact: true,
+    exact: false,
     roles: [USER_ROLES.MANAGE_RESOURCE]
   },
   {
