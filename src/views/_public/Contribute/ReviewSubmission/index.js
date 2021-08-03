@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Accordion, Button, Card, Col, Form, Modal, Row } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import { ContextAwareToggle } from '../../../../components/Accordion/ContextAwareToggle';
+import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
+import { useSelector } from 'react-redux';
 
 const ReviewSubmissionModal = ({ translate }) => {
   const [show, setShow] = useState(true);
@@ -11,12 +12,21 @@ const ReviewSubmissionModal = ({ translate }) => {
     last_name: '',
     email: ''
   });
+  const { exercises } = useSelector((state) => state.contribute);
   const [firstNameError, setFirstNameError] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [agreeTermsAndCondition, setAgreeTermsAndCondition] = useState(false);
   const [agreeToInclude, setAgreeToInclude] = useState(false);
-  const exercises = [{ id: 1, title: 'hello 1' }, { id: 2, title: 'hello' }];
+  const [selectedExercises, setSelectedExercises] = useState([]);
+
+  useEffect(() => {
+    exercises.forEach((exercise, index) => {
+      selectedExercises.push(index);
+    });
+    setSelectedExercises([...selectedExercises]);
+    // eslint-disable-next-line
+  }, [exercises]);
 
   const handleTermsConditionCheck = (e) => {
     setAgreeTermsAndCondition(e.target.checked);
@@ -29,6 +39,15 @@ const ReviewSubmissionModal = ({ translate }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
+  };
+
+  const handleSelectExercises = (e, selectedIndex) => {
+    if (e.target.checked) {
+      setSelectedExercises([...selectedExercises, selectedIndex]);
+    } else {
+      const exercises = selectedExercises.filter(a => a !== selectedIndex);
+      setSelectedExercises(exercises);
+    }
   };
 
   const handleSubmit = () => {
@@ -56,7 +75,7 @@ const ReviewSubmissionModal = ({ translate }) => {
     }
 
     if (canSubmit) {
-      // TODO: call the action
+      // TODO: call the function to submit
     }
   };
 
@@ -86,9 +105,11 @@ const ReviewSubmissionModal = ({ translate }) => {
                       <Form.Check
                         key={index}
                         type={'checkbox'}
-                        id={`exercise-${exercise.id}`}
+                        id={`exercise-${index}`}
                         label={exercise.title}
                         custom
+                        onChange={(e) => handleSelectExercises(e, index)}
+                        checked={selectedExercises.includes(index)}
                       />
                     </Col>
                     <Col className="text-right">
@@ -100,14 +121,14 @@ const ReviewSubmissionModal = ({ translate }) => {
             </Accordion.Collapse>
           </Card>
         </Accordion>
-        <h6 className="mt-3 font-weight-bold">{translate('contribute.submission.total_selected_resource', { number: 2 })}</h6>
+        <p className="mt-3"><strong>{translate('contribute.submission.total_selected_resource', { number: selectedExercises.length })}</strong></p>
         <h6 className="text-primary mt-2">{translate('contribute.submission.enter_your_detail')}</h6>
         <Form.Group controlId="formName" as={Row}>
           <Col>
             <Form.Label>{translate('common.first_name')}</Form.Label>
             <span className="text-dark ml-1">*</span>
             <Form.Control
-              name="firstName"
+              name="first_name"
               type="text"
               placeholder={translate('placeholder.first_name')}
               value={formFields.first_name}
@@ -122,7 +143,7 @@ const ReviewSubmissionModal = ({ translate }) => {
             <Form.Label>{translate('common.last_name')}</Form.Label>
             <span className="text-dark ml-1">*</span>
             <Form.Control
-              name="lastName"
+              name="last_name"
               type="text"
               placeholder={translate('placeholder.last_name')}
               value={formFields.last_name}
