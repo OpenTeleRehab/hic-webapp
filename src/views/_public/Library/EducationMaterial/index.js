@@ -26,7 +26,6 @@ import {
 import { FaRegCheckSquare } from 'react-icons/fa';
 import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
-import { MdDescription } from 'react-icons/md';
 import { MATERIAL_TYPE } from '../../../../variables/activity';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -41,7 +40,7 @@ const EducationMaterial = ({ translate }) => {
   const { loading, educationMaterials, filters } = useSelector(state => state.educationMaterial);
   const { profile } = useSelector((state) => state.auth);
   const { categoryTreeData } = useSelector((state) => state.category);
-  const [pageSize, setPageSize] = useState(8);
+  const [pageSize, setPageSize] = useState(9);
   const [id, setId] = useState(null);
   const [showView, setShowView] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -187,7 +186,7 @@ const EducationMaterial = ({ translate }) => {
               >
                 <Row>
                   { educationMaterials.map(material => (
-                    <Col key={material.id} md={6} lg={3}>
+                    <Col key={material.id} md={6} lg={4}>
                       <Card className="exercise-card shadow-sm mb-4">
                         <div id={`material-${material.id}`} className="card-container" onClick={() => handleView(material.id)}>
                           <div className="card-img bg-light">
@@ -199,7 +198,7 @@ const EducationMaterial = ({ translate }) => {
                               />
                             ) : (
                               <div className="w-100 h-100 px-2 py-4 text-white bg-primary text-center">
-                                <MdDescription size={80} />
+                                <img src={'/images/education-material-icon.svg'} alt="Education Material" height={64} />
                                 <p>{translate('activity.material').toUpperCase()}</p>
                               </div>
                             )}
