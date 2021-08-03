@@ -3,9 +3,8 @@ import { Accordion, Button, Card, Col, Form, Modal, Row } from 'react-bootstrap'
 import PropTypes from 'prop-types';
 import { ContextAwareToggle } from '../../../../components/Accordion/ContextAwareToggle';
 
-const ReviewSubmissionModal = ({ translate }) => {
-  const [show, setShow] = useState(true);
-  const handleClose = () => setShow(false);
+const ReviewSubmissionModal = ({ translate, showReviewModal }) => {
+  const handleClose = () => showReviewModal(false);
   const [formFields, setFormFields] = useState({
     first_name: '',
     last_name: '',
@@ -63,7 +62,7 @@ const ReviewSubmissionModal = ({ translate }) => {
   return (
     <Modal
       size="lg"
-      show={show}
+      show={true}
       onHide={handleClose}
     >
       <Modal.Header closeButton>
@@ -184,7 +183,8 @@ const ReviewSubmissionModal = ({ translate }) => {
 };
 
 ReviewSubmissionModal.propTypes = {
-  translate: PropTypes.func
+  translate: PropTypes.func,
+  showReviewModal: PropTypes.func
 };
 
 export default ReviewSubmissionModal;
