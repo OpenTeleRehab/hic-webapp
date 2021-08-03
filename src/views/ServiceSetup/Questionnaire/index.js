@@ -160,9 +160,9 @@ const Questionnaire = ({ translate }) => {
 
   return (
     <>
-      <Row>
+      <Row className="no-gutters bg-white">
         <Col sm={5} md={4} lg={3}>
-          <Card bg="info">
+          <Card bg="info h-100">
             <Card.Header>
               <SearchInput
                 name="search_value"
@@ -223,7 +223,7 @@ const Questionnaire = ({ translate }) => {
             </Card.Body>
           </Card>
         </Col>
-        <Col sm={7} md={8} lg={9}>
+        <Col sm={7} md={8} lg={9} className="p-4">
           <CustomTable
             pageSize={pageSize}
             setPageSize={setPageSize}

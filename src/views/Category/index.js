@@ -27,10 +27,10 @@ const Category = ({ translate }) => {
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
-        <h1>{translate('categories')}</h1>
+        <h1 className="text-primary">{translate('categories')}</h1>
       </div>
 
-      <Nav variant="tabs" activeKey={view} className="mb-3">
+      <Nav variant="tabs" activeKey={view}>
         <Nav.Item>
           <Nav.Link as={Link} to={ROUTES.ADMIN_CATEGORIES} eventKey={VIEW_EXERCISE}>
             {translate('category.exercises')}
