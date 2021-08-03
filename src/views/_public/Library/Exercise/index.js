@@ -11,10 +11,7 @@ import {
   Button
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  downloadExercises,
-  getExercises
-} from 'store/exercise/actions';
+import { getExercises } from 'store/exercise/actions';
 import SearchInput from 'components/Form/SearchInput';
 import { getCategoryTreeData } from 'store/category/actions';
 import { CATEGORY_TYPES } from 'variables/category';
@@ -40,14 +37,13 @@ const Exercise = ({ translate }) => {
   const { loading, exercises, filters } = useSelector(state => state.exercise);
   const { profile } = useSelector((state) => state.auth);
   const { categoryTreeData } = useSelector((state) => state.category);
-  const [pageSize, setPageSize] = useState(8);
+  const [pageSize, setPageSize] = useState(9);
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
     search_value: ''
   });
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
-  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     if (filters && filters.lang) {
@@ -102,16 +98,6 @@ const Exercise = ({ translate }) => {
   const handleSetSelectedCategories = (parent, checked) => {
     setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
     setPageSize(8);
-  };
-
-  const handleDownload = () => {
-    setDownloading(true);
-    let serializedSelectedCats = [];
-    Object.keys(selectedCategories).forEach(function (key) {
-      serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
-    });
-    dispatch(downloadExercises({ lang: language, filter: formFields, categories: serializedSelectedCats }))
-      .then(() => { setDownloading(false); });
   };
 
   const fetchMoreData = () => {
@@ -173,9 +159,6 @@ const Exercise = ({ translate }) => {
                   ))
                 }
               </Accordion>
-              <Button block onClick={() => handleDownload()} disabled={downloading}>
-                {translate('exercise.download')}
-              </Button>
             </Card.Body>
           </Card>
         </Col>
@@ -197,7 +180,7 @@ const Exercise = ({ translate }) => {
               >
                 <Row>
                   { exercises.map(exercise => (
-                    <Col key={exercise.id} md={6} lg={3}>
+                    <Col key={exercise.id} md={6} lg={4}>
                       <Card className="exercise-card shadow-sm mb-4">
                         <div className="card-img bg-light">
                           {

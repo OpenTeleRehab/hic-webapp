@@ -40,7 +40,7 @@ const Questionnaire = ({ translate }) => {
   const { loading, questionnaires, filters } = useSelector(state => state.questionnaire);
   const { profile } = useSelector((state) => state.auth);
   const { categoryTreeData } = useSelector((state) => state.category);
-  const [pageSize, setPageSize] = useState(8);
+  const [pageSize, setPageSize] = useState(9);
   const [id, setId] = useState('');
   const [show, setShow] = useState(false);
   const [questionnaire, setQuestionnaire] = useState([]);
@@ -200,12 +200,12 @@ const Questionnaire = ({ translate }) => {
               >
                 <Row>
                   { questionnaires.map(questionnaire => (
-                    <Col key={questionnaire.id} md={6} lg={3}>
+                    <Col key={questionnaire.id} md={6} lg={4}>
                       <Card className="exercise-card shadow-sm mb-4">
                         <div id={`questionnaire-${questionnaire.id}`} className="card-container" onClick={() => handleView(questionnaire)}>
                           <div className="card-img bg-light">
                             <div className="w-100 h-100 px-2 py-4 text-center questionnaire-header">
-                              <img src={'/images/questionnaire.svg'} alt='questionnaire' />
+                              <img src={'/images/questionnaire-icon.svg'} alt="Questionnaire" />
                               <p>{translate('activity.questionnaire').toUpperCase()}</p>
                             </div>
                           </div>
