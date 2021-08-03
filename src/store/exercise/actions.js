@@ -43,16 +43,30 @@ export const createExercise = (payload, mediaUploads) => async dispatch => {
   }
 };
 
-export const updateExercise = (id, payload, mediaUploads) => async dispatch => {
+export const approveExercise = (id, payload, mediaUploads) => async dispatch => {
   dispatch(mutation.updateExerciseRequest());
   const data = await Exercise.updateExercise(id, payload, mediaUploads);
   if (data.success) {
     dispatch(mutation.updateExerciseSuccess());
-    dispatch(showSuccessNotification('toast_title.update_exercise', data.message));
+    dispatch(showSuccessNotification('toast_title.approve_exercise', data.message));
     return true;
   } else {
     dispatch(mutation.updateExerciseFail());
-    dispatch(showErrorNotification('toast_title.update_exercise', data.message));
+    dispatch(showErrorNotification('toast_title.approve_exercise', data.message));
+    return false;
+  }
+};
+
+export const rejectExercise = (id) => async dispatch => {
+  dispatch(mutation.rejectExerciseRequest());
+  const data = await Exercise.rejectExercise(id);
+  if (data.success) {
+    dispatch(mutation.rejectExerciseSuccess());
+    dispatch(showSuccessNotification('toast_title.reject_exercise', data.message));
+    return true;
+  } else {
+    dispatch(mutation.rejectExerciseFail());
+    dispatch(showErrorNotification('toast_title.reject_exercise', data.message));
     return false;
   }
 };

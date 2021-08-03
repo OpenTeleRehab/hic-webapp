@@ -29,7 +29,8 @@ import * as ROUTES from 'variables/routes';
 import {
   createExercise,
   getExercise,
-  updateExercise
+  approveExercise,
+  rejectExercise
 } from 'store/exercise/actions';
 import { getCategoryTreeData } from 'store/category/actions';
 import { CATEGORY_TYPES } from 'variables/category';
@@ -42,6 +43,7 @@ const CreateExercise = ({ translate }) => {
   const history = useHistory();
   const { id } = useParams();
 
+  const { profile } = useSelector((state) => state.auth);
   const { languages } = useSelector(state => state.language);
   const { exercise, filters } = useSelector(state => state.exercise);
   const { categoryTreeData } = useSelector((state) => state.category);
@@ -228,23 +230,38 @@ const CreateExercise = ({ translate }) => {
         lang: language
       };
       if (id) {
-        dispatch(updateExercise(id, payload, mediaUploads))
+        dispatch(approveExercise(id, payload, mediaUploads))
           .then(result => {
             if (result) {
-              history.push(ROUTES.SERVICE_SETUP);
+              history.push(ROUTES.ADMIN_RESOURCES);
             }
             setIsLoading(false);
           });
       } else {
-        dispatch(createExercise(payload, mediaUploads))
+        const contributor = {
+          email: profile.email,
+          last_name: profile.last_name,
+          first_name: profile.first_name
+        };
+        dispatch(createExercise({ ...payload, ...contributor }, mediaUploads))
           .then(result => {
             if (result) {
-              history.push(ROUTES.SERVICE_SETUP);
+              history.push(ROUTES.ADMIN_RESOURCES);
             }
             setIsLoading(false);
           });
       }
     }
+  };
+
+  const handleReject = () => {
+    setIsLoading(true);
+    dispatch(rejectExercise(id)).then(result => {
+      if (result) {
+        history.push(ROUTES.ADMIN_RESOURCES);
+      }
+      setIsLoading(false);
+    });
   };
 
   const handleFileChange = (e) => {
@@ -496,21 +513,34 @@ const CreateExercise = ({ translate }) => {
         </Row>
 
         <div className="sticky-bottom d-flex justify-content-end">
-          <Button
-            onClick={handleSave}
-            disabled={isLoading}
-          >
-            {translate('common.approve')}
-          </Button>
-          <Button
-            className="ml-2"
-            variant="outline-dark"
-            as={Link}
-            to={ROUTES.ADMIN_RESOURCES}
-            disabled={isLoading}
-          >
-            {translate('common.reject')}
-          </Button>
+          { !id && (
+            <Button
+              onClick={handleSave}
+              disabled={isLoading}
+            >
+              {translate('common.save')}
+            </Button>
+          )}
+
+          { id && (
+            <>
+              <Button
+                onClick={handleSave}
+                disabled={isLoading}
+              >
+                {translate('common.approve')}
+              </Button>
+              <Button
+                className="ml-2"
+                variant="outline-dark"
+                onClick={handleReject}
+                disabled={isLoading}
+              >
+                {translate('common.reject')}
+              </Button>
+            </>
+          )}
+
           <Button
             className="ml-2"
             variant="outline-dark"
