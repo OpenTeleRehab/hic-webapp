@@ -143,10 +143,13 @@ const CreateExercise = ({ translate, showReviewModal }) => {
   };
 
   const handleSubmit = () => {
-    if (getExercises.length || handleValidation()) {
-      showReviewModal(true);
+    if (getExercises.length === 0) {
+      if (handleValidation()) {
+        submitHandler();
+        showReviewModal(true);
+      }
     } else {
-      submitHandler();
+      showReviewModal(true);
     }
   };
 
