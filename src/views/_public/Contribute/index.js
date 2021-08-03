@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { CATEGORY_TYPES } from '../../../variables/category';
 import CreateExercise from './Exercises/create';
 import { Form } from 'react-bootstrap';
@@ -16,6 +16,7 @@ const Contribute = () => {
   const translate = getTranslate(localize);
   const [view, setView] = useState(undefined);
   const [isShowReviewModal, setIsShowReviewModal] = useState(false);
+  const history = useHistory();
 
   const types = [
     {
@@ -47,7 +48,7 @@ const Contribute = () => {
 
   const handleChange = (e) => {
     const { value } = e.target;
-    window.open(`${CONTRIBUTE}#${value}`, '_self');
+    history.push(`${CONTRIBUTE}#${value}`);
   };
 
   return (
@@ -86,7 +87,7 @@ const Contribute = () => {
         { view === CATEGORY_TYPES.MATERIAL && <CreateEducationMaterial translate={translate} showReviewModal={setIsShowReviewModal} /> }
         { view === CATEGORY_TYPES.QUESTIONNAIRE && <CreateQuestionnaire translate={translate} showReviewModal={setIsShowReviewModal} /> }
 
-        {isShowReviewModal && <ReviewSubmissionModal translate={translate} />}
+        {isShowReviewModal && <ReviewSubmissionModal translate={translate} showReviewModal={setIsShowReviewModal} />}
       </div>
     </>
   );

@@ -25,6 +25,7 @@ import scssColors from '../../../../scss/custom.scss';
 import { ContextAwareToggle } from '../../../../components/Accordion/ContextAwareToggle';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import * as ROUTES from 'variables/routes';
 import {
   addMoreExercise,
   deleteExercise
@@ -141,65 +142,20 @@ const CreateExercise = ({ translate, showReviewModal }) => {
     }, 300);
   };
 
-  const handleSave = () => {
-    showReviewModal(true);
+  const handleSubmit = () => {
+    if (getExercises.length || handleValidation()) {
+      showReviewModal(true);
+    } else {
+      submitHandler();
+    }
   };
 
-  const handleAddMore = (e) => {
-    let canAddMore = true;
+  const handleAddMore = () => {
+    handleValidation() && submitHandler();
+  };
 
-    if (formFields.title === '') {
-      canAddMore = false;
-      setTitleError(true);
-    } else {
-      setTitleError(false);
-    }
-
-    if (mediaUploads.length === 0) {
-      canAddMore = false;
-      setMediaUploadsError(true);
-    } else {
-      setMediaUploadsError(false);
-    }
-
-    const errorInputFields = [];
-    const errorValueFields = [];
-    for (let i = 0; i < additionalFields.length; i++) {
-      if (additionalFields[i].field === '') {
-        canAddMore = false;
-        errorInputFields.push(true);
-      } else {
-        errorInputFields.push(false);
-      }
-
-      if (additionalFields[i].value === '') {
-        canAddMore = false;
-        errorValueFields.push(true);
-      } else {
-        errorValueFields.push(false);
-      }
-    }
-    setInputFieldError(errorInputFields);
-    setInputValueError(errorValueFields);
-
-    if (formFields.show_sets_reps) {
-      if (formFields.sets > 0) {
-        setSetsError(false);
-      } else {
-        canAddMore = false;
-        setSetsError(true);
-      }
-
-      if (formFields.reps > 0) {
-        setRepsError(false);
-      } else {
-        canAddMore = false;
-        setRepsError(true);
-      }
-    } else {
-      setSetsError(false);
-      setRepsError(false);
-    }
+  const submitHandler = () => {
+    setIsLoading(true);
 
     let serializedSelectedCats = [];
 
@@ -207,22 +163,20 @@ const CreateExercise = ({ translate, showReviewModal }) => {
       serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
     });
 
-    if (canAddMore) {
-      setIsLoading(true);
-      const payload = {
-        ...formFields,
-        sets: formFields.show_sets_reps ? formFields.sets : 0,
-        reps: formFields.show_sets_reps ? formFields.reps : 0,
-        show_sets_reps: formFields.show_sets_reps,
-        additional_fields: JSON.stringify(additionalFields),
-        categories: serializedSelectedCats,
-        media_uploads: mediaUploads
-      };
-      dispatch(addMoreExercise(payload)).then(() => {
-        setIsLoading(false);
-        handleResetForm();
-      });
-    }
+    const payload = {
+      ...formFields,
+      sets: formFields.show_sets_reps ? formFields.sets : 0,
+      reps: formFields.show_sets_reps ? formFields.reps : 0,
+      show_sets_reps: formFields.show_sets_reps,
+      additional_fields: JSON.stringify(additionalFields),
+      categories: serializedSelectedCats,
+      media_uploads: mediaUploads
+    };
+
+    dispatch(addMoreExercise(payload)).then(() => {
+      setIsLoading(false);
+      handleResetForm();
+    });
   };
 
   const handleResetForm = () => {
@@ -239,9 +193,70 @@ const CreateExercise = ({ translate, showReviewModal }) => {
     });
   };
 
+  const handleValidation = () => {
+    let canSave = true;
+
+    if (formFields.title === '') {
+      canSave = false;
+      setTitleError(true);
+    } else {
+      setTitleError(false);
+    }
+
+    if (mediaUploads.length === 0) {
+      canSave = false;
+      setMediaUploadsError(true);
+    } else {
+      setMediaUploadsError(false);
+    }
+
+    const errorInputFields = [];
+    const errorValueFields = [];
+
+    for (let i = 0; i < additionalFields.length; i++) {
+      if (additionalFields[i].field === '') {
+        canSave = false;
+        errorInputFields.push(true);
+      } else {
+        errorInputFields.push(false);
+      }
+
+      if (additionalFields[i].value === '') {
+        canSave = false;
+        errorValueFields.push(true);
+      } else {
+        errorValueFields.push(false);
+      }
+    }
+
+    setInputFieldError(errorInputFields);
+    setInputValueError(errorValueFields);
+
+    if (formFields.show_sets_reps) {
+      if (formFields.sets > 0) {
+        setSetsError(false);
+      } else {
+        canSave = false;
+        setSetsError(true);
+      }
+
+      if (formFields.reps > 0) {
+        setRepsError(false);
+      } else {
+        canSave = false;
+        setRepsError(true);
+      }
+    } else {
+      setSetsError(false);
+      setRepsError(false);
+    }
+
+    return canSave;
+  };
+
   const handleConfirmCancelModal = () => {
     dispatch(deleteExercise());
-    history.goBack();
+    history.push(ROUTES.LIBRARY);
   };
 
   return (
@@ -453,10 +468,7 @@ const CreateExercise = ({ translate, showReviewModal }) => {
         </Form.Group>
 
         <div className="sticky-bottom d-flex justify-content-end">
-          <Button
-            onClick={handleSave}
-            disabled={isLoading || !getExercises.length}
-          >
+          <Button onClick={handleSubmit}>
             {translate('common.submit')}
           </Button>
           <Button
