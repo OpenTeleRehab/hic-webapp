@@ -29,7 +29,7 @@ import * as ROUTES from 'variables/routes';
 import {
   createExercise,
   getExercise,
-  updateExercise
+  approveExercise
 } from 'store/exercise/actions';
 import { getCategoryTreeData } from 'store/category/actions';
 import { CATEGORY_TYPES } from 'variables/category';
@@ -237,7 +237,7 @@ const CreateExercise = ({ translate }) => {
         lang: language
       };
       if (id) {
-        dispatch(updateExercise(id, payload, mediaUploads))
+        dispatch(approveExercise(id, payload, mediaUploads))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP);
