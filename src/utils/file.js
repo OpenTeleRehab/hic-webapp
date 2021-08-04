@@ -1,10 +1,16 @@
 export const formatFileSize = (bytes) => {
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+  if (bytes > 0) {
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+  }
+  return '';
 };
 
 export const toMB = (bytes) => {
-  return bytes / Math.pow(1024, 2);
+  if (bytes > 0) {
+    return bytes / Math.pow(1024, 2);
+  }
+  return '';
 };
 
 export const toBase64 = file => new Promise((resolve, reject) => {

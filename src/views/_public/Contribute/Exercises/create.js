@@ -33,6 +33,7 @@ import CheckboxTree from 'react-checkbox-tree';
 import Dialog from '../../../../components/Dialog';
 import { getCategoryTreeData } from '../../../../store/category/actions';
 import { CATEGORY_TYPES } from '../../../../variables/category';
+import { formatFileSize } from '../../../../utils/file';
 
 const CreateExercise = ({ translate, showReviewModal }) => {
   const dispatch = useDispatch();
@@ -109,7 +110,7 @@ const CreateExercise = ({ translate, showReviewModal }) => {
     for (i = 0; i < fileObj[0].length; i++) {
       const file = fileObj[0][i];
       const fileName = file.name;
-      const fileSize = (file.size / 1024).toFixed(2);
+      const fileSize = file.size;
       const fileType = file.type;
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -300,7 +301,7 @@ const CreateExercise = ({ translate, showReviewModal }) => {
                   <source src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} type="video/mp4" />
                 </video>
                 }
-                <div>{mediaUpload.fileName} {mediaUpload.fileSize ? ('(' + mediaUpload.fileSize + 'kB )') : ''}</div>
+                <div>{mediaUpload.fileName} {mediaUpload.fileSize ? formatFileSize(mediaUpload.fileSize) : ''}</div>
               </div>
             ))}
 
