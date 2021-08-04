@@ -39,6 +39,19 @@ const createExerciseFail = () => ({
   type: 'CREATE_EXERCISE_FAIL'
 });
 
+const contributeExerciseRequest = () => ({
+  type: 'CONTRIBUTE_EXERCISE_REQUEST'
+});
+
+const contributeExerciseSuccess = (data) => ({
+  type: 'CONTRIBUTE_EXERCISE_SUCCESS',
+  data
+});
+
+const contributeExerciseFail = () => ({
+  type: 'CONTRIBUTE_EXERCISE_FAIL'
+});
+
 const updateExerciseRequest = () => ({
   type: 'UPDATE_EXERCISE_REQUEST'
 });
@@ -116,6 +129,9 @@ export const mutation = {
   createExerciseRequest,
   createExerciseSuccess,
   createExerciseFail,
+  contributeExerciseRequest,
+  contributeExerciseSuccess,
+  contributeExerciseFail,
   updateExerciseRequest,
   updateExerciseSuccess,
   updateExerciseFail,

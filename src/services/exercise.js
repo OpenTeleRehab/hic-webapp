@@ -49,6 +49,25 @@ const createExercise = (payload, mediaUploads) => {
     });
 };
 
+const contributeExercise = (payloads, formFields) => {
+  const formData = new FormData();
+  formData.append('exercises', JSON.stringify(payloads));
+
+  _.forIn(formFields, (value, key) => {
+    formData.append(key, value);
+  });
+
+  return axios.post('/exercise', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const updateExercise = (id, payload, mediaUploads) => {
   const formData = new FormData();
   _.forIn(payload, (value, key) => {
@@ -133,6 +152,7 @@ export const Exercise = {
   getExercises,
   getExercise,
   createExercise,
+  contributeExercise,
   updateExercise,
   rejectExercise,
   deleteExercise,

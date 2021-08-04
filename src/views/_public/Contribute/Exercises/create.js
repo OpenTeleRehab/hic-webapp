@@ -146,7 +146,7 @@ const CreateExercise = ({ translate, showReviewModal }) => {
   };
 
   const handleSubmit = () => {
-    if (getExercises.length === 0) {
+    if (getExercises.length === 0 || formFields.title !== '' || mediaUploads.length > 0 || formFields.show_sets_reps) {
       if (handleValidation()) {
         submitHandler();
         showReviewModal(true);
@@ -175,8 +175,8 @@ const CreateExercise = ({ translate, showReviewModal }) => {
       reps: formFields.show_sets_reps ? formFields.reps : 0,
       show_sets_reps: formFields.show_sets_reps,
       additional_fields: JSON.stringify(additionalFields),
-      categories: serializedSelectedCats,
-      media_uploads: mediaUploads
+      categories: JSON.stringify(serializedSelectedCats),
+      media_uploads: mediaUploads.map((item) => { return item.file; })
     };
 
     dispatch(addMoreExercise(payload)).then(() => {
@@ -188,7 +188,12 @@ const CreateExercise = ({ translate, showReviewModal }) => {
   const handleResetForm = () => {
     setMediaUploads([]);
     setSelectedCategories([]);
-    setAdditionalFields([]);
+    setAdditionalFields([
+      { field: 'Aim', value: '' },
+      { field: 'Instruction', value: '' },
+      { field: 'TBD', value: '' },
+      { field: 'TBD', value: '' }
+    ]);
     setFormFields({
       title: '',
       show_sets_reps: false,
@@ -275,7 +280,7 @@ const CreateExercise = ({ translate, showReviewModal }) => {
             { mediaUploads.map((mediaUpload, index) => (
               <div key={index} className="mb-2 position-relative">
                 <Button variant="link" onClick={() => handleFileRemove(index)} className="position-absolute btn-remove">
-                  <BsXCircle size={20} color={scssColors.danger} />
+                  <BsXCircle size={20} color={scssColors.danger} /> <span className="sr-only">{translate('common.remove')}</span>
                 </Button>
 
                 { mediaUpload.fileType === 'audio/mpeg' &&
@@ -300,8 +305,16 @@ const CreateExercise = ({ translate, showReviewModal }) => {
             ))}
 
             <div className="btn btn-sm bg-primary text-white position-relative overflow-hidden">
-              <BsUpload size={15}/> Upload Image
-              <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} multiple accept="audio/*, video/*, image/*" />
+              <BsUpload size={14}/> {translate('common.upload_image')}
+              <Form.Control
+                className="position-absolute upload-btn"
+                onChange={handleFileChange}
+                onClick={(e) => { e.target.value = null; }}
+                type="file"
+                multiple
+                accept="audio/*, video/*, image/*"
+                aria-label={translate('common.upload_image')}
+              />
             </div>
 
             <div className={mediaUploadsError ? 'd-block invalid-feedback' : 'invalid-feedback'}>
