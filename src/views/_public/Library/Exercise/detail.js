@@ -5,6 +5,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getExercise } from 'store/exercise/actions';
+import { formatFileSize } from '../../../../utils/file';
 
 const ExerciseDetail = () => {
   const localize = useSelector((state) => state.localize);
@@ -136,7 +137,7 @@ const ExerciseDetail = () => {
                   </Row>
                   <Row>
                     <Col sm={6} md={6} className="p-0"><strong>{translate('exercise.file_size')}:</strong></Col>
-                    <Col sm={6} md={6} className="p-0">{((mediaUpload.size || 0) / 1024).toFixed(2) + 'kb'}</Col>
+                    <Col sm={6} md={6} className="p-0">{formatFileSize(mediaUpload.size)}</Col>
                   </Row>
                   <Row>
                     <Col sm={6} md={6} className="p-0"><strong>{translate('exercise.file_type')}:</strong></Col>

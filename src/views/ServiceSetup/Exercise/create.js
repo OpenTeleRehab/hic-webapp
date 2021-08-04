@@ -37,6 +37,7 @@ import { CATEGORY_TYPES } from 'variables/category';
 import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import scssColors from '../../../scss/custom.scss';
+import { formatFileSize } from '../../../utils/file';
 
 const CreateExercise = ({ translate }) => {
   const dispatch = useDispatch();
@@ -277,7 +278,7 @@ const CreateExercise = ({ translate }) => {
     for (i = 0; i < fileObj[0].length; i++) {
       const file = fileObj[0][i];
       const fileName = file.name;
-      const fileSize = (file.size / 1024).toFixed(2);
+      const fileSize = file.size;
       const fileType = file.type;
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -340,7 +341,7 @@ const CreateExercise = ({ translate }) => {
                   <source src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} type="video/mp4" />
                 </video>
                 }
-                <div>{mediaUpload.fileName} {mediaUpload.fileSize ? ('(' + mediaUpload.fileSize + 'kB )') : ''}</div>
+                <div>{mediaUpload.fileName} {mediaUpload.fileSize ? formatFileSize(mediaUpload.fileSize) : ''}</div>
               </div>
             ))}
 
