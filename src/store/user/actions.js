@@ -47,6 +47,23 @@ export const getUsers = payload => async dispatch => {
   }
 };
 
+export const getReviewers = payload => async dispatch => {
+  dispatch(mutation.getReviewerRequest());
+  dispatch(showSpinner(true));
+  const data = await User.getReviewers(payload);
+  if (data.success) {
+    dispatch(mutation.getReviewerSuccess(data.data, payload));
+    dispatch(showSpinner(false));
+    return data.info;
+  } else {
+    dispatch(mutation.getReviewerFail());
+    dispatch(showSpinner(false));
+    if (data.message) {
+      dispatch(showErrorNotification('toast_title.error_message', data.message));
+    }
+  }
+};
+
 export const updateUser = (id, payload) => async (dispatch, getState) => {
   dispatch(mutation.updateUserRequest());
   const data = await User.updateUser(id, payload);

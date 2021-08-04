@@ -8,11 +8,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import CustomTable from 'components/Table';
-import { EditAction } from 'components/ActionIcons';
 import SearchInput from 'components/Form/SearchInput';
 import { getCategoryTreeData } from 'store/category/actions';
+import { getReviewers } from 'store/user/actions';
 import { getContributors } from 'store/contributor/actions';
 import { CATEGORY_TYPES } from 'variables/category';
+import { BiEdit } from 'react-icons/bi';
 import CheckboxTree from 'react-checkbox-tree';
 import {
   BsCaretDownFill,
@@ -27,7 +28,6 @@ import Select from 'react-select';
 import scssColors from '../../../scss/custom.scss';
 import { getExercises } from '../../../store/exercise/actions';
 import { renderStatusBadge } from 'utils/resource';
-import { getContributorName } from 'utils/contributor';
 
 let timer = null;
 const Exercise = ({ translate }) => {
@@ -38,9 +38,8 @@ const Exercise = ({ translate }) => {
     search_value: ''
   });
   const { languages } = useSelector(state => state.language);
-  const { contributors } = useSelector(state => state.contributor);
   const [language, setLanguage] = useState('');
-  const { exercises, filters } = useSelector(state => state.exercise);
+  const { exercises } = useSelector(state => state.exercise);
   const { profile } = useSelector((state) => state.auth);
   const { categoryTreeData } = useSelector((state) => state.category);
   const [pageSize, setPageSize] = useState(60);
@@ -48,6 +47,11 @@ const Exercise = ({ translate }) => {
   const [totalCount, setTotalCount] = useState(0);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
+  const [filters, setFilters] = useState([]);
+
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [pageSize, filters]);
 
   useEffect(() => {
     if (filters && filters.lang) {
@@ -58,8 +62,9 @@ const Exercise = ({ translate }) => {
   }, [filters, profile]);
 
   useEffect(() => {
-    dispatch(getContributors());
     dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: language }));
+    dispatch(getReviewers());
+    dispatch(getContributors());
   }, [language, dispatch]);
 
   useEffect(() => {
@@ -82,6 +87,7 @@ const Exercise = ({ translate }) => {
     timer = setTimeout(() => {
       dispatch(getExercises({
         lang: language,
+        filters: filters,
         filter: formFields,
         categories: serializedSelectedCats,
         page_size: pageSize,
@@ -92,7 +98,7 @@ const Exercise = ({ translate }) => {
         }
       });
     }, 500);
-  }, [language, formFields, selectedCategories, currentPage, pageSize, dispatch]);
+  }, [language, formFields, filters, selectedCategories, currentPage, pageSize, dispatch]);
 
   const handleClearSearch = () => {
     setFormFields({ ...formFields, search_value: '' });
@@ -114,7 +120,7 @@ const Exercise = ({ translate }) => {
     { name: 'status', title: translate('common.status') },
     { name: 'uploaded_by', title: translate('common.uploaded_by') },
     { name: 'uploaded_date', title: translate('common.uploaded_date') },
-    { name: 'approved_by', title: translate('common.approved_by') },
+    { name: 'reviewed_by', title: translate('common.reviewed_by') },
     { name: 'action', title: translate('common.need_action') }
   ];
 
@@ -205,20 +211,21 @@ const Exercise = ({ translate }) => {
             setPageSize={setPageSize}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
+            setFilters={setFilters}
+            filters={filters}
             totalCount={totalCount}
             columns={columns}
             hideSearchFilter={true}
             onRowClick={handleRowClick}
             rows={exercises.map(exercise => {
-              const action = <EditAction className="mr-1" />;
               return {
                 id: exercise.id,
                 title: exercise.title,
                 status: renderStatusBadge(exercise),
-                uploaded_by: getContributorName(exercise.uploaded_by, contributors),
-                uploaded_date: '',
-                approved_by: 'Test',
-                action
+                uploaded_by: exercise.uploaded_by,
+                uploaded_date: exercise.uploaded_date,
+                reviewed_by: exercise.reviewed_by,
+                action: <BiEdit size={25} className="btn-warning-info" />
               };
             })}
           />

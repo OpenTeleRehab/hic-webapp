@@ -74,6 +74,18 @@ const deleteUser = (id, payload) => {
     });
 };
 
+const getReviewers = () => {
+  return customAxios.get('/admin/get-reviewer/info')
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const resendEmail = (id) => {
   return customAxios.post(`/admin/resend-email/${id}`)
     .then(
@@ -92,5 +104,6 @@ export const User = {
   updateUser,
   deleteUser,
   updateUserStatus,
-  resendEmail
+  resendEmail,
+  getReviewers
 };

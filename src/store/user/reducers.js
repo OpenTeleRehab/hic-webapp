@@ -8,6 +8,11 @@ export const user = (state = initialState, action) => {
         filters: action.filters
       });
     }
+    case 'GET_REVIEWER_SUCCESS': {
+      return Object.assign({}, state, {
+        reviewers: action.data
+      });
+    }
     default:
       return state;
   }
