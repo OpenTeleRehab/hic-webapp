@@ -28,6 +28,7 @@ import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import * as ROUTES from 'variables/routes';
 import { useHistory } from 'react-router-dom';
+import Spinner from 'react-bootstrap/Spinner';
 
 let timer = null;
 const Exercise = ({ translate }) => {
@@ -174,7 +175,7 @@ const Exercise = ({ translate }) => {
                 dataLength={exercises.length}
                 next={fetchMoreData}
                 hasMore={true}
-                loader={loading && <h4>Loading...</h4>}
+                loader={loading && <Spinner className="loading-icon" animation="border" variant="primary"/>}
                 style={{ overflowX: 'hidden' }}
                 scrollThreshold="100px"
               >
