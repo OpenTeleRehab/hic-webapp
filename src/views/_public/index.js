@@ -18,13 +18,13 @@ const Dashboard = () => {
     <>
       <section className="section__wrapper">
         <Container fluid>
-          <h2>Access hundreds of rehabilitation resources...</h2>
+          <h2 className="text-primary">Access hundreds of rehabilitation resources...</h2>
         </Container>
       </section>
 
       <section className="section__wrapper bg-white">
         <Container fluid>
-          <h2>Our Partners</h2>
+          <h2 className="text-primary">Our Partners</h2>
         </Container>
       </section>
     </>
