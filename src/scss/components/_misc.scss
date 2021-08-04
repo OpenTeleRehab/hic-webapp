@@ -46,7 +46,6 @@
 				background-color: $danger;
 			}
 		}
-
 	}
 }
 
@@ -66,4 +65,8 @@
 
 .modal-backdrop.show, .modal.show {
 	z-index: 1051 !important;
+}
+
+.filter-sidebar {
+	min-height: toRem(354);
 }

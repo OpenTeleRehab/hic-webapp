@@ -5,15 +5,12 @@ import { showSpinner } from '../spinnerOverlay/actions';
 
 export const getQuestionnaires = payload => async dispatch => {
   dispatch(mutation.getQuestionnairesRequest());
-  dispatch(showSpinner(true));
   const data = await Questionnaire.getQuestionnaires(payload);
   if (data.success) {
     dispatch(mutation.getQuestionnairesSuccess(data.data, payload));
-    dispatch(showSpinner(false));
     return data.info;
   } else {
     dispatch(mutation.getQuestionnairesFail());
-    dispatch(showSpinner(false));
     dispatch(showErrorNotification('toast_title.error_message', data.message));
   }
 };
