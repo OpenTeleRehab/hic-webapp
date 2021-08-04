@@ -24,6 +24,19 @@ const getUsersFail = () => ({
   type: 'GET_USERS_FAIL'
 });
 
+const getReviewerRequest = () => ({
+  type: 'GET_REVIEWER_REQUEST'
+});
+
+const getReviewerSuccess = (data) => ({
+  type: 'GET_REVIEWER_SUCCESS',
+  data
+});
+
+const getReviewerFail = () => ({
+  type: 'GET_REVIEWER_FAIL'
+});
+
 const updateUserRequest = () => ({
   type: 'UPDATE_USER_REQUEST'
 });
@@ -90,5 +103,8 @@ export const mutation = {
   updateUserStatusFail,
   resendEmailSuccess,
   resendEmailRequest,
-  resendEmailFail
+  resendEmailFail,
+  getReviewerRequest,
+  getReviewerSuccess,
+  getReviewerFail
 };

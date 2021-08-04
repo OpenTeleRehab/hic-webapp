@@ -90,10 +90,10 @@ const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, c
       <TableFixedColumns rightColumns={rightColumns} cellComponent={FixedColumnCell} />
       <TableColumnVisibility columnExtensions={tableColumnVisibilityColumnExtensions} />
 
-      {!hideSearchFilter && <Toolbar /> }
+      <Toolbar />
       {!hideSearchFilter && <SearchPanel inputComponent={SearchInput} /> }
-      {!hideSearchFilter && <FilterToggle onToggle={toggleFilter} showFilter={showFilter} /> }
-      {!hideSearchFilter && <ColumnChooser toggleButtonComponent={ToggleButton} /> }
+      <FilterToggle onToggle={toggleFilter} showFilter={showFilter} />
+      <ColumnChooser toggleButtonComponent={ToggleButton} />
       {!hidePagination && <PagingPanel pageSizes={pageSizes} /> }
     </Grid>
   );

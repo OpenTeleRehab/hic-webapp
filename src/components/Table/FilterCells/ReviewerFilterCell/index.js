@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
-import Select from 'react-select';
 import scssColors from '../../../../scss/custom.scss';
-import { STATUS } from '../../../../variables/resourceStatus';
+import Select from 'react-select';
 
-const StatusFilterCell = ({ filter, onFilter }) => {
+const ReviewerFilterCell = ({ filter, onFilter }) => {
   const localize = useSelector((state) => state.localize);
+  const reviewers = useSelector(state => state.user.reviewers);
   const translate = getTranslate(localize);
-  const [status, setStatus] = useState('');
+  const [reviewer, setReviewer] = useState('');
 
   const customSelectStyles = {
     option: (provided) => ({
@@ -22,46 +22,37 @@ const StatusFilterCell = ({ filter, onFilter }) => {
     }),
     menuPortal: base => ({ ...base, zIndex: 1000 })
   };
-  const statusData = [
-    {
-      value: '',
-      name: translate('common.all')
-    },
-    {
-      value: STATUS.pending,
-      name: translate('common.pending')
-    },
-    {
-      value: STATUS.approved,
-      name: translate('common.approved')
-    },
-    {
-      value: STATUS.declined,
-      name: translate('common.declined')
-    }
-  ];
+  console.log(reviewers);
 
   const handleFilter = (value) => {
-    setStatus(value);
+    setReviewer(value);
     onFilter(value === '' ? null : { value });
   };
+  const optionData = [
+    {
+      id: '',
+      name: translate('common.all')
+    },
+    ...reviewers
+  ];
 
   return (
     <th>
       <Select
         classNamePrefix="filter"
-        value={statusData.filter(item => item.value === status)}
+        value={optionData.filter(item => item.id === reviewer)}
         getOptionLabel={option => option.name}
-        options={statusData}
-        onChange={(e) => handleFilter(e.value)}
+        options={optionData}
+        onChange={(e) => handleFilter(e.id)}
         menuPortalTarget={document.body}
         styles={customSelectStyles}
+        aria-label="Reviewer"
       />
     </th>
   );
 };
 
-StatusFilterCell.propTypes = {
+ReviewerFilterCell.propTypes = {
   filter: PropTypes.shape({
     value: PropTypes.oneOfType([
       PropTypes.string,
@@ -71,4 +62,4 @@ StatusFilterCell.propTypes = {
   onFilter: PropTypes.func.isRequired
 };
 
-export default StatusFilterCell;
+export default ReviewerFilterCell;

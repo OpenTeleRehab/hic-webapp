@@ -1,4 +1,5 @@
 export const initialState = {
   filters: {},
-  users: []
+  users: [],
+  reviewers: []
 };
