@@ -19,15 +19,12 @@ export const getEducationMaterial = (id, language) => async dispatch => {
 
 export const getEducationMaterials = payload => async dispatch => {
   dispatch(mutation.getEducationMaterialsRequest());
-  dispatch(showSpinner(true));
   const data = await EducationMaterial.getEducationMaterials(payload);
   if (data.success) {
     dispatch(mutation.getEducationMaterialsSuccess(data.data, payload));
-    dispatch(showSpinner(false));
     return data.info;
   } else {
     dispatch(mutation.getEducationMaterialsFail());
-    dispatch(showSpinner(false));
     dispatch(showErrorNotification('toast_title.error_message', data.message));
   }
 };

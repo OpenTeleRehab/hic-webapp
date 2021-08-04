@@ -133,7 +133,7 @@ const Questionnaire = ({ translate }) => {
     <>
       <Row>
         <Col sm={5} md={4} lg={3}>
-          <Card bg="info">
+          <Card bg="info" className="filter-sidebar">
             <Card.Header>
               <SearchInput
                 name="search_value"
