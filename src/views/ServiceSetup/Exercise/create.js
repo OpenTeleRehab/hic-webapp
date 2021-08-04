@@ -57,7 +57,12 @@ const CreateExercise = ({ translate }) => {
     sets: '',
     reps: ''
   });
-  const [additionalFields, setAdditionalFields] = useState([]);
+  const [additionalFields, setAdditionalFields] = useState([
+    { field: 'Aim', value: '' },
+    { field: 'Instruction', value: '' },
+    { field: 'TBD', value: '' },
+    { field: 'TBD', value: '' }
+  ]);
 
   const [titleError, setTitleError] = useState(false);
   const [setsError, setSetsError] = useState(false);
