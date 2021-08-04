@@ -41,7 +41,12 @@ const CreateExercise = ({ translate, showReviewModal }) => {
   const [getExercises, setGetExercises] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [mediaUploads, setMediaUploads] = useState([]);
-  const [additionalFields, setAdditionalFields] = useState([]);
+  const [additionalFields, setAdditionalFields] = useState([
+    { field: 'Aim', value: '' },
+    { field: 'Instruction', value: '' },
+    { field: 'TBD', value: '' },
+    { field: 'TBD', value: '' }
+  ]);
   const [formFields, setFormFields] = useState({
     title: '',
     show_sets_reps: false,
