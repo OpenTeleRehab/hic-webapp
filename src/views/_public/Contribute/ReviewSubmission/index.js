@@ -2,9 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Accordion, Button, Card, Col, Form, Modal, Row } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { contributeExercise } from '../../../../store/exercise/actions';
+import * as ROUTES from 'variables/routes';
+import { useHistory } from 'react-router-dom';
+import { deleteExercise } from '../../../../store/contribute/actions';
+import { showSpinner } from '../../../../store/spinnerOverlay/actions';
 
 const ReviewSubmissionModal = ({ translate, showReviewModal }) => {
+  const dispatch = useDispatch();
   const handleClose = () => showReviewModal(false);
   const [formFields, setFormFields] = useState({
     first_name: '',
@@ -18,6 +24,7 @@ const ReviewSubmissionModal = ({ translate, showReviewModal }) => {
   const [agreeTermsAndCondition, setAgreeTermsAndCondition] = useState(false);
   const [agreeToInclude, setAgreeToInclude] = useState(false);
   const [selectedExercises, setSelectedExercises] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     exercises.forEach((exercise, index) => {
@@ -74,7 +81,18 @@ const ReviewSubmissionModal = ({ translate, showReviewModal }) => {
     }
 
     if (canSubmit) {
-      // TODO: call the function to submit
+      const submitExercises = exercises.filter((exercises, index) => selectedExercises.includes(index));
+
+      if (submitExercises.length) {
+        dispatch(showSpinner(true));
+        dispatch(contributeExercise(submitExercises, formFields)).then(result => {
+          if (result) {
+            dispatch(deleteExercise());
+            dispatch(showSpinner(false));
+            history.push(ROUTES.LIBRARY);
+          }
+        });
+      }
     }
   };
 
@@ -112,7 +130,7 @@ const ReviewSubmissionModal = ({ translate, showReviewModal }) => {
                       />
                     </Col>
                     <Col className="text-right">
-                      <Button variant="link" className="text-decoration-none">{translate('common.edit')}</Button>
+                      <Button variant="link" className="text-decoration-none p-0">{translate('common.edit')}</Button>
                     </Col>
                   </Form.Group>
                 ))}
