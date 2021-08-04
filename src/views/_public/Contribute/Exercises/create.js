@@ -6,9 +6,7 @@ import {
   Card,
   Col,
   Form,
-  OverlayTrigger,
-  Row,
-  Tooltip
+  Row
 } from 'react-bootstrap';
 import {
   BsCaretDownFill,
@@ -416,15 +414,13 @@ const CreateExercise = ({ translate, showReviewModal }) => {
                 <Card key={index} className="bg-light mb-3 additional-field">
                   <Card.Body>
                     <div className="remove-btn-container">
-                      <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{translate('common.remove')}</Tooltip>}>
-                        <Button
-                          variant="outline-danger"
-                          className="btn-remove"
-                          onClick={() => handleRemoveFields(index)}
-                        >
-                          <BsX size={20} />
-                        </Button>
-                      </OverlayTrigger>
+                      <Button
+                        variant="outline-danger"
+                        className="btn-remove"
+                        onClick={() => handleRemoveFields(index)}
+                      >
+                        <BsX size={20} />
+                      </Button>
                     </div>
 
                     <Form.Group controlId={`formLabel${index}`}>
