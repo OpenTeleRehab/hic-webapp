@@ -28,6 +28,7 @@ import Select from 'react-select';
 import scssColors from '../../../scss/custom.scss';
 import { getExercises } from '../../../store/exercise/actions';
 import { renderStatusBadge } from 'utils/resource';
+import { STATUS } from '../../../variables/resourceStatus';
 
 let timer = null;
 const Exercise = ({ translate }) => {
@@ -225,7 +226,7 @@ const Exercise = ({ translate }) => {
                 uploaded_by: exercise.uploaded_by,
                 uploaded_date: exercise.uploaded_date,
                 reviewed_by: exercise.reviewed_by,
-                action: <BiEdit size={25} className="btn-warning-info" />
+                action: exercise.status === STATUS.pending ? <BiEdit size={25} className="btn-warning-info" /> : null
               };
             })}
           />
