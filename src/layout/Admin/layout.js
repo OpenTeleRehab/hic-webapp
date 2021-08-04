@@ -16,7 +16,7 @@ const Layout = ({ component: Component, title }) => {
   // set page title
   useEffect(() => {
     document.title = `${translate(title)} - ${process.env.REACT_APP_SITE_TITLE}`;
-  });
+  }, [title, translate]);
 
   return (
     <>

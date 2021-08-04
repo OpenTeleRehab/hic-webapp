@@ -23,7 +23,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
   // set page title
   useEffect(() => {
     document.title = `${translate(title)} - ${process.env.REACT_APP_SITE_TITLE}`;
-  });
+  }, [title, translate]);
 
   useEffect(() => {
     if (location.pathname === ROUTES.HOME) {

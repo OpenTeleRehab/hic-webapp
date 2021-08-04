@@ -35,6 +35,13 @@ const ExerciseDetail = () => {
     }
   }, [id, exercise]);
 
+  // set page title
+  useEffect(() => {
+    if (exercise) {
+      document.title = `${exercise.title} - ${process.env.REACT_APP_SITE_TITLE}`;
+    }
+  }, [exercise]);
+
   const handleDownload = async (event, fileName, fileUrl) => {
     event.preventDefault();
     const response = await fetch(fileUrl);
@@ -53,9 +60,7 @@ const ExerciseDetail = () => {
 
   return (
     <>
-      <div className="mb-2 d-flex justify-content-center">
-        <h3 className="text-primary font-weight-bold">{exercise.title}</h3>
-      </div>
+      <h1 className="text-primary font-weight-bold mb-3">{exercise.title}</h1>
       <Row>
         <Col sm={7} md={8}>
           <Carousel activeIndex={index} onSelect={handleSelect} controls={mediaUploads.length > 1} indicators={mediaUploads.length > 1} className="view-exercise-carousel">
@@ -131,11 +136,11 @@ const ExerciseDetail = () => {
                   </Row>
                   <Row>
                     <Col sm={6} md={6} className="p-0"><strong>{translate('exercise.file_size')}:</strong></Col>
-                    <Col sm={6} md={6} className="p-0">{mediaUpload.fileSize || 0}</Col>
+                    <Col sm={6} md={6} className="p-0">{((mediaUpload.size || 0) / 1024).toFixed(2) + 'kb'}</Col>
                   </Row>
                   <Row>
                     <Col sm={6} md={6} className="p-0"><strong>{translate('exercise.file_type')}:</strong></Col>
-                    <Col sm={6} md={6} className="p-0">{mediaUpload.fileType}</Col>
+                    <Col sm={6} md={6} className="p-0">{translate(mediaUpload.fileGroupType)}</Col>
                   </Row>
                 </Col>
               </Row>
