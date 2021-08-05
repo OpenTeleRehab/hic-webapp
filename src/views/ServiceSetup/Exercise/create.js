@@ -69,7 +69,7 @@ const CreateExercise = ({ translate }) => {
   const [setsError, setSetsError] = useState(false);
   const [repsError, setRepsError] = useState(false);
   const [mediaUploads, setMediaUploads] = useState([]);
-  const [mediaUploadsError, setMediaUploadsError] = useState(false);
+  // const [mediaUploadsError, setMediaUploadsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [inputFieldError, setInputFieldError] = useState([]);
   const [inputValueError, setInputValueError] = useState([]);
@@ -173,12 +173,12 @@ const CreateExercise = ({ translate }) => {
       setTitleError(false);
     }
 
-    if (mediaUploads.length === 0) {
-      canSave = false;
-      setMediaUploadsError(true);
-    } else {
-      setMediaUploadsError(false);
-    }
+    // if (mediaUploads.length === 0) {
+    //   canSave = false;
+    //   setMediaUploadsError(true);
+    // } else {
+    //   setMediaUploadsError(false);
+    // }
 
     const errorInputFields = [];
     const errorValueFields = [];
@@ -350,9 +350,9 @@ const CreateExercise = ({ translate }) => {
               <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} multiple accept="audio/*, video/*, image/*" />
             </div>
 
-            <div className={mediaUploadsError ? 'd-block invalid-feedback' : 'invalid-feedback'}>
-              {translate('exercise.media_upload.required')}
-            </div>
+            {/* <div className={mediaUploadsError ? 'd-block invalid-feedback' : 'invalid-feedback'}> */}
+            {/*  {translate('exercise.media_upload.required')} */}
+            {/* </div> */}
           </Col>
           <Col sm={7} xl={8} className="p-4">
             <h5 className="text-primary">{translate('common.information')}</h5>

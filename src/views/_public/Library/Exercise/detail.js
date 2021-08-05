@@ -88,6 +88,16 @@ const ExerciseDetail = () => {
                 }
               </Carousel.Item>
             ))}
+
+            {
+              mediaUploads.length === 0 && (
+                <div className="exercise-img">
+                  <div className="w-100 h-100 px-2 py-4 text-center d-flex justify-content-center exercise-header">
+                    <img className="d-block w-50" src={'/images/exercise.svg'} alt='exercise' />
+                  </div>
+                </div>
+              )
+            }
           </Carousel>
 
           {exercise.sets > 0 && (
