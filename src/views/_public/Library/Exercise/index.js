@@ -203,6 +203,13 @@ const Exercise = ({ translate }) => {
                               )
                             )
                           }
+                          {
+                            exercise.files.length === 0 && (
+                              <div className="w-100 h-100 px-2 py-4 text-center d-flex justify-content-center exercise-header">
+                                <img src={'/images/exercise.svg'} alt='exercise' />
+                              </div>
+                            )
+                          }
                         </div>
                         <Card.Body className="d-flex flex-column justify-content-between">
                           <Card.Title>
