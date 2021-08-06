@@ -120,6 +120,7 @@ const Exercise = ({ translate }) => {
     { name: 'title', title: translate('common.title') },
     { name: 'status', title: translate('common.status') },
     { name: 'uploaded_by', title: translate('common.uploaded_by') },
+    { name: 'uploaded_by_email', title: translate('common.uploaded_by_email') },
     { name: 'uploaded_date', title: translate('common.uploaded_date') },
     { name: 'reviewed_by', title: translate('common.reviewed_by') },
     { name: 'action', title: translate('common.need_action') }
@@ -224,6 +225,7 @@ const Exercise = ({ translate }) => {
                 title: exercise.title,
                 status: renderStatusBadge(exercise),
                 uploaded_by: exercise.uploaded_by,
+                uploaded_by_email: exercise.uploaded_by_email,
                 uploaded_date: exercise.uploaded_date,
                 reviewed_by: exercise.reviewed_by,
                 action: exercise.status === STATUS.pending ? <BiEdit size={25} className="btn-warning-info" /> : null
