@@ -1,5 +1,6 @@
 .main {
 	background-color: $blue-10;
+	min-height: calc(100vh - #{toRem(101)});
 
 	&-content {
 		padding: toRem(20);
