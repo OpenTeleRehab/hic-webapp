@@ -116,11 +116,11 @@ const ExerciseDetail = () => {
           </div>
         </Col>
         <Col sm={5} md={4}>
-          <h5 className="text-primary">{translate('exercise.attachments')}</h5>
+          <h5 className="text-primary mb-3">{translate('exercise.attachments')}</h5>
           { mediaUploads.map((mediaUpload, index) => (
             <>
               <Row key={index}>
-                <Col sm={6} md={6}>
+                <Col sm={5}>
                   { mediaUpload.fileType === 'audio/mpeg' &&
                     <div className="img-thumbnail w-100 pt-2 pl-5 pr-5 bg-light audio-wrapper">
                       <audio controls className="w-100 mt-4">
@@ -140,19 +140,17 @@ const ExerciseDetail = () => {
                     </video>
                   }
                 </Col>
-                <Col sm={6} md={6}>
-                  <Row>
-                    <Col sm={6} md={6} className="p-0"><strong>{translate('exercise.file_name')}:</strong></Col>
-                    <Col sm={6} md={6} className="p-0" style={{ wordWrap: 'break-word' }}>{mediaUpload.fileName.replace(/\.[^/.]+$/, '')}</Col>
-                  </Row>
-                  <Row>
-                    <Col sm={6} md={6} className="p-0"><strong>{translate('exercise.file_size')}:</strong></Col>
-                    <Col sm={6} md={6} className="p-0">{formatFileSize(mediaUpload.size)}</Col>
-                  </Row>
-                  <Row>
-                    <Col sm={6} md={6} className="p-0"><strong>{translate('exercise.file_type')}:</strong></Col>
-                    <Col sm={6} md={6} className="p-0">{translate(mediaUpload.fileGroupType)}</Col>
-                  </Row>
+                <Col sm={7} className="pl-sm-0 mt-3 mt-sm-0">
+                  <dl className="row no-gutters">
+                    <dt className="col-6 pr-1">{translate('exercise.file_name')}:</dt>
+                    <dd className="col-6 text-break">{mediaUpload.fileName.replace(/\.[^/.]+$/, '')}</dd>
+
+                    <dt className="col-6 pr-1">{translate('exercise.file_size')}:</dt>
+                    <dd className="col-6 text-break">{formatFileSize(mediaUpload.size)}</dd>
+
+                    <dt className="col-6 pr-1">{translate('exercise.file_type')}:</dt>
+                    <dd className="col-6 text-break">{translate(mediaUpload.fileGroupType)}</dd>
+                  </dl>
                 </Col>
               </Row>
               <Row className="mb-3 mt-3">
