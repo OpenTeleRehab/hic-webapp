@@ -1,9 +1,6 @@
 .exercise-card {
 	overflow: hidden;
 	height: 350px;
-	&:hover {
-		cursor: pointer;
-	}
 
 	.img-fluid {
 		max-width: 100%;
@@ -18,6 +15,9 @@
 		display: -webkit-box;
 		-webkit-box-orient: vertical;
 		-webkit-line-clamp: 3;
+		&:hover {
+		  cursor: pointer;
+		}
 	}
 
 	.action {
