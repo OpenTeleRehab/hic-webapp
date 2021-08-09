@@ -22,12 +22,12 @@ const ReviewerFilterCell = ({ filter, onFilter }) => {
     }),
     menuPortal: base => ({ ...base, zIndex: 1000 })
   };
-  console.log(reviewers);
 
   const handleFilter = (value) => {
     setReviewer(value);
     onFilter(value === '' ? null : { value });
   };
+
   const optionData = [
     {
       id: '',

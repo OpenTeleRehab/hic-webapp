@@ -2,6 +2,7 @@
 	padding-left: 0;
 	padding-right: 0;
 	overflow-y: auto;
+	height: calc(100vh - #{toRem(101)});
 	width: toRem(265);
 
 	.navbar-nav {
@@ -49,4 +50,10 @@
 
 @include media-breakpoint-up(lg) {
 
+}
+
+@include media-breakpoint-up(xl) {
+	.aside {
+		height: calc(100vh - #{toRem(111)});
+	}
 }

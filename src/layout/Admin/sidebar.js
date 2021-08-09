@@ -65,7 +65,7 @@ const Sidebar = () => {
 
   return (
     <>
-      <Navbar className="aside align-items-start" bg="white">
+      <Navbar className="aside align-items-start fixed-l" bg="white">
         <Navbar.Toggle aria-controls="admin-navbar-nav" />
         <Navbar.Collapse id="admin-navbar-nav">
           <Nav className="flex-column">

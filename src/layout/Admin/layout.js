@@ -20,16 +20,16 @@ const Layout = ({ component: Component, title }) => {
 
   return (
     <>
-      <header className="header">
+      <header className="header fixed-top">
         <Navigation translate={translate} />
       </header>
-      <main className="d-flex main">
+      <main className="d-flex main main-admin-area">
         <Sidebar />
         <div className="main-content">
           <Component translate={translate} />
         </div>
       </main>
-      <Footer />
+      <Footer fixedBottom={true} />
 
       <ToastNotification />
       <SpinnerOverlay />
