@@ -6,6 +6,7 @@ import StatusFilterCell from 'components/Table/FilterCells/StatusFilterCell';
 import DateRangeFilterCell from 'components/Table/FilterCells/DateRangeFilterCell';
 import ReviewerFilterCell from 'components/Table/FilterCells/ReviewerFilterCell';
 import ContributorFilterCell from 'components/Table/FilterCells/ContributorFilterCell';
+import ContributorEmailFilterCell from 'components/Table/FilterCells/ContributorEmailFilterCell';
 
 const FilterCell = (props) => {
   const { column } = props;
@@ -19,6 +20,8 @@ const FilterCell = (props) => {
     return <ReviewerFilterCell {...props} />;
   } else if (column.name === 'uploaded_by') {
     return <ContributorFilterCell {...props} />;
+  } else if (column.name === 'uploaded_by_email') {
+    return <ContributorEmailFilterCell {...props} />;
   }
 
   return <TableFilterRow.Cell {...props} />;
