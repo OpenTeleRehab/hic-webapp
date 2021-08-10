@@ -3,6 +3,8 @@ import { Exercise } from 'services/exercise';
 import { mutation } from './mutations';
 import { showErrorNotification, showSuccessNotification } from 'store/notification/actions';
 import { showSpinner } from 'store/spinnerOverlay/actions';
+import { STATUS } from '../../variables/resourceStatus';
+import { getTranslate } from 'react-localize-redux';
 
 export const getExercises = payload => async dispatch => {
   dispatch(mutation.getExercisesRequest());
@@ -57,16 +59,18 @@ export const contributeExercise = (payloads, formFields) => async dispatch => {
   }
 };
 
-export const approveExercise = (id, payload, mediaUploads) => async dispatch => {
+export const approveExercise = (id, payload, mediaUploads) => async (dispatch, getState) => {
+  const exercise = getState().exercise.exercise;
+  const translate = getTranslate(getState().localize);
   dispatch(mutation.updateExerciseRequest());
   const data = await Exercise.updateExercise(id, payload, mediaUploads);
   if (data.success) {
     dispatch(mutation.updateExerciseSuccess());
-    dispatch(showSuccessNotification('toast_title.approve_exercise', data.message));
+    dispatch(showSuccessNotification(exercise.status === STATUS.approved ? 'toast_title.save_exercise' : 'toast_title.approve_exercise', data.message, { status: exercise.status === STATUS.approved ? translate('exercise.saved') : translate('exercise.approved') }));
     return true;
   } else {
     dispatch(mutation.updateExerciseFail());
-    dispatch(showErrorNotification('toast_title.approve_exercise', data.message));
+    dispatch(showErrorNotification(exercise.status === STATUS.approved ? 'toast_title.save_exercise' : 'toast_title.approve_exercise', data.message));
     return false;
   }
 };
