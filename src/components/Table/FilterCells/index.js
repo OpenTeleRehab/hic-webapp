@@ -7,6 +7,8 @@ import DateRangeFilterCell from 'components/Table/FilterCells/DateRangeFilterCel
 import ReviewerFilterCell from 'components/Table/FilterCells/ReviewerFilterCell';
 import ContributorFilterCell from 'components/Table/FilterCells/ContributorFilterCell';
 import ContributorEmailFilterCell from 'components/Table/FilterCells/ContributorEmailFilterCell';
+import GenderFilterCell from 'components/Table/FilterCells/GenderFilterCell';
+import UserGroupFilterCell from 'components/Table/FilterCells/UserGroupFilterCell';
 
 const FilterCell = (props) => {
   const { column } = props;
@@ -14,7 +16,7 @@ const FilterCell = (props) => {
     return <StatusFilterCell {...props} />;
   } else if (column.name === 'action') {
     return <th className="dx-g-bs4-fixed-cell position-sticky" style={{ right: 0 }} />;
-  } else if (column.name === 'uploaded_date') {
+  } else if (column.name === 'uploaded_date' || column.name === 'last_login') {
     return <DateRangeFilterCell {...props} />;
   } else if (column.name === 'reviewed_by') {
     return <ReviewerFilterCell {...props} />;
@@ -22,6 +24,10 @@ const FilterCell = (props) => {
     return <ContributorFilterCell {...props} />;
   } else if (column.name === 'uploaded_by_email') {
     return <ContributorEmailFilterCell {...props} />;
+  } else if (column.name === 'gender') {
+    return <GenderFilterCell {...props} />;
+  } else if (column.name === 'type') {
+    return <UserGroupFilterCell {...props} />;
   }
 
   return <TableFilterRow.Cell {...props} />;
