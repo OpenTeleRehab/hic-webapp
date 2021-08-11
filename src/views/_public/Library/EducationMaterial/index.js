@@ -7,13 +7,12 @@ import {
   Card,
   Accordion,
   OverlayTrigger,
-  Tooltip
+  Tooltip, Button
 } from 'react-bootstrap';
 
 import { useDispatch, useSelector } from 'react-redux';
 import SearchInput from 'components/Form/SearchInput';
 import { getEducationMaterials } from 'store/educationMaterial/actions';
-import ViewEducationMaterial from './view';
 import { getCategoryTreeData } from 'store/category/actions';
 import { CATEGORY_TYPES } from 'variables/category';
 import CheckboxTree from 'react-checkbox-tree';
@@ -28,11 +27,13 @@ import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import { MATERIAL_TYPE } from '../../../../variables/activity';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useHistory } from 'react-router-dom';
+import * as ROUTES from '../../../../variables/routes';
 
 let timer = null;
 const EducationMaterial = ({ translate }) => {
   const dispatch = useDispatch();
-
+  const history = useHistory();
   const [formFields, setFormFields] = useState({
     search_value: ''
   });
@@ -41,8 +42,6 @@ const EducationMaterial = ({ translate }) => {
   const { profile } = useSelector((state) => state.auth);
   const { categoryTreeData } = useSelector((state) => state.category);
   const [pageSize, setPageSize] = useState(9);
-  const [id, setId] = useState(null);
-  const [showView, setShowView] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
 
@@ -96,16 +95,6 @@ const EducationMaterial = ({ translate }) => {
     setPageSize(8);
   };
 
-  const handleView = (id) => {
-    setId(id);
-    setShowView(true);
-  };
-
-  const handleViewClose = () => {
-    setId('');
-    setShowView(false);
-  };
-
   const handleSetSelectedCategories = (parent, checked) => {
     setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
     setPageSize(8);
@@ -113,6 +102,10 @@ const EducationMaterial = ({ translate }) => {
 
   const fetchMoreData = () => {
     setPageSize(pageSize + 8);
+  };
+
+  const handleViewDetail = (id) => {
+    history.push(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL.replace(':id', id));
   };
 
   return (
@@ -188,44 +181,45 @@ const EducationMaterial = ({ translate }) => {
                   { educationMaterials.map(material => (
                     <Col key={material.id} md={6} lg={4}>
                       <Card className="exercise-card shadow-sm mb-4">
-                        <div id={`material-${material.id}`} className="card-container" onClick={() => handleView(material.id)}>
-                          <div className="card-img bg-light">
-                            {(material.file && (material.file.hasThumbnail || material.file.fileGroupType === MATERIAL_TYPE.image)) ? (
-                              <img
-                                className="img-fluid mx-auto d-block"
-                                src={`${process.env.REACT_APP_ADMIN_API_BASE_URL}/file/${material.file.id}?thumbnail=${material.file.hasThumbnail}`}
-                                alt="Material"
-                              />
-                            ) : (
-                              <div className="w-100 h-100 px-2 py-4 text-white bg-primary text-center">
-                                <img src={'/images/education-material-icon.svg'} alt="Education Material" height={64} />
-                                <p>{translate('activity.material').toUpperCase()}</p>
-                              </div>
-                            )}
-                          </div>
-                          <Card.Body className="d-flex flex-column justify-content-between">
-                            <Card.Title>
-                              {
-                                material.title.length <= 50
-                                  ? <h5 className="card-title">
-                                    { material.title }
-                                  </h5>
-                                  : (
-                                    <OverlayTrigger
-                                      overlay={<Tooltip id="button-tooltip-2">{ material.title }</Tooltip>}
-                                    >
-                                      <h5 className="card-title">
-                                        { material.title }
-                                      </h5>
-                                    </OverlayTrigger>
-                                  )
-                              }
-                            </Card.Title>
-                            <Card.Text>
-                              {material.file ? translate(material.file.fileGroupType) : ''}
-                            </Card.Text>
-                          </Card.Body>
+                        <div className="card-img bg-light">
+                          {(material.file && (material.file.hasThumbnail || material.file.fileGroupType === MATERIAL_TYPE.image)) ? (
+                            <img
+                              className="img-fluid mx-auto d-block"
+                              src={`${process.env.REACT_APP_API_BASE_URL}/file/${material.file.id}?thumbnail=${material.file.hasThumbnail}`}
+                              alt="Material"
+                            />
+                          ) : (
+                            <div className="w-100 h-100 px-2 py-4 text-white bg-primary text-center">
+                              <img src={'/images/education-material-icon.svg'} alt="Education Material" height={64} />
+                              <p className="mt-2">{translate('library.material').toUpperCase()}</p>
+                            </div>
+                          )}
                         </div>
+                        <Card.Body className="d-flex flex-column justify-content-between">
+                          <Card.Title>
+                            {
+                              material.title.length <= 50
+                                ? <h5 className="card-title">
+                                  { material.title }
+                                </h5>
+                                : (
+                                  <OverlayTrigger
+                                    overlay={<Tooltip id="button-tooltip-2">{ material.title }</Tooltip>}
+                                  >
+                                    <h5 className="card-title">
+                                      { material.title }
+                                    </h5>
+                                  </OverlayTrigger>
+                                )
+                            }
+                          </Card.Title>
+                          <Card.Text>
+                            {material.file ? translate(material.file.fileGroupType) : ''}
+                          </Card.Text>
+                        </Card.Body>
+                        <Card.Footer>
+                          <Button variant="link" className="text-decoration-none" onClick={() => handleViewDetail(material.id)}>{translate('exercise.learn_more')}</Button>
+                        </Card.Footer>
                       </Card>
                     </Col>
                   ))}
@@ -235,7 +229,6 @@ const EducationMaterial = ({ translate }) => {
           )}
         </Col>
       </Row>
-      {showView && <ViewEducationMaterial showView={showView} handleViewClose={handleViewClose} id={id} />}
     </>
   );
 };

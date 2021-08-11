@@ -10,6 +10,7 @@ import PublicHomePage from 'views/_public';
 import LibraryPage from 'views/_public/Library';
 import ContributePage from 'views/_public/Contribute';
 import ExerciseDetail from 'views/_public/Library/Exercise/detail';
+import EducationMaterialDetail from 'views/_public/Library/EducationMaterial/detail';
 
 import DashboardPage from 'views/Dashboard';
 import ServiceSetupPage from 'views/ServiceSetup';
@@ -59,6 +60,14 @@ const publicRoutes = [
     title: 'exercise.detail',
     path: ROUTES.LIBRARY_EXERCISE_DETAIL,
     component: ExerciseDetail,
+    exact: true,
+    type: PUBLIC,
+    defaultTemplate: false
+  },
+  {
+    title: 'education_material.detail',
+    path: ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL,
+    component: EducationMaterialDetail,
     exact: true,
     type: PUBLIC,
     defaultTemplate: false
