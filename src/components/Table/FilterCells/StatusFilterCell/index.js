@@ -36,8 +36,8 @@ const StatusFilterCell = ({ filter, onFilter }) => {
       name: translate('common.approved')
     },
     {
-      value: STATUS.declined,
-      name: translate('common.declined')
+      value: STATUS.rejected,
+      name: translate('common.rejected')
     }
   ];
 

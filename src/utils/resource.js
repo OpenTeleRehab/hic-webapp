@@ -9,8 +9,8 @@ export const renderStatusBadge = (resource) => {
   }
 
   let status = STATUS.pending;
-  if (resource.status === STATUS.declined) {
-    status = STATUS.declined;
+  if (resource.status === STATUS.rejected) {
+    status = STATUS.rejected;
   } else if (resource.status === STATUS.approved) {
     status = STATUS.approved;
   }
