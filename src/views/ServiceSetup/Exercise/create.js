@@ -38,6 +38,7 @@ import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import scssColors from '../../../scss/custom.scss';
 import { formatFileSize } from '../../../utils/file';
+import { STATUS } from '../../../variables/resourceStatus';
 
 const CreateExercise = ({ translate }) => {
   const dispatch = useDispatch();
@@ -530,12 +531,20 @@ const CreateExercise = ({ translate }) => {
 
           { id && (
             <>
-              <Button
-                onClick={handleSave}
-                disabled={isLoading}
-              >
-                {translate('common.approve')}
-              </Button>
+              {exercise.status === STATUS.approved
+                ? <Button
+                  onClick={handleSave}
+                  disabled={isLoading}
+                >
+                  {translate('common.save')}
+                </Button>
+                : <Button
+                  onClick={handleSave}
+                  disabled={isLoading}
+                >
+                  {translate('common.approve')}
+                </Button>
+              }
               <Button
                 className="ml-2"
                 variant="outline-dark"
