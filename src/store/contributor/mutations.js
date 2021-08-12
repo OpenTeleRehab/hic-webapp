@@ -11,8 +11,23 @@ const getContributorsFail = () => ({
   type: 'GET_CONTRIBUTORS_FAIL'
 });
 
+const getConfirmSubmissionRequest = () => ({
+  type: 'GET_CONFIRM_SUBMISSION_REQUEST'
+});
+
+const getConfirmSubmissionSuccess = () => ({
+  type: 'GET_CONFIRM_SUBMISSION_SUCCESS'
+});
+
+const getConfirmSubmissionFail = () => ({
+  type: 'GET_CONFIRM_SUBMISSION_FAIL'
+});
+
 export const mutation = {
   getContributorsRequest,
   getContributorsSuccess,
-  getContributorsFail
+  getContributorsFail,
+  getConfirmSubmissionRequest,
+  getConfirmSubmissionSuccess,
+  getConfirmSubmissionFail
 };

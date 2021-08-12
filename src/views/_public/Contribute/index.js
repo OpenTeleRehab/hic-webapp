@@ -9,6 +9,8 @@ import CreateEducationMaterial from './EducationMaterial/create';
 import CreateQuestionnaire from './Questionnaire/create';
 import { CONTRIBUTE } from '../../../variables/routes';
 import ReviewSubmissionModal from './ReviewSubmission';
+import Dialog from '../../../components/Dialog';
+import * as ROUTES from '../../../variables/routes';
 
 const Contribute = () => {
   const { hash } = useLocation();
@@ -16,6 +18,7 @@ const Contribute = () => {
   const translate = getTranslate(localize);
   const [view, setView] = useState(undefined);
   const [isShowReviewModal, setIsShowReviewModal] = useState(false);
+  const [isShowConfirmSubmissionModal, setIsShowConfirmSubmissionModal] = useState(false);
   const history = useHistory();
 
   const types = [
@@ -49,6 +52,11 @@ const Contribute = () => {
   const handleChange = (e) => {
     const { value } = e.target;
     history.push(`${CONTRIBUTE}#${value}`);
+  };
+
+  const handleCancelConfirmSubmission = () => {
+    setIsShowConfirmSubmissionModal(false);
+    history.push(ROUTES.LIBRARY);
   };
 
   return (
@@ -87,7 +95,15 @@ const Contribute = () => {
         { view === CATEGORY_TYPES.MATERIAL && <CreateEducationMaterial translate={translate} showReviewModal={setIsShowReviewModal} /> }
         { view === CATEGORY_TYPES.QUESTIONNAIRE && <CreateQuestionnaire translate={translate} showReviewModal={setIsShowReviewModal} /> }
 
-        {isShowReviewModal && <ReviewSubmissionModal translate={translate} showReviewModal={setIsShowReviewModal} />}
+        {isShowReviewModal && <ReviewSubmissionModal translate={translate} showReviewModal={setIsShowReviewModal} showConfirmSubmissionModal={setIsShowConfirmSubmissionModal} />}
+        <Dialog
+          show={isShowConfirmSubmissionModal}
+          title={translate('contribute.confirm_submission.title')}
+          onCancel={handleCancelConfirmSubmission}
+          cancelLabel={translate('common.close')}
+        >
+          {translate('contribute.confirm_submission.text')}
+        </Dialog>
       </div>
     </>
   );

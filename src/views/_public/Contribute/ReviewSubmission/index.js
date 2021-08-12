@@ -4,12 +4,10 @@ import PropTypes from 'prop-types';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import { useDispatch, useSelector } from 'react-redux';
 import { contributeExercise } from '../../../../store/exercise/actions';
-import * as ROUTES from 'variables/routes';
-import { useHistory } from 'react-router-dom';
 import { deleteExercise } from '../../../../store/contribute/actions';
 import { showSpinner } from '../../../../store/spinnerOverlay/actions';
 
-const ReviewSubmissionModal = ({ translate, showReviewModal }) => {
+const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissionModal }) => {
   const dispatch = useDispatch();
   const handleClose = () => showReviewModal(false);
   const [formFields, setFormFields] = useState({
@@ -24,7 +22,6 @@ const ReviewSubmissionModal = ({ translate, showReviewModal }) => {
   const [agreeTermsAndCondition, setAgreeTermsAndCondition] = useState(false);
   const [agreeToInclude, setAgreeToInclude] = useState(false);
   const [selectedExercises, setSelectedExercises] = useState([]);
-  const history = useHistory();
 
   useEffect(() => {
     exercises.forEach((exercise, index) => {
@@ -89,7 +86,8 @@ const ReviewSubmissionModal = ({ translate, showReviewModal }) => {
           if (result) {
             dispatch(deleteExercise());
             dispatch(showSpinner(false));
-            history.push(ROUTES.LIBRARY);
+            showReviewModal(false);
+            showConfirmSubmissionModal(true);
           }
         });
       }
@@ -223,7 +221,8 @@ const ReviewSubmissionModal = ({ translate, showReviewModal }) => {
 
 ReviewSubmissionModal.propTypes = {
   translate: PropTypes.func,
-  showReviewModal: PropTypes.func
+  showReviewModal: PropTypes.func,
+  showConfirmSubmissionModal: PropTypes.func
 };
 
 export default ReviewSubmissionModal;

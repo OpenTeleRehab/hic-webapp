@@ -5,6 +5,7 @@ export const LIBRARY_QUESTIONNAIRE = LIBRARY + '#questionnaire';
 export const LIBRARY_EXERCISE_DETAIL = LIBRARY + '/exercise/detail/:id';
 
 export const CONTRIBUTE = '/contribute';
+export const CONFIRM_SUBMISSION = '/contribute/confirm-submission';
 
 export const ADMIN = '/admin';
 export const ADMIN_DASHBOARD = '/admin';
