@@ -27,6 +27,8 @@ import scssColors from '../../../scss/custom.scss';
 import { renderStatusBadge } from '../../../utils/resource';
 import { STATUS } from '../../../variables/resourceStatus';
 import { BiEdit } from 'react-icons/bi';
+import { getReviewers } from '../../../store/user/actions';
+import { getContributors } from '../../../store/contributor/actions';
 
 let timer = null;
 const EducationMaterial = ({ translate }) => {
@@ -62,6 +64,8 @@ const EducationMaterial = ({ translate }) => {
 
   useEffect(() => {
     dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.MATERIAL, lang: language }));
+    dispatch(getReviewers());
+    dispatch(getContributors());
   }, [language, dispatch]);
 
   useEffect(() => {

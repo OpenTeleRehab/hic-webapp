@@ -43,10 +43,9 @@ const CreateExercise = ({ translate, showReviewModal }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [mediaUploads, setMediaUploads] = useState([]);
   const [additionalFields, setAdditionalFields] = useState([
-    { field: 'Aim', value: '' },
-    { field: 'Instruction', value: '' },
-    { field: 'TBD', value: '' },
-    { field: 'TBD', value: '' }
+    { field: translate('additional_field.aim'), value: '' },
+    { field: translate('additional_field.progressions_variations'), value: '' },
+    { field: translate('additional_field.precautions'), value: '' }
   ]);
   const [formFields, setFormFields] = useState({
     title: '',
@@ -190,10 +189,9 @@ const CreateExercise = ({ translate, showReviewModal }) => {
     setMediaUploads([]);
     setSelectedCategories([]);
     setAdditionalFields([
-      { field: 'Aim', value: '' },
-      { field: 'Instruction', value: '' },
-      { field: 'TBD', value: '' },
-      { field: 'TBD', value: '' }
+      { field: translate('additional_field.aim'), value: '' },
+      { field: translate('additional_field.progressions_variations'), value: '' },
+      { field: translate('additional_field.precautions'), value: '' }
     ]);
     setFormFields({
       title: '',

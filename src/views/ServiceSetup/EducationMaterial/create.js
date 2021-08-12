@@ -49,6 +49,7 @@ const CreateEducationMaterial = ({ translate }) => {
 
   const [titleError, setTitleError] = useState(false);
   const [fileError, setFileError] = useState(false);
+  const [fileMaxSizeError, setFileMaxSizeError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -122,11 +123,17 @@ const CreateEducationMaterial = ({ translate }) => {
       setTitleError(false);
     }
 
-    if (!materialFile && (formFields.file === undefined || toMB(formFields.file.size) > maxFileSize)) {
+    if (!materialFile && (formFields.file === undefined)) {
       canSave = false;
       setFileError(true);
     } else {
       setFileError(false);
+      if (formFields.file && toMB(formFields.file.size) > maxFileSize) {
+        canSave = false;
+        setFileMaxSizeError(true);
+      } else {
+        setFileMaxSizeError(false);
+      }
     }
 
     let serializedSelectedCats = [];
@@ -213,7 +220,7 @@ const CreateEducationMaterial = ({ translate }) => {
             <Form.Group controlId="formLanguage">
               <Form.Label>{translate('common.show_language.version')}</Form.Label>
               <Select
-                isDisabled={!id}
+                isDisabled={!id || (educationMaterial && educationMaterial.status !== STATUS.approved)}
                 classNamePrefix="filter"
                 value={languages.filter(option => option.id === language)}
                 getOptionLabel={option => option.name}
@@ -245,15 +252,13 @@ const CreateEducationMaterial = ({ translate }) => {
                 <Form.File.Input
                   name='file'
                   onChange={handleFileChange}
-                  isInvalid={fileError}
+                  isInvalid={fileError || fileMaxSizeError}
                   accept="audio/*, video/*, image/*, .pdf"
                 />
                 <Form.File.Label>{renderUploadFileName()}</Form.File.Label>
                 <Form.Control.Feedback type="invalid">
-                  {formFields.file === undefined
-                    ? translate('education_material.upload_file.required')
-                    : translate('education_material.upload_file.max_size', { size: maxFileSize })
-                  }
+                  {fileError && translate('education_material.upload_file.required')}
+                  {fileMaxSizeError && translate('education_material.upload_file.max_size', { size: maxFileSize })}
                 </Form.Control.Feedback>
 
                 {materialFile && (
