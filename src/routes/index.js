@@ -24,6 +24,7 @@ import ProfilePage from 'views/Profile';
 import FaqPage from 'views/Faq';
 import TermConditionPage from 'views/TermCondition';
 import PrivacyPolicyPage from 'views/PrivacyPolicy';
+import UserPage from 'views/User';
 
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES } from 'variables/user';
@@ -82,6 +83,14 @@ const routes = [
     exact: true,
     type: PRIVATE,
     roles: [USER_ROLES.MANAGE_RESOURCE]
+  },
+  {
+    title: 'users',
+    path: ROUTES.ADMIN_USERS,
+    component: UserPage,
+    exact: true,
+    type: PRIVATE,
+    roles: [USER_ROLES.MANAGE_USER]
   },
   {
     title: 'exercise.create',
