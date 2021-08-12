@@ -27,6 +27,7 @@ import PrivacyPolicyPage from 'views/PrivacyPolicy';
 
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES } from 'variables/user';
+
 const PRIVATE = 'private';
 const PUBLIC = 'public';
 
@@ -104,15 +105,15 @@ const routes = [
     component: CreateEducationMaterial,
     exact: true,
     type: PRIVATE,
-    roles: [USER_ROLES.SETUP_EDUCATIONAL_MATERIAL]
+    roles: [USER_ROLES.MANAGE_RESOURCE]
   },
   {
     title: 'education_material.edit',
-    path: ROUTES.EDUCATION_MATERIAL_EDIT,
+    path: ROUTES.ADMIN_RESOURCES_EDUCATION_MATERIAL_EDIT,
     component: CreateEducationMaterial,
     exact: true,
     type: PRIVATE,
-    roles: [USER_ROLES.SETUP_EDUCATIONAL_MATERIAL]
+    roles: [USER_ROLES.MANAGE_RESOURCE]
   },
   {
     title: 'questionnaire.create',

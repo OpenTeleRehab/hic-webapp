@@ -68,6 +68,19 @@ const clearFilterEducationMaterialsRequest = () => ({
   type: 'CLEAR_FILTER_EDUCATION_MATERIALS_REQUEST'
 });
 
+const rejectEducationMaterialFail = () => ({
+  type: 'REJECT_EDUCATION_MATERIAL_FAIL'
+});
+
+const rejectEducationMaterialRequest = () => ({
+  type: 'REJECT_EDUCATION_MATERIAL_REQUEST'
+});
+
+const rejectEducationMaterialSuccess = (data) => ({
+  type: 'REJECT_EDUCATION_MATERIAL_SUCCESS',
+  data
+});
+
 export const mutation = {
   getEducationMaterialRequest,
   getEducationMaterialSuccess,
@@ -84,5 +97,8 @@ export const mutation = {
   deleteEducationMaterialRequest,
   deleteEducationMaterialSuccess,
   deleteEducationMaterialFail,
-  clearFilterEducationMaterialsRequest
+  clearFilterEducationMaterialsRequest,
+  rejectEducationMaterialSuccess,
+  rejectEducationMaterialFail,
+  rejectEducationMaterialRequest
 };

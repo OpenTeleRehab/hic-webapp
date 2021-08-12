@@ -74,10 +74,23 @@ const deleteEducationMaterial = id => {
     });
 };
 
+const rejectEducationMaterial = id => {
+  return axios.post(`/education-material/reject/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const EducationMaterial = {
   getEducationMaterial,
   createEducationMaterial,
   updateEducationMaterial,
   getEducationMaterials,
-  deleteEducationMaterial
+  deleteEducationMaterial,
+  rejectEducationMaterial
 };
