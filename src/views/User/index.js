@@ -6,17 +6,33 @@ import * as moment from 'moment';
 
 import CreateUser from './create';
 import PropTypes from 'prop-types';
-import { getUsers } from 'store/user/actions';
+import { getUsers, deleteUser, updateUserStatus } from 'store/user/actions';
 import CustomTable from 'components/Table';
 import settings from 'settings';
 import { EditAction, DeleteAction, EnabledAction, DisabledAction, MailSendAction } from 'components/ActionIcons';
 import { Translate } from 'react-localize-redux';
+import Dialog from 'components/Dialog';
 
 let timer = null;
 const User = ({ translate }) => {
   const dispatch = useDispatch();
   const [editId, setEditId] = useState('');
   const users = useSelector(state => state.user.users);
+  const { profile } = useSelector((state) => state.auth);
+  const [pageSize, setPageSize] = useState(60);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [searchValue, setSearchValue] = useState('');
+  const [filters, setFilters] = useState([]);
+  const [show, setShow] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [id, setId] = useState('');
+  const [type, setType] = useState(undefined);
+  const [showSwitchStatusDialog, setShowSwitchStatusDialog] = useState(false);
+  const [formFields, setFormFields] = useState({
+    enabled: 0,
+    type: undefined
+  });
 
   const columns = [
     { name: 'first_name', title: translate('common.first_name') },
@@ -28,12 +44,11 @@ const User = ({ translate }) => {
     { name: 'action', title: translate('common.action') }
   ];
 
-  const [pageSize, setPageSize] = useState(60);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
-  const [searchValue, setSearchValue] = useState('');
-  const [filters, setFilters] = useState([]);
-  const [show, setShow] = useState(false);
+  const columnExtensions = [
+    { columnName: 'last_name', wordWrapEnabled: true },
+    { columnName: 'first_name', wordWrapEnabled: true },
+    { columnName: 'last_login', wordWrapEnabled: true, width: 250 }
+  ];
 
   const handleShow = () => setShow(true);
   const handleClose = () => {
@@ -61,16 +76,54 @@ const User = ({ translate }) => {
     }, 500);
   }, [currentPage, pageSize, searchValue, filters, dispatch]);
 
-  const columnExtensions = [
-    { columnName: 'last_name', wordWrapEnabled: true },
-    { columnName: 'first_name', wordWrapEnabled: true },
-    { columnName: 'last_login', wordWrapEnabled: true, width: 250 }
-  ];
+  useEffect(() => {
+    if (id && users.length) {
+      const data = users.find(user => user.id === id);
+      setType(data.type);
+    }
+  }, [id, users]);
+
+  const handleDelete = (id) => {
+    setId(id);
+    setShowDeleteDialog(true);
+  };
+
+  const handleDeleteDialogClose = () => {
+    setId(null);
+    setShowDeleteDialog(false);
+  };
+
+  const handleDeleteDialogConfirm = () => {
+    dispatch(deleteUser(id, type)).then(result => {
+      if (result) {
+        handleDeleteDialogClose();
+      }
+    });
+  };
+
+  const handleSwitchStatus = (id, enabled) => {
+    setId(id);
+    setFormFields({ ...formFields, enabled: enabled, type: type });
+    setShowSwitchStatusDialog(true);
+  };
+
+  const handleSwitchStatusDialogClose = () => {
+    setId(null);
+    setShowSwitchStatusDialog(false);
+  };
+
+  const handleSwitchStatusDialogConfirm = () => {
+    dispatch(updateUserStatus(id, formFields)).then(result => {
+      if (result) {
+        handleSwitchStatusDialogClose();
+      }
+    });
+  };
 
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
-        <h1>{translate('user.management')}</h1>
+        <h1 className="text-primary">{translate('user.management')}</h1>
         <div className="btn-toolbar mb-2 mb-md-0">
           <Button variant="primary" onClick={handleShow}>
             <BsPlus size={20} className="mr-1" />
@@ -94,11 +147,11 @@ const User = ({ translate }) => {
             const action = (
               <>
                 {user.enabled
-                  ? <EnabledAction />
-                  : <DisabledAction />
+                  ? <EnabledAction onClick={() => handleSwitchStatus(user.id, 0)} disabled={parseInt(user.id) === parseInt(profile.id)}/>
+                  : <DisabledAction onClick={() => handleSwitchStatus(user.id, 1)} disabled={parseInt(user.id) === parseInt(profile.id)} />
                 }
                 <EditAction />
-                <DeleteAction className="ml-1" />
+                <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={parseInt(user.id) === parseInt(profile.id) || user.enabled} />
                 <MailSendAction />
               </>
             );
@@ -116,6 +169,28 @@ const User = ({ translate }) => {
         />
       </div>
       {show && <CreateUser show={show} handleClose={handleClose} editId={editId} />}
+      <Dialog
+        show={showDeleteDialog}
+        title={translate('user.delete_confirmation_title')}
+        cancelLabel={translate('common.no')}
+        onCancel={handleDeleteDialogClose}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handleDeleteDialogConfirm}
+      >
+        <p>{translate('common.delete_confirmation_message')}</p>
+      </Dialog>
+      <Dialog
+        show={showSwitchStatusDialog}
+        title={translate('user.switchStatus_confirmation_title')}
+        cancelLabel={translate('common.no')}
+        onCancel={handleSwitchStatusDialogClose}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handleSwitchStatusDialogConfirm}
+      >
+        <div>
+          <p>{translate('common.switchStatus_confirmation_message')}</p>
+        </div>
+      </Dialog>
     </>
   );
 };
