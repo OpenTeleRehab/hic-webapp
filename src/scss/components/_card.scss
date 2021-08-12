@@ -30,7 +30,7 @@
 	}
 
 	.card-text {
-		margin-bottom: toRem(-25);
+		margin-bottom: toRem(-24);
 	}
 }
 
@@ -141,4 +141,8 @@
 .exercise-header {
   color: $white;
   background-color: $primary;
+}
+
+.material-detail-file-wrapper {
+	height: toRem(300);
 }
