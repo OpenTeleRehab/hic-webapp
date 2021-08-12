@@ -113,9 +113,10 @@ const CreateExercise = ({ translate, showReviewModal }) => {
       const fileSize = file.size;
       const fileType = file.type;
       const reader = new FileReader();
+      console.log(file);
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        mediaUploads.push({ url: reader.result, fileName, fileSize, fileType, file });
+        mediaUploads.push({ url: reader.result, fileName, fileSize, fileType });
         setMediaUploads([...mediaUploads]);
       };
     }
@@ -176,8 +177,8 @@ const CreateExercise = ({ translate, showReviewModal }) => {
       reps: formFields.show_sets_reps ? formFields.reps : 0,
       show_sets_reps: formFields.show_sets_reps,
       additional_fields: JSON.stringify(additionalFields),
-      categories: JSON.stringify(serializedSelectedCats),
-      media_uploads: mediaUploads.map((item) => { return item.file; })
+      categories: serializedSelectedCats.join(),
+      media_uploads: mediaUploads
     };
 
     dispatch(addMoreExercise(payload)).then(() => {
