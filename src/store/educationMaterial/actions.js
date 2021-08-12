@@ -2,6 +2,8 @@ import { EducationMaterial } from 'services/educationMaterial';
 import { mutation } from './mutations';
 import { showErrorNotification, showSuccessNotification } from 'store/notification/actions';
 import { showSpinner } from '../spinnerOverlay/actions';
+import { getTranslate } from 'react-localize-redux';
+import { STATUS } from '../../variables/resourceStatus';
 
 export const getEducationMaterial = (id, language) => async dispatch => {
   dispatch(mutation.getEducationMaterialRequest());
@@ -43,16 +45,32 @@ export const createEducationMaterial = (payload) => async dispatch => {
   }
 };
 
-export const updateEducationMaterial = (id, payload, mediaUploads) => async dispatch => {
+export const approveEducationMaterial = (id, payload, mediaUploads) => async (dispatch, getState) => {
+  const educationMaterial = getState().educationMaterial.educationMaterial;
+  const translate = getTranslate(getState().localize);
   dispatch(mutation.updateEducationMaterialRequest());
   const data = await EducationMaterial.updateEducationMaterial(id, payload, mediaUploads);
   if (data.success) {
     dispatch(mutation.updateEducationMaterialSuccess());
-    dispatch(showSuccessNotification('toast_title.update_education_material', data.message));
+    dispatch(showSuccessNotification(educationMaterial.status === STATUS.approved ? 'toast_title.save_education_material' : 'toast_title.approve_education_material', data.message, { status: educationMaterial.status === STATUS.approved ? translate('education_material.saved') : translate('education_material.approved') }));
     return true;
   } else {
     dispatch(mutation.updateEducationMaterialFail());
-    dispatch(showErrorNotification('toast_title.update_education_material', data.message));
+    dispatch(showErrorNotification(educationMaterial.status === STATUS.approved ? 'toast_title.save_education_material' : 'toast_title.approve_education_material', data.message));
+    return false;
+  }
+};
+
+export const rejectEducationMaterial = (id) => async dispatch => {
+  dispatch(mutation.rejectEducationMaterialRequest());
+  const data = await EducationMaterial.rejectEducationMaterial(id);
+  if (data.success) {
+    dispatch(mutation.rejectEducationMaterialSuccess());
+    dispatch(showSuccessNotification('toast_title.reject_exercise', data.message));
+    return true;
+  } else {
+    dispatch(mutation.rejectEducationMaterialFail());
+    dispatch(showErrorNotification('toast_title.reject_exercise', data.message));
     return false;
   }
 };

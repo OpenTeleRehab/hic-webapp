@@ -7,12 +7,9 @@ import * as ROUTES from 'variables/routes';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import Dialog from 'components/Dialog';
 import CustomTable from 'components/Table';
-import { DeleteAction, EditAction, ViewAction } from 'components/ActionIcons';
 import SearchInput from 'components/Form/SearchInput';
-import { getEducationMaterials, deleteEducationMaterial } from 'store/educationMaterial/actions';
-import ViewEducationMaterial from './view';
+import { getEducationMaterials } from 'store/educationMaterial/actions';
 import { getCategoryTreeData } from 'store/category/actions';
 import { CATEGORY_TYPES } from 'variables/category';
 import CheckboxTree from 'react-checkbox-tree';
@@ -27,6 +24,9 @@ import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import Select from 'react-select';
 import scssColors from '../../../scss/custom.scss';
+import { renderStatusBadge } from '../../../utils/resource';
+import { STATUS } from '../../../variables/resourceStatus';
+import { BiEdit } from 'react-icons/bi';
 
 let timer = null;
 const EducationMaterial = ({ translate }) => {
@@ -38,17 +38,19 @@ const EducationMaterial = ({ translate }) => {
   });
   const { languages } = useSelector(state => state.language);
   const [language, setLanguage] = useState('');
-  const { educationMaterials, filters } = useSelector(state => state.educationMaterial);
+  const { educationMaterials } = useSelector(state => state.educationMaterial);
   const { profile } = useSelector((state) => state.auth);
   const { categoryTreeData } = useSelector((state) => state.category);
   const [pageSize, setPageSize] = useState(60);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
-  const [id, setId] = useState(null);
-  const [show, setShow] = useState(false);
-  const [showView, setShowView] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
+  const [filters, setFilters] = useState([]);
+
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [pageSize, filters]);
 
   useEffect(() => {
     if (filters && filters.lang) {
@@ -82,6 +84,7 @@ const EducationMaterial = ({ translate }) => {
     timer = setTimeout(() => {
       dispatch(getEducationMaterials({
         lang: language,
+        filters: filters,
         filter: formFields,
         categories: serializedSelectedCats,
         page_size: pageSize,
@@ -92,7 +95,7 @@ const EducationMaterial = ({ translate }) => {
         }
       });
     }, 500);
-  }, [language, formFields, selectedCategories, currentPage, pageSize, dispatch]);
+  }, [language, formFields, filters, selectedCategories, currentPage, pageSize, dispatch]);
 
   const handleClearSearch = () => {
     setFormFields({ ...formFields, search_value: '' });
@@ -105,43 +108,15 @@ const EducationMaterial = ({ translate }) => {
     setCurrentPage(0);
   };
 
-  const handleEdit = (id) => {
-    history.push(ROUTES.EDUCATION_MATERIAL_EDIT.replace(':id', id));
-  };
-
   const columns = [
     { name: 'title', title: translate('common.title') },
-    { name: 'type', title: translate('education_material.type') },
-    { name: 'action', title: translate('common.action') }
+    { name: 'status', title: translate('common.status') },
+    { name: 'uploaded_by', title: translate('common.uploaded_by') },
+    { name: 'uploaded_by_email', title: translate('common.uploaded_by_email') },
+    { name: 'uploaded_date', title: translate('common.uploaded_date') },
+    { name: 'reviewed_by', title: translate('common.reviewed_by') },
+    { name: 'action', title: translate('common.need_action') }
   ];
-
-  const handleDelete = (id) => {
-    setId(id);
-    setShow(true);
-  };
-
-  const handleClose = () => {
-    setId(null);
-    setShow(false);
-  };
-
-  const handleConfirm = () => {
-    dispatch(deleteEducationMaterial(id)).then(result => {
-      if (result) {
-        handleClose();
-      }
-    });
-  };
-
-  const handleView = (id) => {
-    setId(id);
-    setShowView(true);
-  };
-
-  const handleViewClose = () => {
-    setId('');
-    setShowView(false);
-  };
 
   const handleSetSelectedCategories = (parent, checked) => {
     setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
@@ -157,6 +132,10 @@ const EducationMaterial = ({ translate }) => {
         backgroundColor: scssColors.infoLight
       }
     })
+  };
+
+  const handleRowClick = (row) => {
+    history.push(ROUTES.ADMIN_RESOURCES_EDUCATION_MATERIAL_EDIT.replace(':id', row.id));
   };
 
   return (
@@ -233,34 +212,24 @@ const EducationMaterial = ({ translate }) => {
             totalCount={totalCount}
             columns={columns}
             hideSearchFilter={true}
+            setFilters={setFilters}
+            filters={filters}
+            onRowClick={handleRowClick}
             rows={educationMaterials.map(educationMaterial => {
-              const action = (
-                <>
-                  <ViewAction className="mr-1" onClick={() => handleView(educationMaterial.id)} />
-                  <EditAction onClick={() => handleEdit(educationMaterial.id)} className="mr-1" />
-                  <DeleteAction onClick={() => handleDelete(educationMaterial.id)} disabled={educationMaterial.is_used} />
-                </>
-              );
               return {
+                id: educationMaterial.id,
                 title: educationMaterial.title,
-                type: educationMaterial.file ? translate(educationMaterial.file.fileGroupType) : '',
-                action
+                status: renderStatusBadge(educationMaterial),
+                uploaded_by: educationMaterial.uploaded_by,
+                uploaded_by_email: educationMaterial.uploaded_by_email,
+                uploaded_date: educationMaterial.uploaded_date,
+                reviewed_by: educationMaterial.reviewed_by,
+                action: educationMaterial.status === STATUS.pending ? <BiEdit size={25} className="btn-warning-info" /> : null
               };
             })}
           />
         </Col>
       </Row>
-      {showView && <ViewEducationMaterial showView={showView} handleViewClose={handleViewClose} id={id} />}
-      <Dialog
-        show={show}
-        title={translate('education.delete_confirmation_title')}
-        cancelLabel={translate('common.no')}
-        onCancel={handleClose}
-        confirmLabel={translate('common.yes')}
-        onConfirm={handleConfirm}
-      >
-        <p>{translate('common.delete_confirmation_message')}</p>
-      </Dialog>
     </>
   );
 };

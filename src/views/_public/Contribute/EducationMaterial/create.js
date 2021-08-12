@@ -7,7 +7,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import * as ROUTES from 'variables/routes';
 import {
   createEducationMaterial,
-  getEducationMaterial, updateEducationMaterial
+  getEducationMaterial, approveEducationMaterial
 } from 'store/educationMaterial/actions';
 import { formatFileSize, toMB } from 'utils/file';
 import settings from 'settings';
@@ -133,7 +133,7 @@ const CreateEducationMaterial = ({ translate }) => {
     if (canSave) {
       setIsLoading(true);
       if (id) {
-        dispatch(updateEducationMaterial(id, { ...formFields, categories: serializedSelectedCats, lang: language }))
+        dispatch(approveEducationMaterial(id, { ...formFields, categories: serializedSelectedCats, lang: language }))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP_EDUCATION);

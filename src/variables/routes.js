@@ -10,6 +10,7 @@ export const ADMIN = '/admin';
 export const ADMIN_DASHBOARD = '/admin';
 export const ADMIN_RESOURCES = '/admin/resources';
 export const ADMIN_RESOURCES_EDIT = '/admin/resources/edit/:id';
+export const ADMIN_RESOURCES_EDUCATION_MATERIAL_EDIT = '/admin/resources/education_material/edit/:id';
 export const ADMIN_CATEGORIES = '/admin/categories';
 export const ADMIN_TRANSLATIONS = '/admin/translations';
 export const ADMIN_TRANSLATIONS_LANGUAGE = ADMIN_TRANSLATIONS + '#language';

@@ -7,7 +7,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import * as ROUTES from '../../../variables/routes';
 import {
   createEducationMaterial,
-  getEducationMaterial, updateEducationMaterial
+  getEducationMaterial, approveEducationMaterial, rejectEducationMaterial
 } from '../../../store/educationMaterial/actions';
 import { formatFileSize, toMB } from '../../../utils/file';
 import settings from '../../../settings';
@@ -25,6 +25,7 @@ import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import Select from 'react-select';
 import scssColors from '../../../scss/custom.scss';
+import { STATUS } from '../../../variables/resourceStatus';
 
 const CreateEducationMaterial = ({ translate }) => {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ const CreateEducationMaterial = ({ translate }) => {
   const { languages } = useSelector(state => state.language);
   const { educationMaterial, filters } = useSelector(state => state.educationMaterial);
   const { categoryTreeData } = useSelector((state) => state.category);
+  const { profile } = useSelector((state) => state.auth);
 
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
@@ -135,7 +137,7 @@ const CreateEducationMaterial = ({ translate }) => {
     if (canSave) {
       setIsLoading(true);
       if (id) {
-        dispatch(updateEducationMaterial(id, { ...formFields, categories: serializedSelectedCats, lang: language }))
+        dispatch(approveEducationMaterial(id, { ...formFields, categories: serializedSelectedCats, lang: language }))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP_EDUCATION);
@@ -143,7 +145,12 @@ const CreateEducationMaterial = ({ translate }) => {
             setIsLoading(false);
           });
       } else {
-        dispatch(createEducationMaterial({ ...formFields, categories: serializedSelectedCats, lang: language }))
+        const contributor = {
+          email: profile.email,
+          last_name: profile.last_name,
+          first_name: profile.first_name
+        };
+        dispatch(createEducationMaterial({ ...formFields, ...contributor, categories: serializedSelectedCats, lang: language }))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP_EDUCATION);
@@ -152,6 +159,16 @@ const CreateEducationMaterial = ({ translate }) => {
           });
       }
     }
+  };
+
+  const handleReject = () => {
+    setIsLoading(true);
+    dispatch(rejectEducationMaterial(id)).then(result => {
+      if (result) {
+        history.push(ROUTES.SERVICE_SETUP_EDUCATION);
+      }
+      setIsLoading(false);
+    });
   };
 
   const renderUploadFileName = () => {
@@ -187,12 +204,12 @@ const CreateEducationMaterial = ({ translate }) => {
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
-        <h1>{id ? translate('education_material.edit') : translate('education_material.create')}</h1>
+        <h1 className="text-primary">{id ? translate('education_material.edit') : translate('education_material.create')}</h1>
       </div>
 
       <Form onKeyPress={(e) => handleFormSubmit(e)}>
-        <Row>
-          <Col sm={12} xl={11}>
+        <Row className="no-gutters bg-white">
+          <Col sm={12} xl={11} className="p-4">
             <Form.Group controlId="formLanguage">
               <Form.Label>{translate('common.show_language.version')}</Form.Label>
               <Select
@@ -293,29 +310,53 @@ const CreateEducationMaterial = ({ translate }) => {
             </Accordion>
           </Col>
         </Row>
-        <Row>
-          <Col sm={12} xl={11} className="question-wrapper">
-            <div className="sticky-btn d-flex justify-content-end">
-              <div className="py-2 questionnaire-save-cancel-wrapper px-3">
-                <Button
+        <div className="sticky-bottom d-flex justify-content-end">
+          { !id && (
+            <Button
+              onClick={handleSave}
+              disabled={isLoading}
+            >
+              {translate('common.save')}
+            </Button>
+          )}
+
+          { id && (
+            <>
+              {educationMaterial.status === STATUS.approved
+                ? <Button
                   onClick={handleSave}
                   disabled={isLoading}
                 >
                   {translate('common.save')}
                 </Button>
-                <Button
-                  className="ml-2"
-                  variant="outline-dark"
-                  as={Link}
-                  to={ROUTES.SERVICE_SETUP_EDUCATION}
+                : <Button
+                  onClick={handleSave}
                   disabled={isLoading}
                 >
-                  {translate('common.cancel')}
+                  {translate('common.approve')}
                 </Button>
-              </div>
-            </div>
-          </Col>
-        </Row>
+              }
+              <Button
+                className="ml-2"
+                variant="outline-dark"
+                onClick={handleReject}
+                disabled={isLoading}
+              >
+                {translate('common.reject')}
+              </Button>
+            </>
+          )}
+
+          <Button
+            className="ml-2"
+            variant="outline-dark"
+            as={Link}
+            to={ROUTES.SERVICE_SETUP_EDUCATION}
+            disabled={isLoading}
+          >
+            {translate('common.cancel')}
+          </Button>
+        </div>
       </Form>
     </>
   );
