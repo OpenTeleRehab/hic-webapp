@@ -47,7 +47,7 @@ const Translation = ({ translate }) => {
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
-        <h1>{translate('common.system_labels')}</h1>
+        <h1 className="text-primary">{view === VIEW_LANGUAGE ? translate('common.languages') : translate('common.system_labels')}</h1>
         {view === VIEW_LANGUAGE && (
           <div className="d-flex">
             <div className="btn-toolbar mb-2 mb-md-0">
@@ -62,18 +62,18 @@ const Translation = ({ translate }) => {
 
       {show && view === VIEW_LANGUAGE && <CreateLanguage show={show} editId={editId} handleClose={handleClose} />}
 
-      <Nav variant="tabs" activeKey={view} className="mb-3">
+      <Nav variant="tabs" activeKey={view}>
         { keycloak.hasRealmRole(USER_ROLES.MANAGE_TRANSLATION) && (
           <Nav.Item>
             <Nav.Link as={Link} to={ROUTES.ADMIN_TRANSLATIONS} eventKey={VIEW_TRANSLATION}>
-              {translate('setting.translations')}
+              {translate('common.labels')}
             </Nav.Link>
           </Nav.Item>
         )}
         { keycloak.hasRealmRole(USER_ROLES.MANAGE_LANGUAGE) && (
           <Nav.Item>
             <Nav.Link as={Link} to={ROUTES.ADMIN_TRANSLATIONS_LANGUAGE} eventKey={VIEW_LANGUAGE}>
-              {translate('setting.languages')}
+              {translate('common.languages')}
             </Nav.Link>
           </Nav.Item>
         )}
