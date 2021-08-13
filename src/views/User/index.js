@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap';
 import { BsPlus } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
 import * as moment from 'moment';
+import { useKeycloak } from '@react-keycloak/web';
 
 import CreateUser from './create';
 import PropTypes from 'prop-types';
@@ -12,11 +13,12 @@ import settings from 'settings';
 import { EditAction, DeleteAction, EnabledAction, DisabledAction, MailSendAction } from 'components/ActionIcons';
 import { Translate } from 'react-localize-redux';
 import Dialog from 'components/Dialog';
+import { USER_GROUPS, USER_ROLES } from 'variables/user';
 
 let timer = null;
 const User = ({ translate }) => {
   const dispatch = useDispatch();
-  const [editId, setEditId] = useState('');
+  const { keycloak } = useKeycloak();
   const users = useSelector(state => state.user.users);
   const { profile } = useSelector((state) => state.auth);
   const [pageSize, setPageSize] = useState(60);
@@ -52,7 +54,7 @@ const User = ({ translate }) => {
 
   const handleShow = () => setShow(true);
   const handleClose = () => {
-    setEditId('');
+    setId('');
     setShow(false);
   };
 
@@ -77,11 +79,10 @@ const User = ({ translate }) => {
   }, [currentPage, pageSize, searchValue, filters, dispatch]);
 
   useEffect(() => {
-    if (id && users.length) {
-      const data = users.find(user => user.id === id);
-      setType(data.type);
+    if (keycloak.hasRealmRole(USER_ROLES.MANAGE_USER)) {
+      setType(USER_GROUPS.ADMIN);
     }
-  }, [id, users]);
+  }, [keycloak]);
 
   const handleDelete = (id) => {
     setId(id);
@@ -120,6 +121,11 @@ const User = ({ translate }) => {
     });
   };
 
+  const handleEdit = (id) => {
+    setId(id);
+    setShow(true);
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
@@ -150,7 +156,7 @@ const User = ({ translate }) => {
                   ? <EnabledAction onClick={() => handleSwitchStatus(user.id, 0)} disabled={parseInt(user.id) === parseInt(profile.id)}/>
                   : <DisabledAction onClick={() => handleSwitchStatus(user.id, 1)} disabled={parseInt(user.id) === parseInt(profile.id)} />
                 }
-                <EditAction />
+                <EditAction onClick={() => handleEdit(user.id)} />
                 <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={parseInt(user.id) === parseInt(profile.id) || user.enabled} />
                 <MailSendAction />
               </>
@@ -168,7 +174,7 @@ const User = ({ translate }) => {
           })}
         />
       </div>
-      {show && <CreateUser show={show} handleClose={handleClose} editId={editId} />}
+      {show && <CreateUser show={show} handleClose={handleClose} editId={id} setType={setType} />}
       <Dialog
         show={showDeleteDialog}
         title={translate('user.delete_confirmation_title')}
