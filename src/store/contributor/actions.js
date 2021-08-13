@@ -25,3 +25,18 @@ export const getContributors = payload => async dispatch => {
     }
   }
 };
+
+export const confirmSubmission = (hash) => async dispatch => {
+  dispatch(mutation.getConfirmSubmissionRequest());
+  dispatch(showSpinner(true));
+  const data = await Contributor.confirmSubmission(hash);
+  if (data.success) {
+    dispatch(mutation.getConfirmSubmissionSuccess());
+    dispatch(showSpinner(false));
+    return data.message;
+  } else {
+    dispatch(mutation.getConfirmSubmissionFail());
+    dispatch(showSpinner(false));
+    return data.message;
+  }
+};

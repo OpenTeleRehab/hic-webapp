@@ -9,6 +9,7 @@ import PrivateRoute from 'routes/privateRoute';
 import PublicHomePage from 'views/_public';
 import LibraryPage from 'views/_public/Library';
 import ContributePage from 'views/_public/Contribute';
+import ConfirmSubmissionPage from 'views/_public/Contribute/ConfirmSubmission';
 import ExerciseDetail from 'views/_public/Library/Exercise/detail';
 import EducationMaterialDetail from 'views/_public/Library/EducationMaterial/detail';
 
@@ -54,6 +55,14 @@ const publicRoutes = [
     title: 'contribute',
     path: ROUTES.CONTRIBUTE,
     component: ContributePage,
+    exact: true,
+    type: PUBLIC,
+    defaultTemplate: false
+  },
+  {
+    title: 'confirm.submission',
+    path: ROUTES.CONFIRM_SUBMISSION,
+    component: ConfirmSubmissionPage,
     exact: true,
     type: PUBLIC,
     defaultTemplate: false

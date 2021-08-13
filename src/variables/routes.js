@@ -6,6 +6,7 @@ export const LIBRARY_EXERCISE_DETAIL = LIBRARY + '/exercise/detail/:id';
 export const LIBRARY_EDUCATION_MATERIAL_DETAIL = LIBRARY + '/education_material/detail/:id';
 
 export const CONTRIBUTE = '/contribute';
+export const CONFIRM_SUBMISSION = '/contribute/confirm-submission';
 
 export const ADMIN = '/admin';
 export const ADMIN_DASHBOARD = '/admin';
