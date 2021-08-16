@@ -39,6 +39,7 @@ import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import scssColors from '../../../scss/custom.scss';
 import { formatFileSize } from '../../../utils/file';
 import { STATUS } from '../../../variables/resourceStatus';
+import Select from 'react-select';
 
 const CreateExercise = ({ translate }) => {
   const dispatch = useDispatch();
@@ -60,10 +61,9 @@ const CreateExercise = ({ translate }) => {
     reps: ''
   });
   const [additionalFields, setAdditionalFields] = useState([
-    { field: 'Aim', value: '' },
-    { field: 'Instruction', value: '' },
-    { field: 'TBD', value: '' },
-    { field: 'TBD', value: '' }
+    { field: translate('additional_field.aim'), value: '' },
+    { field: translate('additional_field.progressions_variations'), value: '' },
+    { field: translate('additional_field.precautions'), value: '' }
   ]);
 
   const [titleError, setTitleError] = useState(false);
@@ -308,6 +308,17 @@ const CreateExercise = ({ translate }) => {
     }
   };
 
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
@@ -357,7 +368,18 @@ const CreateExercise = ({ translate }) => {
           </Col>
           <Col sm={7} xl={8} className="p-4">
             <h5 className="text-primary">{translate('common.information')}</h5>
-
+            <Form.Group controlId="formLanguage">
+              <Form.Label>{translate('common.show_language.version')}</Form.Label>
+              <Select
+                isDisabled={!id || (exercise && exercise.status !== STATUS.approved)}
+                classNamePrefix="filter"
+                value={languages.filter(option => option.id === language)}
+                getOptionLabel={option => option.name}
+                options={languages}
+                onChange={(e) => setLanguage(e.id)}
+                styles={customSelectStyles}
+              />
+            </Form.Group>
             <Form.Group controlId="formTitle">
               <Form.Label>{translate('exercise.title')}</Form.Label>
               <span className="text-dark ml-1">*</span>
