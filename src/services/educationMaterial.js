@@ -1,5 +1,6 @@
 import axios from 'utils/axios';
 import _ from 'lodash';
+import { base64ToFile } from '../utils/file';
 
 const getEducationMaterial = (id, language) => {
   const langParam = language ? `?lang=${language}` : '';
@@ -41,6 +42,30 @@ const createEducationMaterial = (payload) => {
     .catch((e) => {
       return e.response.data;
     });
+};
+
+const contributeEducationMaterial = (payloads, formFields) => {
+  for (let i = 0; i < payloads.length; i++) {
+    const formData = new FormData();
+
+    formData.append('notification', i === (payloads.length - 1));
+
+    _.forIn(payloads[i], (value, key) => {
+      if (value.url) {
+        formData.append(key, base64ToFile(value.url, value.fileName, value.fileType), value.fileName, { type: value.fileType });
+      } else {
+        formData.append(key, value);
+      }
+    });
+
+    _.forIn(formFields, (value, key) => {
+      formData.append(key, value);
+    });
+
+    axios.post('/education-material', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+  }
+
+  return true;
 };
 
 const updateEducationMaterial = (id, payload) => {
@@ -89,6 +114,7 @@ const rejectEducationMaterial = id => {
 export const EducationMaterial = {
   getEducationMaterial,
   createEducationMaterial,
+  contributeEducationMaterial,
   updateEducationMaterial,
   getEducationMaterials,
   deleteEducationMaterial,

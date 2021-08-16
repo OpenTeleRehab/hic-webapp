@@ -3,12 +3,6 @@ import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 import { Button, Col, Form, Row, Accordion, Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useHistory, useParams } from 'react-router-dom';
-import * as ROUTES from 'variables/routes';
-import {
-  createEducationMaterial,
-  getEducationMaterial, approveEducationMaterial
-} from 'store/educationMaterial/actions';
 import { formatFileSize, toMB } from 'utils/file';
 import settings from 'settings';
 import { getCategoryTreeData } from 'store/category/actions';
@@ -23,21 +17,18 @@ import { FaRegCheckSquare } from 'react-icons/fa';
 import CheckboxTree from 'react-checkbox-tree';
 import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
+import { addMoreEducationMaterial } from '../../../../store/contribute/actions';
 
-const CreateEducationMaterial = ({ translate }) => {
+const CreateEducationMaterial = ({ translate, showReviewModal }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
-  const { id } = useParams();
   const { maxFileSize } = settings.educationMaterial;
-
-  const { languages } = useSelector(state => state.language);
-  const { educationMaterial, filters } = useSelector(state => state.educationMaterial);
+  const { educationMaterials } = useSelector(state => state.contribute);
+  const [getEducationMaterials, setGetEducationMaterials] = useState([]);
   const { categoryTreeData } = useSelector((state) => state.category);
-
-  const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
     title: '',
-    file: undefined
+    file: undefined,
+    categories: ''
   });
   const [materialFile, setMaterialFile] = useState(undefined);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -48,24 +39,12 @@ const CreateEducationMaterial = ({ translate }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (languages.length) {
-      if (id && filters && filters.lang) {
-        setLanguage(filters.lang);
-      } else {
-        setLanguage(languages[0].id);
-      }
-    }
-  }, [languages, filters, id]);
+    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: '' }));
+  }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.MATERIAL, lang: language }));
-  }, [language, dispatch]);
-
-  useEffect(() => {
-    if (id && language) {
-      dispatch(getEducationMaterial(id, language));
-    }
-  }, [id, language, dispatch]);
+    setGetEducationMaterials(educationMaterials);
+  }, [educationMaterials]);
 
   useEffect(() => {
     if (categoryTreeData.length) {
@@ -77,27 +56,6 @@ const CreateEducationMaterial = ({ translate }) => {
     }
   }, [categoryTreeData]);
 
-  useEffect(() => {
-    if (id && educationMaterial.id) {
-      setFormFields({
-        title: educationMaterial.title
-      });
-      setMaterialFile(educationMaterial.file);
-      if (categoryTreeData.length) {
-        const rootCategoryStructure = {};
-        categoryTreeData.forEach(category => {
-          const ids = [];
-          JSON.stringify(category, (key, value) => {
-            if (key === 'value') ids.push(value);
-            return value;
-          });
-          rootCategoryStructure[category.value] = _.intersectionWith(educationMaterial.categories, ids);
-        });
-        setSelectedCategories(rootCategoryStructure);
-      }
-    }
-  }, [id, educationMaterial, categoryTreeData]);
-
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
@@ -105,10 +63,77 @@ const CreateEducationMaterial = ({ translate }) => {
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-    setFormFields({ ...formFields, [name]: files[0] });
+    const fileName = files[0].name;
+    const fileSize = files[0].size;
+    const fileType = files[0].type;
+    const reader = new FileReader();
+    reader.readAsDataURL(files[0]);
+    reader.onloadend = () => {
+      const file = { url: reader.result, fileName, fileSize, fileType };
+      setFormFields({ ...formFields, [name]: file });
+    };
   };
 
-  const handleSave = () => {
+  const renderUploadFileName = () => {
+    const file = formFields.file;
+    if (file) {
+      return `${file.fileName} (${formatFileSize(file.fileSize)})`;
+    }
+    return translate('education_material.upload_file.placeholder');
+  };
+
+  const handleSetSelectedCategories = (parent, checked) => {
+    setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
+  };
+
+  const handleSubmit = () => {
+    if (getEducationMaterials.length === 0 || formFields.title !== '' || formFields.file !== undefined) {
+      if (handleValidation()) {
+        submitHandler();
+        showReviewModal(true);
+      }
+    } else {
+      showReviewModal(true);
+    }
+  };
+
+  const handleAddMore = () => {
+    handleValidation() && submitHandler();
+  };
+
+  const submitHandler = () => {
+    setIsLoading(true);
+
+    let serializedSelectedCats = [];
+
+    Object.keys(selectedCategories).forEach(function (key) {
+      serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
+    });
+
+    const payload = {
+      ...formFields,
+      title: formFields.title,
+      categories: serializedSelectedCats.join(),
+      file: formFields.file
+    };
+
+    dispatch(addMoreEducationMaterial(payload)).then(() => {
+      setIsLoading(false);
+      handleResetForm();
+    });
+  };
+
+  const handleResetForm = () => {
+    setMaterialFile('');
+    setSelectedCategories([]);
+    setFormFields({
+      title: '',
+      file: undefined,
+      categories: ''
+    });
+  };
+
+  const handleValidation = () => {
     let canSave = true;
 
     if (formFields.title === '') {
@@ -130,52 +155,16 @@ const CreateEducationMaterial = ({ translate }) => {
       serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
     });
 
-    if (canSave) {
-      setIsLoading(true);
-      if (id) {
-        dispatch(approveEducationMaterial(id, { ...formFields, categories: serializedSelectedCats, lang: language }))
-          .then(result => {
-            if (result) {
-              history.push(ROUTES.SERVICE_SETUP_EDUCATION);
-            }
-            setIsLoading(false);
-          });
-      } else {
-        dispatch(createEducationMaterial({ ...formFields, categories: serializedSelectedCats, lang: language }))
-          .then(result => {
-            if (result) {
-              history.push(ROUTES.SERVICE_SETUP_EDUCATION);
-            }
-            setIsLoading(false);
-          });
-      }
-    }
-  };
-
-  const renderUploadFileName = () => {
-    const file = formFields.file;
-    if (file) {
-      return `${file.name} (${formatFileSize(file.size)})`;
-    }
-    return translate('education_material.upload_file.placeholder');
-  };
-
-  const handleSetSelectedCategories = (parent, checked) => {
-    setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
-  };
-
-  const handleFormSubmit = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSave();
-    }
+    return canSave;
   };
 
   return (
     <>
-      <Form className="pt-5" onKeyPress={(e) => handleFormSubmit(e)}>
+      <Form className="pt-5">
         <Row>
           <Col sm={12} xl={11}>
+            <h5 className="text-primary">{translate('common.information')}</h5>
+
             <Form.Group controlId="formTitle">
               <Form.Label>{translate('education_material.title')}</Form.Label>
               <span className="text-dark ml-1">*</span>
@@ -266,17 +255,13 @@ const CreateEducationMaterial = ({ translate }) => {
         </Row>
 
         <div className="sticky-bottom d-flex justify-content-end">
-          <Button
-            onClick={handleSave}
-            disabled={isLoading}
-          >
+          <Button onClick={handleSubmit}>
             {translate('common.submit')}
           </Button>
           <Button
             className="ml-2"
             variant="outline-primary"
-            as={Link}
-            to={ROUTES.SERVICE_SETUP}
+            onClick={handleAddMore}
             disabled={isLoading}
           >
             {translate('common.add_more')}
@@ -284,8 +269,7 @@ const CreateEducationMaterial = ({ translate }) => {
           <Button
             className="ml-2"
             variant="outline-primary"
-            as={Link}
-            to={ROUTES.LIBRARY}
+            // onClick={() => setShowCancelModal(true)}
             disabled={isLoading}
           >
             {translate('common.cancel')}
@@ -297,7 +281,8 @@ const CreateEducationMaterial = ({ translate }) => {
 };
 
 CreateEducationMaterial.propTypes = {
-  translate: PropTypes.func
+  translate: PropTypes.func,
+  showReviewModal: PropTypes.func
 };
 
 export default withLocalize(CreateEducationMaterial);

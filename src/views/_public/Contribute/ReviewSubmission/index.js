@@ -4,8 +4,12 @@ import PropTypes from 'prop-types';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import { useDispatch, useSelector } from 'react-redux';
 import { contributeExercise } from '../../../../store/exercise/actions';
-import { deleteExercise } from '../../../../store/contribute/actions';
+import {
+  deleteEducationMaterial,
+  deleteExercise
+} from '../../../../store/contribute/actions';
 import { showSpinner } from '../../../../store/spinnerOverlay/actions';
+import { contributeEducationMaterial } from '../../../../store/educationMaterial/actions';
 
 const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissionModal }) => {
   const dispatch = useDispatch();
@@ -15,13 +19,15 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
     last_name: '',
     email: ''
   });
-  const { exercises } = useSelector((state) => state.contribute);
+  const { exercises, educationMaterials, questionnaires } = useSelector((state) => state.contribute);
   const [firstNameError, setFirstNameError] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [agreeTermsAndCondition, setAgreeTermsAndCondition] = useState(false);
   const [agreeToInclude, setAgreeToInclude] = useState(false);
   const [selectedExercises, setSelectedExercises] = useState([]);
+  const [selectedEducationMaterials, setSelectedEducationMaterials] = useState([]);
+  const [selectedQuestionnaires, setSelectedQuestionnaires] = useState([]);
 
   useEffect(() => {
     exercises.forEach((exercise, index) => {
@@ -30,6 +36,26 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
     setSelectedExercises([...selectedExercises]);
     // eslint-disable-next-line
   }, [exercises]);
+
+  useEffect(() => {
+    educationMaterials.forEach((educationMaterial, index) => {
+      selectedEducationMaterials.push(index);
+    });
+    setSelectedEducationMaterials([...selectedEducationMaterials]);
+    // eslint-disable-next-line
+  }, [educationMaterials]);
+
+  useEffect(() => {
+    questionnaires.forEach((questionnaire, index) => {
+      selectedQuestionnaires.push(index);
+    });
+    setSelectedQuestionnaires([...selectedQuestionnaires]);
+    // eslint-disable-next-line
+  }, [questionnaires]);
+
+  const totalSelectedResourceItem = () => {
+    return selectedExercises.length + selectedEducationMaterials.length + selectedQuestionnaires.length;
+  };
 
   const handleTermsConditionCheck = (e) => {
     setAgreeTermsAndCondition(e.target.checked);
@@ -50,6 +76,24 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
     } else {
       const exercises = selectedExercises.filter(a => a !== selectedIndex);
       setSelectedExercises(exercises);
+    }
+  };
+
+  const handleSelectEducationMaterials = (e, selectedIndex) => {
+    if (e.target.checked) {
+      setSelectedEducationMaterials([...selectedEducationMaterials, selectedIndex]);
+    } else {
+      const educationMaterials = selectedEducationMaterials.filter(a => a !== selectedIndex);
+      setSelectedEducationMaterials(educationMaterials);
+    }
+  };
+
+  const handleSelectQuestionnaires = (e, selectedIndex) => {
+    if (e.target.checked) {
+      setSelectedQuestionnaires([...selectedQuestionnaires, selectedIndex]);
+    } else {
+      const questionnaires = selectedQuestionnaires.filter(a => a !== selectedIndex);
+      setSelectedQuestionnaires(questionnaires);
     }
   };
 
@@ -78,19 +122,29 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
     }
 
     if (canSubmit) {
+      dispatch(showSpinner(true));
       const submitExercises = exercises.filter((exercises, index) => selectedExercises.includes(index));
+      const submitEducationMaterials = educationMaterials.filter((educationMaterial, index) => selectedEducationMaterials.includes(index));
 
       if (submitExercises.length) {
-        dispatch(showSpinner(true));
         dispatch(contributeExercise(submitExercises, formFields)).then(result => {
           if (result) {
             dispatch(deleteExercise());
-            dispatch(showSpinner(false));
-            showReviewModal(false);
-            showConfirmSubmissionModal(true);
           }
         });
       }
+
+      if (submitEducationMaterials.length) {
+        dispatch(contributeEducationMaterial(submitEducationMaterials, formFields)).then(result => {
+          if (result) {
+            dispatch(deleteEducationMaterial());
+          }
+        });
+      }
+
+      dispatch(showSpinner(false));
+      showReviewModal(false);
+      showConfirmSubmissionModal(true);
     }
   };
 
@@ -104,7 +158,7 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
         <Modal.Title>{translate('exercise.review.modal.title')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Accordion defaultActiveKey="0">
+        <Accordion defaultActiveKey="0" className="mb-1">
           <Card>
             <Card.Header>
               <Accordion.Toggle as={Button} variant="link" eventKey="0" className="d-flex justify-content-between align-items-center">
@@ -136,7 +190,71 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
             </Accordion.Collapse>
           </Card>
         </Accordion>
-        <p className="mt-3"><strong>{translate('contribute.submission.total_selected_resource', { number: selectedExercises.length })}</strong></p>
+        <Accordion defaultActiveKey="1" className="mb-1">
+          <Card>
+            <Card.Header>
+              <Accordion.Toggle as={Button} variant="link" eventKey="0" className="d-flex justify-content-between align-items-center">
+                <span>{translate('library.education_materials')}</span>
+                <span>{educationMaterials.length} {translate('common.items')} <ContextAwareToggle eventKey="0" /></span>
+              </Accordion.Toggle>
+            </Card.Header>
+            <Accordion.Collapse eventKey="0">
+              <Card.Body>
+                {educationMaterials.map((educationMaterial, index) => (
+                  <Form.Group key={index} as={Row}>
+                    <Col>
+                      <Form.Check
+                        key={index}
+                        type={'checkbox'}
+                        id={`education-${index}`}
+                        label={educationMaterial.title}
+                        custom
+                        onChange={(e) => handleSelectEducationMaterials(e, index)}
+                        checked={selectedEducationMaterials.includes(index)}
+                      />
+                    </Col>
+                    <Col className="text-right">
+                      <Button variant="link" className="text-decoration-none p-0">{translate('common.edit')}</Button>
+                    </Col>
+                  </Form.Group>
+                ))}
+              </Card.Body>
+            </Accordion.Collapse>
+          </Card>
+        </Accordion>
+        <Accordion defaultActiveKey="2">
+          <Card>
+            <Card.Header>
+              <Accordion.Toggle as={Button} variant="link" eventKey="0" className="d-flex justify-content-between align-items-center">
+                <span>{translate('library.questionnaires')}</span>
+                <span>{questionnaires.length} {translate('common.items')} <ContextAwareToggle eventKey="0" /></span>
+              </Accordion.Toggle>
+            </Card.Header>
+            <Accordion.Collapse eventKey="0">
+              <Card.Body>
+                {questionnaires.map((questionnaire, index) => (
+                  <Form.Group key={index} as={Row}>
+                    <Col>
+                      <Form.Check
+                        key={index}
+                        type={'checkbox'}
+                        id={`questionnaire-${index}`}
+                        label={questionnaire.title}
+                        custom
+                        onChange={(e) => handleSelectQuestionnaires(e, index)}
+                        checked={selectedQuestionnaires.includes(index)}
+                      />
+                    </Col>
+                    <Col className="text-right">
+                      <Button variant="link" className="text-decoration-none p-0">{translate('common.edit')}</Button>
+                    </Col>
+                  </Form.Group>
+                ))}
+              </Card.Body>
+            </Accordion.Collapse>
+          </Card>
+        </Accordion>
+        <p className="mt-3"><strong>{translate('contribute.submission.total_selected_resource', { number: totalSelectedResourceItem() })}</strong></p>
         <h6 className="text-primary mt-2">{translate('contribute.submission.enter_your_detail')}</h6>
         <Form.Group controlId="formName" as={Row}>
           <Col>

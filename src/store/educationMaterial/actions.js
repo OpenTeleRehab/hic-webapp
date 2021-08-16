@@ -45,6 +45,18 @@ export const createEducationMaterial = (payload) => async dispatch => {
   }
 };
 
+export const contributeEducationMaterial = (payloads, formFields) => async dispatch => {
+  dispatch(mutation.contributeEducationMaterialRequest());
+  const data = await EducationMaterial.contributeEducationMaterial(payloads, formFields);
+  if (data) {
+    dispatch(mutation.contributeEducationMaterialSuccess());
+    return true;
+  } else {
+    dispatch(mutation.contributeEducationMaterialFail());
+    return false;
+  }
+};
+
 export const approveEducationMaterial = (id, payload, mediaUploads) => async (dispatch, getState) => {
   const educationMaterial = getState().educationMaterial.educationMaterial;
   const translate = getTranslate(getState().localize);
