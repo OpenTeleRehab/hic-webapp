@@ -48,13 +48,11 @@ export const createExercise = (payload, mediaUploads) => async dispatch => {
 export const contributeExercise = (payloads, formFields) => async dispatch => {
   dispatch(mutation.contributeExerciseRequest());
   const data = await Exercise.contributeExercise(payloads, formFields);
-  if (data.success) {
+  if (data) {
     dispatch(mutation.contributeExerciseSuccess());
-    dispatch(showSuccessNotification('toast_title.new_exercise', data.message));
     return true;
   } else {
     dispatch(mutation.contributeExerciseFail());
-    dispatch(showErrorNotification('toast_title.new_exercise', data.message));
     return false;
   }
 };
