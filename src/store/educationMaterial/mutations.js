@@ -34,6 +34,19 @@ const createEducationMaterialSuccess = (data) => ({
   data
 });
 
+const contributeEducationMaterialRequest = () => ({
+  type: 'CONTRIBUTE_EDUCATION_MATERIAL_REQUEST'
+});
+
+const contributeEducationMaterialSuccess = (data) => ({
+  type: 'CONTRIBUTE_EDUCATION_MATERIAL_SUCCESS',
+  data
+});
+
+const contributeEducationMaterialFail = () => ({
+  type: 'CONTRIBUTE_EDUCATION_MATERIAL_FAIL'
+});
+
 const createEducationMaterialFail = () => ({
   type: 'CREATE_EDUCATION_MATERIAL_FAIL'
 });
@@ -88,6 +101,9 @@ export const mutation = {
   createEducationMaterialRequest,
   createEducationMaterialSuccess,
   createEducationMaterialFail,
+  contributeEducationMaterialRequest,
+  contributeEducationMaterialSuccess,
+  contributeEducationMaterialFail,
   updateEducationMaterialRequest,
   updateEducationMaterialSuccess,
   updateEducationMaterialFail,
