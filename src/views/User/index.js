@@ -14,6 +14,7 @@ import { EditAction, DeleteAction, EnabledAction, DisabledAction, MailSendAction
 import { Translate } from 'react-localize-redux';
 import Dialog from 'components/Dialog';
 import { USER_GROUPS, USER_ROLES } from 'variables/user';
+import EnabledStatus from 'components/EnabledStatus';
 
 let timer = null;
 const User = ({ translate }) => {
@@ -42,6 +43,7 @@ const User = ({ translate }) => {
     { name: 'email', title: translate('common.email') },
     { name: 'gender', title: translate('common.gender') },
     { name: 'type', title: translate('common.role') },
+    { name: 'status', title: translate('common.status') },
     { name: 'last_login', title: translate('common.last_login') },
     { name: 'action', title: translate('common.action') }
   ];
@@ -168,6 +170,7 @@ const User = ({ translate }) => {
               email: user.email,
               gender: user.gender ? <Translate id={`common.${user.gender}`} /> : '',
               type: user.type ? <Translate id={`common.${user.type}`} /> : '',
+              status: <EnabledStatus enabled={!!user.enabled} />,
               last_login: user.last_login ? moment.utc(user.last_login).local().format(settings.datetime_format) : '',
               action
             };
