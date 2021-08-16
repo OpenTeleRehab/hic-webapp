@@ -3,14 +3,20 @@ import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 import { useDispatch, useSelector } from 'react-redux';
 
-import BasicTable from 'components/Table/basic';
 import { EditAction, DeleteAction } from 'components/ActionIcons';
 import Dialog from 'components/Dialog';
 import { deleteLanguage, getLanguages } from 'store/language/actions';
+import CustomTable from '../../../components/Table';
 
+let timer = null;
 const Language = ({ translate, handleRowEdit }) => {
   const dispatch = useDispatch();
   const languages = useSelector(state => state.language.languages);
+  const [searchValue, setSearchValue] = useState('');
+  const [filters, setFilters] = useState([]);
+  const [pageSize, setPageSize] = useState(60);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
 
   const [columns] = useState([
     { name: 'id', title: translate('common.id') },
@@ -23,8 +29,24 @@ const Language = ({ translate, handleRowEdit }) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   useEffect(() => {
-    dispatch(getLanguages());
-  }, [dispatch]);
+    setCurrentPage(0);
+  }, [pageSize, searchValue, filters]);
+
+  useEffect(() => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      dispatch(getLanguages({
+        search_value: searchValue,
+        filters: filters,
+        page_size: pageSize,
+        page: currentPage + 1
+      })).then(result => {
+        if (result) {
+          setTotalCount(result.total_count);
+        }
+      });
+    }, 500);
+  }, [dispatch, filters, searchValue, pageSize, currentPage]);
 
   const handleDelete = (id) => {
     setDeleteId(id);
@@ -45,8 +67,17 @@ const Language = ({ translate, handleRowEdit }) => {
   };
 
   return (
-    <div className="card">
-      <BasicTable
+    <div className="no-gutters bg-white p-3">
+      <CustomTable
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        setSearchValue={setSearchValue}
+        setFilters={setFilters}
+        filters={filters}
+        totalCount={totalCount}
+        columns={columns}
         rows={languages.map(language => {
           const action = (
             <>
@@ -65,7 +96,6 @@ const Language = ({ translate, handleRowEdit }) => {
             action
           };
         })}
-        columns={columns}
       />
       <Dialog
         show={showDeleteDialog}

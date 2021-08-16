@@ -1,7 +1,7 @@
 import axios from 'utils/axios';
 
-const getLanguage = () => {
-  return axios.get('/language')
+const getLanguage = (payload) => {
+  return axios.get('/language', { params: payload })
     .then(
       res => {
         return res.data;

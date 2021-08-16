@@ -2,9 +2,10 @@ const getLanguagesRequest = () => ({
   type: 'GET_LANGUAGES_REQUEST'
 });
 
-const getLanguagesSuccess = (data) => ({
+const getLanguagesSuccess = (data, filers) => ({
   type: 'GET_LANGUAGES_SUCCESS',
-  data
+  data,
+  filers
 });
 
 const getLanguagesFail = () => ({

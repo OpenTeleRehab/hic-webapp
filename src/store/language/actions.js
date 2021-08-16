@@ -8,11 +8,12 @@ import {
   showSpinner
 } from 'store/spinnerOverlay/actions';
 
-export const getLanguages = () => async dispatch => {
+export const getLanguages = (payload) => async dispatch => {
   dispatch(mutation.getLanguagesRequest());
-  const data = await Language.getLanguage();
+  const data = await Language.getLanguage(payload);
   if (data.success) {
-    dispatch(mutation.getLanguagesSuccess(data.data));
+    dispatch(mutation.getLanguagesSuccess(data.data, payload));
+    return data.info;
   } else {
     dispatch(mutation.getLanguagesFail());
     dispatch(showErrorNotification('toast_title.error_message', data.message));
