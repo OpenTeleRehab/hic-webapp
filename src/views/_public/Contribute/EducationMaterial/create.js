@@ -17,7 +17,12 @@ import { FaRegCheckSquare } from 'react-icons/fa';
 import CheckboxTree from 'react-checkbox-tree';
 import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
-import { addMoreEducationMaterial } from '../../../../store/contribute/actions';
+import { useHistory } from 'react-router-dom';
+import {
+  addMoreEducationMaterial, clearContribute
+} from '../../../../store/contribute/actions';
+import Dialog from '../../../../components/Dialog';
+import * as ROUTES from '../../../../variables/routes';
 
 const CreateEducationMaterial = ({ translate, showReviewModal }) => {
   const dispatch = useDispatch();
@@ -33,7 +38,9 @@ const CreateEducationMaterial = ({ translate, showReviewModal }) => {
   const [materialFile, setMaterialFile] = useState(undefined);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
+  const history = useHistory();
 
+  const [showCancelModal, setShowCancelModal] = useState(false);
   const [titleError, setTitleError] = useState(false);
   const [fileError, setFileError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -158,6 +165,11 @@ const CreateEducationMaterial = ({ translate, showReviewModal }) => {
     return canSave;
   };
 
+  const handleConfirmCancelModal = () => {
+    dispatch(clearContribute());
+    history.push(ROUTES.LIBRARY);
+  };
+
   return (
     <>
       <Form className="pt-5">
@@ -269,13 +281,24 @@ const CreateEducationMaterial = ({ translate, showReviewModal }) => {
           <Button
             className="ml-2"
             variant="outline-primary"
-            // onClick={() => setShowCancelModal(true)}
+            onClick={() => setShowCancelModal(true)}
             disabled={isLoading}
           >
             {translate('common.cancel')}
           </Button>
         </div>
       </Form>
+
+      <Dialog
+        show={showCancelModal}
+        title={translate('common.cancel_confirmation_title')}
+        cancelLabel={translate('common.no')}
+        onCancel={() => setShowCancelModal(false)}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handleConfirmCancelModal}
+      >
+        <p>{translate('common.cancel_confirmation_message')}</p>
+      </Dialog>
     </>
   );
 };

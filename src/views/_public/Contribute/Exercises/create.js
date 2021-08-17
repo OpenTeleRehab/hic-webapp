@@ -25,8 +25,7 @@ import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as ROUTES from 'variables/routes';
 import {
-  addMoreExercise,
-  deleteExercise
+  addMoreExercise, clearContribute
 } from '../../../../store/contribute/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import CheckboxTree from 'react-checkbox-tree';
@@ -265,7 +264,7 @@ const CreateExercise = ({ translate, showReviewModal }) => {
   };
 
   const handleConfirmCancelModal = () => {
-    dispatch(deleteExercise());
+    dispatch(clearContribute());
     history.push(ROUTES.LIBRARY);
   };
 

@@ -5,6 +5,7 @@ import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import { useDispatch, useSelector } from 'react-redux';
 import { contributeExercise } from '../../../../store/exercise/actions';
 import {
+  clearContribute,
   contributeSubmission,
   deleteEducationMaterial,
   deleteExercise
@@ -149,6 +150,7 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
       if (submitExercises.length || submitEducationMaterials.length) {
         dispatch(contributeSubmission(formFields)).then(result => {
           if (result) {
+            dispatch(clearContribute());
             dispatch(showSpinner(false));
             showReviewModal(false);
             showConfirmSubmissionModal(true);

@@ -25,6 +25,10 @@ const addMoreQuestionnaireSuccess = (data) => ({
   data
 });
 
+const clearContributeSuccess = () => ({
+  type: 'CLEAR_CONTRIBUTE_SUCCESS'
+});
+
 const deleteExerciseSuccess = () => ({
   type: 'DELETE_EXERCISE_SUCCESS'
 });
@@ -44,6 +48,7 @@ export const mutation = {
   addMoreExerciseSuccess,
   addMoreEducationMaterialSuccess,
   addMoreQuestionnaireSuccess,
+  clearContributeSuccess,
   deleteExerciseSuccess,
   deleteEducationMaterialSuccess,
   deleteQuestionnaireSuccess
