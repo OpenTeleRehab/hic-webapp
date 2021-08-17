@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { withLocalize } from 'react-localize-redux';
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import { Button, Col, Form, Image, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux/lib/index';
 import { useParams } from 'react-router-dom';
@@ -85,6 +85,12 @@ const EducationMaterialDetail = () => {
             </div>
           ) : (
             <div className="material-detail-file-wrapper">{translate('common.no_file_translate')}</div>
+          )}
+
+          {educationMaterial.auto_translated === true && (
+            <div className="d-flex justify-content-end">
+              <Image src="/images/google-translation.png" alt="text attribution" />
+            </div>
           )}
         </Col>
       </Row>
