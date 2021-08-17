@@ -48,8 +48,6 @@ const contributeEducationMaterial = (payloads, formFields) => {
   for (let i = 0; i < payloads.length; i++) {
     const formData = new FormData();
 
-    formData.append('notification', i === (payloads.length - 1));
-
     _.forIn(payloads[i], (value, key) => {
       if (value.url) {
         formData.append(key, base64ToFile(value.url, value.fileName, value.fileType), value.fileName, { type: value.fileType });

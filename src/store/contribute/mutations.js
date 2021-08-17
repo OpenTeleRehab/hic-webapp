@@ -1,3 +1,15 @@
+const contributeSubmissionRequest = () => ({
+  type: 'CONTRIBUTE_SUBMISSION_REQUEST'
+});
+
+const contributeSubmissionSuccess = () => ({
+  type: 'CONTRIBUTE_SUBMISSION_SUCCESS'
+});
+
+const contributeSubmissionFail = () => ({
+  type: 'CONTRIBUTE_SUBMISSION_FAIL'
+});
+
 const addMoreExerciseSuccess = (data) => ({
   type: 'ADD_MORE_EXERCISE_SUCCESS',
   data
@@ -26,6 +38,9 @@ const deleteQuestionnaireSuccess = () => ({
 });
 
 export const mutation = {
+  contributeSubmissionRequest,
+  contributeSubmissionSuccess,
+  contributeSubmissionFail,
   addMoreExerciseSuccess,
   addMoreEducationMaterialSuccess,
   addMoreQuestionnaireSuccess,
