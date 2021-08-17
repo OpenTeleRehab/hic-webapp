@@ -87,7 +87,7 @@ const Sidebar = () => {
                     key={key}
                     className="d-flex align-items-center nav-link"
                   >
-                    {icon} {translate(label)}
+                    {icon} <span className="menu-text">{translate(label)}</span>
                   </NavLink>
                 );
               })
