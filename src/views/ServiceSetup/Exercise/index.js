@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import { Row, Col, Card, Form, Accordion } from 'react-bootstrap';
+import { Row, Col, Card, Form, Accordion, Button } from 'react-bootstrap';
 
 import * as ROUTES from 'variables/routes';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,10 +25,10 @@ import { FaRegCheckSquare } from 'react-icons/fa';
 import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import Select from 'react-select';
-import scssColors from '../../../scss/custom.scss';
-import { getExercises } from '../../../store/exercise/actions';
+import scssColors from 'scss/custom.scss';
+import { getExercises, downloadExercises } from 'store/exercise/actions';
 import { renderStatusBadge } from 'utils/resource';
-import { STATUS } from '../../../variables/resourceStatus';
+import { STATUS } from 'variables/resourceStatus';
 
 let timer = null;
 const Exercise = ({ translate }) => {
@@ -49,6 +49,7 @@ const Exercise = ({ translate }) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
   const [filters, setFilters] = useState([]);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     setCurrentPage(0);
@@ -142,6 +143,16 @@ const Exercise = ({ translate }) => {
     })
   };
 
+  const handleDownload = () => {
+    setDownloading(true);
+    let serializedSelectedCats = [];
+    Object.keys(selectedCategories).forEach(function (key) {
+      serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
+    });
+    dispatch(downloadExercises({ lang: language, filter: formFields, categories: serializedSelectedCats }))
+      .then(() => { setDownloading(false); });
+  };
+
   return (
     <>
       <Row className="no-gutters bg-white">
@@ -204,6 +215,9 @@ const Exercise = ({ translate }) => {
                   ))
                 }
               </Accordion>
+              <Button aria-label="Dowload Exercise" block onClick={() => handleDownload()} disabled={downloading}>
+                {translate('exercise.download')}
+              </Button>
             </Card.Body>
           </Card>
         </Col>
