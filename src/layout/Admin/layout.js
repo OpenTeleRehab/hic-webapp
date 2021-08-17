@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 
-import Navigation from 'layout/navigation';
+import Navigation from 'layout/Admin/navigation';
 import ToastNotification from 'components/ToastNotification';
 import SpinnerOverlay from 'components/SpinnerOverlay';
 import Footer from '../footer';

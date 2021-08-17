@@ -5,13 +5,51 @@
 	height: calc(100vh - #{toRem(101)});
 	width: toRem(265);
 
+	&-minimize {
+		.main-nav {
+			.navbar-brand {
+				width: toRem(70);
+
+				.logo-maximize {
+					display: none;
+				}
+
+				.logo-minimize {
+					display: block;
+				}
+
+				.brand-toggle {
+					transform: rotate(180deg);
+				}
+			}
+		}
+
+		.aside {
+			width: toRem(70);
+
+			.navbar-nav {
+				.nav-link {
+					.menu-text {
+						display: none;
+					}
+				}
+			}
+		}
+
+		.main-content {
+			padding-left: toRem(90);
+		}
+	}
+
 	.navbar-nav {
 		width: 100%;
 
 		.nav-link {
 			color: $body-color;
-			padding-left: toRem(15);
+			padding-left: toRem(26);
 			padding-right: toRem(15);
+			line-height: toRem(24);
+			height: toRem(40);
 
 			&:hover,
 			&:focus,
@@ -21,8 +59,9 @@
 				color: $white;
 			}
 
-			svg {
-				margin: 0 toRem(6) 0 0;
+			.menu-text {
+				display: inline-block;
+				padding: 0 0 0 toRem(10);
 			}
 		}
 
@@ -55,5 +94,13 @@
 @include media-breakpoint-up(xl) {
 	.aside {
 		height: calc(100vh - #{toRem(111)});
+
+		.navbar-nav {
+			.nav-link {
+				.menu-text {
+					display: inline-block;
+				}
+			}
+		}
 	}
 }
