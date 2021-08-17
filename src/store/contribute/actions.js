@@ -1,4 +1,18 @@
 import { mutation } from './mutations';
+import { Contribute } from 'services/contribute';
+
+export const contributeSubmission = (payload) => async dispatch => {
+  dispatch(mutation.contributeSubmissionRequest());
+  const data = await Contribute.contributeSubmission(payload);
+
+  if (data.success) {
+    dispatch(mutation.contributeSubmissionSuccess());
+    return true;
+  } else {
+    dispatch(mutation.contributeSubmissionFail());
+    return false;
+  }
+};
 
 export const addMoreExercise = (payload) => async (dispatch, getState) => {
   const { exercises } = getState().contribute;

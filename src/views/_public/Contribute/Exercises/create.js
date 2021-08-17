@@ -112,7 +112,6 @@ const CreateExercise = ({ translate, showReviewModal }) => {
       const fileSize = file.size;
       const fileType = file.type;
       const reader = new FileReader();
-      console.log(file);
       reader.readAsDataURL(file);
       reader.onloadend = () => {
         mediaUploads.push({ url: reader.result, fileName, fileSize, fileType });

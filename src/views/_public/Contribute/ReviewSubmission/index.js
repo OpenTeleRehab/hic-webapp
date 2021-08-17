@@ -5,11 +5,14 @@ import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import { useDispatch, useSelector } from 'react-redux';
 import { contributeExercise } from '../../../../store/exercise/actions';
 import {
+  contributeSubmission,
   deleteEducationMaterial,
   deleteExercise
 } from '../../../../store/contribute/actions';
 import { showSpinner } from '../../../../store/spinnerOverlay/actions';
 import { contributeEducationMaterial } from '../../../../store/educationMaterial/actions';
+import { toHash } from '../../../../utils/hash';
+import moment from 'moment';
 
 const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissionModal }) => {
   const dispatch = useDispatch();
@@ -17,7 +20,8 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
   const [formFields, setFormFields] = useState({
     first_name: '',
     last_name: '',
-    email: ''
+    email: '',
+    hash: toHash((Math.random() + 1).toString(36).substring(7) + '-' + moment().format('DD-MM-yyyy-h:mm:ss-a'))
   });
   const { exercises, educationMaterials, questionnaires } = useSelector((state) => state.contribute);
   const [firstNameError, setFirstNameError] = useState(false);
@@ -142,9 +146,15 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
         });
       }
 
-      dispatch(showSpinner(false));
-      showReviewModal(false);
-      showConfirmSubmissionModal(true);
+      if (submitExercises.length || submitEducationMaterials.length) {
+        dispatch(contributeSubmission(formFields)).then(result => {
+          if (result) {
+            dispatch(showSpinner(false));
+            showReviewModal(false);
+            showConfirmSubmissionModal(true);
+          }
+        });
+      }
     }
   };
 
@@ -326,7 +336,7 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
         </Form.Group>
       </Modal.Body>
       <Modal.Footer className="justify-content-center">
-        <Button variant="primary" onClick={handleSubmit} disabled={!agreeTermsAndCondition}>
+        <Button variant="primary" onClick={handleSubmit} disabled={!agreeTermsAndCondition || totalSelectedResourceItem() === 0}>
           {translate('common.submit')}
         </Button>
         <Button variant="outline-primary" onClick={handleClose}>

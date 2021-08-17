@@ -54,8 +54,6 @@ const contributeExercise = (payloads, formFields) => {
   for (let i = 0; i < payloads.length; i++) {
     const formData = new FormData();
 
-    formData.append('notification', i === (payloads.length - 1));
-
     _.forIn(payloads[i], (value, key) => {
       formData.append(key, value);
     });
