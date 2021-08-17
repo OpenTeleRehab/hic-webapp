@@ -17,6 +17,13 @@ export const contribute = (state = initialState, action) => {
         questionnaires: action.data
       });
     }
+    case 'CLEAR_CONTRIBUTE_SUCCESS': {
+      return Object.assign({}, state, {
+        exercises: [],
+        educationMaterials: [],
+        questionnaires: []
+      });
+    }
     case 'DELETE_EXERCISE_SUCCESS': {
       return Object.assign({}, state, {
         exercises: []

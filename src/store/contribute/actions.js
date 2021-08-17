@@ -31,3 +31,7 @@ export const deleteExercise = () => async (dispatch) => {
 export const deleteEducationMaterial = () => async (dispatch) => {
   dispatch(mutation.deleteEducationMaterialSuccess());
 };
+
+export const clearContribute = () => async (dispatch) => {
+  dispatch(mutation.clearContributeSuccess());
+};
