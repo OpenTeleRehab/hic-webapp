@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getTranslate } from 'react-localize-redux';
-import { Button, Col, Row } from 'react-bootstrap';
+import { Button, Col, Image, Row } from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -114,6 +114,12 @@ const ExerciseDetail = () => {
               </div>
             ))}
           </div>
+
+          {exercise.auto_translated === true && (
+            <div className="d-flex justify-content-end">
+              <Image src="/images/google-translation.png" alt="text attribution" />
+            </div>
+          )}
         </Col>
         <Col sm={5} md={4}>
           <h5 className="text-primary mb-3">{translate('exercise.attachments')}</h5>
