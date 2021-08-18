@@ -2,7 +2,6 @@ export const USER_GROUPS = {
   ADMIN: 'admin',
   MODERATOR: 'moderator'
 };
-
 export const USER_ROLES = {
   MANAGE_GLOBAL_ADMIN: 'manage_global_admin',
   MANAGE_COUNTRY_ADMIN: 'manage_country_admin',
