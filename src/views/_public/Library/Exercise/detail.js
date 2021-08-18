@@ -3,16 +3,19 @@ import { getTranslate } from 'react-localize-redux';
 import { Button, Col, Image, Row } from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { getExercise } from 'store/exercise/actions';
 import { formatFileSize } from '../../../../utils/file';
+import { replaceRoute } from '../../../../utils/route';
+import * as ROUTES from '../../../../variables/routes';
 
 const ExerciseDetail = () => {
   const localize = useSelector((state) => state.localize);
   const dispatch = useDispatch();
+  const history = useHistory();
   const translate = getTranslate(localize);
   const { exercise } = useSelector(state => state.exercise);
-  const { languages } = useSelector(state => state.language);
+  const { languages, activeLanguage } = useSelector((state) => state.language);
   const [mediaUploads, setMediaUploads] = useState([]);
   const [additionalFields, setAdditionalFields] = useState([]);
   const [index, setIndex] = useState(0);
@@ -23,11 +26,11 @@ const ExerciseDetail = () => {
   };
 
   useEffect(() => {
-    const language = languages[0] && languages[0].id;
     if (id) {
-      dispatch(getExercise(id, language));
+      const lang = languages.find((language) => language.code === activeLanguage);
+      dispatch(getExercise(id, lang && lang.id));
     }
-  }, [id, languages, dispatch]);
+  }, [id, activeLanguage, dispatch, languages]);
 
   useEffect(() => {
     if (id && exercise.id) {
@@ -42,6 +45,10 @@ const ExerciseDetail = () => {
       document.title = `${exercise.title} - ${process.env.REACT_APP_SITE_TITLE}`;
     }
   }, [exercise]);
+
+  useEffect(() => {
+    history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL, activeLanguage).replace(':id', id));
+  }, [activeLanguage, history, id]);
 
   const handleDownload = async (event, fileName, fileUrl) => {
     event.preventDefault();
@@ -168,7 +175,7 @@ const ExerciseDetail = () => {
           ))}
         </Col>
       </Row>
-      <Row className="mt-3 d-none">
+      <Row className={activeLanguage === 'en' ? 'mt-3 d-none' : 'mt-3'}>
         <Col>
           <Button className="w-100" size="sm">{translate('exercise.edit_translation')}</Button>
         </Col>

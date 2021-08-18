@@ -24,7 +24,7 @@ import {
 import Dialog from '../../../../components/Dialog';
 import * as ROUTES from '../../../../variables/routes';
 
-const CreateEducationMaterial = ({ translate, showReviewModal }) => {
+const CreateEducationMaterial = ({ translate, showReviewModal, lang }) => {
   const dispatch = useDispatch();
   const { maxFileSize } = settings.educationMaterial;
   const { educationMaterials } = useSelector(state => state.contribute);
@@ -46,8 +46,8 @@ const CreateEducationMaterial = ({ translate, showReviewModal }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: '' }));
-  }, [dispatch]);
+    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: lang }));
+  }, [dispatch, lang]);
 
   useEffect(() => {
     setGetEducationMaterials(educationMaterials);
@@ -305,7 +305,8 @@ const CreateEducationMaterial = ({ translate, showReviewModal }) => {
 
 CreateEducationMaterial.propTypes = {
   translate: PropTypes.func,
-  showReviewModal: PropTypes.func
+  showReviewModal: PropTypes.func,
+  lang: PropTypes.number
 };
 
 export default withLocalize(CreateEducationMaterial);

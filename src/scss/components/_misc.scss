@@ -70,3 +70,11 @@
 .filter-sidebar {
 	min-height: toRem(354);
 }
+
+//language selection menu
+.language-wrapper {
+	.dropdown-toggle:after { content: none }
+	.language-text {
+		font-size: toRem(17);
+	}
+}

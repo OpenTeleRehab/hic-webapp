@@ -3,30 +3,37 @@ import { withLocalize } from 'react-localize-redux';
 import { Button, Col, Form, Image, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux/lib/index';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { getEducationMaterial } from '../../../../store/educationMaterial/actions';
+import { replaceRoute } from '../../../../utils/route';
+import * as ROUTES from '../../../../variables/routes';
 
 const EducationMaterialDetail = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const { educationMaterial } = useSelector(state => state.educationMaterial);
   const localize = useSelector((state) => state.localize);
-  const { languages } = useSelector(state => state.language);
+  const { languages, activeLanguage } = useSelector(state => state.language);
   const translate = getTranslate(localize);
   const [materialFile, setMaterialFile] = useState(undefined);
   const { id } = useParams();
 
   useEffect(() => {
-    const language = languages[0] && languages[0].id;
+    const language = languages.find((language) => language.code === activeLanguage);
     if (id) {
-      dispatch(getEducationMaterial(id, language));
+      dispatch(getEducationMaterial(id, language && language.id));
     }
-  }, [id, languages, dispatch]);
+  }, [id, languages, activeLanguage, dispatch]);
 
   useEffect(() => {
     if (id && educationMaterial.id) {
       setMaterialFile(educationMaterial.file);
     }
   }, [id, educationMaterial]);
+
+  useEffect(() => {
+    history.push(replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL, activeLanguage).replace(':id', id));
+  }, [activeLanguage, history, id]);
 
   return (
     <>
@@ -94,7 +101,7 @@ const EducationMaterialDetail = () => {
           )}
         </Col>
       </Row>
-      <Row className="mt-4 d-none">
+      <Row className={activeLanguage === 'en' ? 'mt-4 d-none' : 'mt-4'}>
         <Col>
           <Button className="w-100" size="sm">{translate('exercise.edit_translation')}</Button>
         </Col>

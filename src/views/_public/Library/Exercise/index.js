@@ -29,17 +29,17 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import * as ROUTES from 'variables/routes';
 import { useHistory } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
+import { replaceRoute } from '../../../../utils/route';
 
 let timer = null;
-const Exercise = ({ translate }) => {
+const Exercise = ({ translate, lang }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { loading, exercises, filters } = useSelector(state => state.exercise);
-  const { profile } = useSelector((state) => state.auth);
+  const { loading, exercises } = useSelector(state => state.exercise);
   const { categoryTreeData } = useSelector((state) => state.category);
+  const { activeLanguage } = useSelector((state) => state.language);
   const [pageSize, setPageSize] = useState(9);
-  const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
     search_value: ''
   });
@@ -47,16 +47,8 @@ const Exercise = ({ translate }) => {
   const [expanded, setExpanded] = useState([]);
 
   useEffect(() => {
-    if (filters && filters.lang) {
-      setLanguage(filters.lang);
-    } else if (profile && profile.language_id) {
-      setLanguage(profile.language_id);
-    }
-  }, [filters, profile]);
-
-  useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: language }));
-  }, [language, dispatch]);
+    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: lang }));
+  }, [lang, dispatch]);
 
   useEffect(() => {
     if (categoryTreeData.length) {
@@ -77,13 +69,13 @@ const Exercise = ({ translate }) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       dispatch(getExercises({
-        lang: language,
+        lang: lang,
         filter: formFields,
         categories: serializedSelectedCats,
         page_size: pageSize
       }));
     }, 500);
-  }, [language, formFields, selectedCategories, pageSize, dispatch]);
+  }, [lang, formFields, selectedCategories, pageSize, dispatch]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -106,7 +98,7 @@ const Exercise = ({ translate }) => {
   };
 
   const handleViewDetail = (id) => {
-    history.push(ROUTES.LIBRARY_EXERCISE_DETAIL.replace(':id', id));
+    history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL, activeLanguage).replace(':id', id));
   };
 
   return (
@@ -248,7 +240,8 @@ const Exercise = ({ translate }) => {
 };
 
 Exercise.propTypes = {
-  translate: PropTypes.func
+  translate: PropTypes.func,
+  lang: PropTypes.number
 };
 
 export default withLocalize(Exercise);

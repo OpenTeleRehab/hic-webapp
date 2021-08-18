@@ -48,6 +48,11 @@ const deleteLanguageFail = () => ({
   type: 'DELETE_LANGUAGE_FAIL'
 });
 
+const setActiveLanguageSuccess = (data) => ({
+  type: 'SET_ACTIVE_LANGUAGE_SUCCESS',
+  data
+});
+
 export const mutation = {
   getLanguagesRequest,
   getLanguagesSuccess,
@@ -60,5 +65,6 @@ export const mutation = {
   updateLanguageFail,
   deleteLanguageRequest,
   deleteLanguageSuccess,
-  deleteLanguageFail
+  deleteLanguageFail,
+  setActiveLanguageSuccess
 };

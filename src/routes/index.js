@@ -86,7 +86,6 @@ const publicRoutes = [
 ];
 
 const routes = [
-  ...publicRoutes,
   {
     title: 'dashboard',
     path: ROUTES.ADMIN_DASHBOARD,
@@ -210,6 +209,7 @@ const routes = [
     exact: true,
     type: PRIVATE
   },
+  ...publicRoutes,
   {
     title: 'not_found_page',
     path: '*',

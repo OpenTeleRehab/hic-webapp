@@ -1,11 +1,11 @@
-export const HOME = '/';
-export const LIBRARY = '/library';
+export const HOME = '/:lang?/';
+export const LIBRARY = '/:lang?/library';
 export const LIBRARY_EDUCATION = LIBRARY + '#education';
 export const LIBRARY_QUESTIONNAIRE = LIBRARY + '#questionnaire';
 export const LIBRARY_EXERCISE_DETAIL = LIBRARY + '/exercise/detail/:id';
 export const LIBRARY_EDUCATION_MATERIAL_DETAIL = LIBRARY + '/education_material/detail/:id';
 
-export const CONTRIBUTE = '/contribute';
+export const CONTRIBUTE = '/:lang?/contribute';
 export const CONFIRM_SUBMISSION = '/contribute/confirm-submission';
 
 export const ADMIN = '/admin';

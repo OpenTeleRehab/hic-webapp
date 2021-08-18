@@ -8,6 +8,11 @@ export const language = (state = initialState, action) => {
         filters: action.filters
       });
     }
+    case 'SET_ACTIVE_LANGUAGE_SUCCESS': {
+      return Object.assign({}, state, {
+        activeLanguage: action.data
+      });
+    }
     default:
       return state;
   }

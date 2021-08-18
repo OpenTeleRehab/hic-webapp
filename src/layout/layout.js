@@ -11,9 +11,11 @@ import Footer from './footer';
 import Banner from '../components/Banner/banner';
 import * as ROUTES from '../variables/routes';
 import { Container } from 'react-bootstrap';
+import { replaceRoute } from '../utils/route';
 
 const Layout = ({ component: Component, title, defaultTemplate }) => {
   const localize = useSelector((state) => state.localize);
+  const { activeLanguage } = useSelector((state) => state.language);
   const translate = getTranslate(localize);
   const location = useLocation();
   const [showBanner, setShowBanner] = useState(false);
@@ -26,11 +28,11 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
   }, [title, translate]);
 
   useEffect(() => {
-    if (location.pathname === ROUTES.HOME) {
+    if (location.pathname === replaceRoute(ROUTES.HOME, activeLanguage)) {
       setShowBanner(true);
       setIsHome(true);
     }
-  }, [location]);
+  }, [location, activeLanguage]);
 
   return (
     <>

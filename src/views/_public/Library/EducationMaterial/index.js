@@ -29,33 +29,26 @@ import { MATERIAL_TYPE } from '../../../../variables/activity';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useHistory } from 'react-router-dom';
 import * as ROUTES from '../../../../variables/routes';
+import { replaceRoute } from '../../../../utils/route';
 
 let timer = null;
-const EducationMaterial = ({ translate }) => {
+const EducationMaterial = ({ translate, lang }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [formFields, setFormFields] = useState({
     search_value: ''
   });
-  const [language, setLanguage] = useState('');
-  const { loading, educationMaterials, filters } = useSelector(state => state.educationMaterial);
-  const { profile } = useSelector((state) => state.auth);
+
+  const { loading, educationMaterials } = useSelector(state => state.educationMaterial);
+  const { activeLanguage } = useSelector((state) => state.language);
   const { categoryTreeData } = useSelector((state) => state.category);
   const [pageSize, setPageSize] = useState(9);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
 
   useEffect(() => {
-    if (filters && filters.lang) {
-      setLanguage(filters.lang);
-    } else if (profile && profile.language_id) {
-      setLanguage(profile.language_id);
-    }
-  }, [filters, profile]);
-
-  useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.MATERIAL, lang: language }));
-  }, [language, dispatch]);
+    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.MATERIAL, lang: lang }));
+  }, [lang, dispatch]);
 
   useEffect(() => {
     if (categoryTreeData.length) {
@@ -76,13 +69,13 @@ const EducationMaterial = ({ translate }) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       dispatch(getEducationMaterials({
-        lang: language,
+        lang: lang,
         filter: formFields,
         categories: serializedSelectedCats,
         page_size: pageSize
       }));
     }, 500);
-  }, [language, formFields, selectedCategories, pageSize, dispatch]);
+  }, [lang, formFields, selectedCategories, pageSize, dispatch]);
 
   const handleClearSearch = () => {
     setFormFields({ ...formFields, search_value: '' });
@@ -105,7 +98,7 @@ const EducationMaterial = ({ translate }) => {
   };
 
   const handleViewDetail = (id) => {
-    history.push(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL.replace(':id', id));
+    history.push(replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL, activeLanguage).replace(':id', id));
   };
 
   return (
@@ -234,7 +227,8 @@ const EducationMaterial = ({ translate }) => {
 };
 
 EducationMaterial.propTypes = {
-  translate: PropTypes.func
+  translate: PropTypes.func,
+  lang: PropTypes.number
 };
 
 export default withLocalize(EducationMaterial);

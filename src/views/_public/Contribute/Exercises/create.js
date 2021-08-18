@@ -34,7 +34,7 @@ import { getCategoryTreeData } from '../../../../store/category/actions';
 import { CATEGORY_TYPES } from '../../../../variables/category';
 import { formatFileSize } from '../../../../utils/file';
 
-const CreateExercise = ({ translate, showReviewModal }) => {
+const CreateExercise = ({ translate, showReviewModal, lang }) => {
   const dispatch = useDispatch();
   const { categoryTreeData } = useSelector((state) => state.category);
   const { exercises } = useSelector(state => state.contribute);
@@ -67,8 +67,8 @@ const CreateExercise = ({ translate, showReviewModal }) => {
   const history = useHistory();
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: '' }));
-  }, [dispatch]);
+    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: lang }));
+  }, [dispatch, lang]);
 
   useEffect(() => {
     if (categoryTreeData.length) {
@@ -521,7 +521,8 @@ const CreateExercise = ({ translate, showReviewModal }) => {
 
 CreateExercise.propTypes = {
   translate: PropTypes.func,
-  showReviewModal: PropTypes.func
+  showReviewModal: PropTypes.func,
+  lang: PropTypes.number
 };
 
 export default CreateExercise;
