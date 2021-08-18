@@ -7,7 +7,7 @@ import { useKeycloak } from '@react-keycloak/web';
 
 import CreateUser from './create';
 import PropTypes from 'prop-types';
-import { getUsers, deleteUser, updateUserStatus } from 'store/user/actions';
+import { getUsers, deleteUser, updateUserStatus, resendEmail } from 'store/user/actions';
 import CustomTable from 'components/Table';
 import settings from 'settings';
 import { EditAction, DeleteAction, EnabledAction, DisabledAction, MailSendAction } from 'components/ActionIcons';
@@ -128,6 +128,10 @@ const User = ({ translate }) => {
     setShow(true);
   };
 
+  const handleSendMail = (id) => {
+    dispatch(resendEmail(id));
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
@@ -160,7 +164,7 @@ const User = ({ translate }) => {
                 }
                 <EditAction onClick={() => handleEdit(user.id)} />
                 <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={parseInt(user.id) === parseInt(profile.id) || user.enabled} />
-                <MailSendAction />
+                <MailSendAction onClick={() => handleSendMail(user.id)} disabled={user.last_login} />
               </>
             );
 
