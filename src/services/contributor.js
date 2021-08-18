@@ -13,7 +13,7 @@ const getContributors = () => {
 };
 
 const confirmSubmission = (hash) => {
-  return axios.get(`/contribute/confirm-submission/?hash=${hash}`)
+  return axios.get(`/contribute/confirm-submission?hash=${hash}`)
     .then(
       res => {
         return res.data;
