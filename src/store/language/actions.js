@@ -68,3 +68,7 @@ export const deleteLanguage = id => async (dispatch) => {
     return false;
   }
 };
+
+export const setActiveLanguage = (data) => async (dispatch) => {
+  dispatch(mutation.setActiveLanguageSuccess(data));
+};

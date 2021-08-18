@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Nav } from 'react-bootstrap';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import * as ROUTES from 'variables/routes';
 import Exercise from './Exercise';
 import EducationMaterial from './EducationMaterial';
 import Questionnaire from './Questionnaire';
+import { useSelector } from 'react-redux';
+import { replaceRoute } from '../../../utils/route';
 
 const VIEW_EXERCISE = 'exercise';
 const VIEW_EDUCATION = 'education';
@@ -14,7 +16,17 @@ const VIEW_QUESTIONNAIRE = 'questionnaire';
 
 const Library = ({ translate }) => {
   const { hash } = useLocation();
+  const history = useHistory();
+  const { languages, activeLanguage } = useSelector((state) => state.language);
   const [view, setView] = useState(undefined);
+  const [lang, setLang] = useState('');
+
+  useEffect(() => {
+    const lang = languages.find((language) => language.code === activeLanguage);
+    if (lang) {
+      setLang(lang.id);
+    }
+  }, [languages, activeLanguage]);
 
   useEffect(() => {
     if (hash.includes('#' + VIEW_EDUCATION)) {
@@ -26,29 +38,39 @@ const Library = ({ translate }) => {
     }
   }, [hash]);
 
+  useEffect(() => {
+    if (hash.includes('#' + VIEW_EDUCATION)) {
+      history.push(replaceRoute(ROUTES.LIBRARY_EDUCATION, activeLanguage));
+    } else if (hash.includes('#' + VIEW_QUESTIONNAIRE)) {
+      history.push(replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE, activeLanguage));
+    } else {
+      history.push(replaceRoute(ROUTES.LIBRARY, activeLanguage));
+    }
+  }, [activeLanguage, history, hash]);
+
   return (
     <>
       <Nav variant="tabs" activeKey={view} className="mb-3">
         <Nav.Item>
-          <Nav.Link as={Link} to={ROUTES.LIBRARY} eventKey={VIEW_EXERCISE}>
+          <Nav.Link as={Link} to={replaceRoute(ROUTES.LIBRARY, activeLanguage)} eventKey={VIEW_EXERCISE}>
             {translate('library.exercises')}
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link as={Link} to={ROUTES.LIBRARY_EDUCATION} eventKey={VIEW_EDUCATION}>
+          <Nav.Link as={Link} to={replaceRoute(ROUTES.LIBRARY_EDUCATION, activeLanguage)} eventKey={VIEW_EDUCATION}>
             {translate('library.education_materials')}
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link as={Link} to={ROUTES.LIBRARY_QUESTIONNAIRE} eventKey={VIEW_QUESTIONNAIRE}>
+          <Nav.Link as={Link} to={replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE, activeLanguage)} eventKey={VIEW_QUESTIONNAIRE}>
             {translate('library.questionnaires')}
           </Nav.Link>
         </Nav.Item>
       </Nav>
 
-      { view === VIEW_EXERCISE && <Exercise /> }
-      { view === VIEW_EDUCATION && <EducationMaterial /> }
-      { view === VIEW_QUESTIONNAIRE && <Questionnaire /> }
+      { view === VIEW_EXERCISE && <Exercise lang={lang}/> }
+      { view === VIEW_EDUCATION && <EducationMaterial lang={lang} /> }
+      { view === VIEW_QUESTIONNAIRE && <Questionnaire lang={lang}/> }
     </>
   );
 };

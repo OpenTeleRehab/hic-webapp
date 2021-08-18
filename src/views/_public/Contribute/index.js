@@ -11,15 +11,25 @@ import { CONTRIBUTE } from '../../../variables/routes';
 import ReviewSubmissionModal from './ReviewSubmission';
 import Dialog from '../../../components/Dialog';
 import * as ROUTES from '../../../variables/routes';
+import { replaceRoute } from '../../../utils/route';
 
 const Contribute = () => {
   const { hash } = useLocation();
   const localize = useSelector((state) => state.localize);
+  const { languages, activeLanguage } = useSelector((state) => state.language);
   const translate = getTranslate(localize);
   const [view, setView] = useState(undefined);
   const [isShowReviewModal, setIsShowReviewModal] = useState(false);
   const [isShowConfirmSubmissionModal, setIsShowConfirmSubmissionModal] = useState(false);
   const history = useHistory();
+  const [lang, setLang] = useState('');
+
+  useEffect(() => {
+    const lang = languages.find((language) => language.code === activeLanguage);
+    if (lang) {
+      setLang(lang.id);
+    }
+  }, [languages, activeLanguage]);
 
   const types = [
     {
@@ -49,14 +59,24 @@ const Contribute = () => {
     }
   }, [hash]);
 
+  useEffect(() => {
+    if (hash.includes('#' + CATEGORY_TYPES.MATERIAL)) {
+      history.push(`${replaceRoute(CONTRIBUTE, activeLanguage)}#${CATEGORY_TYPES.MATERIAL}`);
+    } else if (hash.includes('#' + CATEGORY_TYPES.QUESTIONNAIRE)) {
+      history.push(`${replaceRoute(CONTRIBUTE, activeLanguage)}#${CATEGORY_TYPES.QUESTIONNAIRE}`);
+    } else {
+      history.push(replaceRoute(CONTRIBUTE, activeLanguage));
+    }
+  }, [activeLanguage, history, hash]);
+
   const handleChange = (e) => {
     const { value } = e.target;
-    history.push(`${CONTRIBUTE}#${value}`);
+    history.push(`${replaceRoute(CONTRIBUTE, activeLanguage)}#${value}`);
   };
 
   const handleCancelConfirmSubmission = () => {
     setIsShowConfirmSubmissionModal(false);
-    history.push(ROUTES.LIBRARY);
+    history.push(replaceRoute(ROUTES.LIBRARY, activeLanguage));
   };
 
   return (
@@ -91,9 +111,9 @@ const Contribute = () => {
           </Form.Group>
         </Form>
 
-        { view === CATEGORY_TYPES.EXERCISE && <CreateExercise translate={translate} showReviewModal={setIsShowReviewModal} /> }
-        { view === CATEGORY_TYPES.MATERIAL && <CreateEducationMaterial translate={translate} showReviewModal={setIsShowReviewModal} /> }
-        { view === CATEGORY_TYPES.QUESTIONNAIRE && <CreateQuestionnaire translate={translate} showReviewModal={setIsShowReviewModal} /> }
+        { view === CATEGORY_TYPES.EXERCISE && <CreateExercise translate={translate} showReviewModal={setIsShowReviewModal} lang={lang}/> }
+        { view === CATEGORY_TYPES.MATERIAL && <CreateEducationMaterial translate={translate} showReviewModal={setIsShowReviewModal} lang={lang}/> }
+        { view === CATEGORY_TYPES.QUESTIONNAIRE && <CreateQuestionnaire translate={translate} showReviewModal={setIsShowReviewModal} lang={lang}/> }
 
         {isShowReviewModal && <ReviewSubmissionModal translate={translate} showReviewModal={setIsShowReviewModal} showConfirmSubmissionModal={setIsShowConfirmSubmissionModal} />}
         <Dialog

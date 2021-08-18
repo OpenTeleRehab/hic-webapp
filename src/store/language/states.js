@@ -1,4 +1,5 @@
 export const initialState = {
   languages: [],
-  filters: {}
+  filters: {},
+  activeLanguage: 'en'
 };
