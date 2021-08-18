@@ -19,6 +19,7 @@ const Contribute = () => {
   const { languages, activeLanguage } = useSelector((state) => state.language);
   const translate = getTranslate(localize);
   const [view, setView] = useState(undefined);
+  const [editItem, setEditItem] = useState(undefined);
   const [isShowReviewModal, setIsShowReviewModal] = useState(false);
   const [isShowConfirmSubmissionModal, setIsShowConfirmSubmissionModal] = useState(false);
   const history = useHistory();
@@ -102,6 +103,7 @@ const Contribute = () => {
                 value={type.value}
                 defaultChecked={type.defaultChecked}
                 checked={view === type.value}
+                disabled={editItem}
                 type="radio"
                 label={type.label}
                 custom
@@ -111,11 +113,11 @@ const Contribute = () => {
           </Form.Group>
         </Form>
 
-        { view === CATEGORY_TYPES.EXERCISE && <CreateExercise translate={translate} showReviewModal={setIsShowReviewModal} lang={lang}/> }
-        { view === CATEGORY_TYPES.MATERIAL && <CreateEducationMaterial translate={translate} showReviewModal={setIsShowReviewModal} lang={lang}/> }
-        { view === CATEGORY_TYPES.QUESTIONNAIRE && <CreateQuestionnaire translate={translate} showReviewModal={setIsShowReviewModal} lang={lang}/> }
+        { view === CATEGORY_TYPES.EXERCISE && <CreateExercise translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} lang={lang} /> }
+        { view === CATEGORY_TYPES.MATERIAL && <CreateEducationMaterial translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} lang={lang} /> }
+        { view === CATEGORY_TYPES.QUESTIONNAIRE && <CreateQuestionnaire translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} lang={lang} /> }
+        { isShowReviewModal && <ReviewSubmissionModal translate={translate} editItem={setEditItem} showReviewModal={setIsShowReviewModal} showConfirmSubmissionModal={setIsShowConfirmSubmissionModal} /> }
 
-        {isShowReviewModal && <ReviewSubmissionModal translate={translate} showReviewModal={setIsShowReviewModal} showConfirmSubmissionModal={setIsShowConfirmSubmissionModal} />}
         <Dialog
           show={isShowConfirmSubmissionModal}
           title={translate('contribute.confirm_submission.title')}
