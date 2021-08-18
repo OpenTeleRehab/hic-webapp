@@ -102,7 +102,7 @@ const CreateExercise = ({ translate }) => {
   }, [categoryTreeData]);
 
   useEffect(() => {
-    if (id) {
+    if (id && language) {
       dispatch(getExercise(id, language));
     }
   }, [id, language, dispatch]);
