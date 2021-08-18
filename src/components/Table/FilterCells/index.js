@@ -9,6 +9,7 @@ import ContributorFilterCell from 'components/Table/FilterCells/ContributorFilte
 import ContributorEmailFilterCell from 'components/Table/FilterCells/ContributorEmailFilterCell';
 import GenderFilterCell from 'components/Table/FilterCells/GenderFilterCell';
 import UserGroupFilterCell from 'components/Table/FilterCells/UserGroupFilterCell';
+import UserStatusFilterCell from 'components/Table/FilterCells/UserStatusFilterCell';
 
 const FilterCell = (props) => {
   const { column } = props;
@@ -28,6 +29,8 @@ const FilterCell = (props) => {
     return <GenderFilterCell {...props} />;
   } else if (column.name === 'type') {
     return <UserGroupFilterCell {...props} />;
+  } else if (column.name === 'user_status') {
+    return <UserStatusFilterCell {...props} />;
   }
 
   return <TableFilterRow.Cell {...props} />;
