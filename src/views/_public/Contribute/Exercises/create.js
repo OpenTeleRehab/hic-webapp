@@ -68,7 +68,7 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
   const history = useHistory();
 
   useEffect(() => {
-    if (editItem && hash.includes('#exercise')) {
+    if (editItem && hash === '') {
       const showSetsReps = editItem.sets > 0;
       setFormFields({
         id: editItem.id,
