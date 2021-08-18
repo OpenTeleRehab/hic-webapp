@@ -14,8 +14,10 @@ import { showSpinner } from '../../../../store/spinnerOverlay/actions';
 import { contributeEducationMaterial } from '../../../../store/educationMaterial/actions';
 import { toHash } from '../../../../utils/hash';
 import moment from 'moment';
+import * as ROUTES from '../../../../variables/routes';
+import { useHistory } from 'react-router-dom';
 
-const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissionModal }) => {
+const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfirmSubmissionModal }) => {
   const dispatch = useDispatch();
   const handleClose = () => showReviewModal(false);
   const [formFields, setFormFields] = useState({
@@ -33,6 +35,7 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [selectedEducationMaterials, setSelectedEducationMaterials] = useState([]);
   const [selectedQuestionnaires, setSelectedQuestionnaires] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     exercises.forEach((exercise, index) => {
@@ -160,6 +163,12 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
     }
   };
 
+  const handleEditResource = (item, type) => {
+    editItem(item);
+    showReviewModal(false);
+    history.push(ROUTES.CONTRIBUTE + '#' + type);
+  };
+
   return (
     <Modal
       size="lg"
@@ -194,7 +203,13 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
                       />
                     </Col>
                     <Col className="text-right">
-                      <Button variant="link" className="text-decoration-none p-0">{translate('common.edit')}</Button>
+                      <Button
+                        variant="link"
+                        className="text-decoration-none p-0"
+                        onClick={() => handleEditResource(exercise, 'exercise')}
+                      >
+                        {translate('common.edit')}
+                      </Button>
                     </Col>
                   </Form.Group>
                 ))}
@@ -226,7 +241,13 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
                       />
                     </Col>
                     <Col className="text-right">
-                      <Button variant="link" className="text-decoration-none p-0">{translate('common.edit')}</Button>
+                      <Button
+                        variant="link"
+                        className="text-decoration-none p-0"
+                        onClick={() => handleEditResource(educationMaterial, 'education')}
+                      >
+                        {translate('common.edit')}
+                      </Button>
                     </Col>
                   </Form.Group>
                 ))}
@@ -258,7 +279,13 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
                       />
                     </Col>
                     <Col className="text-right">
-                      <Button variant="link" className="text-decoration-none p-0">{translate('common.edit')}</Button>
+                      <Button
+                        variant="link"
+                        className="text-decoration-none p-0"
+                        onClick={() => handleEditResource(questionnaire, 'questionnaire')}
+                      >
+                        {translate('common.edit')}
+                      </Button>
                     </Col>
                   </Form.Group>
                 ))}
@@ -351,6 +378,7 @@ const ReviewSubmissionModal = ({ translate, showReviewModal, showConfirmSubmissi
 
 ReviewSubmissionModal.propTypes = {
   translate: PropTypes.func,
+  editItem: PropTypes.func,
   showReviewModal: PropTypes.func,
   showConfirmSubmissionModal: PropTypes.func
 };

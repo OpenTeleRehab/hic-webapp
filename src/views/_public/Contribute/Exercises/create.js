@@ -25,7 +25,7 @@ import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as ROUTES from 'variables/routes';
 import {
-  addMoreExercise, clearContribute
+  addMoreExercise, clearContribute, updateExercise
 } from '../../../../store/contribute/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import CheckboxTree from 'react-checkbox-tree';
@@ -34,7 +34,7 @@ import { getCategoryTreeData } from '../../../../store/category/actions';
 import { CATEGORY_TYPES } from '../../../../variables/category';
 import { formatFileSize } from '../../../../utils/file';
 
-const CreateExercise = ({ translate, showReviewModal, lang }) => {
+const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModal, lang }) => {
   const dispatch = useDispatch();
   const { categoryTreeData } = useSelector((state) => state.category);
   const { exercises } = useSelector(state => state.contribute);
@@ -47,6 +47,7 @@ const CreateExercise = ({ translate, showReviewModal, lang }) => {
     { field: translate('additional_field.precautions'), value: '' }
   ]);
   const [formFields, setFormFields] = useState({
+    id: '',
     title: '',
     show_sets_reps: false,
     sets: '',
@@ -65,6 +66,33 @@ const CreateExercise = ({ translate, showReviewModal, lang }) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
   const history = useHistory();
+
+  useEffect(() => {
+    if (editItem && hash.includes('#exercise')) {
+      const showSetsReps = editItem.sets > 0;
+      setFormFields({
+        id: editItem.id,
+        title: editItem.title,
+        show_sets_reps: showSetsReps,
+        sets: editItem.sets,
+        reps: editItem.reps
+      });
+      setAdditionalFields(JSON.parse(editItem.additional_fields));
+      setMediaUploads(editItem.media_uploads);
+      if (categoryTreeData.length) {
+        const rootCategoryStructure = {};
+        categoryTreeData.forEach(category => {
+          const ids = [];
+          JSON.stringify(category, (key, value) => {
+            if (key === 'value') ids.push(value);
+            return value;
+          });
+          rootCategoryStructure[category.value] = _.intersectionWith(editItem.categories.split(',').map(x => +x), ids);
+        });
+        setSelectedCategories(rootCategoryStructure);
+      }
+    }
+  }, [editItem, categoryTreeData, hash]);
 
   useEffect(() => {
     dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: lang }));
@@ -170,6 +198,7 @@ const CreateExercise = ({ translate, showReviewModal, lang }) => {
 
     const payload = {
       ...formFields,
+      id: editItem ? formFields.id : getExercises.length,
       sets: formFields.show_sets_reps ? formFields.sets : 0,
       reps: formFields.show_sets_reps ? formFields.reps : 0,
       show_sets_reps: formFields.show_sets_reps,
@@ -178,10 +207,18 @@ const CreateExercise = ({ translate, showReviewModal, lang }) => {
       media_uploads: mediaUploads
     };
 
-    dispatch(addMoreExercise(payload)).then(() => {
-      setIsLoading(false);
-      handleResetForm();
-    });
+    if (editItem) {
+      dispatch(updateExercise(payload)).then(() => {
+        setEditItem(undefined);
+        setIsLoading(false);
+        handleResetForm();
+      });
+    } else {
+      dispatch(addMoreExercise(payload)).then(() => {
+        setIsLoading(false);
+        handleResetForm();
+      });
+    }
   };
 
   const handleResetForm = () => {
@@ -193,6 +230,7 @@ const CreateExercise = ({ translate, showReviewModal, lang }) => {
       { field: translate('additional_field.precautions'), value: '' }
     ]);
     setFormFields({
+      id: '',
       title: '',
       show_sets_reps: false,
       sets: '',
@@ -521,6 +559,9 @@ const CreateExercise = ({ translate, showReviewModal, lang }) => {
 
 CreateExercise.propTypes = {
   translate: PropTypes.func,
+  hash: PropTypes.string,
+  editItem: PropTypes.object,
+  setEditItem: PropTypes.func,
   showReviewModal: PropTypes.func,
   lang: PropTypes.number
 };

@@ -24,6 +24,24 @@ export const addMoreEducationMaterial = (payload) => async (dispatch, getState) 
   dispatch(mutation.addMoreEducationMaterialSuccess([...educationMaterials, payload]));
 };
 
+export const updateExercise = (payload) => async (dispatch, getState) => {
+  const { exercises } = getState().contribute;
+  const newExercises = [];
+  exercises.forEach((exercise) => {
+    newExercises.push(exercise.id === payload.id ? payload : exercise);
+  });
+  dispatch(mutation.addMoreExerciseSuccess(newExercises));
+};
+
+export const updateEducationMaterial = (payload) => async (dispatch, getState) => {
+  const { educationMaterials } = getState().contribute;
+  const newEducationMaterials = [];
+  educationMaterials.forEach((educationMaterial) => {
+    newEducationMaterials.push(educationMaterial.id === payload.id ? payload : educationMaterial);
+  });
+  dispatch(mutation.addMoreEducationMaterialSuccess(newEducationMaterials));
+};
+
 export const deleteExercise = () => async (dispatch) => {
   dispatch(mutation.deleteExerciseSuccess());
 };

@@ -19,18 +19,19 @@ import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import { useHistory } from 'react-router-dom';
 import {
-  addMoreEducationMaterial, clearContribute
+  addMoreEducationMaterial, clearContribute, updateEducationMaterial
 } from '../../../../store/contribute/actions';
 import Dialog from '../../../../components/Dialog';
 import * as ROUTES from '../../../../variables/routes';
 
-const CreateEducationMaterial = ({ translate, showReviewModal, lang }) => {
+const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showReviewModal, lang }) => {
   const dispatch = useDispatch();
   const { maxFileSize } = settings.educationMaterial;
   const { educationMaterials } = useSelector(state => state.contribute);
   const [getEducationMaterials, setGetEducationMaterials] = useState([]);
   const { categoryTreeData } = useSelector((state) => state.category);
   const [formFields, setFormFields] = useState({
+    id: '',
     title: '',
     file: undefined,
     categories: ''
@@ -44,6 +45,28 @@ const CreateEducationMaterial = ({ translate, showReviewModal, lang }) => {
   const [titleError, setTitleError] = useState(false);
   const [fileError, setFileError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (editItem && hash.includes('#education')) {
+      setFormFields({
+        id: editItem.id,
+        title: editItem.title,
+        file: editItem.file
+      });
+      if (categoryTreeData.length) {
+        const rootCategoryStructure = {};
+        categoryTreeData.forEach(category => {
+          const ids = [];
+          JSON.stringify(category, (key, value) => {
+            if (key === 'value') ids.push(value);
+            return value;
+          });
+          rootCategoryStructure[category.value] = _.intersectionWith(editItem.categories.split(',').map(x => +x), ids);
+        });
+        setSelectedCategories(rootCategoryStructure);
+      }
+    }
+  }, [editItem, categoryTreeData, hash]);
 
   useEffect(() => {
     dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: lang }));
@@ -119,21 +142,31 @@ const CreateEducationMaterial = ({ translate, showReviewModal, lang }) => {
 
     const payload = {
       ...formFields,
+      id: editItem ? formFields.id : getEducationMaterials.length,
       title: formFields.title,
       categories: serializedSelectedCats.join(),
       file: formFields.file
     };
 
-    dispatch(addMoreEducationMaterial(payload)).then(() => {
-      setIsLoading(false);
-      handleResetForm();
-    });
+    if (editItem) {
+      dispatch(updateEducationMaterial(payload)).then(() => {
+        setEditItem(undefined);
+        setIsLoading(false);
+        handleResetForm();
+      });
+    } else {
+      dispatch(addMoreEducationMaterial(payload)).then(() => {
+        setIsLoading(false);
+        handleResetForm();
+      });
+    }
   };
 
   const handleResetForm = () => {
     setMaterialFile('');
     setSelectedCategories([]);
     setFormFields({
+      id: '',
       title: '',
       file: undefined,
       categories: ''
@@ -305,6 +338,9 @@ const CreateEducationMaterial = ({ translate, showReviewModal, lang }) => {
 
 CreateEducationMaterial.propTypes = {
   translate: PropTypes.func,
+  hash: PropTypes.string,
+  editItem: PropTypes.object,
+  setEditItem: PropTypes.func,
   showReviewModal: PropTypes.func,
   lang: PropTypes.number
 };
