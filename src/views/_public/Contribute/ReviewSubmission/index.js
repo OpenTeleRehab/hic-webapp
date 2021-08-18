@@ -16,6 +16,7 @@ import { toHash } from '../../../../utils/hash';
 import moment from 'moment';
 import * as ROUTES from '../../../../variables/routes';
 import { useHistory } from 'react-router-dom';
+import { replaceRoute } from 'utils/route';
 
 const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfirmSubmissionModal }) => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
     hash: toHash((Math.random() + 1).toString(36).substring(7) + '-' + moment().format('DD-MM-yyyy-h:mm:ss-a'))
   });
   const { exercises, educationMaterials, questionnaires } = useSelector((state) => state.contribute);
+  const { activeLanguage } = useSelector((state) => state.language);
   const [firstNameError, setFirstNameError] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
@@ -166,7 +168,7 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
   const handleEditResource = (item, type) => {
     editItem(item);
     showReviewModal(false);
-    history.push(ROUTES.CONTRIBUTE + '#' + type);
+    history.push(replaceRoute(ROUTES.CONTRIBUTE, activeLanguage) + '#' + type);
   };
 
   return (
