@@ -36,14 +36,6 @@ const PUBLIC = 'public';
 
 const publicRoutes = [
   {
-    title: 'home',
-    path: ROUTES.HOME,
-    component: PublicHomePage,
-    exact: true,
-    type: PUBLIC,
-    defaultTemplate: true
-  },
-  {
     title: 'library',
     path: ROUTES.LIBRARY,
     component: LibraryPage,
@@ -82,6 +74,14 @@ const publicRoutes = [
     exact: true,
     type: PUBLIC,
     defaultTemplate: false
+  },
+  {
+    title: 'home',
+    path: ROUTES.HOME,
+    component: PublicHomePage,
+    exact: true,
+    type: PUBLIC,
+    defaultTemplate: true
   }
 ];
 
