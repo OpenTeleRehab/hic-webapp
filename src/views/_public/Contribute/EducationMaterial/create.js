@@ -71,7 +71,7 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
   }, [editItem, categoryTreeData, hash]);
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: lang }));
+    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.MATERIAL, lang: lang }));
   }, [dispatch, lang]);
 
   useEffect(() => {
