@@ -88,7 +88,7 @@ const Contribute = () => {
 
       <div className="main-entry__content">
         <p className="lead text-center">The Open Library is a center of free and accessible resources for rehabilitation and physiotherapy. The library collects these materials in various forms and made available for public use.</p>
-        <p className="lead text-center">You can contribute to the library by clicking on the <a href="/contribute">Contribute</a> menu above.</p>
+        <p className="lead text-center">You can contribute to the library by clicking on the <a href={replaceRoute(ROUTES.CONTRIBUTE, activeLanguage)}>Contribute</a> menu above.</p>
 
         <Form className="pt-5">
           <h2 className="text-primary mb-5">Choose content to upload</h2>
