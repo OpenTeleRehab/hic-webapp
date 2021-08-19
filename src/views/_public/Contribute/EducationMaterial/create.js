@@ -23,11 +23,13 @@ import {
 } from '../../../../store/contribute/actions';
 import Dialog from '../../../../components/Dialog';
 import * as ROUTES from '../../../../variables/routes';
+import { replaceRoute } from '../../../../utils/route';
 
 const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showReviewModal, lang }) => {
   const dispatch = useDispatch();
   const { maxFileSize } = settings.educationMaterial;
   const { educationMaterials } = useSelector(state => state.contribute);
+  const { activeLanguage } = useSelector(state => state.language);
   const [getEducationMaterials, setGetEducationMaterials] = useState([]);
   const { categoryTreeData } = useSelector((state) => state.category);
   const [formFields, setFormFields] = useState({
@@ -200,7 +202,7 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
 
   const handleConfirmCancelModal = () => {
     dispatch(clearContribute());
-    history.push(ROUTES.LIBRARY);
+    history.push(replaceRoute(ROUTES.LIBRARY, activeLanguage));
   };
 
   return (

@@ -33,10 +33,12 @@ import Dialog from '../../../../components/Dialog';
 import { getCategoryTreeData } from '../../../../store/category/actions';
 import { CATEGORY_TYPES } from '../../../../variables/category';
 import { formatFileSize } from '../../../../utils/file';
+import { replaceRoute } from '../../../../utils/route';
 
 const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModal, lang }) => {
   const dispatch = useDispatch();
   const { categoryTreeData } = useSelector((state) => state.category);
+  const { activeLanguage } = useSelector((state) => state.language);
   const { exercises } = useSelector(state => state.contribute);
   const [getExercises, setGetExercises] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -303,7 +305,7 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
 
   const handleConfirmCancelModal = () => {
     dispatch(clearContribute());
-    history.push(ROUTES.LIBRARY);
+    history.push(replaceRoute(ROUTES.LIBRARY, activeLanguage));
   };
 
   return (
