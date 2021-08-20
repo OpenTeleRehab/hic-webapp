@@ -41,6 +41,7 @@ const EducationMaterial = ({ translate }) => {
   const { languages } = useSelector(state => state.language);
   const [language, setLanguage] = useState('');
   const { educationMaterials } = useSelector(state => state.educationMaterial);
+  const filterData = useSelector(state => state.educationMaterial.filters);
   const { profile } = useSelector((state) => state.auth);
   const { categoryTreeData } = useSelector((state) => state.category);
   const [pageSize, setPageSize] = useState(60);
@@ -55,12 +56,12 @@ const EducationMaterial = ({ translate }) => {
   }, [pageSize, filters]);
 
   useEffect(() => {
-    if (filters && filters.lang) {
-      setLanguage(filters.lang);
+    if (filterData && filterData.lang) {
+      setLanguage(filterData.lang);
     } else if (profile && profile.language_id) {
       setLanguage(profile.language_id);
     }
-  }, [filters, profile]);
+  }, [filterData, profile]);
 
   useEffect(() => {
     dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.MATERIAL, lang: language }));
