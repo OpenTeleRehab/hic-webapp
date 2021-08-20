@@ -120,7 +120,7 @@ const Profile = ({ translate }) => {
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1 className="text-primary">{translate('common.user_profile')}</h1>
       </div>
-      <Form onKeyPress={(e) => handleFormSubmit(e)} className="my-4">
+      <Form onKeyPress={(e) => handleFormSubmit(e)} className="my-4 no-gutters bg-white p-4">
         <Form.Row >
           <Form.Group className="col-sm-2 md-4" controlId="formLastName">
             <Form.Label>{translate('common.last_name')}</Form.Label>
@@ -197,8 +197,8 @@ const Profile = ({ translate }) => {
             />
           </Form.Group>
         </Form.Row>
-        <Form.Row>
-          <Button variant="link" onClick={() => handleSendMail(formFields.id)}>Reset password</Button>
+        <Form.Row className="reset-password mb-2">
+          <Button variant="link" className="pl-1" onClick={() => handleSendMail(formFields.id)}>Reset password</Button>
         </Form.Row>
         <Form.Row>
           <Button
