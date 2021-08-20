@@ -185,7 +185,7 @@ const CreateUser = ({ show, handleClose, editId, setType }) => {
             disabled={!!editId}
           />
           <Form.Control.Feedback type="invalid">
-            {translate('error.email')}
+            {translate('user.error.email')}
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Row>
@@ -200,7 +200,7 @@ const CreateUser = ({ show, handleClose, editId, setType }) => {
               isInvalid={errorLastName}
             />
             <Form.Control.Feedback type="invalid">
-              {translate('error.last_name')}
+              {translate('user.error.last_name')}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} controlId="formFirstName">
@@ -214,7 +214,7 @@ const CreateUser = ({ show, handleClose, editId, setType }) => {
               isInvalid={errorFirstName}
             />
             <Form.Control.Feedback type="invalid">
-              {translate('error.first_name')}
+              {translate('user.error.first_name')}
             </Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
