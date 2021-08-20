@@ -128,6 +128,11 @@ const Exercise = ({ translate }) => {
     { name: 'action', title: translate('common.need_action') }
   ];
 
+  const columnExtensions = [
+    { columnName: 'uploaded_by_email', wordWrapEnabled: true },
+    { columnName: 'reviewed_by', wordWrapEnabled: true }
+  ];
+
   const handleSetSelectedCategories = (parent, checked) => {
     setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
     setCurrentPage(0);
@@ -232,6 +237,7 @@ const Exercise = ({ translate }) => {
             filters={filters}
             totalCount={totalCount}
             columns={columns}
+            columnExtensions={columnExtensions}
             hideSearchFilter={true}
             onRowClick={handleRowClick}
             rows={exercises.map(exercise => {
@@ -240,9 +246,17 @@ const Exercise = ({ translate }) => {
                 title: exercise.title,
                 status: renderStatusBadge(exercise),
                 uploaded_by: exercise.uploaded_by,
-                uploaded_by_email: exercise.uploaded_by_email,
+                uploaded_by_email: <span className="resource-text-wrap"
+                  dangerouslySetInnerHTML={{
+                    __html: exercise.uploaded_by_email
+                  }}
+                />,
                 uploaded_date: exercise.uploaded_date,
-                reviewed_by: exercise.reviewed_by,
+                reviewed_by: <span className="resource-text-wrap"
+                  dangerouslySetInnerHTML={{
+                    __html: exercise.reviewed_by
+                  }}
+                />,
                 action: exercise.status === STATUS.pending ? <BiEdit size={25} className="btn-warning-info" /> : null
               };
             })}
