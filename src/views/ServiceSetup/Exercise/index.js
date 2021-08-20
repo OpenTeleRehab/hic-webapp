@@ -41,6 +41,7 @@ const Exercise = ({ translate }) => {
   const { languages } = useSelector(state => state.language);
   const [language, setLanguage] = useState('');
   const { exercises } = useSelector(state => state.exercise);
+  const filterData = useSelector(state => state.exercise.filters);
   const { profile } = useSelector((state) => state.auth);
   const { categoryTreeData } = useSelector((state) => state.category);
   const [pageSize, setPageSize] = useState(60);
@@ -56,12 +57,12 @@ const Exercise = ({ translate }) => {
   }, [pageSize, filters]);
 
   useEffect(() => {
-    if (filters && filters.lang) {
-      setLanguage(filters.lang);
+    if (filterData && filterData.lang) {
+      setLanguage(filterData.lang);
     } else if (profile && profile.language_id) {
       setLanguage(profile.language_id);
     }
-  }, [filters, profile]);
+  }, [filterData, profile]);
 
   useEffect(() => {
     dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: language }));
