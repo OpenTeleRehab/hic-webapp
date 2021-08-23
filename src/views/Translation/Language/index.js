@@ -67,7 +67,7 @@ const Language = ({ translate, handleRowEdit }) => {
   };
 
   return (
-    <div className="no-gutters bg-white p-3">
+    <div className="no-gutters bg-white p-md-3">
       <CustomTable
         pageSize={pageSize}
         setPageSize={setPageSize}

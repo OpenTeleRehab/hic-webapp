@@ -134,7 +134,7 @@ const User = ({ translate }) => {
 
   return (
     <>
-      <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+      <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1 className="text-primary">{translate('user.management')}</h1>
         <div className="btn-toolbar mb-2 mb-md-0">
           <Button variant="primary" onClick={handleShow}>
@@ -143,7 +143,7 @@ const User = ({ translate }) => {
           </Button>
         </div>
       </div>
-      <div className="middle-content mt-4">
+      <div className="no-gutters bg-white p-md-3">
         <CustomTable
           pageSize={pageSize}
           setPageSize={setPageSize}
