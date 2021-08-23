@@ -181,10 +181,10 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
         <Modal.Title>{translate('exercise.review.modal.title')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Accordion defaultActiveKey="0" className="mb-1">
+        <Accordion className="mb-1">
           <Card>
             <Card.Header>
-              <Accordion.Toggle as={Button} variant="link" eventKey="0" className="d-flex justify-content-between align-items-center">
+              <Accordion.Toggle as={Button} variant="link" eventKey="0" className="d-flex justify-content-between align-items-center" disabled={ exercises.length === 0 }>
                 <span>{translate('library.exercises')}</span>
                 <span>{exercises.length} {translate('common.items')} <ContextAwareToggle eventKey="0" /></span>
               </Accordion.Toggle>
@@ -218,16 +218,14 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
               </Card.Body>
             </Accordion.Collapse>
           </Card>
-        </Accordion>
-        <Accordion defaultActiveKey="1" className="mb-1">
           <Card>
             <Card.Header>
-              <Accordion.Toggle as={Button} variant="link" eventKey="0" className="d-flex justify-content-between align-items-center">
+              <Accordion.Toggle as={Button} variant="link" eventKey="1" className="d-flex justify-content-between align-items-center" disabled={ educationMaterials.length === 0 }>
                 <span>{translate('library.education_materials')}</span>
-                <span>{educationMaterials.length} {translate('common.items')} <ContextAwareToggle eventKey="0" /></span>
+                <span>{educationMaterials.length} {translate('common.items')} <ContextAwareToggle eventKey="1" /></span>
               </Accordion.Toggle>
             </Card.Header>
-            <Accordion.Collapse eventKey="0">
+            <Accordion.Collapse eventKey="1">
               <Card.Body>
                 {educationMaterials.map((educationMaterial, index) => (
                   <Form.Group key={index} as={Row}>
@@ -256,16 +254,14 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
               </Card.Body>
             </Accordion.Collapse>
           </Card>
-        </Accordion>
-        <Accordion defaultActiveKey="2">
           <Card>
             <Card.Header>
-              <Accordion.Toggle as={Button} variant="link" eventKey="0" className="d-flex justify-content-between align-items-center">
+              <Accordion.Toggle as={Button} variant="link" eventKey="2" className="d-flex justify-content-between align-items-center" disabled={ questionnaires.length === 0 }>
                 <span>{translate('library.questionnaires')}</span>
-                <span>{questionnaires.length} {translate('common.items')} <ContextAwareToggle eventKey="0" /></span>
+                <span>{questionnaires.length} {translate('common.items')} <ContextAwareToggle eventKey="2" /></span>
               </Accordion.Toggle>
             </Card.Header>
-            <Accordion.Collapse eventKey="0">
+            <Accordion.Collapse eventKey="2">
               <Card.Body>
                 {questionnaires.map((questionnaire, index) => (
                   <Form.Group key={index} as={Row}>

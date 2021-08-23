@@ -123,6 +123,11 @@ const EducationMaterial = ({ translate }) => {
     { name: 'action', title: translate('common.need_action') }
   ];
 
+  const columnExtensions = [
+    { columnName: 'uploaded_by_email', wordWrapEnabled: true },
+    { columnName: 'reviewed_by', wordWrapEnabled: true }
+  ];
+
   const handleSetSelectedCategories = (parent, checked) => {
     setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
     setCurrentPage(0);
@@ -216,6 +221,7 @@ const EducationMaterial = ({ translate }) => {
             setCurrentPage={setCurrentPage}
             totalCount={totalCount}
             columns={columns}
+            columnExtensions={columnExtensions}
             hideSearchFilter={true}
             setFilters={setFilters}
             filters={filters}
@@ -226,9 +232,17 @@ const EducationMaterial = ({ translate }) => {
                 title: educationMaterial.title,
                 status: renderStatusBadge(educationMaterial),
                 uploaded_by: educationMaterial.uploaded_by,
-                uploaded_by_email: educationMaterial.uploaded_by_email,
+                uploaded_by_email: <span className="resource-text-wrap"
+                  dangerouslySetInnerHTML={{
+                    __html: educationMaterial.uploaded_by_email
+                  }}
+                />,
                 uploaded_date: educationMaterial.uploaded_date,
-                reviewed_by: educationMaterial.reviewed_by,
+                reviewed_by: <span className="resource-text-wrap"
+                  dangerouslySetInnerHTML={{
+                    __html: educationMaterial.reviewed_by
+                  }}
+                />,
                 action: educationMaterial.status === STATUS.pending ? <BiEdit size={25} className="btn-warning-info" /> : null
               };
             })}
