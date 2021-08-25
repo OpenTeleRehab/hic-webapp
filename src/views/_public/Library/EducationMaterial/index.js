@@ -104,7 +104,7 @@ const EducationMaterial = ({ translate, lang }) => {
   return (
     <>
       <Row>
-        <Col sm={5} md={4} lg={3}>
+        <Col sm={5} md={4} lg={ window.screen.width >= 1920 ? 2 : 3 } xl={window.screen.width >= 2020 && 2} className="mb-3">
           <Card bg="info" className="filter-sidebar">
             <Card.Header>
               <SearchInput
@@ -155,7 +155,7 @@ const EducationMaterial = ({ translate, lang }) => {
             </Card.Body>
           </Card>
         </Col>
-        <Col sm={7} md={8} lg={9}>
+        <Col sm={7} md={8} lg={window.screen.width >= 1920 ? 10 : 9} xl={window.screen.width >= 2020 && 10}>
           { educationMaterials.length === 0 && (
             <div className="card h-100 d-flex justify-content-center align-items-center">
               <big className="text-muted">{translate('common.no_data')}</big>
@@ -172,7 +172,7 @@ const EducationMaterial = ({ translate, lang }) => {
               >
                 <Row>
                   { educationMaterials.map(material => (
-                    <Col key={material.id} md={6} lg={4}>
+                    <Col key={material.id} md={6} lg={4} xl={window.screen.width >= 2020 && 2} className="card-wrapper">
                       <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewDetail(material.id)}>
                         <div className="card-img bg-light">
                           {(material.file && (material.file.hasThumbnail || material.file.fileGroupType === MATERIAL_TYPE.image)) ? (

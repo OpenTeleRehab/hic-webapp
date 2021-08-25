@@ -70,7 +70,7 @@ const Dashboard = () => {
           <h2 className="text-primary section__heading">{translate('dashboard.title')}</h2>
           { staticPage.homeData && staticPage.homeData.display_quick_stat === 1 && (
             <Row>
-              <Col lg={4}>
+              <Col lg={window.screen.width <= 1024 && 4}>
                 <Card bg={'primary'} text={'white'} className="stats-card">
                   <Card.Body>
                     <Card.Link href={replaceRoute(ROUTES.LIBRARY, activeLanguage)} className="d-flex flex-column flex-sm-row justify-content-between align-items-center">
@@ -87,7 +87,7 @@ const Dashboard = () => {
                 </Card>
               </Col>
 
-              <Col lg={4}>
+              <Col lg={window.screen.width <= 1024 && 4}>
                 <Card bg={'primary'} text={'white'} className="stats-card">
                   <Card.Body>
                     <Card.Link href={replaceRoute(ROUTES.LIBRARY_EDUCATION, activeLanguage)} className="d-flex flex-column flex-sm-row justify-content-between align-items-center">
@@ -104,7 +104,7 @@ const Dashboard = () => {
                 </Card>
               </Col>
 
-              <Col lg={4}>
+              <Col>
                 <Card bg={'primary'} text={'white'} className="stats-card">
                   <Card.Body>
                     <Card.Link href={replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE, activeLanguage)} className="d-flex flex-column flex-sm-row justify-content-between align-items-center">
@@ -122,9 +122,9 @@ const Dashboard = () => {
               </Col>
             </Row>
           )}
-          <Row className="mt-5 justify-content-center">
+          <Row className="mt-5 justify-content-center home-resource-wrapper">
             { staticPage.homeData && staticPage.homeData.display_feature_resource === 1 && staticPage.homeData.featured_resources.exercises !== undefined && staticPage.homeData.featured_resources.exercises.map(exercise => (
-              <Col key={exercise.id} md={4} lg={3}>
+              <Col key={exercise.id} md={6} lg={4} xl={window.screen.width >= 2020 && 2} className="card-wrapper">
                 <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewDetail(exercise.id)}>
                   <div className="card-img bg-light">
                     {
@@ -181,7 +181,7 @@ const Dashboard = () => {
               </Col>
             ))}
             { staticPage.homeData && staticPage.homeData.display_feature_resource === 1 && staticPage.homeData.featured_resources.education_materials !== undefined && staticPage.homeData.featured_resources.education_materials.map(material => (
-              <Col key={material.id} md={4} lg={3}>
+              <Col key={material.id} md={6} lg={4} xl={window.screen.width >= 2020 && 2} className="card-wrapper">
                 <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewMaterialDetail(material.id)}>
                   <div className="card-img bg-light">
                     {(material.file && (material.file.hasThumbnail || material.file.fileGroupType === MATERIAL_TYPE.image)) ? (
@@ -226,7 +226,7 @@ const Dashboard = () => {
               </Col>
             ))}
             { staticPage.homeData && staticPage.homeData.display_feature_resource === 1 && staticPage.homeData.featured_resources.questionnaires !== undefined && staticPage.homeData.featured_resources.questionnaires.map(questionnaire => (
-              <Col key={questionnaire.id} md={4} lg={3}>
+              <Col key={questionnaire.id} md={6} lg={4} xl={window.screen.width >= 2020 && 2} className="card-wrapper">
                 <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewQuestionnaireDetail(questionnaire.id)}>
                   <div className="card-img bg-light">
                     <div className="w-100 h-100 px-2 py-4 text-center questionnaire-header">
