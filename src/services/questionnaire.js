@@ -13,6 +13,18 @@ const getQuestionnaires = payload => {
     });
 };
 
+const rejectQuestionnaire = id => {
+  return axios.post(`/questionnaire/reject/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const getQuestionnaire = (id, language) => {
   const langParam = language ? `?lang=${language}` : '';
   return axios.get(`/questionnaire/${id}` + langParam)
@@ -89,5 +101,6 @@ export const Questionnaire = {
   getQuestionnaires,
   createQuestionnaire,
   updateQuestionnaire,
-  deleteQuestionnaire
+  deleteQuestionnaire,
+  rejectQuestionnaire
 };

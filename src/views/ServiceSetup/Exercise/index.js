@@ -129,6 +129,7 @@ const Exercise = ({ translate }) => {
   ];
 
   const columnExtensions = [
+    { columnName: 'uploaded_by', wordWrapEnabled: true },
     { columnName: 'uploaded_by_email', wordWrapEnabled: true },
     { columnName: 'reviewed_by', wordWrapEnabled: true }
   ];
@@ -191,7 +192,7 @@ const Exercise = ({ translate }) => {
                     <Card key={category.value} className="mb-3 rounded">
                       <Accordion.Toggle as={Card.Header} eventKey={category.value} className="d-flex align-items-center">
                         {category.label}
-                        <div className="ml-auto text-nowrap">
+                        <div className="ml-auto -nowrap">
                           <span className="mr-3">
                             {selectedCategories[category.value] ? selectedCategories[category.value].length : 0}
                           </span>
@@ -245,7 +246,11 @@ const Exercise = ({ translate }) => {
                 id: exercise.id,
                 title: exercise.title,
                 status: renderStatusBadge(exercise),
-                uploaded_by: exercise.uploaded_by,
+                uploaded_by: <span className="resource-text-wrap"
+                  dangerouslySetInnerHTML={{
+                    __html: exercise.uploaded_by
+                  }}
+                />,
                 uploaded_by_email: <span className="resource-text-wrap"
                   dangerouslySetInnerHTML={{
                     __html: exercise.uploaded_by_email

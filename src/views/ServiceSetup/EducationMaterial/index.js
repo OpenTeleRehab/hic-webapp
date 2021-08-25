@@ -124,6 +124,7 @@ const EducationMaterial = ({ translate }) => {
   ];
 
   const columnExtensions = [
+    { columnName: 'uploaded_by', wordWrapEnabled: true },
     { columnName: 'uploaded_by_email', wordWrapEnabled: true },
     { columnName: 'reviewed_by', wordWrapEnabled: true }
   ];
@@ -231,7 +232,11 @@ const EducationMaterial = ({ translate }) => {
                 id: educationMaterial.id,
                 title: educationMaterial.title,
                 status: renderStatusBadge(educationMaterial),
-                uploaded_by: educationMaterial.uploaded_by,
+                uploaded_by: <span className="resource-text-wrap"
+                  dangerouslySetInnerHTML={{
+                    __html: educationMaterial.uploaded_by
+                  }}
+                />,
                 uploaded_by_email: <span className="resource-text-wrap"
                   dangerouslySetInnerHTML={{
                     __html: educationMaterial.uploaded_by_email

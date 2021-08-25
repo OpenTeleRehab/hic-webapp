@@ -147,7 +147,7 @@ const routes = [
     component: CreateQuestionnaire,
     exact: true,
     type: PRIVATE,
-    roles: [USER_ROLES.SETUP_QUESTIONNAIRE]
+    roles: [USER_ROLES.MANAGE_RESOURCE]
   },
   {
     title: 'questionnaire.edit',
@@ -155,7 +155,7 @@ const routes = [
     component: CreateQuestionnaire,
     exact: true,
     type: PRIVATE,
-    roles: [USER_ROLES.SETUP_QUESTIONNAIRE]
+    roles: [USER_ROLES.MANAGE_RESOURCE]
   },
   {
     title: 'category',

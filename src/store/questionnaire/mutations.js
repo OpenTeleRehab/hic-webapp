@@ -65,6 +65,19 @@ const clearFilterQuestionnairesRequest = () => ({
   type: 'CLEAR_FILTER_QUESTIONNAIRES_REQUEST'
 });
 
+const rejectQuestionnaireFail = () => ({
+  type: 'REJECT_QUESTIONNAIRE_FAIL'
+});
+
+const rejectQuestionnaireRequest = () => ({
+  type: 'REJECT_EXERCISE_REQUEST'
+});
+
+const rejectQuestionnaireSuccess = (data) => ({
+  type: 'REJECT_QUESTIONNAIRE_SUCCESS',
+  data
+});
+
 export const mutation = {
   getQuestionnairesRequest,
   getQuestionnairesSuccess,
@@ -81,5 +94,8 @@ export const mutation = {
   deleteQuestionnaireRequest,
   deleteQuestionnaireSuccess,
   deleteQuestionnaireFail,
-  clearFilterQuestionnairesRequest
+  clearFilterQuestionnairesRequest,
+  rejectQuestionnaireRequest,
+  rejectQuestionnaireSuccess,
+  rejectQuestionnaireFail
 };

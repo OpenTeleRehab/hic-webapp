@@ -8,7 +8,8 @@ import * as ROUTES from '../../../variables/routes';
 import {
   createQuestionnaire,
   getQuestionnaire,
-  updateQuestionnaire
+  updateQuestionnaire,
+  rejectQuestionnaire
 } from '../../../store/questionnaire/actions';
 import Question from './Question/question';
 import { getCategoryTreeData } from 'store/category/actions';
@@ -25,6 +26,7 @@ import { FaRegCheckSquare } from 'react-icons/fa';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import scssColors from '../../../scss/custom.scss';
 import Select from 'react-select';
+import { STATUS } from '../../../variables/resourceStatus';
 
 const CreateQuestionnaire = ({ translate }) => {
   const dispatch = useDispatch();
@@ -167,6 +169,16 @@ const CreateQuestionnaire = ({ translate }) => {
     }
   };
 
+  const handleReject = () => {
+    setIsLoading(true);
+    dispatch(rejectQuestionnaire(id)).then(result => {
+      if (result) {
+        history.push(ROUTES.SERVICE_SETUP_QUESTIONNAIRE);
+      }
+      setIsLoading(false);
+    });
+  };
+
   const handleSetSelectedCategories = (parent, checked) => {
     setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
   };
@@ -229,7 +241,7 @@ const CreateQuestionnaire = ({ translate }) => {
             <Form.Group controlId="formLanguage">
               <Form.Label>{translate('common.show_language.version')}</Form.Label>
               <Select
-                isDisabled={!id}
+                isDisabled={!id || (questionnaire && questionnaire.status !== STATUS.approved)}
                 classNamePrefix="filter"
                 value={languages.filter(option => option.id === language)}
                 getOptionLabel={option => option.name}
@@ -305,7 +317,7 @@ const CreateQuestionnaire = ({ translate }) => {
               modifiable={!questionnaire.is_used || !id}
             />
             {enableButtons() &&
-              <div className="sticky-btn d-flex justify-content-between">
+              <div className="sticky-bottom d-flex justify-content-between">
                 <div className="py-1 px-1">
                   <Button
                     variant="link btn-lg"
@@ -316,12 +328,40 @@ const CreateQuestionnaire = ({ translate }) => {
                   </Button>
                 </div>
                 <div className="py-2 questionnaire-save-cancel-wrapper px-3">
-                  <Button
-                    onClick={handleSave}
-                    disabled={isLoading}
-                  >
-                    {translate('common.save')}
-                  </Button>
+                  { !id && (
+                    <Button
+                      onClick={handleSave}
+                      disabled={isLoading}
+                    >
+                      {translate('common.save')}
+                    </Button>
+                  )}
+                  { id && (
+                    <>
+                      {questionnaire.status === STATUS.approved
+                        ? <Button
+                          onClick={handleSave}
+                          disabled={isLoading}
+                        >
+                          {translate('common.save')}
+                        </Button>
+                        : <Button
+                          onClick={handleSave}
+                          disabled={isLoading}
+                        >
+                          {translate('common.approve')}
+                        </Button>
+                      }
+                      <Button
+                        className="ml-2"
+                        variant="outline-dark"
+                        onClick={handleReject}
+                        disabled={isLoading}
+                      >
+                        {translate('common.reject')}
+                      </Button>
+                    </>
+                  )}
                   <Button
                     className="ml-2"
                     variant="outline-dark"
@@ -335,14 +375,42 @@ const CreateQuestionnaire = ({ translate }) => {
               </div>
             }
             {!enableButtons() &&
-              <div className="sticky-btn d-flex justify-content-end">
+              <div className="sticky-bottom d-flex justify-content-end">
                 <div className="py-2 questionnaire-save-cancel-wrapper px-3">
-                  <Button
-                    onClick={handleSave}
-                    disabled={isLoading}
-                  >
-                    {translate('common.save')}
-                  </Button>
+                  { !id && (
+                    <Button
+                      onClick={handleSave}
+                      disabled={isLoading}
+                    >
+                      {translate('common.save')}
+                    </Button>
+                  )}
+                  { id && (
+                    <>
+                      {questionnaire.status === STATUS.approved
+                        ? <Button
+                          onClick={handleSave}
+                          disabled={isLoading}
+                        >
+                          {translate('common.save')}
+                        </Button>
+                        : <Button
+                          onClick={handleSave}
+                          disabled={isLoading}
+                        >
+                          {translate('common.approve')}
+                        </Button>
+                      }
+                      <Button
+                        className="ml-2"
+                        variant="outline-dark"
+                        onClick={handleReject}
+                        disabled={isLoading}
+                      >
+                        {translate('common.reject')}
+                      </Button>
+                    </>
+                  )}
                   <Button
                     className="ml-2"
                     variant="outline-dark"
