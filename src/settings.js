@@ -33,7 +33,8 @@ const settings = {
   maxAge: 80,
   ageGap: 10,
   noteMaxLength: 50,
-  featuredResourcesLimit: 8
+  featuredResourcesLimit: 8,
+  appIdleTimeout: 180 // in second
 };
 
 export default settings;

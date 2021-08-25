@@ -6,6 +6,9 @@ import { getLanguages } from 'store/language/actions';
 import { getProfile } from 'store/auth/actions';
 import SplashScreen from './components/SplashScreen';
 import { useKeycloak } from '@react-keycloak/web';
+import { useIdleTimer } from 'react-idle-timer';
+import settings from './settings';
+import AppContext from './context/AppContext';
 
 const ConfigurationProvider = ({ children }) => {
   const dispatch = useDispatch();
@@ -24,7 +27,18 @@ const ConfigurationProvider = ({ children }) => {
     }
   }, [loading, dispatch, keycloak]);
 
-  return loading ? <SplashScreen /> : children;
+  const { pause, reset } = useIdleTimer({
+    timeout: 1000 * settings.appIdleTimeout,
+    crossTab: true,
+    onIdle: () => {
+      if (keycloak.authenticated) {
+        keycloak.logout({ redirectUri: window.location.origin });
+      }
+    }
+  });
+  const appContext = { idleTimer: { pause, reset } };
+
+  return loading ? <SplashScreen /> : <AppContext.Provider value={appContext}>{children}</AppContext.Provider>;
 };
 
 ConfigurationProvider.propTypes = {
