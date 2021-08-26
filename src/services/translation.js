@@ -1,8 +1,8 @@
 import axios from 'utils/axios';
 
-const getTranslations = (lang) => {
-  const langParam = lang ? `?lang=${lang}` : '';
-  return axios.get('/translation/i18n/admin_portal' + langParam)
+const getTranslations = (payload) => {
+  const langParam = payload.lang ? `?lang=${payload.lang}` : '';
+  return axios.get(`/translation/i18n/${payload.portal}` + langParam)
     .then(
       res => {
         return res.data;
