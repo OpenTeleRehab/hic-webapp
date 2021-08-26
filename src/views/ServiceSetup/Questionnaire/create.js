@@ -86,6 +86,13 @@ const CreateQuestionnaire = ({ translate }) => {
         title: questionnaire.title,
         description: questionnaire.description
       });
+      if (questionnaire.questions) {
+        questionnaire.questions.forEach(function (question) {
+          if (question.file) {
+            delete question.file.size;
+          }
+        });
+      }
       setQuestions(questionnaire.questions);
       if (categoryTreeData.length) {
         const rootCategoryStructure = {};

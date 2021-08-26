@@ -2,6 +2,8 @@ import { Questionnaire } from 'services/questionnaire';
 import { mutation } from './mutations';
 import { showErrorNotification, showSuccessNotification } from 'store/notification/actions';
 import { showSpinner } from '../spinnerOverlay/actions';
+import { STATUS } from '../../variables/resourceStatus';
+import { getTranslate } from 'react-localize-redux';
 
 export const getQuestionnaires = payload => async dispatch => {
   dispatch(mutation.getQuestionnairesRequest());
@@ -55,12 +57,14 @@ export const contributeQuestionnaire = (payloads, formFields) => async dispatch 
   }
 };
 
-export const updateQuestionnaire = (id, payload) => async dispatch => {
+export const updateQuestionnaire = (id, payload) => async (dispatch, getState) => {
   dispatch(mutation.updateQuestionnaireRequest());
   const data = await Questionnaire.updateQuestionnaire(id, payload);
+  const questionnaire = getState().questionnaire.questionnaire;
+  const translate = getTranslate(getState().localize);
   if (data.success) {
     dispatch(mutation.updateQuestionnaireSuccess());
-    dispatch(showSuccessNotification('toast_title.update_questionnaire', data.message));
+    dispatch(showSuccessNotification(questionnaire.status === STATUS.approved ? 'toast_title.save_questionnaire' : 'toast_title.approve_questionnaire', data.message, { status: questionnaire.status === STATUS.approved ? translate('exercise.saved') : translate('exercise.approved') }));
     return true;
   } else {
     dispatch(mutation.updateQuestionnaireFail());
