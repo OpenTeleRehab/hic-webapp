@@ -13,7 +13,8 @@ const settings = {
   },
   platforms: {
     options: [
-      { text: 'Admin portal', value: 'admin_portal' }
+      { text: 'Admin portal', value: 'admin_portal' },
+      { text: 'Public portal', value: 'public_portal' }
     ]
   },
   contentTypes: {

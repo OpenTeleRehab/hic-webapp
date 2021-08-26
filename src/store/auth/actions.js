@@ -37,7 +37,7 @@ export const updateUserProfile = payload => async dispatch => {
   const data = await Auth.updateUserProfile(payload);
   if (data.success) {
     dispatch(mutation.updateUserProfileSuccess());
-    dispatch(getTranslations());
+    dispatch(getTranslations({ lang: payload.language_id, portal: 'admin_portal' }));
     dispatch(getProfile());
     dispatch(clearFilterExercises());
     dispatch(clearFilterEducationMaterials());

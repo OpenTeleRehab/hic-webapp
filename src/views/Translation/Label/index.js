@@ -72,11 +72,11 @@ const Label = ({ translate }) => {
   };
 
   return (
-    <>
+    <div className="no-gutters bg-white p-md-3">
       <Form>
         <Form.Row>
           <Form.Group controlId="formPlateForm" className="col-md-4">
-            <Form.Label>{translate('setting.translations.platform')}</Form.Label>
+            <Form.Label>{translate('translations.label.platform')}</Form.Label>
             <Select
               classNamePrefix="filter"
               value={settings.platforms.options.filter(option => option.value === filterPlatform)}
@@ -114,7 +114,7 @@ const Label = ({ translate }) => {
         })}
       />
       { loading && <Spinner className="loading-icon" animation="border" variant="primary" /> }
-    </>
+    </div>
   );
 };
 

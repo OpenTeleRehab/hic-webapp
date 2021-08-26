@@ -2,9 +2,9 @@ import { Translation } from 'services/translation';
 import { mutation } from './mutations';
 import { addTranslationForLanguage } from 'react-localize-redux';
 
-export const getTranslations = (lang) => async dispatch => {
+export const getTranslations = (payload) => async dispatch => {
   dispatch(mutation.getTranslationsRequest());
-  const data = await Translation.getTranslations(lang);
+  const data = await Translation.getTranslations(payload);
   if (data && data.data) {
     const messages = {};
     data.data.map(m => {

@@ -68,7 +68,7 @@ const Navigation = ({ translate }) => {
 
   useEffect(() => {
     const language = languages.find((language) => language.code === activeLanguage);
-    dispatch(getTranslations(language && language.id));
+    dispatch(getTranslations({ lang: language && language.id, portal: 'public_portal' }));
   }, [activeLanguage, dispatch, languages]);
 
   return (
