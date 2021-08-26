@@ -7,14 +7,12 @@ import {
   Card,
   Accordion,
   OverlayTrigger,
-  Tooltip
+  Tooltip, Button
 } from 'react-bootstrap';
-import Dialog from 'components/Dialog';
 import { useDispatch, useSelector } from 'react-redux';
 
 import SearchInput from 'components/Form/SearchInput';
-import { getQuestionnaires, deleteQuestionnaire } from 'store/questionnaire/actions';
-import ViewQuestionnaire from './viewQuestionnaire';
+import { getQuestionnaires } from 'store/questionnaire/actions';
 import { getCategoryTreeData } from 'store/category/actions';
 import { CATEGORY_TYPES } from 'variables/category';
 import CheckboxTree from 'react-checkbox-tree';
@@ -28,37 +26,28 @@ import { FaRegCheckSquare } from 'react-icons/fa';
 import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { replaceRoute } from '../../../../utils/route';
+import * as ROUTES from '../../../../variables/routes';
+import { useHistory } from 'react-router-dom';
 
 let timer = null;
-const Questionnaire = ({ translate }) => {
+const Questionnaire = ({ translate, lang }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [formFields, setFormFields] = useState({
     search_value: ''
   });
-  const [language, setLanguage] = useState('');
-  const { loading, questionnaires, filters } = useSelector(state => state.questionnaire);
-  const { profile } = useSelector((state) => state.auth);
+  const { activeLanguage } = useSelector(state => state.language);
+  const { loading, questionnaires } = useSelector(state => state.questionnaire);
   const { categoryTreeData } = useSelector((state) => state.category);
   const [pageSize, setPageSize] = useState(9);
-  const [id, setId] = useState('');
-  const [show, setShow] = useState(false);
-  const [questionnaire, setQuestionnaire] = useState([]);
-  const [viewQuestionnaire, setViewQuestionnaire] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
 
   useEffect(() => {
-    if (filters && filters.lang) {
-      setLanguage(filters.lang);
-    } else if (profile && profile.language_id) {
-      setLanguage(profile.language_id);
-    }
-  }, [filters, profile]);
-
-  useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: language }));
-  }, [language, dispatch]);
+    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: lang }));
+  }, [lang, dispatch]);
 
   useEffect(() => {
     if (categoryTreeData.length) {
@@ -79,13 +68,13 @@ const Questionnaire = ({ translate }) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       dispatch(getQuestionnaires({
-        lang: language,
+        lang: lang,
         filter: formFields,
         categories: serializedSelectedCats,
         page_size: pageSize
       }));
     }, 500);
-  }, [language, formFields, selectedCategories, pageSize, dispatch]);
+  }, [lang, formFields, selectedCategories, pageSize, dispatch]);
 
   const handleClearSearch = () => {
     setFormFields({ ...formFields, search_value: '' });
@@ -98,28 +87,6 @@ const Questionnaire = ({ translate }) => {
     setPageSize(8);
   };
 
-  const handleClose = () => {
-    setId(null);
-    setShow(false);
-  };
-
-  const handleConfirm = () => {
-    dispatch(deleteQuestionnaire(id)).then(result => {
-      if (result) {
-        handleClose();
-      }
-    });
-  };
-
-  const handleView = (questionnaire) => {
-    setQuestionnaire(questionnaire);
-    setViewQuestionnaire(true);
-  };
-
-  const handleQuestionnaireViewClose = () => {
-    setViewQuestionnaire(false);
-  };
-
   const handleSetSelectedCategories = (parent, checked) => {
     setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
     setPageSize(8);
@@ -127,6 +94,10 @@ const Questionnaire = ({ translate }) => {
 
   const fetchMoreData = () => {
     setPageSize(pageSize + 8);
+  };
+
+  const handleViewDetail = (id) => {
+    history.push(replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL, activeLanguage).replace(':id', id));
   };
 
   return (
@@ -202,36 +173,37 @@ const Questionnaire = ({ translate }) => {
                   { questionnaires.map(questionnaire => (
                     <Col key={questionnaire.id} md={6} lg={4}>
                       <Card className="exercise-card shadow-sm mb-4">
-                        <div id={`questionnaire-${questionnaire.id}`} className="card-container" onClick={() => handleView(questionnaire)}>
-                          <div className="card-img bg-light">
-                            <div className="w-100 h-100 px-2 py-4 text-center questionnaire-header">
-                              <img src={'/images/questionnaire-icon.svg'} alt="Questionnaire" />
-                              <p>{translate('activity.questionnaire').toUpperCase()}</p>
-                            </div>
+                        <div className="card-img bg-light">
+                          <div className="w-100 h-100 px-2 py-4 text-center questionnaire-header">
+                            <img src={'/images/questionnaire-icon.svg'} alt="Questionnaire" />
+                            <p>{translate('library.questionnaire').toUpperCase()}</p>
                           </div>
-                          <Card.Body className="d-flex flex-column justify-content-between">
-                            <Card.Title>
-                              {
-                                questionnaire.title.length <= 50
-                                  ? <h5 className="card-title">
-                                    { questionnaire.title }
-                                  </h5>
-                                  : (
-                                    <OverlayTrigger
-                                      overlay={<Tooltip id="button-tooltip-2">{ questionnaire.title }</Tooltip>}
-                                    >
-                                      <h5 className="card-title">
-                                        { questionnaire.title }
-                                      </h5>
-                                    </OverlayTrigger>
-                                  )
-                              }
-                            </Card.Title>
-                            <Card.Text>
-                              <b>{questionnaire.questions.length}</b> {translate('activity.questionnaire.questions')}
-                            </Card.Text>
-                          </Card.Body>
                         </div>
+                        <Card.Body className="d-flex flex-column justify-content-between">
+                          <Card.Title>
+                            {
+                              questionnaire.title.length <= 50
+                                ? <h5 className="card-title">
+                                  { questionnaire.title }
+                                </h5>
+                                : (
+                                  <OverlayTrigger
+                                    overlay={<Tooltip id="button-tooltip-2">{ questionnaire.title }</Tooltip>}
+                                  >
+                                    <h5 className="card-title">
+                                      { questionnaire.title }
+                                    </h5>
+                                  </OverlayTrigger>
+                                )
+                            }
+                          </Card.Title>
+                          <Card.Text>
+                            <b>{questionnaire.questions.length}</b> {translate('questionnaire.questions')}
+                          </Card.Text>
+                        </Card.Body>
+                        <Card.Footer>
+                          <Button variant="link" className="text-decoration-none" onClick={() => handleViewDetail(questionnaire.id)}>{translate('exercise.learn_more')}</Button>
+                        </Card.Footer>
                       </Card>
                     </Col>
                   ))}
@@ -241,23 +213,13 @@ const Questionnaire = ({ translate }) => {
           )}
         </Col>
       </Row>
-      <Dialog
-        show={show}
-        title={translate('questionnaire.delete_confirmation_title')}
-        cancelLabel={translate('common.no')}
-        onCancel={handleClose}
-        confirmLabel={translate('common.yes')}
-        onConfirm={handleConfirm}
-      >
-        <p>{translate('common.delete_confirmation_message')}</p>
-      </Dialog>
-      {viewQuestionnaire && <ViewQuestionnaire questionnaire={questionnaire} show={viewQuestionnaire} handleClose={handleQuestionnaireViewClose}/>}
     </>
   );
 };
 
 Questionnaire.propTypes = {
-  translate: PropTypes.func
+  translate: PropTypes.func,
+  lang: PropTypes.number
 };
 
 export default withLocalize(Questionnaire);
