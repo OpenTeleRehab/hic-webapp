@@ -12,6 +12,7 @@ import ContributePage from 'views/_public/Contribute';
 import ConfirmSubmissionPage from 'views/_public/Contribute/ConfirmSubmission';
 import ExerciseDetail from 'views/_public/Library/Exercise/detail';
 import EducationMaterialDetail from 'views/_public/Library/EducationMaterial/detail';
+import QuestionnaireDetail from 'views/_public/Library/Questionnaire/detail';
 
 import DashboardPage from 'views/Dashboard';
 import ServiceSetupPage from 'views/ServiceSetup';
@@ -71,6 +72,14 @@ const publicRoutes = [
     title: 'education_material.detail',
     path: ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL,
     component: EducationMaterialDetail,
+    exact: true,
+    type: PUBLIC,
+    defaultTemplate: false
+  },
+  {
+    title: 'questionnaire.detail',
+    path: ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL,
+    component: QuestionnaireDetail,
     exact: true,
     type: PUBLIC,
     defaultTemplate: false

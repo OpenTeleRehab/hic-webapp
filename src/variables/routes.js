@@ -4,6 +4,7 @@ export const LIBRARY_EDUCATION = LIBRARY + '#education';
 export const LIBRARY_QUESTIONNAIRE = LIBRARY + '#questionnaire';
 export const LIBRARY_EXERCISE_DETAIL = LIBRARY + '/exercise/detail/:id';
 export const LIBRARY_EDUCATION_MATERIAL_DETAIL = LIBRARY + '/education_material/detail/:id';
+export const LIBRARY_QUESTIONNAIRE_DETAIL = LIBRARY + '/questionnaire/detail/:id';
 
 export const CONTRIBUTE = '/:lang?/contribute';
 export const CONFIRM_SUBMISSION = '/contribute/confirm-submission';

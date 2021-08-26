@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { Accordion, AccordionContext, Card, Form } from 'react-bootstrap';
 import { BsChevronDown, BsChevronRight } from 'react-icons/bs';
 
-const ViewQuestionnaire = ({ show, handleClose, questionnaire }) => {
+const QuestionnaireDetail = ({ show, handleClose, questionnaire }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 
@@ -104,13 +104,13 @@ const ViewQuestionnaire = ({ show, handleClose, questionnaire }) => {
   );
 };
 
-ViewQuestionnaire.propTypes = {
+QuestionnaireDetail.propTypes = {
   show: PropTypes.bool,
   handleClose: PropTypes.func,
   questionnaire: PropTypes.array
 };
 
-export default ViewQuestionnaire;
+export default QuestionnaireDetail;
 
 const ContextAwareToggle = ({ eventKey }) => {
   const currentEventKey = useContext(AccordionContext);
