@@ -34,6 +34,10 @@ const createEducationMaterialSuccess = (data) => ({
   data
 });
 
+const createEducationMaterialFail = () => ({
+  type: 'CREATE_EDUCATION_MATERIAL_FAIL'
+});
+
 const contributeEducationMaterialRequest = () => ({
   type: 'CONTRIBUTE_EDUCATION_MATERIAL_REQUEST'
 });
@@ -45,10 +49,6 @@ const contributeEducationMaterialSuccess = (data) => ({
 
 const contributeEducationMaterialFail = () => ({
   type: 'CONTRIBUTE_EDUCATION_MATERIAL_FAIL'
-});
-
-const createEducationMaterialFail = () => ({
-  type: 'CREATE_EDUCATION_MATERIAL_FAIL'
 });
 
 const updateEducationMaterialRequest = () => ({
