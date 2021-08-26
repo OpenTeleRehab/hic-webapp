@@ -57,6 +57,20 @@ export const updateQuestionnaire = (id, payload) => async dispatch => {
   }
 };
 
+export const rejectQuestionnaire = (id) => async dispatch => {
+  dispatch(mutation.rejectQuestionnaireRequest());
+  const data = await Questionnaire.rejectQuestionnaire(id);
+  if (data.success) {
+    dispatch(mutation.rejectQuestionnaireSuccess());
+    dispatch(showSuccessNotification('toast_title.reject_questionnaire', data.message));
+    return true;
+  } else {
+    dispatch(mutation.rejectQuestionnaireFail());
+    dispatch(showErrorNotification('toast_title.reject_questionnaire', data.message));
+    return false;
+  }
+};
+
 export const deleteQuestionnaire = id => async (dispatch, getState) => {
   dispatch(mutation.deleteQuestionnaireRequest());
   const data = await Questionnaire.deleteQuestionnaire(id);

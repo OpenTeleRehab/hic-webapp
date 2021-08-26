@@ -13,6 +13,7 @@ export const ADMIN_DASHBOARD = '/admin';
 export const ADMIN_RESOURCES = '/admin/resources';
 export const ADMIN_RESOURCES_EDIT = '/admin/resources/edit/:id';
 export const ADMIN_RESOURCES_EDUCATION_MATERIAL_EDIT = '/admin/resources/education_material/edit/:id';
+export const ADMIN_RESOURCES_QUESTIONNAIRE_EDIT = '/admin/resources/questionnaire/edit/:id';
 export const ADMIN_CATEGORIES = '/admin/categories';
 export const ADMIN_TRANSLATIONS = '/admin/translations';
 export const ADMIN_TRANSLATIONS_LANGUAGE = ADMIN_TRANSLATIONS + '#language';
@@ -34,12 +35,8 @@ export const QUESTIONNAIRE_EDIT = SERVICE_SETUP + '/questionnaire/edit/:id';
 
 export const SETTING = '/setting';
 export const SETTING_TRANSLATIONS = SETTING + '#translation';
-export const SETTING_TERM_AND_CONDITION = SETTING + '#term_and_condition';
-export const SETTING_PRIVACY_POLICY = SETTING + '#privacy_policy';
-export const SETTING_CLINIC = SETTING + '#clinic';
 export const SETTING_STATIC_PAGE = SETTING + '#static_page';
 export const SETTING_LANGUAGE = SETTING + '#language';
-export const SETTING_DISEASE = SETTING + '#disease';
 
 export const PROFILE = '/profile';
 export const FAQ = '/faq';

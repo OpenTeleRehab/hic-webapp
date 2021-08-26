@@ -2,16 +2,13 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 import { Row, Col, Card, Form, Accordion } from 'react-bootstrap';
-import Dialog from 'components/Dialog';
 import * as ROUTES from 'variables/routes';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import CustomTable from 'components/Table';
-import { EditAction, DeleteAction, ViewAction } from 'components/ActionIcons';
 import SearchInput from 'components/Form/SearchInput';
-import { getQuestionnaires, deleteQuestionnaire } from 'store/questionnaire/actions';
-import ViewQuestionnaire from './viewQuestionnaire';
+import { getQuestionnaires } from 'store/questionnaire/actions';
 import { getCategoryTreeData } from 'store/category/actions';
 import { CATEGORY_TYPES } from 'variables/category';
 import CheckboxTree from 'react-checkbox-tree';
@@ -26,6 +23,11 @@ import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import Select from 'react-select';
 import scssColors from '../../../scss/custom.scss';
+import { renderStatusBadge } from '../../../utils/resource';
+import { STATUS } from '../../../variables/resourceStatus';
+import { BiEdit } from 'react-icons/bi';
+import { getReviewers } from '../../../store/user/actions';
+import { getContributors } from '../../../store/contributor/actions';
 
 let timer = null;
 const Questionnaire = ({ translate }) => {
@@ -37,18 +39,15 @@ const Questionnaire = ({ translate }) => {
   });
   const { languages } = useSelector(state => state.language);
   const [language, setLanguage] = useState('');
-  const { questionnaires, filters } = useSelector(state => state.questionnaire);
+  const { questionnaires } = useSelector(state => state.questionnaire);
   const { profile } = useSelector((state) => state.auth);
   const { categoryTreeData } = useSelector((state) => state.category);
   const [pageSize, setPageSize] = useState(60);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
-  const [id, setId] = useState('');
-  const [show, setShow] = useState(false);
-  const [questionnaire, setQuestionnaire] = useState([]);
-  const [viewQuestionnaire, setViewQuestionnaire] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
+  const [filters, setFilters] = useState([]);
 
   useEffect(() => {
     if (filters && filters.lang) {
@@ -60,6 +59,8 @@ const Questionnaire = ({ translate }) => {
 
   useEffect(() => {
     dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: language }));
+    dispatch(getReviewers());
+    dispatch(getContributors());
   }, [language, dispatch]);
 
   useEffect(() => {
@@ -72,6 +73,22 @@ const Questionnaire = ({ translate }) => {
     }
   }, [categoryTreeData]);
 
+  const columns = [
+    { name: 'title', title: translate('common.title') },
+    { name: 'status', title: translate('common.status') },
+    { name: 'uploaded_by', title: translate('common.uploaded_by') },
+    { name: 'uploaded_by_email', title: translate('common.uploaded_by_email') },
+    { name: 'uploaded_date', title: translate('common.uploaded_date') },
+    { name: 'reviewed_by', title: translate('common.reviewed_by') },
+    { name: 'action', title: translate('common.need_action') }
+  ];
+
+  const columnExtensions = [
+    { columnName: 'uploaded_by', wordWrapEnabled: true },
+    { columnName: 'uploaded_by_email', wordWrapEnabled: true },
+    { columnName: 'reviewed_by', wordWrapEnabled: true }
+  ];
+
   useEffect(() => {
     let serializedSelectedCats = [];
     Object.keys(selectedCategories).forEach(function (key) {
@@ -83,6 +100,7 @@ const Questionnaire = ({ translate }) => {
       dispatch(getQuestionnaires({
         lang: language,
         filter: formFields,
+        filters: filters,
         categories: serializedSelectedCats,
         page_size: pageSize,
         page: currentPage + 1
@@ -92,7 +110,7 @@ const Questionnaire = ({ translate }) => {
         }
       });
     }, 500);
-  }, [language, formFields, selectedCategories, currentPage, pageSize, dispatch]);
+  }, [language, formFields, filters, selectedCategories, currentPage, pageSize, dispatch]);
 
   const handleClearSearch = () => {
     setFormFields({ ...formFields, search_value: '' });
@@ -103,43 +121,6 @@ const Questionnaire = ({ translate }) => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
     setCurrentPage(0);
-  };
-
-  const handleEdit = (id) => {
-    history.push(ROUTES.QUESTIONNAIRE_EDIT.replace(':id', id));
-  };
-
-  const columns = [
-    { name: 'title', title: translate('questionnaire.title') + '/' + translate('questionnaire.description') },
-    { name: 'number_of_question', title: translate('questionnaire.number_of_question') },
-    { name: 'action', title: translate('common.action') }
-  ];
-
-  const handleDelete = (id) => {
-    setId(id);
-    setShow(true);
-  };
-
-  const handleClose = () => {
-    setId(null);
-    setShow(false);
-  };
-
-  const handleConfirm = () => {
-    dispatch(deleteQuestionnaire(id)).then(result => {
-      if (result) {
-        handleClose();
-      }
-    });
-  };
-
-  const handleView = (questionnaire) => {
-    setQuestionnaire(questionnaire);
-    setViewQuestionnaire(true);
-  };
-
-  const handleQuestionnaireViewClose = () => {
-    setViewQuestionnaire(false);
   };
 
   const handleSetSelectedCategories = (parent, checked) => {
@@ -156,6 +137,10 @@ const Questionnaire = ({ translate }) => {
         backgroundColor: scssColors.infoLight
       }
     })
+  };
+
+  const handleRowClick = (row) => {
+    history.push(ROUTES.ADMIN_RESOURCES_QUESTIONNAIRE_EDIT.replace(':id', row.id));
   };
 
   return (
@@ -225,6 +210,9 @@ const Questionnaire = ({ translate }) => {
         </Col>
         <Col sm={7} md={8} lg={9} className="p-4">
           <CustomTable
+            setFilters={setFilters}
+            filters={filters}
+            columnExtensions={columnExtensions}
             pageSize={pageSize}
             setPageSize={setPageSize}
             currentPage={currentPage}
@@ -232,39 +220,34 @@ const Questionnaire = ({ translate }) => {
             totalCount={totalCount}
             columns={columns}
             hideSearchFilter={true}
+            onRowClick={handleRowClick}
             rows={questionnaires.map(questionnaire => {
-              const action = (
-                <>
-                  <ViewAction onClick={() => handleView(questionnaire)} />
-                  <EditAction className="ml-1" onClick={() => handleEdit(questionnaire.id)} />
-                  <DeleteAction className="ml-1" onClick={() => handleDelete(questionnaire.id)} disabled={questionnaire.is_used} />
-                </>
-              );
               return {
-                title: <span
-                  className="questionnaire-title"
+                id: questionnaire.id,
+                title: questionnaire.title,
+                status: renderStatusBadge(questionnaire),
+                uploaded_by: <span className="resource-text-wrap"
                   dangerouslySetInnerHTML={{
-                    __html: `<strong>${questionnaire.title}</strong><div class="description">${questionnaire.description}</div>`
+                    __html: questionnaire.uploaded_by
                   }}
                 />,
-                number_of_question: questionnaire.questions.length,
-                action
+                uploaded_by_email: <span className="resource-text-wrap"
+                  dangerouslySetInnerHTML={{
+                    __html: questionnaire.uploaded_by_email
+                  }}
+                />,
+                uploaded_date: questionnaire.uploaded_date,
+                reviewed_by: <span className="resource-text-wrap"
+                  dangerouslySetInnerHTML={{
+                    __html: questionnaire.reviewed_by
+                  }}
+                />,
+                action: questionnaire.status === STATUS.pending ? <BiEdit size={25} className="btn-warning-info" /> : null
               };
             })}
           />
         </Col>
       </Row>
-      <Dialog
-        show={show}
-        title={translate('questionnaire.delete_confirmation_title')}
-        cancelLabel={translate('common.no')}
-        onCancel={handleClose}
-        confirmLabel={translate('common.yes')}
-        onConfirm={handleConfirm}
-      >
-        <p>{translate('common.delete_confirmation_message')}</p>
-      </Dialog>
-      {viewQuestionnaire && <ViewQuestionnaire questionnaire={questionnaire} show={viewQuestionnaire} handleClose={handleQuestionnaireViewClose}/>}
     </>
   );
 };
