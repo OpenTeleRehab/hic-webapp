@@ -8,12 +8,21 @@ import {
   Form,
   Row
 } from 'react-bootstrap';
-import { BsPlus, BsUpload, BsX, BsArrowsMove } from 'react-icons/bs';
-import { useSelector } from 'react-redux';
-import { FaCopy, FaTrashAlt } from 'react-icons/fa';
+import {
+  BsPlus,
+  BsUpload,
+  BsX,
+  BsArrowsMove,
+  BsXCircle
+} from 'react-icons/bs';
+import {
+  FaCopy,
+  FaTrashAlt
+} from 'react-icons/fa';
 import settings from '../../../../../settings';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import _ from 'lodash';
+import scssColors from '../../../../../scss/custom.scss';
 
 const reorderQuestion = (questions, startIndex, endIndex) => {
   const result = Array.from(questions);
@@ -22,26 +31,17 @@ const reorderQuestion = (questions, startIndex, endIndex) => {
   return result;
 };
 
-const Question = ({ translate, questions, setQuestions, language, questionTitleError, answerFieldError, modifiable }) => {
-  const { languages } = useSelector(state => state.language);
-
+const Index = ({ translate, questions, setQuestions, questionTitleError, answerFieldError, modifiable }) => {
   const handleFileChange = (e, index) => {
     const { name, files } = e.target;
     const values = [...questions];
-    values[index][name] = files[0];
-    setQuestions(values);
-  };
-
-  const readImage = (file) => {
-    if (file) {
-      if (file.id) {
-        return `${process.env.REACT_APP_API_BASE_URL}/file/${file.id}`;
-      }
-
-      return window.URL.createObjectURL(file);
-    }
-
-    return '';
+    const reader = new FileReader();
+    reader.readAsDataURL(files[0]);
+    reader.onloadend = () => {
+      const file = { url: reader.result, fileName: files[0].name, fileSize: files[0].size, fileType: files[0].type };
+      values[index][name] = file;
+      setQuestions(values);
+    };
   };
 
   const handleFileRemove = (index) => {
@@ -62,7 +62,8 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
     const answers = questions[questionIndex].answers;
     answers[answerIndex].description = e.target.value;
     const questionData = [...questions];
-    questionData[questionIndex] = { ...questionData[questionIndex], answer: answers };
+    // questionData[questionIndex] = { ...questionData[questionIndex], answer: answers };
+    questionData[questionIndex] = { ...questionData[questionIndex] };
     setQuestions(questionData);
   };
 
@@ -94,11 +95,6 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
     setQuestions([...questions]);
   };
 
-  const enableButtons = () => {
-    const languageObj = languages.find(item => item.id === parseInt(language, 10));
-    return languageObj && languageObj.code === languageObj.fallback && modifiable;
-  };
-
   const handleCloneQuestion = (index) => {
     const { title, type } = questions[index];
     const answers = _.cloneDeep(questions[index].answers);
@@ -128,10 +124,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
       <DragDropContext onDragEnd={(e) => onDragEnd(e)}>
         <Droppable droppableId="droppable">
           {(provided, snapshot) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
+            <div {...provided.droppableProps} ref={provided.innerRef}>
               {questions.map((question, index) => (
                 <Draggable key={index} draggableId={`question${index}`} index={index}>
                   {(provided, snapshot) => (
@@ -143,40 +136,34 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                         <Card.Header className="card-header">
                           <Card.Title className="d-flex justify-content-between">
                             <h5>{translate('questionnaire.question_number', { number: index + 1 })}</h5>
-                            {enableButtons() &&
-                              <>
-                                <div
-                                  {...provided.dragHandleProps}
-                                >
-                                  <Button
-                                    variant="link"
-                                    size="sm"
-                                    className="text-dark p-0 mr-5 mb-3 drag-button"
-                                  >
-                                    <BsArrowsMove size={20}/>
-                                  </Button>
-                                </div>
-                                <div>
-                                  <Button
-                                    variant="link"
-                                    size="sm"
-                                    className="text-primary p-0 mr-1"
-                                    onClick={() => handleCloneQuestion(index)}
-                                  >
-                                    <FaCopy size={20} />
-                                  </Button>
-                                  <Button
-                                    variant="link"
-                                    size="sm"
-                                    className="text-danger p-0"
-                                    onClick={() => handleRemoveQuestion(index)}
-                                    disabled={questions.length === 1}
-                                  >
-                                    <FaTrashAlt size={20} />
-                                  </Button>
-                                </div>
-                              </>
-                            }
+                            <div {...provided.dragHandleProps}>
+                              <Button
+                                variant="link"
+                                size="sm"
+                                className="text-dark p-0 mr-5 mb-3 drag-button"
+                              >
+                                <BsArrowsMove size={20}/>
+                              </Button>
+                            </div>
+                            <div>
+                              <Button
+                                variant="link"
+                                size="sm"
+                                className="text-primary p-0 mr-1"
+                                onClick={() => handleCloneQuestion(index)}
+                              >
+                                <FaCopy size={20}/>
+                              </Button>
+                              <Button
+                                variant="link"
+                                size="sm"
+                                className="text-danger p-0"
+                                onClick={() => handleRemoveQuestion(index)}
+                                disabled={questions.length === 1}
+                              >
+                                <FaTrashAlt size={20}/>
+                              </Button>
+                            </div>
                           </Card.Title>
                           <Row>
                             <Col sm={8} xl={7}>
@@ -185,7 +172,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                                   name="title"
                                   onChange={e => handleQuestionTitleChange(index, e)}
                                   value={question.title}
-                                  placeholder={translate('questionnaire.title.placeholder')}
+                                  placeholder={translate('question.title.placeholder')}
                                   isInvalid={questionTitleError[index]}
                                   maxLength={settings.textMaxLength}
                                 />
@@ -194,31 +181,25 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                                 </Form.Control.Feedback>
                               </Form.Group>
                               { question.file &&
-                                <div className="mb-2 w-50 d-flex justify-content-between">
-                                  <img src={readImage(question.file)} alt="..." className="img-thumbnail"/>
-                                  {enableButtons() &&
-                                    <div className="ml-3">
-                                      <Button
-                                        variant="outline-danger"
-                                        className="remove-btn"
-                                        onClick={() => handleFileRemove(index)}
-                                      >
-                                        <BsX size={15} />
-                                      </Button>
-                                    </div>
-                                  }
+                                <div className="form-group w-50 position-relative">
+                                  <img src={question.file.url || `${process.env.REACT_APP_API_BASE_URL}/file/${question.file.id}`} alt={question.name} className="w-100 img-thumbnail border-danger" />
+                                  <Button
+                                    variant="link"
+                                    className="position-absolute btn-remove"
+                                    onClick={() => handleFileRemove(index)}
+                                  >
+                                    <BsXCircle size={20} color={scssColors.danger} /> <span className="sr-only">{translate('common.remove')}</span>
+                                  </Button>
                                 </div>
                               }
-                              {enableButtons() &&
-                                <div className="btn btn-sm text-primary position-relative overflow-hidden" >
-                                  <BsUpload size={15}/> Upload Image
-                                  <input type="file" name="file" className="position-absolute upload-btn" onChange={e => handleFileChange(e, index)} accept="image/*"/>
-                                </div>
-                              }
+                              <div className="btn btn-sm text-primary position-relative overflow-hidden" >
+                                <BsUpload size={15}/> Upload Image
+                                <input type="file" name="file" className="position-absolute upload-btn" onChange={e => handleFileChange(e, index)} accept="image/*"/>
+                              </div>
                             </Col>
-                            <Col sm={5} xl={4}>
+                            <Col sm={3} xl={4}>
                               <Form.Group controlId={`formType${index}`}>
-                                <Form.Control name ="type" as="select" value={question.type} onChange={e => handleSelectChange(index, e)} disabled={!enableButtons()}>
+                                <Form.Control name ="type" as="select" value={question.type} onChange={e => handleSelectChange(index, e)}>
                                   <option value='checkbox'>{translate('question.type.checkbox')}</option>
                                   <option value='multiple'>{translate('question.type.multiple_choice')}</option>
                                   <option value='open-text'>{translate('question.type.open_ended_free_text')}</option>
@@ -234,7 +215,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                               question.type === 'checkbox' && (
                                 question.answers.map((answer, answerIndex) => (
                                   <Row key={answerIndex}>
-                                    <Col sm={8} xs={7}>
+                                    <Col sm={8} xl={7}>
                                       <Form.Check type='checkbox'>
                                         <Form.Check.Input type='checkbox' isValid className="mt-3" disabled />
                                         <Form.Check.Label className="w-100">
@@ -253,18 +234,16 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                                         </Form.Check.Label>
                                       </Form.Check>
                                     </Col>
-                                    {enableButtons() &&
-                                    <Col sm={4} xl={3} className="mt-1">
+                                    <Col sm={4} xl={5} className="mt-1">
                                       <Button
                                         variant="outline-danger"
                                         className="remove-btn"
                                         onClick={() => handleAnswerRemove(index, answerIndex)}
                                         disabled={question.answers.length <= 2}
                                       >
-                                        <BsX size={15} />
+                                        <BsX size={16} />
                                       </Button>
                                     </Col>
-                                    }
                                   </Row>
                                 ))
                               )
@@ -292,18 +271,16 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                                         </Form.Check.Label>
                                       </Form.Check>
                                     </Col>
-                                    {enableButtons() &&
-                                    <Col sm={4} xl={3} className="mt-1">
+                                    <Col sm={4} xl={5} className="mt-1">
                                       <Button
                                         variant="outline-danger"
                                         className="remove-btn"
                                         onClick={() => handleAnswerRemove(index, answerIndex)}
                                         disabled={question.answers.length <= 2}
                                       >
-                                        <BsX size={15} />
+                                        <BsX size={16} />
                                       </Button>
                                     </Col>
-                                    }
                                   </Row>
                                 ))
                               )
@@ -329,15 +306,14 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                                 </Form.Group>
                               )
                             }
-                            {
-                              (enableButtons() && (question.type === 'checkbox' || question.type === 'multiple')) &&
+                            {(question.type === 'checkbox' || question.type === 'multiple') &&
                               <Form.Group className="ml-3">
                                 <Button
                                   variant="link"
                                   onClick={() => handleAddAnswer(index)}
                                   className="p-0"
                                 >
-                                  <BsPlus size={15} /> {translate('question.add.more.answer')}
+                                  <BsPlus size={16} /> {translate('question.add.more.answer')}
                                 </Button>
                               </Form.Group>
                             }
@@ -357,14 +333,13 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
   );
 };
 
-Question.propTypes = {
+Index.propTypes = {
   translate: PropTypes.func,
   questions: PropTypes.array,
   setQuestions: PropTypes.func,
-  language: PropTypes.string,
   questionTitleError: PropTypes.array,
   answerFieldError: PropTypes.array,
   modifiable: PropTypes.bool
 };
 
-export default withLocalize(Question);
+export default withLocalize(Index);

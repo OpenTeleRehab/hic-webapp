@@ -37,6 +37,19 @@ const createQuestionnaireFail = () => ({
   type: 'CREATE_QUESTIONNAIRE_FAIL'
 });
 
+const contributeQuestionnaireRequest = () => ({
+  type: 'CONTRIBUTE_EDUCATION_MATERIAL_REQUEST'
+});
+
+const contributeQuestionnaireSuccess = (data) => ({
+  type: 'CONTRIBUTE_EDUCATION_MATERIAL_SUCCESS',
+  data
+});
+
+const contributeQuestionnaireFail = () => ({
+  type: 'CONTRIBUTE_EDUCATION_MATERIAL_FAIL'
+});
+
 const updateQuestionnaireRequest = () => ({
   type: 'UPDATE_QUESTIONNAIRE_REQUEST'
 });
@@ -88,6 +101,9 @@ export const mutation = {
   createQuestionnaireFail,
   createQuestionnaireRequest,
   createQuestionnaireSuccess,
+  contributeQuestionnaireRequest,
+  contributeQuestionnaireSuccess,
+  contributeQuestionnaireFail,
   updateQuestionnaireRequest,
   updateQuestionnaireSuccess,
   updateQuestionnaireFail,

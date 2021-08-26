@@ -1,5 +1,6 @@
 import axios from 'utils/axios';
 import _ from 'lodash';
+import { base64ToFile } from '../utils/file';
 
 const getQuestionnaires = payload => {
   return axios.get('/questionnaire', { params: payload })
@@ -59,6 +60,35 @@ const createQuestionnaire = (payload) => {
     });
 };
 
+const contributeQuestionnaire = (payloads, formFields) => {
+  _.map(payloads, (payload) => {
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(payload));
+
+    _.forIn(formFields, (value, key) => {
+      formData.append(key, value);
+    });
+
+    _.map(payload.questions, (question, index) => {
+      if (question.file) {
+        formData.append(index, base64ToFile(question.file.url, question.file.fileName, question.file.fileType), question.file.fileName, { type: question.file.fileType });
+      }
+    });
+
+    return axios.post('/questionnaire', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+      .then(
+        res => {
+          return res.data;
+        }
+      )
+      .catch((e) => {
+        return e.response.data;
+      });
+  });
+
+  return true;
+};
+
 const updateQuestionnaire = (id, payload) => {
   const formData = new FormData();
   formData.append('lang', payload.lang);
@@ -100,6 +130,7 @@ export const Questionnaire = {
   getQuestionnaire,
   getQuestionnaires,
   createQuestionnaire,
+  contributeQuestionnaire,
   updateQuestionnaire,
   deleteQuestionnaire,
   rejectQuestionnaire

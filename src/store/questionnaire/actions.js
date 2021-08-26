@@ -43,6 +43,18 @@ export const createQuestionnaire = (payload) => async dispatch => {
   }
 };
 
+export const contributeQuestionnaire = (payloads, formFields) => async dispatch => {
+  dispatch(mutation.contributeQuestionnaireRequest());
+  const data = await Questionnaire.contributeQuestionnaire(payloads, formFields);
+  if (data) {
+    dispatch(mutation.contributeQuestionnaireSuccess());
+    return true;
+  } else {
+    dispatch(mutation.contributeQuestionnaireFail());
+    return false;
+  }
+};
+
 export const updateQuestionnaire = (id, payload) => async dispatch => {
   dispatch(mutation.updateQuestionnaireRequest());
   const data = await Questionnaire.updateQuestionnaire(id, payload);

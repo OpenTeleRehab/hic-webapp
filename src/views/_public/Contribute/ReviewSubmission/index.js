@@ -5,13 +5,15 @@ import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import { useDispatch, useSelector } from 'react-redux';
 import { contributeExercise } from '../../../../store/exercise/actions';
 import {
-  clearContribute,
   contributeSubmission,
+  clearContribute,
+  deleteExercise,
   deleteEducationMaterial,
-  deleteExercise
+  deleteQuestionnaire
 } from '../../../../store/contribute/actions';
 import { showSpinner } from '../../../../store/spinnerOverlay/actions';
 import { contributeEducationMaterial } from '../../../../store/educationMaterial/actions';
+import { contributeQuestionnaire } from '../../../../store/questionnaire/actions';
 import { toHash } from '../../../../utils/hash';
 import moment from 'moment';
 import * as ROUTES from '../../../../variables/routes';
@@ -135,6 +137,7 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
       dispatch(showSpinner(true));
       const submitExercises = exercises.filter((exercises, index) => selectedExercises.includes(index));
       const submitEducationMaterials = educationMaterials.filter((educationMaterial, index) => selectedEducationMaterials.includes(index));
+      const submitQuestionnaires = questionnaires.filter((questionnaire, index) => selectedQuestionnaires.includes(index));
 
       if (submitExercises.length) {
         dispatch(contributeExercise(submitExercises, formFields)).then(result => {
@@ -152,7 +155,15 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
         });
       }
 
-      if (submitExercises.length || submitEducationMaterials.length) {
+      if (submitQuestionnaires.length) {
+        dispatch(contributeQuestionnaire(submitQuestionnaires, formFields)).then(result => {
+          if (result) {
+            dispatch(deleteQuestionnaire());
+          }
+        });
+      }
+
+      if (submitExercises.length || submitEducationMaterials.length || submitQuestionnaires.length) {
         dispatch(contributeSubmission(formFields)).then(result => {
           if (result) {
             dispatch(clearContribute());

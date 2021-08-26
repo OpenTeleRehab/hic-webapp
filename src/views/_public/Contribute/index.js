@@ -23,7 +23,7 @@ const Contribute = () => {
   const [isShowReviewModal, setIsShowReviewModal] = useState(false);
   const [isShowConfirmSubmissionModal, setIsShowConfirmSubmissionModal] = useState(false);
   const history = useHistory();
-  const [lang, setLang] = useState('');
+  const [lang, setLang] = useState(1);
 
   useEffect(() => {
     const lang = languages.find((language) => language.code === activeLanguage);
@@ -35,18 +35,15 @@ const Contribute = () => {
   const types = [
     {
       label: translate('library.exercises'),
-      value: CATEGORY_TYPES.EXERCISE,
-      defaultChecked: true
+      value: CATEGORY_TYPES.EXERCISE
     },
     {
       label: translate('library.education_materials'),
-      value: CATEGORY_TYPES.MATERIAL,
-      defaultChecked: false
+      value: CATEGORY_TYPES.MATERIAL
     },
     {
       label: translate('library.questionnaires'),
-      value: CATEGORY_TYPES.QUESTIONNAIRE,
-      defaultChecked: false
+      value: CATEGORY_TYPES.QUESTIONNAIRE
     }
   ];
 
@@ -101,7 +98,6 @@ const Contribute = () => {
                 key={type.label}
                 className="ml-3 mr-3"
                 value={type.value}
-                defaultChecked={type.defaultChecked}
                 checked={view === type.value}
                 disabled={editItem}
                 type="radio"
