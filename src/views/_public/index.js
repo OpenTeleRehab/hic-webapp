@@ -40,7 +40,7 @@ const Dashboard = () => {
             <Col lg={4}>
               <Card bg={'primary'} text={'white'} className="stats-card">
                 <Card.Body>
-                  <Card.Link href={ROUTES.ADMIN_RESOURCES} className="d-flex flex-column flex-sm-row justify-content-between align-items-center">
+                  <Card.Link href={replaceRoute(ROUTES.LIBRARY, activeLanguage)} className="d-flex flex-column flex-sm-row justify-content-between align-items-center">
                     <div className="icon">
                       <img src={'/images/stats-exercise-icon.svg'} alt={translate('resource.exercises')} width="58" />
                     </div>
@@ -57,7 +57,7 @@ const Dashboard = () => {
             <Col lg={4}>
               <Card bg={'primary'} text={'white'} className="stats-card">
                 <Card.Body>
-                  <Card.Link href={ROUTES.ADMIN_RESOURCES_EDUCATION_MATERIAL} className="d-flex flex-column flex-sm-row justify-content-between align-items-center">
+                  <Card.Link href={replaceRoute(ROUTES.LIBRARY_EDUCATION, activeLanguage)} className="d-flex flex-column flex-sm-row justify-content-between align-items-center">
                     <div className="icon">
                       <img src={'/images/stats-education-material-icon.svg'} alt={translate('resource.education_materials')} width="58" />
                     </div>
@@ -74,7 +74,7 @@ const Dashboard = () => {
             <Col lg={4}>
               <Card bg={'primary'} text={'white'} className="stats-card">
                 <Card.Body>
-                  <Card.Link href={ROUTES.ADMIN_RESOURCES_QUESTIONNAIRE} className="d-flex flex-column flex-sm-row justify-content-between align-items-center">
+                  <Card.Link href={replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE, activeLanguage)} className="d-flex flex-column flex-sm-row justify-content-between align-items-center">
                     <div className="icon">
                       <img src={'/images/stats-questionnaire-icon.svg'} alt={translate('resource.questionnaires')} width="58" />
                     </div>
