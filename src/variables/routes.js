@@ -20,6 +20,9 @@ export const ADMIN_TRANSLATIONS = '/admin/translations';
 export const ADMIN_TRANSLATIONS_LANGUAGE = ADMIN_TRANSLATIONS + '#language';
 export const ADMIN_USERS = '/admin/users';
 export const ADMIN_STATIC_PAGES = '/admin/static-pages';
+export const ADMIN_STATIC_PAGES_ABOUT_US = ADMIN_STATIC_PAGES + '#about-us';
+export const ADMIN_STATIC_PAGES_TERM_CONDITION = ADMIN_STATIC_PAGES + '#term-condition';
+export const ADMIN_STATIC_PAGES_ACKNOWLEDGMENT = ADMIN_STATIC_PAGES + '#acknowledgment';
 export const ADMIN_CATEGORY_EDUCATION = ADMIN_CATEGORIES + '#education';
 export const ADMIN_CATEGORY_QUESTIONNAIRE = ADMIN_CATEGORIES + '#questionnaire';
 
@@ -33,11 +36,6 @@ export const EDUCATION_MATERIAL_CREATE = SERVICE_SETUP + '/education_material/cr
 export const EDUCATION_MATERIAL_EDIT = SERVICE_SETUP + '/education_material/edit/:id';
 export const QUESTIONNAIRE_CREATE = SERVICE_SETUP + '/questionnaire/create';
 export const QUESTIONNAIRE_EDIT = SERVICE_SETUP + '/questionnaire/edit/:id';
-
-export const SETTING = '/setting';
-export const SETTING_TRANSLATIONS = SETTING + '#translation';
-export const SETTING_STATIC_PAGE = SETTING + '#static_page';
-export const SETTING_LANGUAGE = SETTING + '#language';
 
 export const PROFILE = '/profile';
 export const FAQ = '/faq';

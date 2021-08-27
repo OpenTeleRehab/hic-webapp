@@ -9,13 +9,13 @@ import Translation from 'views/Setting/Translation';
 import TermAndCondition from 'views/Setting/TermAndCondition';
 import PrivacyPolicy from 'views/Setting/PrivacyPolicy';
 import Language from 'views/Setting/Language';
-import StaticPage from 'views/Setting/StaticPage';
+import StaticPage from 'views/StaticPage';
 
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES } from 'variables/user';
 import CreateLanguage from 'views/Setting/Language/create';
 import CreateTermAndCondition from 'views/Setting/TermAndCondition/create';
-import CreateStaticPage from 'views/Setting/StaticPage/create';
+import CreateStaticPage from 'views/StaticPage/create';
 import CreatePrivacyPolicy from 'views/Setting/PrivacyPolicy/create';
 
 const VIEW_TRANSLATION = 'translation';
@@ -66,6 +66,20 @@ const Setting = ({ translate }) => {
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1>{translate('setting')}</h1>
         {[VIEW_LANGUAGE, VIEW_TERM_AND_CONDITION, VIEW_PRIVACY_POLICY, VIEW_STATIC_PAGE].map(v => {
+          if (v === view) {
+            return (
+              <div className="d-flex">
+                <div key={v} className="btn-toolbar mb-2 mb-md-0">
+                  <Button variant="primary" onClick={handleShow}>
+                    <BsPlus size={20} className="mr-1" />
+                    { translate(`${view}.new`) }
+                  </Button>
+                </div>
+              </div>
+            );
+          }
+          return null;
+        })}{[VIEW_LANGUAGE, VIEW_TERM_AND_CONDITION, VIEW_PRIVACY_POLICY, VIEW_STATIC_PAGE].map(v => {
           if (v === view) {
             return (
               <div className="d-flex">

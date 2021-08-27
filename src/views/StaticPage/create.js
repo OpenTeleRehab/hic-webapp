@@ -10,13 +10,13 @@ import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import settings from 'settings';
 import { createStaticPage, getStaticPage, updateStaticPage } from 'store/staticPage/actions';
-import { toMB } from '../../../utils/file';
+import { toMB } from '../../utils/file';
 import { BsUpload, BsXCircle } from 'react-icons/bs/index';
 import { Editor } from '@tinymce/tinymce-react';
 
 import { SketchPicker } from 'react-color';
 import Select from 'react-select';
-import scssColors from '../../../scss/custom.scss';
+import scssColors from '../../scss/custom.scss';
 
 const CreateStaticPage = ({ show, editId, handleClose }) => {
   const localize = useSelector((state) => state.localize);
