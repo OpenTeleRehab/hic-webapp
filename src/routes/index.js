@@ -25,9 +25,10 @@ import CreateEducationMaterial from 'views/ServiceSetup/EducationMaterial/create
 import CreateQuestionnaire from 'views/ServiceSetup/Questionnaire/create';
 import ProfilePage from 'views/Profile';
 import FaqPage from 'views/Faq';
-import TermConditionPage from 'views/TermCondition';
+import TermConditionPage from 'views/StaticPage/TermCondition';
 import PrivacyPolicyPage from 'views/PrivacyPolicy';
 import UserPage from 'views/User';
+import StaticPage from 'views/StaticPage';
 
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES } from 'variables/user';
@@ -181,6 +182,14 @@ const routes = [
     exact: true,
     type: PRIVATE,
     roles: [USER_ROLES.MANAGE_TRANSLATION]
+  },
+  {
+    title: 'static_page',
+    path: ROUTES.ADMIN_STATIC_PAGES,
+    component: StaticPage,
+    exact: true,
+    type: PRIVATE,
+    roles: [USER_ROLES.MANAGE_STATIC_PAGE]
   },
   {
     title: 'language',
