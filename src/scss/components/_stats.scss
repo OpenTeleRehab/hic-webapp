@@ -1,0 +1,72 @@
+.stats {
+	&-card {
+		background-color: $primary;
+		border-radius: toRem(8);
+		box-shadow: 0 toRem(4) toRem(4) rgba(0, 0, 0, 0.25);
+		margin: 0 0 toRem(15) 0;
+		max-width: toRem(500);
+
+		a {
+			color: $white;
+
+			&:hover,
+			&:focus,
+			&:active {
+				color: $white;
+				text-decoration: none;
+			}
+		}
+
+		.icon {
+			background-color: $white;
+			border-radius: toRem(8);
+			padding: toRem(14) toRem(18);
+			text-align: center;
+
+			img {
+				height: toRem(64);
+				max-width: toRem(52);
+			}
+		}
+
+		.amount,
+		.total {
+			margin: 0;
+			padding: toRem(12) 0 0 0;
+			width: 100%;
+
+			li {
+				font-size: toRem(18);
+				font-weight: 600;
+			}
+		}
+
+		.total {
+			text-align: center;
+
+			h3 {
+				font-size: toRem(16);
+				margin: 0;
+			}
+
+			strong {
+				font-size: toRem(34);
+			}
+		}
+	}
+}
+
+@include media-breakpoint-up(sm) {
+	.stats {
+		&-card {
+			.amount,
+			.total {
+				padding: 0 0 0 toRem(16);
+			}
+
+			.total {
+				text-align: left;
+			}
+		}
+	}
+}

@@ -3,6 +3,12 @@
 		padding-bottom: toRem(30);
 		padding-top: toRem(30);
 	}
+
+	&__heading {
+		font-size: toRem(26);
+		line-height: normal;
+		margin: 0 0 toRem(20) 0;
+	}
 }
 
 @include media-breakpoint-up(lg) {
@@ -10,6 +16,11 @@
 		&__wrapper {
 			padding-bottom: toRem(60);
 			padding-top: toRem(60);
+		}
+
+		&__heading {
+			font-size: toRem(32);
+			margin: 0 0 toRem(30) 0;
 		}
 	}
 }
