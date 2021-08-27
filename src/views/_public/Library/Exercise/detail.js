@@ -175,14 +175,9 @@ const ExerciseDetail = () => {
           ))}
         </Col>
       </Row>
-      <Row className={activeLanguage === 'en' ? 'mt-3 d-none' : 'mt-3'}>
+      <Row className={activeLanguage === 'en' ? 'd-none' : 'mt-3'}>
         <Col>
           <Button className="w-100" size="sm">{translate('exercise.edit_translation')}</Button>
-        </Col>
-      </Row>
-      <Row className="mt-3">
-        <Col>
-          <h3 className="text-primary">{translate('exercise.related_resources')}</h3>
         </Col>
       </Row>
     </>
