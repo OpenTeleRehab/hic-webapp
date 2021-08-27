@@ -24,7 +24,6 @@ import CreateExercise from 'views/ServiceSetup/Exercise/create';
 import CreateEducationMaterial from 'views/ServiceSetup/EducationMaterial/create';
 import CreateQuestionnaire from 'views/ServiceSetup/Questionnaire/create';
 import ProfilePage from 'views/Profile';
-import FaqPage from 'views/Faq';
 import TermConditionPage from 'views/StaticPage/TermCondition';
 import PrivacyPolicyPage from 'views/PrivacyPolicy';
 import UserPage from 'views/User';
@@ -203,13 +202,6 @@ const routes = [
     title: 'profile',
     path: ROUTES.PROFILE,
     component: ProfilePage,
-    exact: true,
-    type: PRIVATE
-  },
-  {
-    title: 'faq',
-    path: ROUTES.FAQ,
-    component: FaqPage,
     exact: true,
     type: PRIVATE
   },

@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import {
   Form,
-  InputGroup,
-  FormControl
+  Button
 } from 'react-bootstrap';
-import Dialog from 'components/Dialog';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import settings from 'settings';
-import { createStaticPage, getStaticPage, updateStaticPage } from 'store/staticPage/actions';
-import { toMB } from '../../utils/file';
+import { getHomePage, createStaticPage, updateStaticPage } from 'store/staticPage/actions';
+import { toMB } from '../../../utils/file';
 import { BsUpload, BsXCircle } from 'react-icons/bs/index';
 import { Editor } from '@tinymce/tinymce-react';
 
-import { SketchPicker } from 'react-color';
 import Select from 'react-select';
-import scssColors from '../../scss/custom.scss';
+import { Link } from 'react-router-dom';
+import * as ROUTES from '../../../variables/routes';
+import scssColors from '../../../scss/custom.scss';
 
-const CreateStaticPage = ({ show, editId, handleClose }) => {
+const CreateHomePage = ({ type, editId }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
@@ -26,26 +25,24 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
 
   const [errorContent, setErrorContent] = useState(false);
   const [errorTitle, setErrorTitle] = useState(false);
-  const [errorPlatform, setErrorPlatform] = useState(false);
-  const [errorUrl, setErrorUrl] = useState(false);
   const [materialFile, setMaterialFile] = useState(undefined);
   const [fileError, setFileError] = useState(false);
   const { languages } = useSelector(state => state.language);
   const { profile } = useSelector((state) => state.auth);
+  const [disabled, setDisable] = useState(true);
 
-  const { staticPage, filters } = useSelector(state => state.staticPage);
+  const { homePage, filters } = useSelector(state => state.staticPage);
 
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
-    platform: '',
-    url: '',
-    private: false,
+    url: type,
     title: '',
-    background_color: '#fff',
-    text_color: '#000',
-    file: undefined
+    file: undefined,
+    display_quick_stat: '',
+    display_feature_resource: ''
   });
   const [content, setContent] = useState('');
+  const [partnerContent, setPartnerContent] = useState('');
 
   useEffect(() => {
     if (languages.length) {
@@ -64,47 +61,48 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
   }, [languages, filters, editId, profile]);
 
   useEffect(() => {
-    if (editId && language) {
-      dispatch(getStaticPage(editId, language));
-    }
-  }, [editId, language, dispatch]);
+    dispatch(getHomePage({
+      'url-segment': type,
+      lang: profile && profile.language_id
+    }));
+  }, [dispatch, profile, type]);
 
   useEffect(() => {
-    if (editId && staticPage.id) {
+    if (homePage.id) {
       setFormFields({
-        title: staticPage.title || '',
-        platform: staticPage.platform || '',
-        url: staticPage.url || '',
-        private: staticPage.private || '',
-        background_color: staticPage.background_color || '',
-        text_color: staticPage.text_color || ''
+        title: homePage.title || '',
+        url: homePage.url || type,
+        content: homePage.content,
+        display_quick_stat: homePage.homeData ? homePage.homeData.display_quick_stat : 0,
+        display_feature_resource: homePage.homeData ? homePage.homeData.display_feature_resource : 0
       });
-      setMaterialFile(staticPage.file);
-      setContent(staticPage.content || '');
+      setMaterialFile(homePage.file);
+      setContent(homePage.content || '');
+      setPartnerContent(homePage.partner_content || '');
     }
-  }, [editId, staticPage]);
+  }, [homePage, type]);
 
   const handleLanguageChange = (value) => {
     setLanguage(value);
+    setDisable(false);
   };
 
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
-  };
-
-  const handleSingleSelectChange = (key, value) => {
-    setFormFields({ ...formFields, [key]: value });
+    setDisable(false);
   };
 
   const handleCheck = e => {
     const { name, checked } = e.target;
     setFormFields({ ...formFields, [name]: checked });
+    setDisable(false);
   };
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     setFormFields({ ...formFields, [name]: files[0] });
+    setDisable(false);
 
     const file = files[0];
     if (file) {
@@ -119,27 +117,20 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
     }
   };
 
-  const handleUrlChange = (e) => {
-    const { name, value } = e.target;
-    const val = value.replace(/\s+/g, '-').toLowerCase();
-    setFormFields({ ...formFields, [name]: val });
-  };
-
   const handleFileRemove = (e) => {
     setMaterialFile(null);
     setFormFields({ ...formFields, file: undefined });
+    setDisable(false);
   };
 
   const handleEditorChange = (value, editor) => {
     setContent(value);
+    setDisable(false);
   };
 
-  const handleBackgroundColorChange = (color, editor) => {
-    setFormFields({ ...formFields, background_color: color.hex });
-  };
-
-  const handleTextColorChange = (color, editor) => {
-    setFormFields({ ...formFields, text_color: color.hex });
+  const handlePartnerChange = (value, editor) => {
+    setPartnerContent(value);
+    setDisable(false);
   };
 
   const handleConfirm = () => {
@@ -152,21 +143,7 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
       setErrorTitle(false);
     }
 
-    if (formFields.platform === '') {
-      canSave = false;
-      setErrorPlatform(true);
-    } else {
-      setErrorPlatform(false);
-    }
-
-    if (formFields.url === '') {
-      canSave = false;
-      setErrorUrl(true);
-    } else {
-      setErrorUrl(false);
-    }
-
-    if (formFields.content === '') {
+    if (content === '') {
       canSave = false;
       setErrorContent(true);
     } else {
@@ -181,31 +158,36 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
     }
 
     if (canSave) {
-      if (editId) {
-        dispatch(updateStaticPage(editId, { ...formFields, content, lang: language }))
+      if (homePage.id) {
+        dispatch(updateStaticPage(homePage.id, { ...formFields, content, partnerContent, lang: language }));
+        dispatch(updateStaticPage(homePage.id, { ...formFields, content, partnerContent, lang: language }))
           .then(result => {
             if (result) {
-              handleClose();
+              dispatch(getHomePage({
+                'url-segment': type,
+                lang: profile && profile.language_id
+              }));
             }
           });
       } else {
-        dispatch(createStaticPage({ ...formFields, content, lang: language }))
-          .then(result => {
-            if (result) {
-              handleClose();
-            }
-          });
+        dispatch(createStaticPage({ ...formFields, content, partnerContent, lang: language })).then(result => {
+          if (result) {
+            dispatch(getHomePage({
+              'url-segment': type,
+              lang: profile && profile.language_id
+            }));
+          }
+        });
       }
     }
   };
 
-  const platformOptions = [
-    {
-      value: '',
-      text: translate('placeholder.platform')
-    },
-    ...settings.platforms.options
-  ];
+  const handleFormSubmit = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleConfirm();
+    }
+  };
 
   const customSelectStyles = {
     option: (provided) => ({
@@ -218,27 +200,13 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
     })
   };
 
-  const handleFormSubmit = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleConfirm();
-    }
-  };
-
   return (
-    <Dialog
-      size="lg"
-      show={show}
-      title={translate(editId ? 'static_page.edit' : 'static_page.new')}
-      onCancel={handleClose}
-      onConfirm={handleConfirm}
-      confirmLabel={editId ? translate('common.save') : translate('common.create')}
-    >
+    <div className="no-gutters bg-white p-md-3">
       <Form onKeyPress={(e) => handleFormSubmit(e)}>
         <Form.Group controlId="formLanguage">
           <Form.Label>{translate('common.show_language.version')}</Form.Label>
           <Select
-            isDisabled={!editId}
+            isDisabled={!homePage.id}
             classNamePrefix="filter"
             value={languages.filter(option => option.id === language)}
             getOptionLabel={option => `${option.name} ${option.code === option.fallback ? translate('common.default') : ''}`}
@@ -246,53 +214,6 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
             onChange={(e) => handleLanguageChange(e.id)}
             styles={customSelectStyles}
           />
-        </Form.Group>
-        <Form.Group controlId="formPrivate">
-          <Form.Check
-            name="private"
-            onChange={handleCheck}
-            value={true}
-            checked={formFields.private}
-            label={translate('static_page.private')}
-          />
-        </Form.Group>
-        <Form.Group controlId="formPlateForm">
-          <Form.Label>{translate('setting.translations.platform')}</Form.Label>
-          <span className="text-dark ml-1">*</span>
-          <Select
-            placeholder={translate('placeholder.platform')}
-            classNamePrefix="filter"
-            className={errorPlatform ? 'is-invalid' : ''}
-            value={settings.platforms.options.filter(option => option.value === formFields.platform)}
-            getOptionLabel={option => option.text}
-            options={platformOptions}
-            onChange={(e) => handleSingleSelectChange('platform', e.value)}
-            styles={customSelectStyles}
-          />
-          <Form.Control.Feedback type="invalid">
-            {translate('error.static_page.platform')}
-          </Form.Control.Feedback>
-        </Form.Group>
-        <Form.Group controlId="url">
-          <Form.Label>{translate('static_page.url')}</Form.Label>
-          <span className="text-dark ml-1">*</span>
-          <InputGroup className="mb-3">
-            <InputGroup.Prepend>
-              <InputGroup.Text id="basic-addon1">/</InputGroup.Text>
-            </InputGroup.Prepend>
-            <FormControl
-              name="url"
-              placeholder={translate('placeholder.static_page.url')}
-              onChange={handleUrlChange}
-              value={formFields.url}
-              maxLength={settings.textMaxLength}
-              isInvalid={errorUrl}
-            />
-
-            <Form.Control.Feedback type="invalid">
-              {translate('error.static_page.url')}
-            </Form.Control.Feedback>
-          </InputGroup>
         </Form.Group>
         <Form.Group controlId="formFile">
           <Form.Label>{translate('static_page.image')}</Form.Label>
@@ -304,14 +225,12 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
 
           <div className="w-50">
             {materialFile && (
-              <div className="exercise-media">
-                <div className="mb-2 position-relative">
-                  <div className="position-absolute remove-btn-wrapper">
-                    <BsXCircle size={20} onClick={handleFileRemove}/>
-                  </div>
-                  <img src={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`} alt="..." className="w-100 img-thumbnail"/>
-                  <div>{materialFile.fileName} {materialFile.fileSize ? ('(' + materialFile.fileSize + 'kB )') : ''}</div>
-                </div>
+              <div className="mb-2 position-relative">
+                <Button variant="link" onClick={() => handleFileRemove()} className="position-absolute btn-remove">
+                  <BsXCircle size={20} color={scssColors.danger} />
+                </Button>
+                <img src={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`} alt="..." className="w-100 img-thumbnail"/>
+                <div>{materialFile.fileName} {materialFile.fileSize ? ('(' + materialFile.fileSize + 'kB )') : ''}</div>
               </div>
             )}
             <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden" >
@@ -336,24 +255,8 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
             {translate('error.static_page.title')}
           </Form.Control.Feedback>
         </Form.Group>
-        <Form.Row>
-          <Form.Group controlId="background-color" className="col-md-6">
-            <Form.Label>{translate('static_page.background_color')}</Form.Label>
-            <SketchPicker
-              onChange={handleBackgroundColorChange}
-              color={formFields.background_color}
-            />
-          </Form.Group>
-          <Form.Group controlId="text-color" className="col-md-6">
-            <Form.Label>{translate('static_page.text_color')}</Form.Label>
-            <SketchPicker
-              onChange={handleTextColorChange}
-              color={formFields.text_color}
-            />
-          </Form.Group>
-        </Form.Row>
         <Form.Group controlId="content">
-          <Form.Label>{translate('term_and_condition.content')}</Form.Label>
+          <Form.Label>{translate('home_introduction_text')}</Form.Label>
           <span className="text-dark ml-1">*</span>
           <Editor
             apiKey={settings.tinymce.apiKey}
@@ -373,18 +276,70 @@ const CreateStaticPage = ({ show, editId, handleClose }) => {
             onEditorChange={handleEditorChange}
           />
           {errorContent &&
-            <div className="invalid-feedback d-block">{translate('error.term_and_condition.content')}</div>
+            <div className="invalid-feedback d-block">{translate('error.home_introduction_text')}</div>
           }
         </Form.Group>
+        <Form.Group controlId="formQuickStat">
+          <Form.Check
+            name="display_quick_stat"
+            onChange={handleCheck}
+            value={true}
+            checked={formFields.display_quick_stat}
+            label={translate('home_display_quick_stat')}
+          />
+        </Form.Group>
+        <Form.Group controlId="formFeatureResource">
+          <Form.Check
+            name="display_feature_resource"
+            onChange={handleCheck}
+            value={true}
+            checked={formFields.display_feature_resource}
+            label={translate('home_display_feature_resource')}
+          />
+        </Form.Group>
+        <Form.Group controlId="partner_content">
+          <Form.Label>{translate('static_page_partner_content')}</Form.Label>
+          <Editor
+            apiKey={settings.tinymce.apiKey}
+            name="partner_content"
+            value={partnerContent}
+            init={{
+              height: 500,
+              plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount'
+              ],
+              toolbar:
+                'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link | help'
+            }}
+            onEditorChange={handlePartnerChange}
+          />
+        </Form.Group>
+        <div className="sticky-bottom d-flex justify-content-end">
+          <Button
+            onClick={handleConfirm}
+            disabled={disabled}
+          >
+            {translate('common.save')}
+          </Button>
+          <Button
+            className="ml-2"
+            variant="outline-dark"
+            as={Link}
+            to={ROUTES.ADMIN_RESOURCES}
+          >
+            {translate('common.cancel')}
+          </Button>
+        </div>
       </Form>
-    </Dialog>
+    </div>
   );
 };
 
-CreateStaticPage.propTypes = {
-  show: PropTypes.bool,
-  editId: PropTypes.number,
-  handleClose: PropTypes.func
+CreateHomePage.propTypes = {
+  type: PropTypes.string,
+  editId: PropTypes.number
 };
 
-export default CreateStaticPage;
+export default CreateHomePage;

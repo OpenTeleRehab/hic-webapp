@@ -87,8 +87,8 @@ const getPartnerLogo = () => {
     });
 };
 
-const getFaqPage = (payload) => {
-  return axios.get('/page/static-page-data', { params: payload })
+const getHomePage = (payload) => {
+  return axios.get('/page/static-page-home', { params: payload })
     .then(
       res => {
         return res.data;
@@ -106,5 +106,5 @@ export const staticPage = {
   getStaticPage,
   createPartnerLogo,
   getPartnerLogo,
-  getFaqPage
+  getHomePage
 };

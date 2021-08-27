@@ -14,15 +14,9 @@ export const staticPage = (state = initialState, action) => {
         loading: false
       });
     }
-    case 'GET_PARTNER_LOGO_SUCCESS': {
+    case 'GET_HOME_PAGE_SUCCESS': {
       return Object.assign({}, state, {
-        partnerLogoFile: action.data,
-        loading: false
-      });
-    }
-    case 'GET_FAQ_PAGE_SUCCESS': {
-      return Object.assign({}, state, {
-        faqPage: action.data,
+        homePage: action.data,
         loading: false
       });
     }
