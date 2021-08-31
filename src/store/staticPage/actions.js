@@ -39,7 +39,6 @@ export const updateStaticPage = (id, payload) => async dispatch => {
   const data = await staticPage.updateStaticPage(id, payload);
   if (data.success) {
     dispatch(mutation.updateStaticPageSuccess());
-    dispatch(getStaticPages());
     dispatch(showSuccessNotification('toast_title.update_static_page', data.message));
     return true;
   } else {
@@ -56,7 +55,6 @@ export const createStaticPage = (payload) => async (dispatch) => {
   const data = await staticPage.createStaticPage(payload);
   if (data.success) {
     dispatch(mutation.createStaticPageSuccess());
-    dispatch(getStaticPages());
     dispatch(showSuccessNotification('toast_title.new_static_page', data.message));
     dispatch(showSpinner(false));
     return true;
@@ -68,44 +66,15 @@ export const createStaticPage = (payload) => async (dispatch) => {
   }
 };
 
-export const createPartnerLogo = (payload) => async (dispatch) => {
-  dispatch(mutation.createPartnerLogoRequest());
-  const data = await staticPage.createPartnerLogo(payload);
-  if (data.success) {
-    dispatch(mutation.createPartnerLogoSuccess());
-    dispatch(getPartnerLogo());
-    dispatch(showSuccessNotification('toast_title.add_partner_logo', data.message));
-    return true;
-  } else {
-    dispatch(mutation.createPartnerLogoPagesFail());
-    dispatch(showErrorNotification('toast_title.add_partner_logo', data.message));
-    return false;
-  }
-};
-
-export const getPartnerLogo = () => async dispatch => {
-  dispatch(mutation.getPartnerLogoRequest());
+export const getHomePage = payload => async dispatch => {
+  dispatch(mutation.getHomePageRequest());
   dispatch(showSpinner(true));
-  const data = await staticPage.getPartnerLogo();
+  const data = await staticPage.getHomePage(payload);
   if (data.success) {
-    dispatch(mutation.getPartnerLogoSuccess(data.data));
+    dispatch(mutation.getHomePageSuccess(data.data));
     dispatch(showSpinner(false));
   } else {
-    dispatch(mutation.getPartnerLogoFail());
-    dispatch(showSpinner(false));
-    dispatch(showErrorNotification('toast_title.error_message', data.message));
-  }
-};
-
-export const getFaqPage = payload => async dispatch => {
-  dispatch(mutation.getFaqPageRequest());
-  dispatch(showSpinner(true));
-  const data = await staticPage.getFaqPage(payload);
-  if (data.success) {
-    dispatch(mutation.getFaqPageSuccess(data.data));
-    dispatch(showSpinner(false));
-  } else {
-    dispatch(mutation.getFaqPageFail());
+    dispatch(mutation.getHomePageFail());
     dispatch(showSpinner(false));
     console.log(data.message);
     dispatch(showErrorNotification('toast_title.error_message', data.message));
