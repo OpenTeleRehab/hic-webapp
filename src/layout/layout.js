@@ -16,10 +16,13 @@ import { replaceRoute } from '../utils/route';
 const Layout = ({ component: Component, title, defaultTemplate }) => {
   const localize = useSelector((state) => state.localize);
   const { activeLanguage } = useSelector((state) => state.language);
+  const { publishTermAndConditionPage, termConditionBanner } = useSelector((state) => state.termAndCondition);
   const translate = getTranslate(localize);
   const location = useLocation();
   const [showBanner, setShowBanner] = useState(false);
   const [isHome, setIsHome] = useState(false);
+  const [bannerTitle, SetBannerTitle] = useState('');
+  const [filePath, setFilePath] = useState('');
   const bannerImagePath = '/images/header-banner.png';
 
   // set page title
@@ -31,14 +34,19 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
     if (location.pathname === replaceRoute(ROUTES.HOME, activeLanguage)) {
       setShowBanner(true);
       setIsHome(true);
+    } else if (location.pathname === replaceRoute(ROUTES.TERM_CONDITION, activeLanguage)) {
+      setShowBanner(true);
+      setIsHome(false);
+      SetBannerTitle(publishTermAndConditionPage.title);
+      setFilePath(termConditionBanner.url || `${process.env.REACT_APP_API_BASE_URL}/file/${termConditionBanner.id}`);
     }
-  }, [location, activeLanguage]);
+  }, [location, activeLanguage, termConditionBanner, publishTermAndConditionPage]);
 
   return (
     <>
       <header className="header">
         <Navigation translate={translate} />
-        {showBanner && <Banner bannerImagePath={bannerImagePath} isHome={isHome} />}
+        {showBanner && <Banner bannerImagePath={ isHome ? bannerImagePath : filePath} isHome={isHome} title = {bannerTitle} />}
       </header>
 
       {defaultTemplate ? (

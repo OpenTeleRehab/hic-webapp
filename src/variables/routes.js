@@ -8,6 +8,7 @@ export const LIBRARY_QUESTIONNAIRE_DETAIL = LIBRARY + '/questionnaire/detail/:id
 
 export const CONTRIBUTE = '/:lang?/contribute';
 export const CONFIRM_SUBMISSION = '/contribute/confirm-submission';
+export const TERM_CONDITION = '/:lang?/term_condition';
 
 export const ADMIN = '/admin';
 export const ADMIN_DASHBOARD = '/admin';

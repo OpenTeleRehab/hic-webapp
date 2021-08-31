@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import { Nav } from 'react-bootstrap';
+import { Button, Nav } from 'react-bootstrap';
 
 import HomePage from 'views/StaticPage/Home/create';
 import AboutUs from 'views/StaticPage/AboutUs';
@@ -11,6 +11,9 @@ import TermCondition from 'views/StaticPage/TermCondition';
 import * as ROUTES from 'variables/routes';
 import { PAGE_TYPES } from 'variables/staticPage';
 import { Link, useLocation } from 'react-router-dom';
+import { BsPlus } from 'react-icons/bs';
+import CreateTermAndCondition
+  from 'views/StaticPage/TermCondition/create';
 
 const VIEW_HOMEPAGE = 'homepage';
 const VIEW_ABOUTUS = 'about-us';
@@ -22,6 +25,8 @@ const StaticPage = ({ translate }) => {
   const [view, setView] = useState(undefined);
   const [title, setTitle] = useState('');
   const [type, setType] = useState('');
+  const [show, setShow] = useState(false);
+  const [editId, setEditId] = useState();
 
   useEffect(() => {
     if (hash.includes('#' + VIEW_ABOUTUS)) {
@@ -42,11 +47,34 @@ const StaticPage = ({ translate }) => {
     }
   }, [hash, translate]);
 
+  const handleShow = () => {
+    setShow(true);
+  };
+
+  const handleEdit = (id) => {
+    setEditId(id);
+    setShow(true);
+  };
+
+  const handleClose = () => {
+    setEditId('');
+    setShow(false);
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1 className="text-primary">{title}</h1>
+        {view === VIEW_TERM_CONDITION && (
+          <div className="btn-toolbar mb-2 mb-md-0">
+            <Button variant="primary" onClick={handleShow}>
+              <BsPlus size={20} className="mr-1" />
+              { translate('term_and_condition.new') }
+            </Button>
+          </div>
+        )}
       </div>
+      {show && view === VIEW_TERM_CONDITION && <CreateTermAndCondition show={show} editId={editId} handleClose={handleClose} />}
       <Nav variant="tabs" activeKey={view}>
         <Nav.Item>
           <Nav.Link as={Link} to={ROUTES.ADMIN_STATIC_PAGES} eventKey={VIEW_HOMEPAGE}>
@@ -71,7 +99,7 @@ const StaticPage = ({ translate }) => {
       </Nav>
       { view === VIEW_HOMEPAGE && <HomePage type={type} /> }
       { view === VIEW_ABOUTUS && < AboutUs type={type} /> }
-      { view === VIEW_TERM_CONDITION && < TermCondition /> }
+      { view === VIEW_TERM_CONDITION && < TermCondition handleRowEdit={handleEdit} /> }
       { view === VIEW_ACKNOWLEDGMENT && < Acknowledgment type={type} /> }
     </>
   );
