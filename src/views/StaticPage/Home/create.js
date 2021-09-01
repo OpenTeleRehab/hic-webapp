@@ -9,7 +9,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import settings from 'settings';
-import { getHomePage, createStaticPage, updateStaticPage, getFeaturedResources } from 'store/staticPage/actions';
+import {
+  createStaticPage,
+  updateStaticPage,
+  getStaticPage,
+  getFeaturedResources
+} from 'store/staticPage/actions';
 import { toMB } from '../../../utils/file';
 import { BsUpload, BsXCircle } from 'react-icons/bs/index';
 import { Editor } from '@tinymce/tinymce-react';
@@ -36,8 +41,7 @@ const CreateHomePage = ({ type, editId }) => {
   const [disabled, setDisable] = useState(true);
   const [featureResources, setFeatureResources] = useState('');
 
-  const { homePage, filters, resources } = useSelector(state => state.staticPage);
-
+  const { staticPage, filters, resources } = useSelector(state => state.staticPage);
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
     url: type,
@@ -67,7 +71,7 @@ const CreateHomePage = ({ type, editId }) => {
   }, [languages, filters, editId, profile]);
 
   useEffect(() => {
-    dispatch(getHomePage({
+    dispatch(getStaticPage({
       'url-segment': type,
       lang: profile && profile.language_id
     }));
@@ -78,20 +82,20 @@ const CreateHomePage = ({ type, editId }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (homePage.id) {
+    if (staticPage.id) {
       setFormFields({
-        title: homePage.title || '',
-        url: homePage.url || type,
-        content: homePage.content,
-        display_quick_stat: homePage.homeData ? homePage.homeData.display_quick_stat : 0,
-        display_feature_resource: homePage.homeData ? homePage.homeData.display_feature_resource : 0,
-        resources: homePage.homeData ? JSON.parse(homePage.homeData.resources.resources) : ''
+        title: staticPage.title || '',
+        url: staticPage.url || type,
+        content: staticPage.content,
+        display_quick_stat: staticPage.homeData ? staticPage.homeData.display_quick_stat : 0,
+        display_feature_resource: staticPage.homeData ? staticPage.homeData.display_feature_resource : 0,
+        resources: staticPage.homeData ? JSON.parse(staticPage.homeData.resources.resources) : ''
       });
-      setMaterialFile(homePage.file);
-      setContent(homePage.content || '');
-      setPartnerContent(homePage.partner_content || '');
+      setMaterialFile(staticPage.file);
+      setContent(staticPage.content || '');
+      setPartnerContent(staticPage.partner_content || '');
     }
-  }, [homePage, type]);
+  }, [staticPage, type]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -164,11 +168,11 @@ const CreateHomePage = ({ type, editId }) => {
     }
 
     if (canSave) {
-      if (homePage.id) {
-        dispatch(updateStaticPage(homePage.id, { ...formFields, content, partnerContent, featureResources, lang: language }))
+      if (staticPage.id) {
+        dispatch(updateStaticPage(staticPage.id, { ...formFields, content, partnerContent, featureResources, lang: language }))
           .then(result => {
             if (result) {
-              dispatch(getHomePage({
+              dispatch(getStaticPage({
                 'url-segment': type,
                 lang: profile && profile.language_id
               }));
@@ -177,7 +181,7 @@ const CreateHomePage = ({ type, editId }) => {
       } else {
         dispatch(createStaticPage({ ...formFields, content, partnerContent, featureResources, lang: language })).then(result => {
           if (result) {
-            dispatch(getHomePage({
+            dispatch(getStaticPage({
               'url-segment': type,
               lang: profile && profile.language_id
             }));
@@ -258,7 +262,7 @@ const CreateHomePage = ({ type, editId }) => {
           <Form.Label column sm="3">{translate('common.show_language.version')}</Form.Label>
           <Col sm="9">
             <Select
-              isDisabled={!homePage.id}
+              isDisabled={!staticPage.id}
               classNamePrefix="filter"
               value={languages.filter(option => option.id === language)}
               getOptionLabel={option => `${option.name} ${option.code === option.fallback ? translate('common.default') : ''}`}
