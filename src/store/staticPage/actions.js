@@ -80,3 +80,17 @@ export const getHomePage = payload => async dispatch => {
     dispatch(showErrorNotification('toast_title.error_message', data.message));
   }
 };
+
+export const getFeaturedResources = payload => async dispatch => {
+  dispatch(mutation.getFeaturedResourcesRequest());
+  const data = await staticPage.getFeaturedResources(payload);
+  if (data.success) {
+    dispatch(mutation.getFeaturedResourcesSuccess(data.data));
+    dispatch(showSpinner(false));
+  } else {
+    dispatch(mutation.getFeaturedResourcesFail());
+    dispatch(showSpinner(false));
+    console.log(data.message);
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
+  }
+};
