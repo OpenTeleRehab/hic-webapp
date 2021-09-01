@@ -31,6 +31,13 @@ const EducationMaterialDetail = () => {
     }
   }, [id, educationMaterial]);
 
+  // set page title
+  useEffect(() => {
+    if (educationMaterial) {
+      document.title = `${educationMaterial.title} - ${process.env.REACT_APP_SITE_TITLE}`;
+    }
+  }, [educationMaterial]);
+
   useEffect(() => {
     history.push(replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL, activeLanguage).replace(':id', id));
   }, [activeLanguage, history, id]);
@@ -101,14 +108,9 @@ const EducationMaterialDetail = () => {
           )}
         </Col>
       </Row>
-      <Row className={activeLanguage === 'en' ? 'mt-4 d-none' : 'mt-4'}>
+      <Row className={activeLanguage === 'en' ? 'd-none' : 'mt-4'}>
         <Col>
           <Button className="w-100" size="sm">{translate('exercise.edit_translation')}</Button>
-        </Col>
-      </Row>
-      <Row className="mt-4">
-        <Col>
-          <h3 className="text-primary">{translate('exercise.related_resources')}</h3>
         </Col>
       </Row>
     </>
