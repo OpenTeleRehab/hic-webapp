@@ -30,6 +30,11 @@ const publicNavItems = [
     label: 'contribute',
     to: ROUTES.CONTRIBUTE,
     exact: true
+  },
+  {
+    label: 'term_condition',
+    to: ROUTES.TERM_CONDITION,
+    exact: true
   }
 ];
 

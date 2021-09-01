@@ -10,6 +10,7 @@ import PublicHomePage from 'views/_public';
 import LibraryPage from 'views/_public/Library';
 import ContributePage from 'views/_public/Contribute';
 import ConfirmSubmissionPage from 'views/_public/Contribute/ConfirmSubmission';
+import TermConditionPage from 'views/_public/TermCondition';
 import ExerciseDetail from 'views/_public/Library/Exercise/detail';
 import EducationMaterialDetail from 'views/_public/Library/EducationMaterial/detail';
 import QuestionnaireDetail from 'views/_public/Library/Questionnaire/detail';
@@ -24,7 +25,7 @@ import CreateExercise from 'views/ServiceSetup/Exercise/create';
 import CreateEducationMaterial from 'views/ServiceSetup/EducationMaterial/create';
 import CreateQuestionnaire from 'views/ServiceSetup/Questionnaire/create';
 import ProfilePage from 'views/Profile';
-import TermConditionPage from 'views/StaticPage/TermCondition';
+import TermCondition from 'views/StaticPage/TermCondition';
 import PrivacyPolicyPage from 'views/PrivacyPolicy';
 import UserPage from 'views/User';
 import StaticPage from 'views/StaticPage';
@@ -83,6 +84,14 @@ const publicRoutes = [
     exact: true,
     type: PUBLIC,
     defaultTemplate: false
+  },
+  {
+    title: 'term_condition',
+    path: ROUTES.TERM_CONDITION,
+    component: TermConditionPage,
+    exact: true,
+    type: PUBLIC,
+    defaultTemplate: true
   },
   {
     title: 'home',
@@ -208,7 +217,7 @@ const routes = [
   {
     title: 'term-condition',
     path: ROUTES.TC,
-    component: TermConditionPage,
+    component: TermCondition,
     exact: true,
     type: PRIVATE
   },

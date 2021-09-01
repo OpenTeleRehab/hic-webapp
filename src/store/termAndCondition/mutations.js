@@ -61,6 +61,44 @@ const getPublishTermConditionFail = () => ({
   type: 'GET_PUBLISH_TERM_CONDITION_FAIL'
 });
 
+const createTermConditionBannerRequest = () => ({
+  type: 'CREATE_TERM_CONDITION_BANNER_REQUEST'
+});
+
+const createTermConditionBannerSuccess = () => ({
+  type: 'CREATE_TERM_CONDITION_BANNER_SUCCESS'
+});
+
+const createTermConditionBannerFail = () => ({
+  type: 'CREATE_TERM_CONDITION_BANNER_FAIL'
+});
+
+const getTermConditionBannerRequest = () => ({
+  type: 'GET_TERM_CONDITION_BANNER_REQUEST'
+});
+
+const getTermConditionBannerSuccess = (data) => ({
+  type: 'GET_TERM_CONDITION_BANNER_SUCCESS',
+  data
+});
+
+const getTermConditionBannerFail = () => ({
+  type: 'GET_TERM_CONDITION_BANNER_FAIL'
+});
+
+const getAdminTermConditionBannerRequest = () => ({
+  type: 'GET_ADMIN_TERM_CONDITION_BANNER_REQUEST'
+});
+
+const getAdminTermConditionBannerSuccess = (data) => ({
+  type: 'GET_ADMIN_TERM_CONDITION_BANNER_SUCCESS',
+  data
+});
+
+const getAdminTermConditionBannerFail = () => ({
+  type: 'GET_ADMIN_TERM_CONDITION_BANNER_FAIL'
+});
+
 export const mutation = {
   getTermAndConditionsRequest,
   getTermAndConditionsSuccess,
@@ -76,5 +114,14 @@ export const mutation = {
   updateTermAndConditionFail,
   getPublishTermConditionRequest,
   getPublishTermConditionSuccess,
-  getPublishTermConditionFail
+  getPublishTermConditionFail,
+  createTermConditionBannerRequest,
+  createTermConditionBannerFail,
+  createTermConditionBannerSuccess,
+  getTermConditionBannerSuccess,
+  getTermConditionBannerRequest,
+  getTermConditionBannerFail,
+  getAdminTermConditionBannerRequest,
+  getAdminTermConditionBannerSuccess,
+  getAdminTermConditionBannerFail
 };

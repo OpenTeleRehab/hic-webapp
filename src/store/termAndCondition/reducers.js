@@ -17,6 +17,18 @@ export const termAndCondition = (state = initialState, action) => {
         publishTermAndConditionPage: action.data
       });
     }
+    case 'GET_TERM_CONDITION_BANNER_SUCCESS': {
+      return Object.assign({}, state, {
+        termConditionBanner: action.data,
+        loading: false
+      });
+    }
+    case 'GET_ADMIN_TERM_CONDITION_BANNER_SUCCESS': {
+      return Object.assign({}, state, {
+        adminTermConditionBanner: action.data,
+        loading: false
+      });
+    }
     default:
       return state;
   }

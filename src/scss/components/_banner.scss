@@ -5,6 +5,7 @@
 	color: $white;
 	padding: toRem(40) 0;
 	position: relative;
+	min-height: toRem(400);
 
 	&:before {
 		content: '';

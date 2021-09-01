@@ -1,5 +1,7 @@
 export const initialState = {
   termAndConditions: [],
   termAndCondition: {},
-  publishTermAndConditionPage: {}
+  publishTermAndConditionPage: {},
+  termConditionBanner: {},
+  adminTermConditionBanner: {}
 };

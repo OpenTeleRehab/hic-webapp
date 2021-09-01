@@ -1,4 +1,5 @@
 import axios from 'utils/axios';
+import _ from 'lodash';
 
 const getTermAndConditions = () => {
   return axios.get('/term-condition')
@@ -61,8 +62,50 @@ const publishTermAndCondition = id => {
     });
 };
 
-const getPublishTermConditionPage = id => {
-  return axios.get('/user-term-condition')
+const getPublishTermConditionPage = lang => {
+  const langParam = lang ? `?lang=${lang}` : '';
+  return axios.get('/user-term-condition' + langParam)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const createTermConditionBanner = (payload) => {
+  const formData = new FormData();
+  _.forIn(payload, (value, key) => {
+    formData.append(key, value);
+  });
+
+  return axios.post('/term-condition-banner', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const getAdminTermConditionBanner = () => {
+  return axios.get('/term-condition-banner')
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const getTermConditionBanner = () => {
+  return axios.get('/termConditionBanner')
     .then(
       res => {
         return res.data;
@@ -79,5 +122,8 @@ export const TermAndCondition = {
   createTermAndCondition,
   updateTermAndCondition,
   publishTermAndCondition,
-  getPublishTermConditionPage
+  getPublishTermConditionPage,
+  createTermConditionBanner,
+  getTermConditionBanner,
+  getAdminTermConditionBanner
 };

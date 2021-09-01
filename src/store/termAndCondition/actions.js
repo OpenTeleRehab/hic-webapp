@@ -79,15 +79,58 @@ export const publishTermAndCondition = id => async (dispatch) => {
   }
 };
 
-export const getPublishTermCondition = () => async dispatch => {
+export const getPublishTermCondition = (lang) => async dispatch => {
   dispatch(mutation.getPublishTermConditionRequest());
   dispatch(showSpinner(true));
-  const data = await TermAndCondition.getPublishTermConditionPage();
+  const data = await TermAndCondition.getPublishTermConditionPage(lang);
   if (data) {
     dispatch(mutation.getPublishTermConditionSuccess(data.data));
     dispatch(showSpinner(false));
   } else {
     dispatch(mutation.getPublishTermConditionFail());
+    dispatch(showSpinner(false));
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
+  }
+};
+
+export const createTermConditionBanner = (payload) => async (dispatch) => {
+  dispatch(mutation.createTermConditionBannerRequest());
+  const data = await TermAndCondition.createTermConditionBanner(payload);
+  if (data.success) {
+    dispatch(mutation.createTermConditionBannerSuccess());
+    dispatch(getAdminTermConditionBanner());
+    dispatch(showSuccessNotification('toast_title.add_term_and_condition_banner', data.message));
+    return true;
+  } else {
+    dispatch(mutation.createTermConditionBannerFail());
+    dispatch(showErrorNotification('toast_title.add_term_and_condition_banner', data.message));
+    return false;
+  }
+};
+
+export const getAdminTermConditionBanner = () => async dispatch => {
+  dispatch(mutation.getAdminTermConditionBannerRequest());
+  dispatch(showSpinner(true));
+  const data = await TermAndCondition.getAdminTermConditionBanner();
+  if (data.success) {
+    dispatch(mutation.getAdminTermConditionBannerSuccess(data.data));
+    dispatch(showSpinner(false));
+  } else {
+    dispatch(mutation.getAdminTermConditionBannerFail());
+    dispatch(showSpinner(false));
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
+  }
+};
+
+export const getTermConditionBanner = () => async dispatch => {
+  dispatch(mutation.getTermConditionBannerRequest());
+  dispatch(showSpinner(true));
+  const data = await TermAndCondition.getTermConditionBanner();
+  if (data.success) {
+    dispatch(mutation.getTermConditionBannerSuccess(data.data));
+    dispatch(showSpinner(false));
+  } else {
+    dispatch(mutation.getTermConditionBannerFail());
     dispatch(showSpinner(false));
     dispatch(showErrorNotification('toast_title.error_message', data.message));
   }
