@@ -17,43 +17,88 @@ import { FaRegCheckSquare } from 'react-icons/fa';
 import CheckboxTree from 'react-checkbox-tree';
 import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import {
-  addMoreEducationMaterial, clearContribute, updateEducationMaterial
+  addMoreEducationMaterial,
+  clearContribute,
+  updateEducationMaterial
 } from '../../../../store/contribute/actions';
+import { getEducationMaterial } from '../../../../store/educationMaterial/actions';
 import Dialog from '../../../../components/Dialog';
 import * as ROUTES from '../../../../variables/routes';
 import { replaceRoute } from '../../../../utils/route';
+import { EducationMaterial } from '../../../../services/educationMaterial';
+import Select from 'react-select';
+import scssColors from '../../../../scss/custom.scss';
 
-const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showReviewModal, lang }) => {
+const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showReviewModal }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
+  const { id } = useParams();
   const { maxFileSize } = settings.educationMaterial;
+  const { languages, activeLanguage } = useSelector(state => state.language);
+  const { educationMaterial } = useSelector(state => state.educationMaterial);
   const { educationMaterials } = useSelector(state => state.contribute);
-  const { activeLanguage } = useSelector(state => state.language);
-  const [getEducationMaterials, setGetEducationMaterials] = useState([]);
   const { categoryTreeData } = useSelector((state) => state.category);
+  const [getEducationMaterials, setGetEducationMaterials] = useState([]);
+  const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
     id: '',
     title: '',
     file: undefined,
-    categories: ''
+    categories: '',
+    lang: '',
+    edit_translation: false
   });
   const [materialFile, setMaterialFile] = useState(undefined);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
-  const history = useHistory();
-
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [titleError, setTitleError] = useState(false);
   const [fileError, setFileError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentResource, setCurrentResource] = useState(undefined);
+
+  useEffect(() => {
+    const lang = languages.find((language) => language.code === activeLanguage);
+    if (lang && language === '') {
+      setLanguage(lang.id);
+    }
+  }, [language, languages, activeLanguage]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      id && dispatch(getEducationMaterial(id, language));
+    }, 200);
+  }, [id, language, dispatch]);
+
+  useEffect(() => {
+    if (id && educationMaterial.id) {
+      const fetchEducationMaterial = async () => {
+        const data = await EducationMaterial.getEducationMaterial(id, '');
+        if (data) {
+          setCurrentResource(data.data);
+        }
+      };
+      fetchEducationMaterial();
+      setFormFields({
+        id: educationMaterial.id,
+        title: educationMaterial.title,
+        lang: language,
+        edit_translation: true
+      });
+      setMaterialFile(educationMaterial.file);
+    }
+  }, [id, educationMaterial, categoryTreeData, language]);
 
   useEffect(() => {
     if (editItem && hash.includes('#education')) {
       setFormFields({
         id: editItem.id,
         title: editItem.title,
-        file: editItem.file
+        file: editItem.file,
+        lang: '',
+        edit_translation: false
       });
       if (categoryTreeData.length) {
         const rootCategoryStructure = {};
@@ -71,8 +116,8 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
   }, [editItem, categoryTreeData, hash]);
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.MATERIAL, lang: lang }));
-  }, [dispatch, lang]);
+    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.MATERIAL, lang: language }));
+  }, [dispatch, language]);
 
   useEffect(() => {
     setGetEducationMaterials(educationMaterials);
@@ -144,10 +189,9 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
 
     const payload = {
       ...formFields,
-      id: editItem ? formFields.id : getEducationMaterials.length,
+      id: editItem || id ? formFields.id : getEducationMaterials.length,
       title: formFields.title,
-      categories: serializedSelectedCats.join(),
-      file: formFields.file
+      categories: serializedSelectedCats.join()
     };
 
     if (editItem) {
@@ -155,6 +199,11 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
         setEditItem(undefined);
         setIsLoading(false);
         handleResetForm();
+      });
+    } else if (id) {
+      dispatch(clearContribute());
+      dispatch(addMoreEducationMaterial(payload)).then(() => {
+        setIsLoading(false);
       });
     } else {
       dispatch(addMoreEducationMaterial(payload)).then(() => {
@@ -171,7 +220,9 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
       id: '',
       title: '',
       file: undefined,
-      categories: ''
+      categories: '',
+      lang: '',
+      edit_translation: false
     });
   };
 
@@ -205,6 +256,25 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
     history.push(replaceRoute(ROUTES.LIBRARY, activeLanguage));
   };
 
+  const handleCancel = () => {
+    if (id) {
+      history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL.replace(':id', id), activeLanguage));
+    } else {
+      setShowCancelModal(true);
+    }
+  };
+
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
+  };
+
   return (
     <>
       <Form className="pt-5">
@@ -212,9 +282,25 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
           <Col sm={12} xl={11}>
             <h5 className="text-primary">{translate('common.information')}</h5>
 
+            {id &&
+              <Form.Group controlId="formLanguage">
+                <Form.Label>{translate('common.language')}</Form.Label>
+                <Select
+                  isDisabled={!id}
+                  classNamePrefix="filter"
+                  value={languages.filter(option => option.id === language)}
+                  getOptionLabel={option => option.name}
+                  options={languages.slice(1)}
+                  onChange={(e) => setLanguage(e.id)}
+                  styles={customSelectStyles}
+                />
+              </Form.Group>
+            }
+
             <Form.Group controlId="formTitle">
               <Form.Label>{translate('education_material.title')}</Form.Label>
               <span className="text-dark ml-1">*</span>
+              {id && currentResource && <span className="d-block mb-2">{translate('common.english')}: {currentResource.title}</span>}
               <Form.Control
                 name="title"
                 onChange={handleChange}
@@ -262,42 +348,44 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
               </Form.File>
             </Form.Group>
 
-            <Accordion className="material-category-wrapper" defaultActiveKey={1}>
-              {
-                categoryTreeData.map((category, index) => (
-                  <Card key={index}>
-                    <Accordion.Toggle as={Card.Header} eventKey={index + 1} className="d-flex align-items-center">
-                      {category.label}
-                      <div className="ml-auto">
-                        <span className="mr-3">
-                          {selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('category.selected')}
-                        </span>
-                        <ContextAwareToggle eventKey={index + 1} />
-                      </div>
-                    </Accordion.Toggle>
-                    <Accordion.Collapse eventKey={index + 1}>
-                      <Card.Body>
-                        <CheckboxTree
-                          nodes={category.children || []}
-                          checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
-                          expanded={expanded}
-                          onCheck={(checked) => handleSetSelectedCategories(category.value, checked)}
-                          onExpand={expanded => setExpanded(expanded)}
-                          icons={{
-                            check: <FaRegCheckSquare size={40} color="black" />,
-                            uncheck: <BsSquare size={40} color="black" />,
-                            halfCheck: <BsDashSquare size={40} color="black" />,
-                            expandClose: <BsCaretRightFill size={40} color="black" />,
-                            expandOpen: <BsCaretDownFill size={40} color="black" />
-                          }}
-                          showNodeIcon={false}
-                        />
-                      </Card.Body>
-                    </Accordion.Collapse>
-                  </Card>
-                ))
-              }
-            </Accordion>
+            {!id &&
+              <Accordion className="material-category-wrapper" defaultActiveKey={1}>
+                {
+                  categoryTreeData.map((category, index) => (
+                    <Card key={index}>
+                      <Accordion.Toggle as={Card.Header} eventKey={index + 1} className="d-flex align-items-center">
+                        {category.label}
+                        <div className="ml-auto">
+                          <span className="mr-3">
+                            {selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('category.selected')}
+                          </span>
+                          <ContextAwareToggle eventKey={index + 1} />
+                        </div>
+                      </Accordion.Toggle>
+                      <Accordion.Collapse eventKey={index + 1}>
+                        <Card.Body>
+                          <CheckboxTree
+                            nodes={category.children || []}
+                            checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
+                            expanded={expanded}
+                            onCheck={(checked) => handleSetSelectedCategories(category.value, checked)}
+                            onExpand={expanded => setExpanded(expanded)}
+                            icons={{
+                              check: <FaRegCheckSquare size={40} color="black" />,
+                              uncheck: <BsSquare size={40} color="black" />,
+                              halfCheck: <BsDashSquare size={40} color="black" />,
+                              expandClose: <BsCaretRightFill size={40} color="black" />,
+                              expandOpen: <BsCaretDownFill size={40} color="black" />
+                            }}
+                            showNodeIcon={false}
+                          />
+                        </Card.Body>
+                      </Accordion.Collapse>
+                    </Card>
+                  ))
+                }
+              </Accordion>
+            }
           </Col>
         </Row>
 
@@ -305,18 +393,20 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
           <Button onClick={handleSubmit}>
             {translate('common.submit')}
           </Button>
+          {!id &&
+            <Button
+              className="ml-2"
+              variant="outline-primary"
+              onClick={handleAddMore}
+              disabled={isLoading}
+            >
+              {translate('common.add_more')}
+            </Button>
+          }
           <Button
             className="ml-2"
             variant="outline-primary"
-            onClick={handleAddMore}
-            disabled={isLoading}
-          >
-            {translate('common.add_more')}
-          </Button>
-          <Button
-            className="ml-2"
-            variant="outline-primary"
-            onClick={() => setShowCancelModal(true)}
+            onClick={handleCancel}
             disabled={isLoading}
           >
             {translate('common.cancel')}
@@ -343,8 +433,7 @@ CreateEducationMaterial.propTypes = {
   hash: PropTypes.string,
   editItem: PropTypes.object,
   setEditItem: PropTypes.func,
-  showReviewModal: PropTypes.func,
-  lang: PropTypes.number
+  showReviewModal: PropTypes.func
 };
 
 export default withLocalize(CreateEducationMaterial);

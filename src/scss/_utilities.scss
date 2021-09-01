@@ -5,3 +5,15 @@
 .start-0 {
   left: 0;
 }
+
+.opacity {
+  &-75 {
+    opacity: .75;
+  }
+  &-50 {
+    opacity: .50;
+  }
+  &-25 {
+    opacity: .25;
+  }
+}

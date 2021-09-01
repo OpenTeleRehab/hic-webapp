@@ -129,7 +129,15 @@ const QuestionnaireDetail = () => {
         </Accordion>
       ))
       }
-      <Button className={activeLanguage === 'en' ? 'd-none' : 'mt-3 w-100'} size="sm">{translate('exercise.edit_translation')}</Button>
+      {activeLanguage !== 'en' &&
+        <Button
+          className="btn-block"
+          size="sm"
+          onClick={() => history.push(replaceRoute(ROUTES.QUESTIONNAIRE_EDIT_TRANSLATION.replace(':id', questionnaire.id), activeLanguage))}
+        >
+          {translate('exercise.edit_translation')}
+        </Button>
+      }
     </>
   );
 };

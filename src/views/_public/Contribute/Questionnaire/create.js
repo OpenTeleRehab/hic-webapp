@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
 import { Button, Col, Form, Row, Accordion, Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import * as ROUTES from 'variables/routes';
 import { getCategoryTreeData } from 'store/category/actions';
 import { CATEGORY_TYPES } from 'variables/category';
@@ -16,24 +16,35 @@ import {
   BsDashSquare, BsPlusCircle
 } from 'react-icons/bs';
 import { FaRegCheckSquare } from 'react-icons/fa';
-import { addMoreQuestionnaire, updateQuestionnaire, clearContribute } from '../../../../store/contribute/actions';
+import {
+  addMoreQuestionnaire,
+  updateQuestionnaire,
+  clearContribute
+} from '../../../../store/contribute/actions';
 import { replaceRoute } from '../../../../utils/route';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import Dialog from '../../../../components/Dialog';
-import Question from './Question/index';
+import { getQuestionnaire } from '../../../../store/questionnaire/actions';
+import { Questionnaire } from '../../../../services/questionnaire';
+import Select from 'react-select';
+import scssColors from '../../../../scss/custom.scss';
+import Question from './Question';
 
-const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showReviewModal, lang }) => {
+const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showReviewModal }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const resetQuestionFormFields = { title: '', type: 'checkbox', answers: [{ description: '' }, { description: '' }], file: null };
-
-  const { activeLanguage } = useSelector((state) => state.language);
+  const { languages, activeLanguage } = useSelector(state => state.language);
+  const { questionnaire } = useSelector(state => state.questionnaire);
   const { questionnaires } = useSelector(state => state.contribute);
   const [getQuestionnaires, setGetQuestionnaires] = useState([]);
   const { categoryTreeData } = useSelector((state) => state.category);
+  const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
+    id: '',
     title: '',
-    description: ''
+    description: '',
+    lang: '',
+    edit_translation: false
   });
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -44,10 +55,59 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
   const [questions, setQuestions] = useState([resetQuestionFormFields]);
   const [questionTitleError, setQuestionTitleError] = useState([]);
   const [answerFieldError, setAnswerFieldError] = useState([]);
+  const [currentResource, setCurrentResource] = useState(undefined);
+  const history = useHistory();
+  const { id } = useParams();
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: lang }));
-  }, [lang, dispatch]);
+    const lang = languages.find((language) => language.code === activeLanguage);
+    if (lang && language === '') {
+      setLanguage(lang.id);
+    }
+  }, [language, languages, activeLanguage]);
+
+  useEffect(() => {
+    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: language }));
+  }, [dispatch, language]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      id && dispatch(getQuestionnaire(id, language));
+    }, 200);
+  }, [id, language, dispatch]);
+
+  useEffect(() => {
+    if (id && questionnaire.id) {
+      const fetchQuestionnaire = async () => {
+        const data = await Questionnaire.getQuestionnaire(id, '');
+        if (data) {
+          setCurrentResource(data.data);
+        }
+      };
+      fetchQuestionnaire();
+
+      setFormFields({
+        id: questionnaire.id,
+        title: questionnaire.title,
+        description: questionnaire.description,
+        lang: language,
+        edit_translation: true
+      });
+      setQuestions(questionnaire.questions);
+      if (categoryTreeData.length) {
+        const rootCategoryStructure = {};
+        categoryTreeData.forEach(category => {
+          const ids = [];
+          JSON.stringify(category, (key, value) => {
+            if (key === 'value') ids.push(value);
+            return value;
+          });
+          rootCategoryStructure[category.value] = _.intersectionWith(questionnaire.categories, ids);
+        });
+        setSelectedCategories(rootCategoryStructure);
+      }
+    }
+  }, [id, questionnaire, categoryTreeData, language]);
 
   useEffect(() => {
     setGetQuestionnaires(questionnaires);
@@ -68,7 +128,9 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
       setFormFields({
         id: editItem.id,
         title: editItem.title,
-        description: editItem.description
+        description: editItem.description,
+        lang: '',
+        edit_translation: false
       });
       setQuestions(editItem.questions);
       if (categoryTreeData.length) {
@@ -127,7 +189,7 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
 
     const payload = {
       ...formFields,
-      id: editItem ? formFields.id : questionnaires.length,
+      id: editItem || id ? formFields.id : questionnaires.length,
       title: formFields.title,
       description: formFields.description,
       categories: serializedSelectedCats,
@@ -139,6 +201,11 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
         setEditItem(undefined);
         setIsLoading(false);
         handleResetForm();
+      });
+    } else if (id) {
+      dispatch(clearContribute());
+      dispatch(addMoreQuestionnaire(payload)).then(() => {
+        setIsLoading(false);
       });
     } else {
       dispatch(addMoreQuestionnaire(payload)).then(() => {
@@ -154,7 +221,9 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
     setFormFields({
       id: '',
       title: '',
-      description: ''
+      description: '',
+      lang: '',
+      edit_translation: false
     });
   };
 
@@ -201,15 +270,49 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
     history.push(replaceRoute(ROUTES.LIBRARY, activeLanguage));
   };
 
+  const handleCancel = () => {
+    if (id) {
+      history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL.replace(':id', id), activeLanguage));
+    } else {
+      setShowCancelModal(true);
+    }
+  };
+
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
+  };
+
   return (
     <>
       <Form>
         <h5 className="text-primary">{translate('common.information')}</h5>
         <Row>
           <Col sm={12} xl={11}>
+            {id &&
+              <Form.Group controlId="formLanguage">
+                <Form.Label>{translate('common.language')}</Form.Label>
+                <Select
+                  isDisabled={!id}
+                  classNamePrefix="filter"
+                  value={languages.filter(option => option.id === language)}
+                  getOptionLabel={option => option.name}
+                  options={languages.slice(1)}
+                  onChange={(e) => setLanguage(e.id)}
+                  styles={customSelectStyles}
+                />
+              </Form.Group>
+            }
             <Form.Group controlId="formTitle">
               <Form.Label>{translate('questionnaire.title')}</Form.Label>
               <span className="text-dark ml-1">*</span>
+              {id && currentResource && <span className="d-block mb-2">{translate('common.english')}: {currentResource.title}</span>}
               <Form.Control
                 name="title"
                 onChange={handleChange}
@@ -228,6 +331,7 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
           <Col sm={12} xl={11}>
             <Form.Group controlId={'formDescription'}>
               <Form.Label>{translate('questionnaire.description')}</Form.Label>
+              {id && currentResource && <span className="d-block mb-2">{translate('common.english')}: {currentResource.description}</span>}
               <Form.Control
                 name="description"
                 as="textarea"
@@ -239,82 +343,89 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
             </Form.Group>
           </Col>
         </Row>
-        <Row>
-          <Col sm={12} xl={11}>
-            <Accordion className="mb-3" defaultActiveKey={1}>
-              {
-                categoryTreeData.map((category, index) => (
-                  <Card key={index}>
-                    <Accordion.Toggle as={Card.Header} eventKey={index + 1} className="d-flex align-items-center">
-                      {category.label}
-                      <div className="ml-auto">
-                        <span className="mr-3">
-                          {selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('category.selected')}
-                        </span>
-                        <ContextAwareToggle eventKey={index + 1} />
-                      </div>
-                    </Accordion.Toggle>
-                    <Accordion.Collapse eventKey={index + 1}>
-                      <Card.Body>
-                        <CheckboxTree
-                          nodes={category.children || []}
-                          checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
-                          expanded={expanded}
-                          onCheck={(checked) => handleSetSelectedCategories(category.value, checked)}
-                          onExpand={expanded => setExpanded(expanded)}
-                          icons={{
-                            check: <FaRegCheckSquare size={40} color="black" />,
-                            uncheck: <BsSquare size={40} color="black" />,
-                            halfCheck: <BsDashSquare size={40} color="black" />,
-                            expandClose: <BsCaretRightFill size={40} color="black" />,
-                            expandOpen: <BsCaretDownFill size={40} color="black" />
-                          }}
-                          showNodeIcon={false}
-                        />
-                      </Card.Body>
-                    </Accordion.Collapse>
-                  </Card>
-                ))
-              }
-            </Accordion>
-          </Col>
-        </Row>
+        {!id &&
+          <Row>
+            <Col sm={12} xl={11}>
+              <Accordion className="mb-3" defaultActiveKey={1}>
+                {
+                  categoryTreeData.map((category, index) => (
+                    <Card key={index}>
+                      <Accordion.Toggle as={Card.Header} eventKey={index + 1} className="d-flex align-items-center">
+                        {category.label}
+                        <div className="ml-auto">
+                          <span className="mr-3">
+                            {selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('category.selected')}
+                          </span>
+                          <ContextAwareToggle eventKey={index + 1} />
+                        </div>
+                      </Accordion.Toggle>
+                      <Accordion.Collapse eventKey={index + 1}>
+                        <Card.Body>
+                          <CheckboxTree
+                            nodes={category.children || []}
+                            checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
+                            expanded={expanded}
+                            onCheck={(checked) => handleSetSelectedCategories(category.value, checked)}
+                            onExpand={expanded => setExpanded(expanded)}
+                            icons={{
+                              check: <FaRegCheckSquare size={40} color="black" />,
+                              uncheck: <BsSquare size={40} color="black" />,
+                              halfCheck: <BsDashSquare size={40} color="black" />,
+                              expandClose: <BsCaretRightFill size={40} color="black" />,
+                              expandOpen: <BsCaretDownFill size={40} color="black" />
+                            }}
+                            showNodeIcon={false}
+                          />
+                        </Card.Body>
+                      </Accordion.Collapse>
+                    </Card>
+                  ))
+                }
+              </Accordion>
+            </Col>
+          </Row>
+        }
         <Row>
           <Col sm={12} xl={11} className="question-wrapper">
             <Question
+              translate={translate}
               questions={questions}
               setQuestions={setQuestions}
               questionTitleError={questionTitleError}
               answerFieldError={answerFieldError}
-              modifiable={!editItem}
+              currentResource={currentResource}
+              modifiable={!!id}
             />
           </Col>
         </Row>
 
         <div className="sticky-bottom d-flex justify-content-end">
-          <Button
-            variant="link btn-lg"
-            onClick={handleAddQuestion}
-            className="mr-auto"
-          >
-            <BsPlusCircle size={20} /> {translate('questionnaire.new.question')}
-          </Button>
-
+          {!id &&
+            <Button
+              variant="link btn-lg"
+              onClick={handleAddQuestion}
+              className="mr-auto"
+            >
+              <BsPlusCircle size={20}/> {translate('questionnaire.new.question')}
+            </Button>
+          }
           <Button onClick={handleSubmit}>
             {translate('common.submit')}
           </Button>
+          {!id &&
+            <Button
+              className="ml-2"
+              variant="outline-primary"
+              onClick={handleAddMore}
+              disabled={isLoading}
+            >
+              {translate('common.add_more')}
+            </Button>
+          }
           <Button
             className="ml-2"
             variant="outline-primary"
-            onClick={handleAddMore}
-            disabled={isLoading}
-          >
-            {translate('common.add_more')}
-          </Button>
-          <Button
-            className="ml-2"
-            variant="outline-primary"
-            onClick={() => setShowCancelModal(true)}
+            onClick={handleCancel}
             disabled={isLoading}
           >
             {translate('common.cancel')}
@@ -341,8 +452,7 @@ CreateQuestionnaire.propTypes = {
   hash: PropTypes.string,
   editItem: PropTypes.object,
   setEditItem: PropTypes.func,
-  showReviewModal: PropTypes.func,
-  lang: PropTypes.number
+  showReviewModal: PropTypes.func
 };
 
 export default withLocalize(CreateQuestionnaire);

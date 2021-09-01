@@ -21,28 +21,37 @@ import {
 import { FaRegCheckSquare } from 'react-icons/fa';
 import scssColors from '../../../../scss/custom.scss';
 import { ContextAwareToggle } from '../../../../components/Accordion/ContextAwareToggle';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as ROUTES from 'variables/routes';
 import {
-  addMoreExercise, clearContribute, updateExercise
+  addMoreExercise,
+  clearContribute,
+  updateExercise
 } from '../../../../store/contribute/actions';
+import { getExercise } from '../../../../store/exercise/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import CheckboxTree from 'react-checkbox-tree';
+import Select from 'react-select';
 import Dialog from '../../../../components/Dialog';
 import { getCategoryTreeData } from '../../../../store/category/actions';
 import { CATEGORY_TYPES } from '../../../../variables/category';
 import { formatFileSize } from '../../../../utils/file';
 import { replaceRoute } from '../../../../utils/route';
+import { Exercise } from '../../../../services/exercise';
 
-const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModal, lang }) => {
+const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModal }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
+  const { id } = useParams();
+  const { languages, activeLanguage } = useSelector((state) => state.language);
   const { categoryTreeData } = useSelector((state) => state.category);
-  const { activeLanguage } = useSelector((state) => state.language);
   const { exercises } = useSelector(state => state.contribute);
+  const { exercise } = useSelector(state => state.exercise);
   const [getExercises, setGetExercises] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [mediaUploads, setMediaUploads] = useState([]);
+  const [language, setLanguage] = useState('');
   const [additionalFields, setAdditionalFields] = useState([
     { field: translate('additional_field.aim'), value: '' },
     { field: translate('additional_field.progressions_variations'), value: '' },
@@ -55,7 +64,9 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
     sets: '',
     reps: '',
     additional_fields: [],
-    media_uploads: []
+    media_uploads: [],
+    lang: '',
+    edit_translation: false
   });
 
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -67,7 +78,45 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
   const [inputValueError, setInputValueError] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
-  const history = useHistory();
+  const [currentResource, setCurrentResource] = useState(undefined);
+
+  useEffect(() => {
+    const lang = languages.find((language) => language.code === activeLanguage);
+    if (lang && language === '') {
+      setLanguage(lang.id);
+    }
+  }, [language, languages, activeLanguage]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      id && dispatch(getExercise(id, language));
+    }, 200);
+  }, [id, language, dispatch]);
+
+  useEffect(() => {
+    if (id && exercise.id) {
+      const fetchExercise = async () => {
+        const data = await Exercise.getExercise(id, '');
+        if (data) {
+          setCurrentResource(data.data);
+        }
+      };
+      fetchExercise();
+
+      const showSetsReps = exercise.sets > 0;
+      setFormFields({
+        id: exercise.id,
+        title: exercise.title,
+        show_sets_reps: showSetsReps,
+        sets: exercise.sets,
+        reps: exercise.reps,
+        lang: language,
+        edit_translation: true
+      });
+      setAdditionalFields(exercise.additional_fields);
+      setMediaUploads(exercise.files);
+    }
+  }, [id, exercise, language]);
 
   useEffect(() => {
     if (editItem && hash === '') {
@@ -77,7 +126,9 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
         title: editItem.title,
         show_sets_reps: showSetsReps,
         sets: editItem.sets,
-        reps: editItem.reps
+        reps: editItem.reps,
+        lang: '',
+        edit_translation: false
       });
       setAdditionalFields(JSON.parse(editItem.additional_fields));
       setMediaUploads(editItem.media_uploads);
@@ -97,8 +148,8 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
   }, [editItem, categoryTreeData, hash]);
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: lang }));
-  }, [dispatch, lang]);
+    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: language }));
+  }, [dispatch, language]);
 
   useEffect(() => {
     if (categoryTreeData.length) {
@@ -200,7 +251,7 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
 
     const payload = {
       ...formFields,
-      id: editItem ? formFields.id : getExercises.length,
+      id: editItem || id ? formFields.id : getExercises.length,
       sets: formFields.show_sets_reps ? formFields.sets : 0,
       reps: formFields.show_sets_reps ? formFields.reps : 0,
       show_sets_reps: formFields.show_sets_reps,
@@ -214,6 +265,11 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
         setEditItem(undefined);
         setIsLoading(false);
         handleResetForm();
+      });
+    } else if (id) {
+      dispatch(clearContribute());
+      dispatch(addMoreExercise(payload)).then(() => {
+        setIsLoading(false);
       });
     } else {
       dispatch(addMoreExercise(payload)).then(() => {
@@ -238,7 +294,9 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
       sets: '',
       reps: '',
       additional_fields: [],
-      media_uploads: []
+      media_uploads: [],
+      lang: '',
+      edit_translation: false
     });
   };
 
@@ -308,6 +366,25 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
     history.push(replaceRoute(ROUTES.LIBRARY, activeLanguage));
   };
 
+  const handleCancel = () => {
+    if (id) {
+      history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL.replace(':id', id), activeLanguage));
+    } else {
+      setShowCancelModal(true);
+    }
+  };
+
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
+  };
+
   return (
     <>
       <Form className="pt-5">
@@ -316,13 +393,18 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
             <h5 className="text-primary">{translate('common.media')}</h5>
 
             { mediaUploads.map((mediaUpload, index) => (
-              <div key={index} className="mb-2 position-relative">
-                <Button variant="link" onClick={() => handleFileRemove(index)} className="position-absolute btn-remove">
+              <div key={index} className={`form-group position-relative ${id && mediaUpload.id && ' opacity-50'}`}>
+                <Button
+                  className="position-absolute btn-remove"
+                  variant="link"
+                  onClick={() => handleFileRemove(index)}
+                  disabled={id && mediaUpload.id}
+                >
                   <BsXCircle size={20} color={scssColors.danger} /> <span className="sr-only">{translate('common.remove')}</span>
                 </Button>
 
                 { mediaUpload.fileType === 'audio/mpeg' &&
-                <div className="img-thumbnail w-100 pt-2 border-danger">
+                <div className="img-thumbnail img w-100 pt-2 border-danger">
                   <audio controls className="w-100">
                     <source src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} type="audio/ogg" />
                   </audio>
@@ -354,7 +436,6 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
                 aria-label={translate('common.upload_image')}
               />
             </div>
-
             <div className={mediaUploadsError ? 'd-block invalid-feedback' : 'invalid-feedback'}>
               {translate('exercise.media_upload.required')}
             </div>
@@ -363,9 +444,25 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
           <Col xl={9} sm={8}>
             <h5 className="text-primary">{translate('common.information')}</h5>
 
+            {id &&
+              <Form.Group controlId="formLanguage">
+                <Form.Label>{translate('common.language')}</Form.Label>
+                <Select
+                  isDisabled={!id}
+                  classNamePrefix="filter"
+                  value={languages.filter(option => option.id === language)}
+                  getOptionLabel={option => option.name}
+                  options={languages.slice(1)}
+                  onChange={(e) => setLanguage(e.id)}
+                  styles={customSelectStyles}
+                />
+              </Form.Group>
+            }
+
             <Form.Group controlId="formTitle">
               <Form.Label>{translate('exercise.title')}</Form.Label>
               <span className="text-dark ml-1">*</span>
+              {id && currentResource && <span className="d-block mb-2">{translate('common.english')}: {currentResource.title}</span>}
               <Form.Control
                 name="title"
                 onChange={handleChange}
@@ -378,90 +475,94 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
               </Form.Control.Feedback>
             </Form.Group>
 
-            <Form.Group controlId="formShowSetsReps">
-              <Form.Check
-                name="show_sets_reps"
-                onChange={handleCheck}
-                value={true}
-                checked={formFields.show_sets_reps}
-                label={translate('exercise.show_sets_reps')}
-                custom
-              />
-            </Form.Group>
+            {!id &&
+              <>
+                <Form.Group controlId="formShowSetsReps">
+                  <Form.Check
+                    name="show_sets_reps"
+                    onChange={handleCheck}
+                    value={true}
+                    checked={formFields.show_sets_reps}
+                    label={translate('exercise.show_sets_reps')}
+                    custom
+                  />
+                </Form.Group>
 
-            {formFields.show_sets_reps && (
-              <Card bg="light" body className="mb-3">
-                <Form.Row>
-                  <Form.Group as={Col} controlId="formSets">
-                    <Form.Label>{translate('exercise.sets')}</Form.Label>
-                    <span className="text-dark ml-1">*</span>
-                    <Form.Control
-                      type="number"
-                      name="sets"
-                      placeholder={translate('exercise.sets.placeholder')}
-                      value={formFields.sets}
-                      onChange={handleChange}
-                      isInvalid={setsError}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {translate('exercise.sets.required')}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-
-                  <Form.Group as={Col} controlId="formReps">
-                    <Form.Label>{translate('exercise.reps')}</Form.Label>
-                    <span className="text-dark ml-1">*</span>
-                    <Form.Control
-                      type="number"
-                      name="reps"
-                      placeholder={translate('exercise.reps.placeholder')}
-                      value={formFields.reps}
-                      onChange={handleChange}
-                      isInvalid={repsError}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {translate('exercise.reps.required')}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Form.Row>
-              </Card>
-            )}
-
-            <h5 className="text-primary">{translate('common.categories')}</h5>
-
-            <Form.Group>
-              <Accordion defaultActiveKey="0">
-                {categoryTreeData.map((category, index) => (
-                  <Card key={index}>
-                    <Card.Header>
-                      <Accordion.Toggle as={Button} variant="link" eventKey={index + 1} className="d-flex justify-content-between align-items-center">
-                        <span>{category.label}</span>
-                        <span>{selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('common.selected')} <ContextAwareToggle eventKey={index + 1} /></span>
-                      </Accordion.Toggle>
-                    </Card.Header>
-                    <Accordion.Collapse eventKey={index + 1}>
-                      <Card.Body>
-                        <CheckboxTree
-                          nodes={category.children || []}
-                          checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
-                          expanded={expanded}
-                          onCheck={(checked) => handleSetSelectedCategories(category.value, checked)}
-                          onExpand={expanded => setExpanded(expanded)}
-                          icons={{
-                            check: <FaRegCheckSquare size={40} color="black" />,
-                            uncheck: <BsSquare size={40} color="black" />,
-                            halfCheck: <BsDashSquare size={40} color="black" />,
-                            expandClose: <BsCaretRightFill size={40} color="black" />,
-                            expandOpen: <BsCaretDownFill size={40} color="black" />
-                          }}
-                          showNodeIcon={false}
+                {formFields.show_sets_reps && (
+                  <Card bg="light" body className="mb-3">
+                    <Form.Row>
+                      <Form.Group as={Col} controlId="formSets">
+                        <Form.Label>{translate('exercise.sets')}</Form.Label>
+                        <span className="text-dark ml-1">*</span>
+                        <Form.Control
+                          type="number"
+                          name="sets"
+                          placeholder={translate('exercise.sets.placeholder')}
+                          value={formFields.sets}
+                          onChange={handleChange}
+                          isInvalid={setsError}
                         />
-                      </Card.Body>
-                    </Accordion.Collapse>
+                        <Form.Control.Feedback type="invalid">
+                          {translate('exercise.sets.required')}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+
+                      <Form.Group as={Col} controlId="formReps">
+                        <Form.Label>{translate('exercise.reps')}</Form.Label>
+                        <span className="text-dark ml-1">*</span>
+                        <Form.Control
+                          type="number"
+                          name="reps"
+                          placeholder={translate('exercise.reps.placeholder')}
+                          value={formFields.reps}
+                          onChange={handleChange}
+                          isInvalid={repsError}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          {translate('exercise.reps.required')}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Form.Row>
                   </Card>
-                ))}
-              </Accordion>
-            </Form.Group>
+                )}
+
+                <h5 className="text-primary">{translate('common.categories')}</h5>
+
+                <Form.Group>
+                  <Accordion defaultActiveKey="0">
+                    {categoryTreeData.map((category, index) => (
+                      <Card key={index}>
+                        <Card.Header>
+                          <Accordion.Toggle as={Button} variant="link" eventKey={index + 1} className="d-flex justify-content-between align-items-center">
+                            <span>{category.label}</span>
+                            <span>{selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('common.selected')} <ContextAwareToggle eventKey={index + 1} /></span>
+                          </Accordion.Toggle>
+                        </Card.Header>
+                        <Accordion.Collapse eventKey={index + 1}>
+                          <Card.Body>
+                            <CheckboxTree
+                              nodes={category.children || []}
+                              checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
+                              expanded={expanded}
+                              onCheck={(checked) => handleSetSelectedCategories(category.value, checked)}
+                              onExpand={expanded => setExpanded(expanded)}
+                              icons={{
+                                check: <FaRegCheckSquare size={40} color="black" />,
+                                uncheck: <BsSquare size={40} color="black" />,
+                                halfCheck: <BsDashSquare size={40} color="black" />,
+                                expandClose: <BsCaretRightFill size={40} color="black" />,
+                                expandOpen: <BsCaretDownFill size={40} color="black" />
+                              }}
+                              showNodeIcon={false}
+                            />
+                          </Card.Body>
+                        </Accordion.Collapse>
+                      </Card>
+                    ))}
+                  </Accordion>
+                </Form.Group>
+              </>
+            }
 
             <h5 className="text-primary">{translate('common.additional_fields')}</h5>
 
@@ -469,19 +570,18 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
               additionalFields.map((additionalField, index) => (
                 <Card key={index} className="bg-light mb-3 additional-field">
                   <Card.Body>
-                    <div className="remove-btn-container">
-                      <Button
-                        variant="outline-danger"
-                        className="btn-remove"
-                        onClick={() => handleRemoveFields(index)}
-                      >
-                        <BsX size={20} />
-                      </Button>
-                    </div>
+                    {!id &&
+                      <div className="remove-btn-container">
+                        <Button variant="outline-danger" className="btn-remove" onClick={() => handleRemoveFields(index)}>
+                          <BsX size={20} />
+                        </Button>
+                      </div>
+                    }
 
                     <Form.Group controlId={`formLabel${index}`}>
                       <Form.Label>{translate('exercise.additional_field.label')}</Form.Label>
                       <span className="text-dark ml-1">*</span>
+                      {id && currentResource && <span className="d-block mb-2">{translate('common.english')}: {currentResource.additional_fields[index].field}</span>}
                       <Form.Control
                         name="field"
                         placeholder={translate('exercise.additional_field.placeholder.label')}
@@ -496,6 +596,7 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
                     <Form.Group controlId={`formValue${index}`}>
                       <Form.Label>{translate('exercise.additional_field.value')}</Form.Label>
                       <span className="text-dark ml-1">*</span>
+                      {id && currentResource && <span className="d-block mb-2">{translate('common.english')}: {currentResource.additional_fields[index].value}</span>}
                       <Form.Control
                         name="value"
                         as="textarea"
@@ -514,11 +615,13 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
               ))
             }
 
-            <Form.Group>
-              <Button variant="link" onClick={handleAddFields} className="p-0">
-                <BsPlusCircle size={20} /> {translate('common.add_more_fields')}
-              </Button>
-            </Form.Group>
+            {!id &&
+              <Form.Group>
+                <Button variant="link" onClick={handleAddFields} className="p-0">
+                  <BsPlusCircle size={20} /> {translate('common.add_more_fields')}
+                </Button>
+              </Form.Group>
+            }
           </Col>
         </Form.Group>
 
@@ -526,18 +629,20 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
           <Button onClick={handleSubmit}>
             {translate('common.submit')}
           </Button>
+          {!id &&
+            <Button
+              className="ml-2"
+              variant="outline-primary"
+              onClick={handleAddMore}
+              disabled={isLoading}
+            >
+              {translate('common.add_more')}
+            </Button>
+          }
           <Button
             className="ml-2"
             variant="outline-primary"
-            onClick={handleAddMore}
-            disabled={isLoading}
-          >
-            {translate('common.add_more')}
-          </Button>
-          <Button
-            className="ml-2"
-            variant="outline-primary"
-            onClick={() => setShowCancelModal(true)}
+            onClick={handleCancel}
             disabled={isLoading}
           >
             {translate('common.cancel')}
@@ -564,8 +669,7 @@ CreateExercise.propTypes = {
   hash: PropTypes.string,
   editItem: PropTypes.object,
   setEditItem: PropTypes.func,
-  showReviewModal: PropTypes.func,
-  lang: PropTypes.number
+  showReviewModal: PropTypes.func
 };
 
 export default CreateExercise;

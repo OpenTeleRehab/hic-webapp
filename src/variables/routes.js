@@ -7,9 +7,16 @@ export const LIBRARY_EDUCATION_MATERIAL_DETAIL = LIBRARY + '/education_material/
 export const LIBRARY_QUESTIONNAIRE_DETAIL = LIBRARY + '/questionnaire/detail/:id';
 
 export const CONTRIBUTE = '/:lang?/contribute';
-export const CONFIRM_SUBMISSION = '/contribute/confirm-submission';
 export const TERM_CONDITION = '/:lang?/term_condition';
 export const ABOUT_US = '/:lang?/about_us';
+
+export const CONTRIBUTE_EDUCATION_MATERIAL = '/:lang?/contribute#education';
+export const CONTRIBUTE_QUESTIONNAIRE = '/:lang?/contribute#questionnaire';
+export const CONFIRM_SUBMISSION = '/:lang?/contribute/confirm-submission';
+
+export const EXERCISE_EDIT_TRANSLATION = CONTRIBUTE + '/exercises/edit/:id';
+export const EDUCATION_MATERIAL_EDIT_TRANSLATION = CONTRIBUTE + '/education-materials/edit/:id';
+export const QUESTIONNAIRE_EDIT_TRANSLATION = CONTRIBUTE + '/questionnaires/edit/:id';
 
 export const ADMIN = '/admin';
 export const ADMIN_DASHBOARD = '/admin';

@@ -45,10 +45,10 @@ const createEducationMaterial = (payload) => {
 };
 
 const contributeEducationMaterial = (payloads, formFields) => {
-  for (let i = 0; i < payloads.length; i++) {
+  _.map(payloads, (payload) => {
     const formData = new FormData();
 
-    _.forIn(payloads[i], (value, key) => {
+    _.forIn(payload, (value, key) => {
       if (value.url) {
         formData.append(key, base64ToFile(value.url, value.fileName, value.fileType), value.fileName, { type: value.fileType });
       } else {
@@ -60,8 +60,16 @@ const contributeEducationMaterial = (payloads, formFields) => {
       formData.append(key, value);
     });
 
-    axios.post('/education-material', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-  }
+    return axios.post('/education-material', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+      .then(
+        res => {
+          return res.data;
+        }
+      )
+      .catch((e) => {
+        return e.response.data;
+      });
+  });
 
   return true;
 };

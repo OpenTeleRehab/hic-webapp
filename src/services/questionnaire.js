@@ -64,13 +64,16 @@ const contributeQuestionnaire = (payloads, formFields) => {
   _.map(payloads, (payload) => {
     const formData = new FormData();
     formData.append('data', JSON.stringify(payload));
+    formData.append('id', payload.id);
+    formData.append('lang', payload.lang);
+    formData.append('edit_translation', payload.edit_translation);
 
     _.forIn(formFields, (value, key) => {
       formData.append(key, value);
     });
 
     _.map(payload.questions, (question, index) => {
-      if (question.file) {
+      if (question.file && question.file.url && question.file.id === undefined) {
         formData.append(index, base64ToFile(question.file.url, question.file.fileName, question.file.fileType), question.file.fileName, { type: question.file.fileType });
       }
     });

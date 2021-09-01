@@ -1,36 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useLocation, useHistory, useParams } from 'react-router-dom';
 import { CATEGORY_TYPES } from '../../../variables/category';
 import CreateExercise from './Exercises/create';
 import { Form } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import CreateEducationMaterial from './EducationMaterial/create';
 import CreateQuestionnaire from './Questionnaire/create';
-import { CONTRIBUTE } from '../../../variables/routes';
 import ReviewSubmissionModal from './ReviewSubmission';
 import Dialog from '../../../components/Dialog';
 import * as ROUTES from '../../../variables/routes';
 import { replaceRoute } from '../../../utils/route';
 
 const Contribute = () => {
-  const { hash } = useLocation();
+  const { hash, pathname } = useLocation();
+  const { id } = useParams();
   const localize = useSelector((state) => state.localize);
-  const { languages, activeLanguage } = useSelector((state) => state.language);
+  const { activeLanguage } = useSelector((state) => state.language);
   const translate = getTranslate(localize);
   const [view, setView] = useState(undefined);
   const [editItem, setEditItem] = useState(undefined);
   const [isShowReviewModal, setIsShowReviewModal] = useState(false);
   const [isShowConfirmSubmissionModal, setIsShowConfirmSubmissionModal] = useState(false);
   const history = useHistory();
-  const [lang, setLang] = useState(1);
-
-  useEffect(() => {
-    const lang = languages.find((language) => language.code === activeLanguage);
-    if (lang) {
-      setLang(lang.id);
-    }
-  }, [languages, activeLanguage]);
 
   const types = [
     {
@@ -48,28 +40,34 @@ const Contribute = () => {
   ];
 
   useEffect(() => {
-    if (hash.includes('#' + CATEGORY_TYPES.MATERIAL)) {
+    if (hash.includes('#' + CATEGORY_TYPES.MATERIAL) || pathname.includes(CATEGORY_TYPES.MATERIAL)) {
       setView(CATEGORY_TYPES.MATERIAL);
-    } else if (hash.includes('#' + CATEGORY_TYPES.QUESTIONNAIRE)) {
+    } else if (hash.includes('#' + CATEGORY_TYPES.QUESTIONNAIRE) || pathname.includes(CATEGORY_TYPES.QUESTIONNAIRE)) {
       setView(CATEGORY_TYPES.QUESTIONNAIRE);
     } else {
       setView(CATEGORY_TYPES.EXERCISE);
     }
-  }, [hash]);
+  }, [hash, pathname]);
 
   useEffect(() => {
     if (hash.includes('#' + CATEGORY_TYPES.MATERIAL)) {
-      history.push(`${replaceRoute(CONTRIBUTE, activeLanguage)}#${CATEGORY_TYPES.MATERIAL}`);
+      history.push(replaceRoute(ROUTES.CONTRIBUTE_EDUCATION_MATERIAL, activeLanguage));
     } else if (hash.includes('#' + CATEGORY_TYPES.QUESTIONNAIRE)) {
-      history.push(`${replaceRoute(CONTRIBUTE, activeLanguage)}#${CATEGORY_TYPES.QUESTIONNAIRE}`);
+      history.push(replaceRoute(ROUTES.CONTRIBUTE_QUESTIONNAIRE, activeLanguage));
+    } else if (pathname.includes(CATEGORY_TYPES.EXERCISE)) {
+      history.push(replaceRoute(ROUTES.EXERCISE_EDIT_TRANSLATION.replace(':id', id), activeLanguage));
+    } else if (pathname.includes(CATEGORY_TYPES.MATERIAL)) {
+      history.push(replaceRoute(ROUTES.EDUCATION_MATERIAL_EDIT_TRANSLATION.replace(':id', id), activeLanguage));
+    } else if (pathname.includes(CATEGORY_TYPES.QUESTIONNAIRE)) {
+      history.push(replaceRoute(ROUTES.QUESTIONNAIRE_EDIT_TRANSLATION.replace(':id', id), activeLanguage));
     } else {
-      history.push(replaceRoute(CONTRIBUTE, activeLanguage));
+      history.push(replaceRoute(ROUTES.CONTRIBUTE, activeLanguage));
     }
-  }, [activeLanguage, history, hash]);
+  }, [activeLanguage, history, hash, pathname, id]);
 
   const handleChange = (e) => {
     const { value } = e.target;
-    history.push(`${replaceRoute(CONTRIBUTE, activeLanguage)}#${value}`);
+    history.push(`${replaceRoute(ROUTES.CONTRIBUTE, activeLanguage)}#${value}`);
   };
 
   const handleCancelConfirmSubmission = () => {
@@ -99,7 +97,7 @@ const Contribute = () => {
                 className="ml-3 mr-3"
                 value={type.value}
                 checked={view === type.value}
-                disabled={editItem}
+                disabled={editItem || id}
                 type="radio"
                 label={type.label}
                 custom
@@ -109,9 +107,9 @@ const Contribute = () => {
           </Form.Group>
         </Form>
 
-        { view === CATEGORY_TYPES.EXERCISE && <CreateExercise translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} lang={lang} /> }
-        { view === CATEGORY_TYPES.MATERIAL && <CreateEducationMaterial translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} lang={lang} /> }
-        { view === CATEGORY_TYPES.QUESTIONNAIRE && <CreateQuestionnaire translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} lang={lang} /> }
+        { view === CATEGORY_TYPES.EXERCISE && <CreateExercise translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} /> }
+        { view === CATEGORY_TYPES.MATERIAL && <CreateEducationMaterial translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} /> }
+        { view === CATEGORY_TYPES.QUESTIONNAIRE && <CreateQuestionnaire translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} /> }
         { isShowReviewModal && <ReviewSubmissionModal translate={translate} editItem={setEditItem} showReviewModal={setIsShowReviewModal} showConfirmSubmissionModal={setIsShowConfirmSubmissionModal} /> }
 
         <Dialog

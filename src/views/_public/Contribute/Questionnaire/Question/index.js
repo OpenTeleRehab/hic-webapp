@@ -31,7 +31,7 @@ const reorderQuestion = (questions, startIndex, endIndex) => {
   return result;
 };
 
-const Index = ({ translate, questions, setQuestions, questionTitleError, answerFieldError, modifiable }) => {
+const Question = ({ translate, questions, setQuestions, questionTitleError, answerFieldError, currentResource, modifiable }) => {
   const handleFileChange = (e, index) => {
     const { name, files } = e.target;
     const values = [...questions];
@@ -62,7 +62,6 @@ const Index = ({ translate, questions, setQuestions, questionTitleError, answerF
     const answers = questions[questionIndex].answers;
     answers[answerIndex].description = e.target.value;
     const questionData = [...questions];
-    // questionData[questionIndex] = { ...questionData[questionIndex], answer: answers };
     questionData[questionIndex] = { ...questionData[questionIndex] };
     setQuestions(questionData);
   };
@@ -136,38 +135,43 @@ const Index = ({ translate, questions, setQuestions, questionTitleError, answerF
                         <Card.Header className="card-header">
                           <Card.Title className="d-flex justify-content-between">
                             <h5>{translate('questionnaire.question_number', { number: index + 1 })}</h5>
-                            <div {...provided.dragHandleProps}>
-                              <Button
-                                variant="link"
-                                size="sm"
-                                className="text-dark p-0 mr-5 mb-3 drag-button"
-                              >
-                                <BsArrowsMove size={20}/>
-                              </Button>
-                            </div>
-                            <div>
-                              <Button
-                                variant="link"
-                                size="sm"
-                                className="text-primary p-0 mr-1"
-                                onClick={() => handleCloneQuestion(index)}
-                              >
-                                <FaCopy size={20}/>
-                              </Button>
-                              <Button
-                                variant="link"
-                                size="sm"
-                                className="text-danger p-0"
-                                onClick={() => handleRemoveQuestion(index)}
-                                disabled={questions.length === 1}
-                              >
-                                <FaTrashAlt size={20}/>
-                              </Button>
-                            </div>
+                            {!modifiable &&
+                              <>
+                                <div {...provided.dragHandleProps}>
+                                  <Button
+                                    variant="link"
+                                    size="sm"
+                                    className="text-dark p-0 mr-5 mb-3 drag-button"
+                                  >
+                                    <BsArrowsMove size={20}/>
+                                  </Button>
+                                </div>
+                                <div>
+                                  <Button
+                                    variant="link"
+                                    size="sm"
+                                    className="text-primary p-0 mr-1"
+                                    onClick={() => handleCloneQuestion(index)}
+                                  >
+                                    <FaCopy size={20}/>
+                                  </Button>
+                                  <Button
+                                    variant="link"
+                                    size="sm"
+                                    className="text-danger p-0"
+                                    onClick={() => handleRemoveQuestion(index)}
+                                    disabled={questions.length === 1}
+                                  >
+                                    <FaTrashAlt size={20}/>
+                                  </Button>
+                                </div>
+                              </>
+                            }
                           </Card.Title>
                           <Row>
                             <Col sm={8} xl={7}>
                               <Form.Group controlId={`formTitle${index}`}>
+                                {modifiable && currentResource && <span className="d-block mb-2">{translate('common.english')}: {currentResource.questions[index].title}</span>}
                                 <Form.Control
                                   name="title"
                                   onChange={e => handleQuestionTitleChange(index, e)}
@@ -181,9 +185,10 @@ const Index = ({ translate, questions, setQuestions, questionTitleError, answerF
                                 </Form.Control.Feedback>
                               </Form.Group>
                               { question.file &&
-                                <div className="form-group w-50 position-relative">
+                                <div className={`form-group w-50 position-relative ${modifiable && question.file.id && ' opacity-50'}`}>
                                   <img src={question.file.url || `${process.env.REACT_APP_API_BASE_URL}/file/${question.file.id}`} alt={question.name} className="w-100 img-thumbnail border-danger" />
                                   <Button
+                                    disabled={modifiable && question.file.id}
                                     variant="link"
                                     className="position-absolute btn-remove"
                                     onClick={() => handleFileRemove(index)}
@@ -198,14 +203,21 @@ const Index = ({ translate, questions, setQuestions, questionTitleError, answerF
                               </div>
                             </Col>
                             <Col sm={3} xl={4}>
-                              <Form.Group controlId={`formType${index}`}>
-                                <Form.Control name ="type" as="select" value={question.type} onChange={e => handleSelectChange(index, e)}>
-                                  <option value='checkbox'>{translate('question.type.checkbox')}</option>
-                                  <option value='multiple'>{translate('question.type.multiple_choice')}</option>
-                                  <option value='open-text'>{translate('question.type.open_ended_free_text')}</option>
-                                  <option value='open-number'>{translate('question.type.open_ended_numbers_only')}</option>
-                                </Form.Control>
-                              </Form.Group>
+                              {!modifiable &&
+                                <Form.Group controlId={`formType${index}`}>
+                                  <Form.Control
+                                    name ="type"
+                                    as="select"
+                                    value={question.type}
+                                    onChange={e => handleSelectChange(index, e)}
+                                  >
+                                    <option value='checkbox'>{translate('question.type.checkbox')}</option>
+                                    <option value='multiple'>{translate('question.type.multiple_choice')}</option>
+                                    <option value='open-text'>{translate('question.type.open_ended_free_text')}</option>
+                                    <option value='open-number'>{translate('question.type.open_ended_numbers_only')}</option>
+                                  </Form.Control>
+                                </Form.Group>
+                              }
                             </Col>
                           </Row>
                         </Card.Header>
@@ -216,6 +228,7 @@ const Index = ({ translate, questions, setQuestions, questionTitleError, answerF
                                 question.answers.map((answer, answerIndex) => (
                                   <Row key={answerIndex}>
                                     <Col sm={8} xl={7}>
+                                      {modifiable && currentResource && <span className="d-block mb-2 translate-text">{translate('common.english')}: {currentResource.questions[index].answers[answerIndex].description}</span>}
                                       <Form.Check type='checkbox'>
                                         <Form.Check.Input type='checkbox' isValid className="mt-3" disabled />
                                         <Form.Check.Label className="w-100">
@@ -234,16 +247,18 @@ const Index = ({ translate, questions, setQuestions, questionTitleError, answerF
                                         </Form.Check.Label>
                                       </Form.Check>
                                     </Col>
-                                    <Col sm={4} xl={5} className="mt-1">
-                                      <Button
-                                        variant="outline-danger"
-                                        className="remove-btn"
-                                        onClick={() => handleAnswerRemove(index, answerIndex)}
-                                        disabled={question.answers.length <= 2}
-                                      >
-                                        <BsX size={16} />
-                                      </Button>
-                                    </Col>
+                                    {!modifiable &&
+                                      <Col sm={4} xl={5} className="mt-1">
+                                        <Button
+                                          variant="outline-danger"
+                                          className="remove-btn"
+                                          onClick={() => handleAnswerRemove(index, answerIndex)}
+                                          disabled={question.answers.length <= 2}
+                                        >
+                                          <BsX size={16} />
+                                        </Button>
+                                      </Col>
+                                    }
                                   </Row>
                                 ))
                               )
@@ -253,6 +268,7 @@ const Index = ({ translate, questions, setQuestions, questionTitleError, answerF
                                 question.answers.map((answer, answerIndex) => (
                                   <Row key={answerIndex}>
                                     <Col sm={8} xl={7}>
+                                      {modifiable && currentResource && <span className="d-block mb-2 translate-text">{translate('common.english')}: {currentResource.questions[index].answers[answerIndex].description}</span>}
                                       <Form.Check type='radio'>
                                         <Form.Check.Input type='radio' isValid className="mt-3" disabled />
                                         <Form.Check.Label className="w-100">
@@ -271,16 +287,18 @@ const Index = ({ translate, questions, setQuestions, questionTitleError, answerF
                                         </Form.Check.Label>
                                       </Form.Check>
                                     </Col>
-                                    <Col sm={4} xl={5} className="mt-1">
-                                      <Button
-                                        variant="outline-danger"
-                                        className="remove-btn"
-                                        onClick={() => handleAnswerRemove(index, answerIndex)}
-                                        disabled={question.answers.length <= 2}
-                                      >
-                                        <BsX size={16} />
-                                      </Button>
-                                    </Col>
+                                    {!modifiable &&
+                                      <Col sm={4} xl={5} className="mt-1">
+                                        <Button
+                                          variant="outline-danger"
+                                          className="remove-btn"
+                                          onClick={() => handleAnswerRemove(index, answerIndex)}
+                                          disabled={question.answers.length <= 2}
+                                        >
+                                          <BsX size={16} />
+                                        </Button>
+                                      </Col>
+                                    }
                                   </Row>
                                 ))
                               )
@@ -306,7 +324,7 @@ const Index = ({ translate, questions, setQuestions, questionTitleError, answerF
                                 </Form.Group>
                               )
                             }
-                            {(question.type === 'checkbox' || question.type === 'multiple') &&
+                            {(question.type === 'checkbox' || question.type === 'multiple') && !modifiable &&
                               <Form.Group className="ml-3">
                                 <Button
                                   variant="link"
@@ -333,13 +351,14 @@ const Index = ({ translate, questions, setQuestions, questionTitleError, answerF
   );
 };
 
-Index.propTypes = {
+Question.propTypes = {
   translate: PropTypes.func,
   questions: PropTypes.array,
   setQuestions: PropTypes.func,
   questionTitleError: PropTypes.array,
   answerFieldError: PropTypes.array,
+  currentResource: PropTypes.object,
   modifiable: PropTypes.bool
 };
 
-export default withLocalize(Index);
+export default withLocalize(Question);
