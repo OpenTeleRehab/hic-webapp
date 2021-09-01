@@ -62,6 +62,19 @@ const getHomePageFail = () => ({
   type: 'GET_HOME_PAGE_FAIL'
 });
 
+const getFeaturedResourcesRequest = () => ({
+  type: 'GET_FEATURED_RESOURCES_REQUEST'
+});
+
+const getFeaturedResourcesSuccess = (data) => ({
+  type: 'GET_FEATURED_RESOURCES_SUCCESS',
+  data
+});
+
+const getFeaturedResourcesFail = () => ({
+  type: 'GET_FEATURED_RESOURCES_FAIL'
+});
+
 export const mutation = {
   getStaticPagesRequest,
   getStaticPagesSuccess,
@@ -77,5 +90,8 @@ export const mutation = {
   updateStaticPagesFail,
   getHomePageRequest,
   getHomePageSuccess,
-  getHomePageFail
+  getHomePageFail,
+  getFeaturedResourcesRequest,
+  getFeaturedResourcesSuccess,
+  getFeaturedResourcesFail
 };

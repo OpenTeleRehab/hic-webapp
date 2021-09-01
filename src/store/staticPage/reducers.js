@@ -20,6 +20,12 @@ export const staticPage = (state = initialState, action) => {
         loading: false
       });
     }
+    case 'GET_FEATURED_RESOURCES_SUCCESS': {
+      return Object.assign({}, state, {
+        resources: action.data,
+        loading: false
+      });
+    }
     default:
       return state;
   }

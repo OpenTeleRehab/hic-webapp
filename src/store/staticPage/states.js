@@ -3,5 +3,6 @@ export const initialState = {
   staticPages: [],
   staticPage: {},
   loading: false,
-  homePage: []
+  homePage: [],
+  resources: []
 };

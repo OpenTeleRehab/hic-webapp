@@ -99,6 +99,18 @@ const getHomePage = (payload) => {
     });
 };
 
+const getFeaturedResources = (payload) => {
+  return axios.get('/resources/get-feature-resources')
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const staticPage = {
   getStaticPages,
   createStaticPage,
@@ -106,5 +118,6 @@ export const staticPage = {
   getStaticPage,
   createPartnerLogo,
   getPartnerLogo,
-  getHomePage
+  getHomePage,
+  getFeaturedResources
 };
