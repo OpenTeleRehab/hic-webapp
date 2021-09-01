@@ -1,17 +1,3 @@
-const getStaticPagesRequest = () => ({
-  type: 'GET_STATIC_PAGES_REQUEST'
-});
-
-const getStaticPagesSuccess = (data, filters) => ({
-  type: 'GET_STATIC_PAGES_SUCCESS',
-  data,
-  filters
-});
-
-const getStaticPagesFail = () => ({
-  type: 'GET_STATIC_PAGES_FAIL'
-});
-
 const getStaticPageRequest = () => ({
   type: 'GET_STATIC_PAGE_REQUEST'
 });
@@ -49,19 +35,6 @@ const updateStaticPagesFail = () => ({
   type: 'UPDATE_STATIC_PAGE_FAIL'
 });
 
-const getHomePageRequest = () => ({
-  type: 'GET_HOME_PAGE_REQUEST'
-});
-
-const getHomePageSuccess = (data) => ({
-  type: 'GET_HOME_PAGE_SUCCESS',
-  data
-});
-
-const getHomePageFail = () => ({
-  type: 'GET_HOME_PAGE_FAIL'
-});
-
 const getFeaturedResourcesRequest = () => ({
   type: 'GET_FEATURED_RESOURCES_REQUEST'
 });
@@ -76,9 +49,6 @@ const getFeaturedResourcesFail = () => ({
 });
 
 export const mutation = {
-  getStaticPagesRequest,
-  getStaticPagesSuccess,
-  getStaticPagesFail,
   createStaticPageRequest,
   createStaticPageSuccess,
   createStaticPagesFail,
@@ -88,9 +58,6 @@ export const mutation = {
   updateStaticPageRequest,
   updateStaticPageSuccess,
   updateStaticPagesFail,
-  getHomePageRequest,
-  getHomePageSuccess,
-  getHomePageFail,
   getFeaturedResourcesRequest,
   getFeaturedResourcesSuccess,
   getFeaturedResourcesFail

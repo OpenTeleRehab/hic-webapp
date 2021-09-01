@@ -1,8 +1,6 @@
 export const initialState = {
   filters: {},
-  staticPages: [],
   staticPage: {},
-  loading: false,
-  homePage: [],
-  resources: []
+  resources: [],
+  loading: false
 };

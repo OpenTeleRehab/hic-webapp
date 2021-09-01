@@ -17,6 +17,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
   const localize = useSelector((state) => state.localize);
   const { activeLanguage } = useSelector((state) => state.language);
   const { publishTermAndConditionPage, termConditionBanner } = useSelector((state) => state.termAndCondition);
+  const { staticPage } = useSelector((state) => state.staticPage);
   const translate = getTranslate(localize);
   const location = useLocation();
   const [showBanner, setShowBanner] = useState(false);
@@ -38,9 +39,14 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
       setShowBanner(true);
       setIsHome(false);
       SetBannerTitle(publishTermAndConditionPage.title);
-      setFilePath(termConditionBanner.url || `${process.env.REACT_APP_API_BASE_URL}/file/${termConditionBanner.id}`);
+      setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${termConditionBanner.id}`);
+    } else if (location.pathname === replaceRoute(ROUTES.ABOUT_US, activeLanguage)) {
+      setShowBanner(true);
+      setIsHome(false);
+      SetBannerTitle(staticPage.title);
+      setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${staticPage.file && staticPage.file.id}`);
     }
-  }, [location, activeLanguage, termConditionBanner, publishTermAndConditionPage]);
+  }, [location, activeLanguage, termConditionBanner, publishTermAndConditionPage, staticPage]);
 
   return (
     <>

@@ -6,25 +6,11 @@ import {
 } from 'store/notification/actions';
 import { showSpinner } from '../spinnerOverlay/actions';
 
-export const getStaticPages = payload => async dispatch => {
-  dispatch(mutation.getStaticPagesRequest());
-  dispatch(showSpinner(true));
-  const data = await staticPage.getStaticPages(payload);
-  if (data.success) {
-    dispatch(mutation.getStaticPagesSuccess(data.data));
-    dispatch(showSpinner(false));
-  } else {
-    dispatch(mutation.getStaticPagesFail());
-    dispatch(showSpinner(false));
-    dispatch(showErrorNotification('toast_title.error_message', data.message));
-  }
-};
-
-export const getStaticPage = (id, language) => async dispatch => {
+export const getStaticPage = payload => async dispatch => {
   dispatch(mutation.getStaticPageRequest());
   dispatch(showSpinner(true));
-  const data = await staticPage.getStaticPage(id, language);
-  if (data) {
+  const data = await staticPage.getStaticPage(payload);
+  if (data.success) {
     dispatch(mutation.getStaticPageSuccess(data.data));
     dispatch(showSpinner(false));
   } else {
@@ -63,21 +49,6 @@ export const createStaticPage = (payload) => async (dispatch) => {
     dispatch(showErrorNotification('toast_title.new_static_page', data.message));
     dispatch(showSpinner(false));
     return false;
-  }
-};
-
-export const getHomePage = payload => async dispatch => {
-  dispatch(mutation.getHomePageRequest());
-  dispatch(showSpinner(true));
-  const data = await staticPage.getHomePage(payload);
-  if (data.success) {
-    dispatch(mutation.getHomePageSuccess(data.data));
-    dispatch(showSpinner(false));
-  } else {
-    dispatch(mutation.getHomePageFail());
-    dispatch(showSpinner(false));
-    console.log(data.message);
-    dispatch(showErrorNotification('toast_title.error_message', data.message));
   }
 };
 

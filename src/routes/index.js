@@ -11,6 +11,7 @@ import LibraryPage from 'views/_public/Library';
 import ContributePage from 'views/_public/Contribute';
 import ConfirmSubmissionPage from 'views/_public/Contribute/ConfirmSubmission';
 import TermConditionPage from 'views/_public/TermCondition';
+import AboutUsPage from 'views/_public/AboutUs';
 import ExerciseDetail from 'views/_public/Library/Exercise/detail';
 import EducationMaterialDetail from 'views/_public/Library/EducationMaterial/detail';
 import QuestionnaireDetail from 'views/_public/Library/Questionnaire/detail';
@@ -84,6 +85,14 @@ const publicRoutes = [
     exact: true,
     type: PUBLIC,
     defaultTemplate: false
+  },
+  {
+    title: 'about_us',
+    path: ROUTES.ABOUT_US,
+    component: AboutUsPage,
+    exact: true,
+    type: PUBLIC,
+    defaultTemplate: true
   },
   {
     title: 'term_condition',

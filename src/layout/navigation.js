@@ -32,6 +32,11 @@ const publicNavItems = [
     exact: true
   },
   {
+    label: 'about_us',
+    to: ROUTES.ABOUT_US,
+    exact: true
+  },
+  {
     label: 'term_condition',
     to: ROUTES.TERM_CONDITION,
     exact: true
