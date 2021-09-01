@@ -149,7 +149,7 @@ const CreateTermAndCondition = ({ show, editId, handleClose }) => {
     >
       <Form onKeyPress={(e) => handleFormSubmit(e)}>
         <Form.Group controlId="formLanguage">
-          <Form.Label>{translate('common.show_language.version')} {language}</Form.Label>
+          <Form.Label>{translate('common.show_language.version')}</Form.Label>
           <Select
             isDisabled={!editId}
             classNamePrefix="filter"
