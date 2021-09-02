@@ -88,6 +88,11 @@ const CreateHomePage = ({ type, editId }) => {
     }
   }, [staticPage, type]);
 
+  const enableButtons = () => {
+    const languageObj = languages.find(item => item.id === parseInt(language, 10));
+    return languageObj && languageObj.code === languageObj.fallback;
+  };
+
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
@@ -283,17 +288,21 @@ const CreateHomePage = ({ type, editId }) => {
             <div className="w-50">
               {materialFile && (
                 <div className="mb-2 position-relative">
-                  <Button variant="link" onClick={() => handleFileRemove()} className="position-absolute btn-remove">
-                    <BsXCircle size={20} color={scssColors.danger} />
-                  </Button>
+                  {enableButtons() && (
+                    <Button variant="link" onClick={() => handleFileRemove()} className="position-absolute btn-remove">
+                      <BsXCircle size={20} color={scssColors.danger} />
+                    </Button>
+                  )}
                   <img src={materialFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`} alt="..." className="w-100 img-thumbnail"/>
                   <div>{materialFile.fileName} {materialFile.fileSize ? ('(' + materialFile.fileSize + 'kB )') : ''}</div>
                 </div>
               )}
-              <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden" >
-                <BsUpload size={15}/> Upload Image
-                <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} accept="image/*" isInvalid={fileError} />
-              </div>
+              {enableButtons() && (
+                <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden" >
+                  <BsUpload size={15}/> Upload Image
+                  <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} accept="image/*" isInvalid={fileError} />
+                </div>
+              )}
             </div>
           </Col>
         </Form.Group>
@@ -354,6 +363,7 @@ const CreateHomePage = ({ type, editId }) => {
               onChange={handleCheck}
               value={true}
               checked={formFields.display_quick_stat}
+              disabled={!enableButtons()}
             />
           </Col>
         </Form.Group>
@@ -366,6 +376,7 @@ const CreateHomePage = ({ type, editId }) => {
               onChange={handleCheck}
               value={true}
               checked={formFields.display_feature_resource}
+              disabled={!enableButtons()}
             />
           </Col>
         </Form.Group>
@@ -381,6 +392,7 @@ const CreateHomePage = ({ type, editId }) => {
               options={options}
               showCheckbox
               selectionLimit={settings.featuredResourcesLimit}
+              disable={!enableButtons()}
             />
             {errorFeaturedResource &&
             <div className="invalid-feedback d-block">{translate('error.home_featured_resources')}</div>
