@@ -181,7 +181,7 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
               <BsUpload size={15}/> Upload Image
               <input type="file" id="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} accept="image/*" isInvalid={fileError} aria-label="Upload" />
             </div>
-            <Button variant="primary" className="mt-2" disabled={!formFields.file} onClick={handleConfirm} tabIndex="0">
+            <Button variant="primary" className="mt-2" onClick={handleConfirm} tabIndex="0">
               {translate('common.save')}
             </Button>
           </div>
