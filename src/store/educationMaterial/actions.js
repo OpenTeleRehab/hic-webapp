@@ -78,11 +78,11 @@ export const rejectEducationMaterial = (id) => async dispatch => {
   const data = await EducationMaterial.rejectEducationMaterial(id);
   if (data.success) {
     dispatch(mutation.rejectEducationMaterialSuccess());
-    dispatch(showSuccessNotification('toast_title.reject_exercise', data.message));
+    dispatch(showSuccessNotification('toast_title.reject_education_material', data.message));
     return true;
   } else {
     dispatch(mutation.rejectEducationMaterialFail());
-    dispatch(showErrorNotification('toast_title.reject_exercise', data.message));
+    dispatch(showErrorNotification('toast_title.reject_education_material', data.message));
     return false;
   }
 };
