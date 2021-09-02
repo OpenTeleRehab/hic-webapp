@@ -39,12 +39,16 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
       setShowBanner(true);
       setIsHome(false);
       SetBannerTitle(publishTermAndConditionPage.title);
-      setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${termConditionBanner.id}`);
+      if (termConditionBanner && termConditionBanner.id) {
+        setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${termConditionBanner.id}`);
+      }
     } else if (location.pathname === replaceRoute(ROUTES.ABOUT_US, activeLanguage)) {
       setShowBanner(true);
       setIsHome(false);
       SetBannerTitle(staticPage.title);
-      setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${staticPage.file && staticPage.file.id}`);
+      if (staticPage.file) {
+        setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${staticPage.file.id}`);
+      }
     }
   }, [location, activeLanguage, termConditionBanner, publishTermAndConditionPage, staticPage]);
 
