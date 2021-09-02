@@ -31,6 +31,8 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
   const [showPublishedDialog, setShowPublishedDialog] = useState(false);
   const [publishedId, setPublishedId] = useState(null);
   const [showViewDialog, setShowViewDialog] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+
   const [viewId, setViewId] = useState(null);
   const [language, setLanguage] = useState('');
   const [banner, setBanner] = useState(undefined);
@@ -123,11 +125,13 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
         setBanner({ url: reader.result, fileName, fileSize, fileType, file });
       };
     }
+    setDisabled(false);
   };
 
   const handleFileRemove = (e) => {
     setBanner(null);
     setFormFields({ ...formFields, file: undefined });
+    setDisabled(false);
   };
 
   const handleConfirm = () => {
@@ -141,6 +145,7 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
     }
     if (canSave) {
       dispatch(createTermConditionBanner({ ...formFields }));
+      setDisabled(true);
     }
   };
 
@@ -181,7 +186,7 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
               <BsUpload size={15}/> Upload Image
               <input type="file" id="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} accept="image/*" isInvalid={fileError} aria-label="Upload" />
             </div>
-            <Button variant="primary" className="mt-2" onClick={handleConfirm} tabIndex="0">
+            <Button variant="primary" className="mt-2" onClick={handleConfirm} tabIndex="0" disabled={disabled}>
               {translate('common.save')}
             </Button>
           </div>
