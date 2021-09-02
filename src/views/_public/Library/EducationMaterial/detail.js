@@ -108,11 +108,19 @@ const EducationMaterialDetail = () => {
           )}
         </Col>
       </Row>
-      <Row className={activeLanguage === 'en' ? 'd-none' : 'mt-4'}>
-        <Col>
-          <Button className="w-100" size="sm">{translate('exercise.edit_translation')}</Button>
-        </Col>
-      </Row>
+      {activeLanguage !== 'en' &&
+        <Row className="mt-3">
+          <Col>
+            <Button
+              className="btn-block"
+              size="sm"
+              onClick={() => history.push(replaceRoute(ROUTES.EDUCATION_MATERIAL_EDIT_TRANSLATION.replace(':id', educationMaterial.id), activeLanguage))}
+            >
+              {translate('exercise.edit_translation')}
+            </Button>
+          </Col>
+        </Row>
+      }
     </>
   );
 };

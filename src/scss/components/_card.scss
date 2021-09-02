@@ -99,6 +99,10 @@
 	.view-question-card-header {
 		height: 45px;
 	}
+
+	.translate-text {
+		margin-left: 20px;
+	}
 }
 
 .view-exercise-carousel {
@@ -112,10 +116,6 @@
 	.audio-wrapper {
 		height: 120px;
 	}
-}
-
-.question-wrapper:last-child {
-	margin-bottom: 120px;
 }
 
 .sticky-bottom {

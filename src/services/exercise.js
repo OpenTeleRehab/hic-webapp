@@ -27,6 +27,18 @@ const getExercise = (id, language) => {
     });
 };
 
+const getExerciseInEnglish = (id) => {
+  return axios.get(`/exercise/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const createExercise = (payload, mediaUploads) => {
   const formData = new FormData();
   _.forIn(payload, (value, key) => {
@@ -51,15 +63,15 @@ const createExercise = (payload, mediaUploads) => {
 };
 
 const contributeExercise = (payloads, formFields) => {
-  for (let i = 0; i < payloads.length; i++) {
+  _.map(payloads, (payload) => {
     const formData = new FormData();
 
-    _.forIn(payloads[i], (value, key) => {
+    _.forIn(payload, (value, key) => {
       formData.append(key, value);
     });
 
-    _.forIn(payloads[i].media_uploads, (value, key) => {
-      if (value.url) {
+    _.forIn(payload.media_uploads, (value, key) => {
+      if (value.url && value.id === undefined) {
         formData.append(key, base64ToFile(value.url, value.fileName, value.fileType), value.fileName, { type: value.fileType });
       }
     });
@@ -68,8 +80,16 @@ const contributeExercise = (payloads, formFields) => {
       formData.append(key, value);
     });
 
-    axios.post('/exercise', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-  }
+    return axios.post('/exercise', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+      .then(
+        res => {
+          return res.data;
+        }
+      )
+      .catch((e) => {
+        return e.response.data;
+      });
+  });
 
   return true;
 };
@@ -157,6 +177,7 @@ const uploadExercises = payload => {
 export const Exercise = {
   getExercises,
   getExercise,
+  getExerciseInEnglish,
   createExercise,
   contributeExercise,
   updateExercise,

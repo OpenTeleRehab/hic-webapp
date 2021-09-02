@@ -17,11 +17,15 @@ import { contributeQuestionnaire } from '../../../../store/questionnaire/actions
 import { toHash } from '../../../../utils/hash';
 import moment from 'moment';
 import * as ROUTES from '../../../../variables/routes';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { replaceRoute } from 'utils/route';
+import { CATEGORY_TYPES } from '../../../../variables/category';
 
 const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfirmSubmissionModal }) => {
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
+  const history = useHistory();
+  const { id } = useParams();
   const handleClose = () => showReviewModal(false);
   const [formFields, setFormFields] = useState({
     first_name: '',
@@ -39,7 +43,6 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [selectedEducationMaterials, setSelectedEducationMaterials] = useState([]);
   const [selectedQuestionnaires, setSelectedQuestionnaires] = useState([]);
-  const history = useHistory();
 
   useEffect(() => {
     exercises.forEach((exercise, index) => {
@@ -164,14 +167,30 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
       }
 
       if (submitExercises.length || submitEducationMaterials.length || submitQuestionnaires.length) {
-        dispatch(contributeSubmission(formFields)).then(result => {
-          if (result) {
-            dispatch(clearContribute());
-            dispatch(showSpinner(false));
-            showReviewModal(false);
-            showConfirmSubmissionModal(true);
+        if (id) {
+          dispatch(clearContribute());
+          dispatch(showSpinner(false));
+          showReviewModal(false);
+
+          if (pathname.includes(CATEGORY_TYPES.EXERCISE)) {
+            history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL.replace(':id', id), activeLanguage));
           }
-        });
+          if (pathname.includes(CATEGORY_TYPES.MATERIAL)) {
+            history.push(replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL.replace(':id', id), activeLanguage));
+          }
+          if (pathname.includes(CATEGORY_TYPES.QUESTIONNAIRE)) {
+            history.push(replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL.replace(':id', id), activeLanguage));
+          }
+        } else {
+          dispatch(contributeSubmission(formFields)).then(result => {
+            if (result) {
+              dispatch(clearContribute());
+              dispatch(showSpinner(false));
+              showReviewModal(false);
+              showConfirmSubmissionModal(true);
+            }
+          });
+        }
       }
     }
   };
@@ -188,122 +207,124 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
       show={true}
       onHide={handleClose}
     >
-      <Modal.Header closeButton>
-        <Modal.Title>{translate('exercise.review.modal.title')}</Modal.Title>
-      </Modal.Header>
       <Modal.Body>
-        <Accordion className="mb-1">
-          <Card>
-            <Card.Header>
-              <Accordion.Toggle as={Button} variant="link" eventKey="0" className="d-flex justify-content-between align-items-center" disabled={ exercises.length === 0 }>
-                <span>{translate('library.exercises')}</span>
-                <span>{exercises.length} {translate('common.items')} <ContextAwareToggle eventKey="0" /></span>
-              </Accordion.Toggle>
-            </Card.Header>
-            <Accordion.Collapse eventKey="0">
-              <Card.Body>
-                {exercises.map((exercise, index) => (
-                  <Form.Group key={index} as={Row}>
-                    <Col>
-                      <Form.Check
-                        key={index}
-                        type={'checkbox'}
-                        id={`exercise-${index}`}
-                        label={exercise.title}
-                        custom
-                        onChange={(e) => handleSelectExercises(e, index)}
-                        checked={selectedExercises.includes(index)}
-                      />
-                    </Col>
-                    <Col className="text-right">
-                      <Button
-                        variant="link"
-                        className="text-decoration-none p-0"
-                        onClick={() => handleEditResource(exercise, 'exercise')}
-                      >
-                        {translate('common.edit')}
-                      </Button>
-                    </Col>
-                  </Form.Group>
-                ))}
-              </Card.Body>
-            </Accordion.Collapse>
-          </Card>
-          <Card>
-            <Card.Header>
-              <Accordion.Toggle as={Button} variant="link" eventKey="1" className="d-flex justify-content-between align-items-center" disabled={ educationMaterials.length === 0 }>
-                <span>{translate('library.education_materials')}</span>
-                <span>{educationMaterials.length} {translate('common.items')} <ContextAwareToggle eventKey="1" /></span>
-              </Accordion.Toggle>
-            </Card.Header>
-            <Accordion.Collapse eventKey="1">
-              <Card.Body>
-                {educationMaterials.map((educationMaterial, index) => (
-                  <Form.Group key={index} as={Row}>
-                    <Col>
-                      <Form.Check
-                        key={index}
-                        type={'checkbox'}
-                        id={`education-${index}`}
-                        label={educationMaterial.title}
-                        custom
-                        onChange={(e) => handleSelectEducationMaterials(e, index)}
-                        checked={selectedEducationMaterials.includes(index)}
-                      />
-                    </Col>
-                    <Col className="text-right">
-                      <Button
-                        variant="link"
-                        className="text-decoration-none p-0"
-                        onClick={() => handleEditResource(educationMaterial, 'education')}
-                      >
-                        {translate('common.edit')}
-                      </Button>
-                    </Col>
-                  </Form.Group>
-                ))}
-              </Card.Body>
-            </Accordion.Collapse>
-          </Card>
-          <Card>
-            <Card.Header>
-              <Accordion.Toggle as={Button} variant="link" eventKey="2" className="d-flex justify-content-between align-items-center" disabled={ questionnaires.length === 0 }>
-                <span>{translate('library.questionnaires')}</span>
-                <span>{questionnaires.length} {translate('common.items')} <ContextAwareToggle eventKey="2" /></span>
-              </Accordion.Toggle>
-            </Card.Header>
-            <Accordion.Collapse eventKey="2">
-              <Card.Body>
-                {questionnaires.map((questionnaire, index) => (
-                  <Form.Group key={index} as={Row}>
-                    <Col>
-                      <Form.Check
-                        key={index}
-                        type={'checkbox'}
-                        id={`questionnaire-${index}`}
-                        label={questionnaire.title}
-                        custom
-                        onChange={(e) => handleSelectQuestionnaires(e, index)}
-                        checked={selectedQuestionnaires.includes(index)}
-                      />
-                    </Col>
-                    <Col className="text-right">
-                      <Button
-                        variant="link"
-                        className="text-decoration-none p-0"
-                        onClick={() => handleEditResource(questionnaire, 'questionnaire')}
-                      >
-                        {translate('common.edit')}
-                      </Button>
-                    </Col>
-                  </Form.Group>
-                ))}
-              </Card.Body>
-            </Accordion.Collapse>
-          </Card>
-        </Accordion>
-        <p className="mt-3"><strong>{translate('contribute.submission.total_selected_resource', { number: totalSelectedResourceItem() })}</strong></p>
-        <h6 className="text-primary mt-2">{translate('contribute.submission.enter_your_detail')}</h6>
+        {!id &&
+          <>
+            <h6 className="text-primary mt-2 mb-3">{translate('exercise.review.modal.title')}</h6>
+            <Accordion className="mb-1">
+              <Card>
+                <Card.Header>
+                  <Accordion.Toggle as={Button} variant="link" eventKey="0" className="d-flex justify-content-between align-items-center" disabled={ exercises.length === 0 }>
+                    <span>{translate('library.exercises')}</span>
+                    <span>{exercises.length} {translate('common.items')} <ContextAwareToggle eventKey="0" /></span>
+                  </Accordion.Toggle>
+                </Card.Header>
+                <Accordion.Collapse eventKey="0">
+                  <Card.Body>
+                    {exercises.map((exercise, index) => (
+                      <Form.Group key={index} as={Row}>
+                        <Col>
+                          <Form.Check
+                            key={index}
+                            type={'checkbox'}
+                            id={`exercise-${index}`}
+                            label={exercise.title}
+                            custom
+                            onChange={(e) => handleSelectExercises(e, index)}
+                            checked={selectedExercises.includes(index)}
+                          />
+                        </Col>
+                        <Col className="text-right">
+                          <Button
+                            variant="link"
+                            className="text-decoration-none p-0"
+                            onClick={() => handleEditResource(exercise, 'exercise')}
+                          >
+                            {translate('common.edit')}
+                          </Button>
+                        </Col>
+                      </Form.Group>
+                    ))}
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+              <Card>
+                <Card.Header>
+                  <Accordion.Toggle as={Button} variant="link" eventKey="1" className="d-flex justify-content-between align-items-center" disabled={ educationMaterials.length === 0 }>
+                    <span>{translate('library.education_materials')}</span>
+                    <span>{educationMaterials.length} {translate('common.items')} <ContextAwareToggle eventKey="1" /></span>
+                  </Accordion.Toggle>
+                </Card.Header>
+                <Accordion.Collapse eventKey="1">
+                  <Card.Body>
+                    {educationMaterials.map((educationMaterial, index) => (
+                      <Form.Group key={index} as={Row}>
+                        <Col>
+                          <Form.Check
+                            key={index}
+                            type={'checkbox'}
+                            id={`education-${index}`}
+                            label={educationMaterial.title}
+                            custom
+                            onChange={(e) => handleSelectEducationMaterials(e, index)}
+                            checked={selectedEducationMaterials.includes(index)}
+                          />
+                        </Col>
+                        <Col className="text-right">
+                          <Button
+                            variant="link"
+                            className="text-decoration-none p-0"
+                            onClick={() => handleEditResource(educationMaterial, 'education')}
+                          >
+                            {translate('common.edit')}
+                          </Button>
+                        </Col>
+                      </Form.Group>
+                    ))}
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+              <Card>
+                <Card.Header>
+                  <Accordion.Toggle as={Button} variant="link" eventKey="2" className="d-flex justify-content-between align-items-center" disabled={ questionnaires.length === 0 }>
+                    <span>{translate('library.questionnaires')}</span>
+                    <span>{questionnaires.length} {translate('common.items')} <ContextAwareToggle eventKey="2" /></span>
+                  </Accordion.Toggle>
+                </Card.Header>
+                <Accordion.Collapse eventKey="2">
+                  <Card.Body>
+                    {questionnaires.map((questionnaire, index) => (
+                      <Form.Group key={index} as={Row}>
+                        <Col>
+                          <Form.Check
+                            key={index}
+                            type={'checkbox'}
+                            id={`questionnaire-${index}`}
+                            label={questionnaire.title}
+                            custom
+                            onChange={(e) => handleSelectQuestionnaires(e, index)}
+                            checked={selectedQuestionnaires.includes(index)}
+                          />
+                        </Col>
+                        <Col className="text-right">
+                          <Button
+                            variant="link"
+                            className="text-decoration-none p-0"
+                            onClick={() => handleEditResource(questionnaire, 'questionnaire')}
+                          >
+                            {translate('common.edit')}
+                          </Button>
+                        </Col>
+                      </Form.Group>
+                    ))}
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+            </Accordion>
+            <p className="mt-3"><strong>{translate('contribute.submission.total_selected_resource', { number: totalSelectedResourceItem() })}</strong></p>
+          </>
+        }
+        <h6 className="text-primary mt-2 mb-3">{translate('contribute.submission.enter_your_detail')}</h6>
         <Form.Group controlId="formName" as={Row}>
           <Col>
             <Form.Label>{translate('common.first_name')}</Form.Label>

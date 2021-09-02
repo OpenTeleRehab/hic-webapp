@@ -55,6 +55,30 @@ const publicRoutes = [
     defaultTemplate: false
   },
   {
+    title: 'translation.exercise.edit',
+    path: ROUTES.EXERCISE_EDIT_TRANSLATION,
+    component: ContributePage,
+    exact: true,
+    type: PUBLIC,
+    defaultTemplate: false
+  },
+  {
+    title: 'translation.education_material.edit',
+    path: ROUTES.EDUCATION_MATERIAL_EDIT_TRANSLATION,
+    component: ContributePage,
+    exact: true,
+    type: PUBLIC,
+    defaultTemplate: false
+  },
+  {
+    title: 'translation.questionnaire.edit',
+    path: ROUTES.QUESTIONNAIRE_EDIT_TRANSLATION,
+    component: ContributePage,
+    exact: true,
+    type: PUBLIC,
+    defaultTemplate: false
+  },
+  {
     title: 'confirm.submission',
     path: ROUTES.CONFIRM_SUBMISSION,
     component: ConfirmSubmissionPage,
