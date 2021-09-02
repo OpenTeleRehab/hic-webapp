@@ -1,18 +1,362 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
-const Acknowledgment = ({ translate }) => {
+import { useDispatch, useSelector } from 'react-redux';
+import { getTranslate } from 'react-localize-redux';
+import settings from '../../../settings';
+import {
+  createStaticPage,
+  getStaticPage,
+  updateStaticPage
+} from 'store/staticPage/actions';
+import { formatFileSize, toMB } from 'utils/file';
+import scssColors from 'scss/custom.scss';
+import { Button, Col, Form, Row } from 'react-bootstrap';
+import Select from 'react-select';
+import { BsUpload, BsXCircle } from 'react-icons/bs';
+import { Editor } from '@tinymce/tinymce-react';
+import { getContributors } from '../../../store/contributor/actions';
+import Multiselect from 'multiselect-react-dropdown';
+
+const Acknowledgment = ({ type }) => {
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
+  const dispatch = useDispatch();
+  const { maxFileSize } = settings.educationMaterial;
+
+  const [errorContent, setErrorContent] = useState(false);
+  const [errorTitle, setErrorTitle] = useState(false);
+  const [acknowledgmentFile, setAcknowledgmentFile] = useState(undefined);
+  const [fileError, setFileError] = useState(false);
+  const { languages } = useSelector(state => state.language);
+  const { profile } = useSelector((state) => state.auth);
+  const { contributors } = useSelector((state) => state.contributor);
+  const [hideContributors, setHideContributors] = useState([]);
+
+  const { staticPage } = useSelector(state => state.staticPage);
+
+  const [language, setLanguage] = useState('');
+  const [formFields, setFormFields] = useState({
+    url: type,
+    title: '',
+    file: undefined
+  });
+  const [content, setContent] = useState('');
+  const [partnerContent, setPartnerContent] = useState('');
+
+  useEffect(() => {
+    if (languages.length) {
+      if (profile && profile.language_id) {
+        setLanguage(profile.language_id);
+      } else {
+        setLanguage(languages[0].id);
+      }
+    }
+  }, [languages, profile]);
+
+  useEffect(() => {
+    dispatch(getStaticPage({
+      'url-segment': type,
+      lang: language
+    }));
+  }, [dispatch, language, type]);
+
+  useEffect(() => {
+    if (staticPage.id) {
+      setFormFields({
+        title: staticPage.title || '',
+        url: staticPage.url || type,
+        content: staticPage.content
+      });
+      setAcknowledgmentFile(staticPage.file);
+      setContent(staticPage.content || '');
+      setPartnerContent(staticPage.partner_content || '');
+    }
+  }, [staticPage, type]);
+
+  const selectedContributors = [];
+  if (staticPage && staticPage.acknowledgmentData) {
+    contributors.forEach((contributor) => {
+      const test = staticPage.acknowledgmentData.hide_contributors.includes(contributor.id);
+      if (test) {
+        selectedContributors.push(contributor);
+      }
+    });
+  }
+
+  useEffect(() => {
+    if (selectedContributors.length && !(hideContributors.length)) {
+      const selectedIds = selectedContributors.map(selectedContributor => selectedContributor.id);
+      setHideContributors([...selectedIds]);
+    }
+  }, [selectedContributors, hideContributors]);
+
+  useEffect(() => {
+    dispatch(getContributors());
+  }, [dispatch]);
+
+  const handleLanguageChange = (value) => {
+    setLanguage(value);
+  };
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setFormFields({ ...formFields, [name]: value });
+  };
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    setFormFields({ ...formFields, [name]: files[0] });
+
+    const file = files[0];
+    if (file) {
+      const fileName = file.name;
+      const fileSize = file.size;
+      const fileType = file.type;
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setAcknowledgmentFile({ url: reader.result, fileName, fileSize, fileType, file });
+      };
+    }
+  };
+
+  const handleFileRemove = (e) => {
+    setAcknowledgmentFile(null);
+    setFormFields({ ...formFields, file: undefined });
+  };
+
+  const handleEditorChange = (value, editor) => {
+    setContent(value);
+  };
+
+  const handlePartnerChange = (value, editor) => {
+    setPartnerContent(value);
+  };
+
+  const handleMultipleSelectChange = (selectedList, selectedItem) => {
+    hideContributors.push(selectedItem.id);
+    setHideContributors([...hideContributors]);
+  };
+
+  const handleMultipleRemove = (selectedList, selectedItem) => {
+    setHideContributors(JSON.stringify([...selectedList]));
+  };
+
+  const enableButtons = () => {
+    const languageObj = languages.find(item => item.id === parseInt(language, 10));
+    return languageObj && languageObj.code === languageObj.fallback;
+  };
+
+  const handleConfirm = () => {
+    let canSave = true;
+
+    if (formFields.title === '') {
+      canSave = false;
+      setErrorTitle(true);
+    } else {
+      setErrorTitle(false);
+    }
+
+    if (content === '') {
+      canSave = false;
+      setErrorContent(true);
+    } else {
+      setErrorContent(false);
+    }
+
+    if (formFields.file !== undefined && toMB(formFields.file.size) > maxFileSize) {
+      canSave = false;
+      setFileError(true);
+    } else {
+      setFileError(false);
+    }
+
+    if (canSave) {
+      if (staticPage.id) {
+        dispatch(updateStaticPage(staticPage.id, { ...formFields, content, partnerContent, hideContributors: JSON.stringify(hideContributors), lang: language }))
+          .then(result => {
+            if (result) {
+              dispatch(getStaticPage({
+                'url-segment': type,
+                lang: language
+              }));
+            }
+          });
+      } else {
+        dispatch(createStaticPage({ ...formFields, content, partnerContent, hideContributors: JSON.stringify(hideContributors), lang: language })).then(result => {
+          if (result) {
+            dispatch(getStaticPage({
+              'url-segment': type,
+              lang: language
+            }));
+          }
+        });
+      }
+    }
+  };
+
+  const handleFormSubmit = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleConfirm();
+    }
+  };
+
+  const customSelectStyles = {
+    option: (provided) => ({
+      ...provided,
+      color: 'black',
+      backgroundColor: 'white',
+      '&:hover': {
+        backgroundColor: scssColors.infoLight
+      }
+    })
+  };
+
   return (
-    <>
-      <div className="no-gutters bg-white p-md-3">
-        This is acknowledgment
-      </div>
-    </>
+    <div className="no-gutters bg-white p-md-3">
+      <Form onKeyPress={(e) => handleFormSubmit(e)}>
+        <Form.Group as={Row} controlId="formLanguage">
+          <Form.Label column sm={3}>{translate('common.show_language.version')}</Form.Label>
+          <Col sm={9}>
+            <Select
+              isDisabled={!staticPage.id}
+              classNamePrefix="filter"
+              value={languages.filter(option => option.id === language)}
+              getOptionLabel={option => `${option.name} ${option.code === option.fallback ? translate('common.default') : ''}`}
+              options={languages}
+              onChange={(e) => handleLanguageChange(e.id)}
+              styles={customSelectStyles}
+            />
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} controlId="formFile">
+          <Form.Label column sm={3}>{translate('static_page.image')}</Form.Label>
+          <Col sm={9}>
+            <Form.Control.Feedback type="invalid">
+              {formFields.file !== undefined
+                ? translate('education_material.upload_file.max_size', { size: maxFileSize }) : ''
+              }
+            </Form.Control.Feedback>
+            <div className="w-50">
+              {acknowledgmentFile && (
+                <div className="mb-2 position-relative">
+                  {enableButtons() && (
+                    <Button variant="link" onClick={() => handleFileRemove()} className="position-absolute btn-remove">
+                      <BsXCircle size={20} color={scssColors.danger} />
+                    </Button>
+                  )}
+                  <img src={acknowledgmentFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${acknowledgmentFile.id}`} alt="..." className="w-100 img-thumbnail"/>
+                  <div>{acknowledgmentFile.fileName} {acknowledgmentFile.fileSize ? ('(' + formatFileSize(acknowledgmentFile.fileSize) + ')') : ''}</div>
+                </div>
+              )}
+              {enableButtons() && (
+                <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden" >
+                  <BsUpload size={15}/> Upload Image
+                  <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} accept="image/*" isInvalid={fileError} />
+                </div>
+              )}
+            </div>
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} controlId="title">
+          <Col sm={3}>
+            <Form.Label>{translate('static_page.title')}</Form.Label>
+            <span className="text-dark ml-1">*</span>
+          </Col>
+          <Col sm={9}>
+            <Form.Control
+              name="title"
+              onChange={handleChange}
+              type="text"
+              placeholder={translate('placeholder.static_page.title')}
+              value={formFields.title}
+              maxLength={settings.textMaxLength}
+              isInvalid={errorTitle}
+            />
+            <Form.Control.Feedback type="invalid">
+              {translate('error.static_page.title')}
+            </Form.Control.Feedback>
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} controlId="content">
+          <Col sm={3}>
+            <Form.Label>{translate('home_introduction_text')}</Form.Label>
+            <span className="text-dark ml-1">*</span>
+          </Col>
+          <Col sm={9}>
+            <Editor
+              apiKey={settings.tinymce.apiKey}
+              name="content"
+              isInvalid={errorContent}
+              value={content}
+              init={{
+                height: 500,
+                plugins: [
+                  'advlist autolink lists link image charmap print preview anchor',
+                  'searchreplace visualblocks code fullscreen',
+                  'insertdatetime media table paste code help wordcount'
+                ],
+                toolbar:
+                  'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link | help'
+              }}
+              onEditorChange={handleEditorChange}
+            />
+            {errorContent &&
+            <div className="invalid-feedback d-block">{translate('error.home_introduction_text')}</div>
+            }
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} controlId="formFeatureResource">
+          <Form.Label column sm="3">{translate('acknowledgment.hide_contributors')}</Form.Label>
+          <Col sm="9">
+            <Multiselect
+              displayValue="name"
+              selectedValues={selectedContributors}
+              onSelect={handleMultipleSelectChange}
+              onRemove={handleMultipleRemove}
+              options={contributors}
+              showCheckbox
+              disable={!enableButtons()}
+            />
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} controlId="partner_content">
+          <Form.Label column sm="3">{translate('static_page_partner_content')}</Form.Label>
+          <Col sm="9">
+            <Editor
+              apiKey={settings.tinymce.apiKey}
+              name="partner_content"
+              value={partnerContent}
+              init={{
+                height: 500,
+                plugins: [
+                  'advlist autolink lists link image charmap print preview anchor',
+                  'searchreplace visualblocks code fullscreen',
+                  'insertdatetime media table paste code help wordcount'
+                ],
+                toolbar:
+                  'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link | help'
+              }}
+              onEditorChange={handlePartnerChange}
+            />
+          </Col>
+        </Form.Group>
+        <div className="sticky-bottom d-flex justify-content-end">
+          <Button
+            onClick={handleConfirm}
+          >
+            {translate('common.save')}
+          </Button>
+        </div>
+      </Form>
+    </div>
   );
 };
 
 Acknowledgment.propTypes = {
-  translate: PropTypes.func
+  type: PropTypes.string
 };
 
 export default Acknowledgment;
