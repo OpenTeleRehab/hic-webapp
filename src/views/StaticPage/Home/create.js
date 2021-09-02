@@ -38,7 +38,7 @@ const CreateHomePage = ({ type, editId }) => {
   const [featureResources, setFeatureResources] = useState('');
   const [errorFeaturedResource, setErrorFeaturedResource] = useState(false);
 
-  const { staticPage, filters, resources } = useSelector(state => state.staticPage);
+  const { staticPage, resources } = useSelector(state => state.staticPage);
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
     url: type,
@@ -53,26 +53,20 @@ const CreateHomePage = ({ type, editId }) => {
 
   useEffect(() => {
     if (languages.length) {
-      if (editId) {
-        if (filters && filters.lang) {
-          setLanguage(filters.lang);
-        } else if (profile && profile.language_id) {
-          setLanguage(profile.language_id);
-        } else {
-          setLanguage(languages[0].id);
-        }
+      if (profile && profile.language_id) {
+        setLanguage(profile.language_id);
       } else {
         setLanguage(languages[0].id);
       }
     }
-  }, [languages, filters, editId, profile]);
+  }, [languages, profile]);
 
   useEffect(() => {
     dispatch(getStaticPage({
       'url-segment': type,
-      lang: profile && profile.language_id
+      lang: language
     }));
-  }, [dispatch, profile, type]);
+  }, [dispatch, language, type]);
 
   useEffect(() => {
     dispatch(getFeaturedResources());
