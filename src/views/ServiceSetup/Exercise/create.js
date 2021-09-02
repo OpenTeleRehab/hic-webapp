@@ -268,7 +268,7 @@ const CreateExercise = ({ translate }) => {
     setIsLoading(true);
     dispatch(rejectExercise(id)).then(result => {
       if (result) {
-        history.push(ROUTES.ADMIN_RESOURCES);
+        dispatch(getExercise(id, language));
       }
       setIsLoading(false);
     });
