@@ -258,7 +258,6 @@ const CreateHomePage = ({ type, editId }) => {
       }
     }
   };
-
   return (
     <div className="no-gutters bg-white p-md-3 static-home">
       <Form onKeyPress={(e) => handleFormSubmit(e)}>

@@ -177,7 +177,9 @@ const CreateEducationMaterial = ({ translate }) => {
     setIsLoading(true);
     dispatch(rejectEducationMaterial(id)).then(result => {
       if (result) {
-        history.push(ROUTES.SERVICE_SETUP_EDUCATION);
+        if (result) {
+          dispatch(getEducationMaterial(id, language));
+        }
       }
       setIsLoading(false);
     });

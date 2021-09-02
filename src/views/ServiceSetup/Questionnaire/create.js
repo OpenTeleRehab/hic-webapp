@@ -183,7 +183,7 @@ const CreateQuestionnaire = ({ translate }) => {
     setIsLoading(true);
     dispatch(rejectQuestionnaire(id)).then(result => {
       if (result) {
-        history.push(ROUTES.SERVICE_SETUP_QUESTIONNAIRE);
+        dispatch(getQuestionnaire(id, language));
       }
       setIsLoading(false);
     });
