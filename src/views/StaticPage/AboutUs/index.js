@@ -17,8 +17,6 @@ import { BsUpload, BsXCircle } from 'react-icons/bs/index';
 import { Editor } from '@tinymce/tinymce-react';
 
 import Select from 'react-select';
-import { Link } from 'react-router-dom';
-import * as ROUTES from '../../../variables/routes';
 import scssColors from '../../../scss/custom.scss';
 
 const AboutUs = ({ type }) => {
@@ -33,7 +31,6 @@ const AboutUs = ({ type }) => {
   const [fileError, setFileError] = useState(false);
   const { languages } = useSelector(state => state.language);
   const { profile } = useSelector((state) => state.auth);
-  const [disabled, setDisable] = useState(true);
 
   const { staticPage } = useSelector(state => state.staticPage);
 
@@ -64,7 +61,7 @@ const AboutUs = ({ type }) => {
   }, [dispatch, language, type]);
 
   useEffect(() => {
-    if (staticPage.id) {
+    if (staticPage && staticPage.url === type) {
       setFormFields({
         title: staticPage.title || '',
         url: staticPage.url || type,
@@ -78,19 +75,16 @@ const AboutUs = ({ type }) => {
 
   const handleLanguageChange = (value) => {
     setLanguage(value);
-    setDisable(false);
   };
 
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
-    setDisable(false);
   };
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     setFormFields({ ...formFields, [name]: files[0] });
-    setDisable(false);
 
     const file = files[0];
     if (file) {
@@ -108,12 +102,10 @@ const AboutUs = ({ type }) => {
   const handleFileRemove = (e) => {
     setAboutUsFile(null);
     setFormFields({ ...formFields, file: undefined });
-    setDisable(false);
   };
 
   const handleEditorChange = (value, editor) => {
     setContent(value);
-    setDisable(false);
   };
 
   const handleConfirm = () => {
@@ -142,7 +134,6 @@ const AboutUs = ({ type }) => {
 
     if (canSave) {
       if (staticPage.id) {
-        dispatch(updateStaticPage(staticPage.id, { ...formFields, content, partnerContent, lang: language }));
         dispatch(updateStaticPage(staticPage.id, { ...formFields, content, partnerContent, lang: language }))
           .then(result => {
             if (result) {
@@ -183,12 +174,16 @@ const AboutUs = ({ type }) => {
     })
   };
 
+  const handlePartnerChange = (value, editor) => {
+    setPartnerContent(value);
+  };
+
   return (
     <div className="no-gutters bg-white p-md-3">
       <Form onKeyPress={(e) => handleFormSubmit(e)}>
         <Form.Group as={Row} controlId="formLanguage">
-          <Form.Label column sm={2}>{translate('common.show_language.version')}</Form.Label>
-          <Col sm={10}>
+          <Form.Label column sm={3}>{translate('common.show_language.version')}</Form.Label>
+          <Col sm={9}>
             <Select
               isDisabled={!staticPage.id}
               classNamePrefix="filter"
@@ -201,8 +196,8 @@ const AboutUs = ({ type }) => {
           </Col>
         </Form.Group>
         <Form.Group as={Row} controlId="formFile">
-          <Form.Label column sm={2}>{translate('static_page.image')}</Form.Label>
-          <Col sm={10}>
+          <Form.Label column sm={3}>{translate('static_page.image')}</Form.Label>
+          <Col sm={9}>
             <Form.Control.Feedback type="invalid">
               {formFields.file !== undefined
                 ? translate('education_material.upload_file.max_size', { size: maxFileSize }) : ''
@@ -226,11 +221,11 @@ const AboutUs = ({ type }) => {
           </Col>
         </Form.Group>
         <Form.Group as={Row} controlId="title">
-          <Col sm={2}>
+          <Col sm={3}>
             <Form.Label>{translate('static_page.title')}</Form.Label>
             <span className="text-dark ml-1">*</span>
           </Col>
-          <Col sm={10}>
+          <Col sm={9}>
             <Form.Control
               name="title"
               onChange={handleChange}
@@ -246,11 +241,11 @@ const AboutUs = ({ type }) => {
           </Col>
         </Form.Group>
         <Form.Group as={Row} controlId="content">
-          <Col sm={2}>
+          <Col sm={3}>
             <Form.Label>{translate('about_us.content')}</Form.Label>
             <span className="text-dark ml-1">*</span>
           </Col>
-          <Col sm={10}>
+          <Col sm={9}>
             <Editor
               apiKey={settings.tinymce.apiKey}
               name="content"
@@ -273,20 +268,32 @@ const AboutUs = ({ type }) => {
             }
           </Col>
         </Form.Group>
+        <Form.Group as={Row} controlId="partner_content">
+          <Form.Label column sm="3">{translate('static_page_partner_content')}</Form.Label>
+          <Col sm="9">
+            <Editor
+              apiKey={settings.tinymce.apiKey}
+              name="partner_content"
+              value={partnerContent}
+              init={{
+                height: 500,
+                plugins: [
+                  'advlist autolink lists link image charmap print preview anchor',
+                  'searchreplace visualblocks code fullscreen',
+                  'insertdatetime media table paste code help wordcount'
+                ],
+                toolbar:
+                  'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link | help'
+              }}
+              onEditorChange={handlePartnerChange}
+            />
+          </Col>
+        </Form.Group>
         <div className="sticky-bottom d-flex justify-content-end">
           <Button
             onClick={handleConfirm}
-            disabled={disabled}
           >
             {translate('common.save')}
-          </Button>
-          <Button
-            className="ml-2"
-            variant="outline-dark"
-            as={Link}
-            to={ROUTES.ADMIN_RESOURCES}
-          >
-            {translate('common.cancel')}
           </Button>
         </div>
       </Form>

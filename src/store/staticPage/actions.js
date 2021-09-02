@@ -5,6 +5,7 @@ import {
   showSuccessNotification
 } from 'store/notification/actions';
 import { showSpinner } from '../spinnerOverlay/actions';
+import { PAGE_TYPES } from '../../variables/staticPage';
 
 export const getStaticPage = payload => async dispatch => {
   dispatch(mutation.getStaticPageRequest());
@@ -26,6 +27,7 @@ export const updateStaticPage = (id, payload) => async dispatch => {
   if (data.success) {
     dispatch(mutation.updateStaticPageSuccess());
     dispatch(showSuccessNotification('toast_title.update_static_page', data.message));
+    dispatch(showSuccessNotification(payload.url === PAGE_TYPES.ABOUT_US ? 'toast_title.update_aboutus' : payload.url === PAGE_TYPES.ACKNOWLEDGMENT ? 'toast_title.update_acknowledgment' : 'toast_title.update_homepage', data.message));
     return true;
   } else {
     dispatch(mutation.updateStaticPagesFail());
@@ -41,7 +43,9 @@ export const createStaticPage = (payload) => async (dispatch) => {
   const data = await staticPage.createStaticPage(payload);
   if (data.success) {
     dispatch(mutation.createStaticPageSuccess());
-    dispatch(showSuccessNotification('toast_title.new_static_page', data.message));
+    console.log(payload.type);
+    console.log(PAGE_TYPES.ABOUT_US);
+    dispatch(showSuccessNotification(payload.url === PAGE_TYPES.ABOUT_US ? 'toast_title.new_aboutus' : payload.url === PAGE_TYPES.ACKNOWLEDGMENT ? 'toast_title.new_acknowledgment' : 'toast_title.new_homepage', data.message));
     dispatch(showSpinner(false));
     return true;
   } else {

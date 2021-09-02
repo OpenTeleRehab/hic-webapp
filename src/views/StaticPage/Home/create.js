@@ -21,9 +21,6 @@ import { Editor } from '@tinymce/tinymce-react';
 
 import Select from 'react-select';
 import Multiselect from 'multiselect-react-dropdown';
-
-import { Link } from 'react-router-dom';
-import * as ROUTES from '../../../variables/routes';
 import scssColors from '../../../scss/custom.scss';
 
 const CreateHomePage = ({ type, editId }) => {
@@ -38,7 +35,6 @@ const CreateHomePage = ({ type, editId }) => {
   const [fileError, setFileError] = useState(false);
   const { languages } = useSelector(state => state.language);
   const { profile } = useSelector((state) => state.auth);
-  const [disabled, setDisable] = useState(true);
   const [featureResources, setFeatureResources] = useState('');
 
   const { staticPage, filters, resources } = useSelector(state => state.staticPage);
@@ -82,7 +78,7 @@ const CreateHomePage = ({ type, editId }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (staticPage.id) {
+    if (staticPage && staticPage.url === type) {
       setFormFields({
         title: staticPage.title || '',
         url: staticPage.url || type,
@@ -100,19 +96,16 @@ const CreateHomePage = ({ type, editId }) => {
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
-    setDisable(false);
   };
 
   const handleCheck = e => {
     const { name, checked } = e.target;
     setFormFields({ ...formFields, [name]: checked });
-    setDisable(false);
   };
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     setFormFields({ ...formFields, [name]: files[0] });
-    setDisable(false);
 
     const file = files[0];
     if (file) {
@@ -130,17 +123,14 @@ const CreateHomePage = ({ type, editId }) => {
   const handleFileRemove = (e) => {
     setMaterialFile(null);
     setFormFields({ ...formFields, file: undefined });
-    setDisable(false);
   };
 
   const handleEditorChange = (value, editor) => {
     setContent(value);
-    setDisable(false);
   };
 
   const handlePartnerChange = (value, editor) => {
     setPartnerContent(value);
-    setDisable(false);
   };
 
   const handleConfirm = () => {
@@ -188,7 +178,6 @@ const CreateHomePage = ({ type, editId }) => {
           }
         });
       }
-      setDisable(true);
     }
   };
 
@@ -212,7 +201,6 @@ const CreateHomePage = ({ type, editId }) => {
 
   const handleLanguageChange = (value) => {
     setLanguage(value);
-    setDisable(false);
   };
 
   let options = [];
@@ -228,12 +216,10 @@ const CreateHomePage = ({ type, editId }) => {
 
   const handleMultipleSelectChange = (selectedList, selectedItem) => {
     setFeatureResources(JSON.stringify([...selectedList]));
-    setDisable(false);
   };
 
   const handleMultipleRemove = (selectedList, selectedItem) => {
     setFeatureResources(JSON.stringify([...selectedList]));
-    setDisable(false);
   };
 
   let selectedArray = [];
@@ -406,17 +392,8 @@ const CreateHomePage = ({ type, editId }) => {
         <div className="sticky-bottom d-flex justify-content-end">
           <Button
             onClick={handleConfirm}
-            disabled={disabled}
           >
             {translate('common.save')}
-          </Button>
-          <Button
-            className="ml-2"
-            variant="outline-dark"
-            as={Link}
-            to={ROUTES.ADMIN_RESOURCES}
-          >
-            {translate('common.cancel')}
           </Button>
         </div>
       </Form>
