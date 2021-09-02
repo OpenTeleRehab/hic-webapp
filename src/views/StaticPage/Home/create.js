@@ -36,6 +36,7 @@ const CreateHomePage = ({ type, editId }) => {
   const { languages } = useSelector(state => state.language);
   const { profile } = useSelector((state) => state.auth);
   const [featureResources, setFeatureResources] = useState('');
+  const [errorFeaturedResource, setErrorFeaturedResource] = useState(false);
 
   const { staticPage, filters, resources } = useSelector(state => state.staticPage);
   const [language, setLanguage] = useState('');
@@ -133,53 +134,24 @@ const CreateHomePage = ({ type, editId }) => {
     setPartnerContent(value);
   };
 
-  const handleConfirm = () => {
-    let canSave = true;
-
-    if (formFields.title === '') {
-      canSave = false;
-      setErrorTitle(true);
-    } else {
-      setErrorTitle(false);
+  let selectedArray = [];
+  if (formFields.resources) {
+    if (formFields.resources.exercises) {
+      selectedArray = formFields.resources.exercises;
     }
-
-    if (content === '') {
-      canSave = false;
-      setErrorContent(true);
-    } else {
-      setErrorContent(false);
+    if (formFields.resources.education_materials) {
+      selectedArray = selectedArray.concat(formFields.resources.education_materials);
     }
-
-    if (formFields.file !== undefined && toMB(formFields.file.size) > maxFileSize) {
-      canSave = false;
-      setFileError(true);
-    } else {
-      setFileError(false);
+    if (formFields.resources.questionnaires) {
+      selectedArray = selectedArray.concat(formFields.resources.questionnaires);
     }
+  }
 
-    if (canSave) {
-      if (staticPage.id) {
-        dispatch(updateStaticPage(staticPage.id, { ...formFields, content, partnerContent, featureResources, lang: language }))
-          .then(result => {
-            if (result) {
-              dispatch(getStaticPage({
-                'url-segment': type,
-                lang: profile && profile.language_id
-              }));
-            }
-          });
-      } else {
-        dispatch(createStaticPage({ ...formFields, content, partnerContent, featureResources, lang: language })).then(result => {
-          if (result) {
-            dispatch(getStaticPage({
-              'url-segment': type,
-              lang: profile && profile.language_id
-            }));
-          }
-        });
-      }
+  useEffect(() => {
+    if (selectedArray.length && !featureResources) {
+      setFeatureResources(JSON.stringify([...selectedArray]));
     }
-  };
+  }, [selectedArray, featureResources]);
 
   const handleFormSubmit = (e) => {
     if (e.key === 'Enter') {
@@ -216,33 +188,80 @@ const CreateHomePage = ({ type, editId }) => {
 
   const handleMultipleSelectChange = (selectedList, selectedItem) => {
     setFeatureResources(JSON.stringify([...selectedList]));
+    if (selectedList.length > 0) {
+      setErrorFeaturedResource(false);
+    } else {
+      setErrorFeaturedResource(true);
+    }
   };
 
   const handleMultipleRemove = (selectedList, selectedItem) => {
     setFeatureResources(JSON.stringify([...selectedList]));
+    if (selectedList.length > 0) {
+      setErrorFeaturedResource(false);
+    } else {
+      setErrorFeaturedResource(true);
+    }
   };
 
-  let selectedArray = [];
-  if (formFields.resources) {
-    if (formFields.resources.exercises) {
-      selectedArray = formFields.resources.exercises;
-    }
-    if (formFields.resources.education_materials) {
-      selectedArray = selectedArray.concat(formFields.resources.education_materials);
-    }
-    if (formFields.resources.questionnaires) {
-      selectedArray = selectedArray.concat(formFields.resources.questionnaires);
-    }
-  }
+  const handleConfirm = () => {
+    let canSave = true;
 
-  useEffect(() => {
-    if (selectedArray.length && !featureResources) {
-      setFeatureResources(JSON.stringify([...selectedArray]));
+    if (formFields.title === '') {
+      canSave = false;
+      setErrorTitle(true);
+    } else {
+      setErrorTitle(false);
     }
-  }, [selectedArray, featureResources]);
+
+    if (content === '') {
+      canSave = false;
+      setErrorContent(true);
+    } else {
+      setErrorContent(false);
+    }
+
+    if (formFields.display_feature_resource && (featureResources === '' || errorFeaturedResource)) {
+      setErrorFeaturedResource(true);
+      canSave = false;
+    } else {
+      setErrorFeaturedResource(false);
+      canSave = true;
+    }
+
+    if (formFields.file !== undefined && toMB(formFields.file.size) > maxFileSize) {
+      canSave = false;
+      setFileError(true);
+    } else {
+      setFileError(false);
+    }
+
+    if (canSave) {
+      if (staticPage.id) {
+        dispatch(updateStaticPage(staticPage.id, { ...formFields, content, partnerContent, featureResources, lang: language }))
+          .then(result => {
+            if (result) {
+              dispatch(getStaticPage({
+                'url-segment': type,
+                lang: profile && profile.language_id
+              }));
+            }
+          });
+      } else {
+        dispatch(createStaticPage({ ...formFields, content, partnerContent, featureResources, lang: language })).then(result => {
+          if (result) {
+            dispatch(getStaticPage({
+              'url-segment': type,
+              lang: profile && profile.language_id
+            }));
+          }
+        });
+      }
+    }
+  };
 
   return (
-    <div className="no-gutters bg-white p-md-3">
+    <div className="no-gutters bg-white p-md-3 static-home">
       <Form onKeyPress={(e) => handleFormSubmit(e)}>
         <Form.Group as={Row} controlId="formLanguage">
           <Form.Label column sm="3">{translate('common.show_language.version')}</Form.Label>
@@ -334,19 +353,21 @@ const CreateHomePage = ({ type, editId }) => {
         </Form.Group>
         <Form.Group as={Row} acontrolId="formQuickStat">
           <Form.Label column sm="3">{translate('home_display_quick_stat')}</Form.Label>
-          <div className="col-sm-9">
+          <Col sm="9">
             <Form.Check
+              custom
               name="display_quick_stat"
               onChange={handleCheck}
               value={true}
               checked={formFields.display_quick_stat}
             />
-          </div>
+          </Col>
         </Form.Group>
         <Form.Group as={Row} controlId="isFeatureResource">
           <Form.Label column sm="3">{translate('home_display_feature_resource')}</Form.Label>
           <Col sm="9">
             <Form.Check
+              custom
               name="display_feature_resource"
               onChange={handleCheck}
               value={true}
@@ -365,7 +386,11 @@ const CreateHomePage = ({ type, editId }) => {
               onRemove={handleMultipleRemove}
               options={options}
               showCheckbox
+              selectionLimit={settings.featuredResourcesLimit}
             />
+            {errorFeaturedResource &&
+            <div className="invalid-feedback d-block">{translate('error.home_featured_resources')}</div>
+            }
           </Col>
         </Form.Group>
         <Form.Group as={Row} controlId="partner_content">
