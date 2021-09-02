@@ -53,6 +53,11 @@ const AboutUs = ({ type }) => {
     }
   }, [languages, profile]);
 
+  const enableButtons = () => {
+    const languageObj = languages.find(item => item.id === parseInt(language, 10));
+    return languageObj && languageObj.code === languageObj.fallback;
+  };
+
   useEffect(() => {
     dispatch(getStaticPage({
       'url-segment': type,
@@ -206,17 +211,21 @@ const AboutUs = ({ type }) => {
             <div className="w-50">
               {aboutUsFile && (
                 <div className="mb-2 position-relative">
-                  <Button variant="link" onClick={() => handleFileRemove()} className="position-absolute btn-remove">
-                    <BsXCircle size={20} color={scssColors.danger} />
-                  </Button>
+                  {enableButtons() && (
+                    <Button variant="link" onClick={() => handleFileRemove()} className="position-absolute btn-remove">
+                      <BsXCircle size={20} color={scssColors.danger} />
+                    </Button>
+                  )}
                   <img src={aboutUsFile.url || `${process.env.REACT_APP_API_BASE_URL}/file/${aboutUsFile.id}`} alt="..." className="w-100 img-thumbnail"/>
                   <div>{aboutUsFile.fileName} {aboutUsFile.fileSize ? ('(' + formatFileSize(aboutUsFile.fileSize) + ')') : ''}</div>
                 </div>
               )}
-              <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden" >
-                <BsUpload size={15}/> Upload Image
-                <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} accept="image/*" isInvalid={fileError} />
-              </div>
+              {enableButtons() && (
+                <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden" >
+                  <BsUpload size={15}/> Upload Image
+                  <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} accept="image/*" isInvalid={fileError} />
+                </div>
+              )}
             </div>
           </Col>
         </Form.Group>
