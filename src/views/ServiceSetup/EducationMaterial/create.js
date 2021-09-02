@@ -7,7 +7,10 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import * as ROUTES from '../../../variables/routes';
 import {
   createEducationMaterial,
-  getEducationMaterial, approveEducationMaterial, rejectEducationMaterial
+  getEducationMaterial,
+  approveEducationMaterial,
+  rejectEducationMaterial,
+  deleteEducationMaterial
 } from '../../../store/educationMaterial/actions';
 import { formatFileSize, toMB } from '../../../utils/file';
 import settings from '../../../settings';
@@ -26,6 +29,7 @@ import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import Select from 'react-select';
 import scssColors from '../../../scss/custom.scss';
 import { STATUS } from '../../../variables/resourceStatus';
+import Dialog from '../../../components/Dialog';
 
 const CreateEducationMaterial = ({ translate }) => {
   const dispatch = useDispatch();
@@ -51,6 +55,7 @@ const CreateEducationMaterial = ({ translate }) => {
   const [fileError, setFileError] = useState(false);
   const [fileMaxSizeError, setFileMaxSizeError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   useEffect(() => {
     if (languages.length) {
@@ -175,6 +180,14 @@ const CreateEducationMaterial = ({ translate }) => {
         history.push(ROUTES.SERVICE_SETUP_EDUCATION);
       }
       setIsLoading(false);
+    });
+  };
+
+  const handleDeleteDialogConfirm = () => {
+    dispatch(deleteEducationMaterial(educationMaterial.id)).then(result => {
+      if (result) {
+        history.push(ROUTES.ADMIN_RESOURCES_EDUCATION_MATERIAL);
+      }
     });
   };
 
@@ -317,10 +330,7 @@ const CreateEducationMaterial = ({ translate }) => {
         </Row>
         <div className="sticky-bottom d-flex justify-content-end">
           { !id && (
-            <Button
-              onClick={handleSave}
-              disabled={isLoading}
-            >
+            <Button onClick={handleSave} disabled={isLoading}>
               {translate('common.save')}
             </Button>
           )}
@@ -328,41 +338,40 @@ const CreateEducationMaterial = ({ translate }) => {
           { id && (
             <>
               {educationMaterial.status === STATUS.approved
-                ? <Button
-                  onClick={handleSave}
-                  disabled={isLoading}
-                >
-                  {translate('common.save')}
-                </Button>
-                : <Button
-                  onClick={handleSave}
-                  disabled={isLoading}
-                >
-                  {translate('common.approve')}
+                ? <Button onClick={handleSave} disabled={isLoading}>{translate('common.save')}</Button>
+                : <Button onClick={handleSave} disabled={isLoading}>{translate('common.approve')}</Button>
+              }
+
+              {educationMaterial.status === STATUS.rejected &&
+                <Button onClick={() => setShowDeleteDialog(true)} className="ml-2" variant="outline-danger" disabled={isLoading}>
+                  {translate('common.delete')}
                 </Button>
               }
-              <Button
-                className="ml-2"
-                variant="outline-dark"
-                onClick={handleReject}
-                disabled={isLoading}
-              >
-                {translate('common.reject')}
-              </Button>
+
+              {(educationMaterial.status === STATUS.pending || educationMaterial.status === STATUS.approved) &&
+                <Button onClick={handleReject} className="ml-2" variant="outline-primary" disabled={isLoading}>
+                  {translate('common.reject')}
+                </Button>
+              }
             </>
           )}
 
-          <Button
-            className="ml-2"
-            variant="outline-dark"
-            as={Link}
-            to={ROUTES.SERVICE_SETUP_EDUCATION}
-            disabled={isLoading}
-          >
+          <Button className="ml-2" variant="outline-dark" as={Link} to={ROUTES.SERVICE_SETUP_EDUCATION} disabled={isLoading}>
             {translate('common.cancel')}
           </Button>
         </div>
       </Form>
+
+      <Dialog
+        show={showDeleteDialog}
+        title={translate('education_material.delete_confirmation_title')}
+        cancelLabel={translate('common.no')}
+        onCancel={() => setShowDeleteDialog(false)}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handleDeleteDialogConfirm}
+      >
+        <p>{translate('common.delete_confirmation_message')}</p>
+      </Dialog>
     </>
   );
 };

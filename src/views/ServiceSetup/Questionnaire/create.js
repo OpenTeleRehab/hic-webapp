@@ -9,7 +9,8 @@ import {
   createQuestionnaire,
   getQuestionnaire,
   updateQuestionnaire,
-  rejectQuestionnaire
+  rejectQuestionnaire,
+  deleteQuestionnaire
 } from '../../../store/questionnaire/actions';
 import Question from './Question/question';
 import { getCategoryTreeData } from 'store/category/actions';
@@ -27,6 +28,7 @@ import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import scssColors from '../../../scss/custom.scss';
 import Select from 'react-select';
 import { STATUS } from '../../../variables/resourceStatus';
+import Dialog from '../../../components/Dialog';
 
 const CreateQuestionnaire = ({ translate }) => {
   const dispatch = useDispatch();
@@ -49,6 +51,7 @@ const CreateQuestionnaire = ({ translate }) => {
   const [questions, setQuestions] = useState([{ title: '', type: 'checkbox', answers: [{ description: '' }, { description: '' }], file: null }]);
   const [questionTitleError, setQuestionTitleError] = useState([]);
   const [answerFieldError, setAnswerFieldError] = useState([]);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   useEffect(() => {
     if (languages.length) {
@@ -183,6 +186,14 @@ const CreateQuestionnaire = ({ translate }) => {
         history.push(ROUTES.SERVICE_SETUP_QUESTIONNAIRE);
       }
       setIsLoading(false);
+    });
+  };
+
+  const handleDeleteDialogConfirm = () => {
+    dispatch(deleteQuestionnaire(questionnaire.id)).then(result => {
+      if (result) {
+        history.push(ROUTES.ADMIN_RESOURCES_QUESTIONNAIRE);
+      }
     });
   };
 
@@ -346,27 +357,21 @@ const CreateQuestionnaire = ({ translate }) => {
                   { id && (
                     <>
                       {questionnaire.status === STATUS.approved
-                        ? <Button
-                          onClick={handleSave}
-                          disabled={isLoading}
-                        >
-                          {translate('common.save')}
-                        </Button>
-                        : <Button
-                          onClick={handleSave}
-                          disabled={isLoading}
-                        >
-                          {translate('common.approve')}
+                        ? <Button onClick={handleSave} disabled={isLoading}>{translate('common.save')}</Button>
+                        : <Button onClick={handleSave} disabled={isLoading}>{translate('common.approve')}</Button>
+                      }
+
+                      {questionnaire.status === STATUS.rejected &&
+                        <Button onClick={() => setShowDeleteDialog(true)} className="ml-2" variant="outline-danger" disabled={isLoading}>
+                          {translate('common.delete')}
                         </Button>
                       }
-                      <Button
-                        className="ml-2"
-                        variant="outline-dark"
-                        onClick={handleReject}
-                        disabled={isLoading}
-                      >
-                        {translate('common.reject')}
-                      </Button>
+
+                      {(questionnaire.status === STATUS.pending || questionnaire.status === STATUS.approved) &&
+                        <Button onClick={handleReject} className="ml-2" variant="outline-primary" disabled={isLoading}>
+                          {translate('common.reject')}
+                        </Button>
+                      }
                     </>
                   )}
                   <Button
@@ -385,46 +390,33 @@ const CreateQuestionnaire = ({ translate }) => {
               <div className="sticky-bottom d-flex justify-content-end">
                 <div className="py-2 questionnaire-save-cancel-wrapper px-3">
                   { !id && (
-                    <Button
-                      onClick={handleSave}
-                      disabled={isLoading}
-                    >
+                    <Button onClick={handleSave} disabled={isLoading}>
                       {translate('common.save')}
                     </Button>
                   )}
+
                   { id && (
                     <>
                       {questionnaire.status === STATUS.approved
-                        ? <Button
-                          onClick={handleSave}
-                          disabled={isLoading}
-                        >
-                          {translate('common.save')}
-                        </Button>
-                        : <Button
-                          onClick={handleSave}
-                          disabled={isLoading}
-                        >
-                          {translate('common.approve')}
+                        ? <Button onClick={handleSave} disabled={isLoading}>{translate('common.save')}</Button>
+                        : <Button onClick={handleSave} disabled={isLoading}>{translate('common.approve')}</Button>
+                      }
+
+                      {questionnaire.status === STATUS.rejected &&
+                        <Button onClick={() => setShowDeleteDialog(true)} className="ml-2" variant="outline-danger" disabled={isLoading}>
+                          {translate('common.delete')}
                         </Button>
                       }
-                      <Button
-                        className="ml-2"
-                        variant="outline-dark"
-                        onClick={handleReject}
-                        disabled={isLoading}
-                      >
-                        {translate('common.reject')}
-                      </Button>
+
+                      {(questionnaire.status === STATUS.pending || questionnaire.status === STATUS.approved) &&
+                        <Button onClick={handleReject} className="ml-2" variant="outline-primary" disabled={isLoading}>
+                          {translate('common.reject')}
+                        </Button>
+                      }
                     </>
                   )}
-                  <Button
-                    className="ml-2"
-                    variant="outline-dark"
-                    as={Link}
-                    to={ROUTES.SERVICE_SETUP_QUESTIONNAIRE}
-                    disabled={isLoading}
-                  >
+
+                  <Button className="ml-2" variant="outline-dark" as={Link} to={ROUTES.SERVICE_SETUP_QUESTIONNAIRE} disabled={isLoading}>
                     {translate('common.cancel')}
                   </Button>
                 </div>
@@ -433,6 +425,17 @@ const CreateQuestionnaire = ({ translate }) => {
           </Col>
         </Row>
       </Form>
+
+      <Dialog
+        show={showDeleteDialog}
+        title={translate('questionnaire.delete_confirmation_title')}
+        cancelLabel={translate('common.no')}
+        onCancel={() => setShowDeleteDialog(false)}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handleDeleteDialogConfirm}
+      >
+        <p>{translate('common.delete_confirmation_message')}</p>
+      </Dialog>
     </>
   );
 };

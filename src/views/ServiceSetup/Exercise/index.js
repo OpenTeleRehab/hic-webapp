@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import { Row, Col, Card, Form, Accordion, Button } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Card,
+  Form,
+  Accordion,
+  Button
+} from 'react-bootstrap';
 
 import * as ROUTES from 'variables/routes';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,8 +20,8 @@ import { getCategoryTreeData } from 'store/category/actions';
 import { getReviewers } from 'store/user/actions';
 import { getContributors } from 'store/contributor/actions';
 import { CATEGORY_TYPES } from 'variables/category';
-import { BiEdit } from 'react-icons/bi';
 import CheckboxTree from 'react-checkbox-tree';
+import { BiEdit } from 'react-icons/bi';
 import {
   BsCaretDownFill,
   BsCaretRightFill,

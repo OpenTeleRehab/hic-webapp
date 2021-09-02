@@ -35,7 +35,7 @@ import { useSelector } from 'react-redux';
 const FilterRow = (props) => <Table.Row className="filter" {...props} />;
 const FixedColumnCell = (props) => <TableFixedColumns.Cell {...props} showLeftDivider={false} />;
 
-const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, currentPage, setCurrentPage, totalCount, setSearchValue, setFilters, filters, showInlineEdited, editingStateColumnExtensions, commitChanges, editingRowIds, setEditingRowIds, hideSearchFilter, hidePagination, onRowClick, hover }) => {
+const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, currentPage, setCurrentPage, totalCount, setSearchValue, setFilters, filters, showInlineEdited, editingStateColumnExtensions, commitChanges, editingRowIds, setEditingRowIds, hideSearchFilter, hidePagination, onRowClick }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const [showFilter, setShowFilter] = useState(false);
@@ -80,7 +80,7 @@ const CustomTable = ({ rows, columns, columnExtensions, pageSize, setPageSize, c
         onEditingRowIdsChange={setEditingRowIds}
       />
       {onRowClick
-        ? <Table columnExtensions={tableColumnExtensions} rowComponent={props => <TableRow {...props} handleClick={onRowClick} className={hover} />} />
+        ? <Table columnExtensions={tableColumnExtensions} rowComponent={props => <TableRow {...props} handleClick={onRowClick} className="hover-primary" />} />
         : <Table columnExtensions={tableColumnExtensions} />
       }
       <TableHeaderRow />
@@ -118,8 +118,7 @@ CustomTable.propTypes = {
   setEditingRowIds: PropTypes.func,
   hideSearchFilter: PropTypes.bool,
   hidePagination: PropTypes.bool,
-  onRowClick: PropTypes.func,
-  hover: PropTypes.string
+  onRowClick: PropTypes.func
 };
 
 CustomTable.defaultProps = {

@@ -30,7 +30,8 @@ import {
   createExercise,
   getExercise,
   approveExercise,
-  rejectExercise
+  rejectExercise,
+  deleteExercise
 } from 'store/exercise/actions';
 import { getCategoryTreeData } from 'store/category/actions';
 import { CATEGORY_TYPES } from 'variables/category';
@@ -40,6 +41,7 @@ import scssColors from '../../../scss/custom.scss';
 import { formatFileSize } from '../../../utils/file';
 import { STATUS } from '../../../variables/resourceStatus';
 import Select from 'react-select';
+import Dialog from '../../../components/Dialog';
 
 const CreateExercise = ({ translate }) => {
   const dispatch = useDispatch();
@@ -76,6 +78,7 @@ const CreateExercise = ({ translate }) => {
   const [inputValueError, setInputValueError] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState({});
   const [expanded, setExpanded] = useState([]);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   useEffect(() => {
     if (languages.length) {
@@ -268,6 +271,14 @@ const CreateExercise = ({ translate }) => {
         history.push(ROUTES.ADMIN_RESOURCES);
       }
       setIsLoading(false);
+    });
+  };
+
+  const handleDeleteDialogConfirm = () => {
+    dispatch(deleteExercise(exercise.id)).then(result => {
+      if (result) {
+        history.push(ROUTES.ADMIN_RESOURCES);
+      }
     });
   };
 
@@ -543,10 +554,7 @@ const CreateExercise = ({ translate }) => {
 
         <div className="sticky-bottom d-flex justify-content-end">
           { !id && (
-            <Button
-              onClick={handleSave}
-              disabled={isLoading}
-            >
+            <Button onClick={handleSave} disabled={isLoading}>
               {translate('common.save')}
             </Button>
           )}
@@ -554,41 +562,40 @@ const CreateExercise = ({ translate }) => {
           { id && (
             <>
               {exercise.status === STATUS.approved
-                ? <Button
-                  onClick={handleSave}
-                  disabled={isLoading}
-                >
-                  {translate('common.save')}
-                </Button>
-                : <Button
-                  onClick={handleSave}
-                  disabled={isLoading}
-                >
-                  {translate('common.approve')}
+                ? <Button onClick={handleSave} disabled={isLoading}>{translate('common.save')}</Button>
+                : <Button onClick={handleSave} disabled={isLoading}>{translate('common.approve')}</Button>
+              }
+
+              {exercise.status === STATUS.rejected &&
+                <Button onClick={() => setShowDeleteDialog(true)} className="ml-2" variant="outline-danger" disabled={isLoading}>
+                  {translate('common.delete')}
                 </Button>
               }
-              <Button
-                className="ml-2"
-                variant="outline-dark"
-                onClick={handleReject}
-                disabled={isLoading}
-              >
-                {translate('common.reject')}
-              </Button>
+
+              {(exercise.status === STATUS.pending || exercise.status === STATUS.approved) &&
+                <Button onClick={handleReject} className="ml-2" variant="outline-primary" disabled={isLoading}>
+                  {translate('common.reject')}
+                </Button>
+              }
             </>
           )}
 
-          <Button
-            className="ml-2"
-            variant="outline-dark"
-            as={Link}
-            to={ROUTES.ADMIN_RESOURCES}
-            disabled={isLoading}
-          >
+          <Button className="ml-2" variant="outline-dark" as={Link} to={ROUTES.ADMIN_RESOURCES} disabled={isLoading}>
             {translate('common.cancel')}
           </Button>
         </div>
       </Form>
+
+      <Dialog
+        show={showDeleteDialog}
+        title={translate('exercise.delete_confirmation_title')}
+        cancelLabel={translate('common.no')}
+        onCancel={() => setShowDeleteDialog(false)}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handleDeleteDialogConfirm}
+      >
+        <p>{translate('common.delete_confirmation_message')}</p>
+      </Dialog>
     </>
   );
 };
