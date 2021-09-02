@@ -14,3 +14,14 @@
 	height: 300px;
 	object-fit: cover;
 }
+
+.static-home {
+  .custom-control {
+	padding-left: 0;
+	padding-top: 0.5rem;
+  }
+
+  .custom-control-input {
+	opacity: 1;
+  }
+}

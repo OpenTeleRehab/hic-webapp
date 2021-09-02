@@ -32,7 +32,8 @@ const settings = {
   minAge: 0,
   maxAge: 80,
   ageGap: 10,
-  noteMaxLength: 50
+  noteMaxLength: 50,
+  featuredResourcesLimit: 8
 };
 
 export default settings;
