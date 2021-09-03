@@ -26,8 +26,6 @@ import CreateExercise from 'views/ServiceSetup/Exercise/create';
 import CreateEducationMaterial from 'views/ServiceSetup/EducationMaterial/create';
 import CreateQuestionnaire from 'views/ServiceSetup/Questionnaire/create';
 import ProfilePage from 'views/Profile';
-import TermCondition from 'views/StaticPage/TermCondition';
-import PrivacyPolicyPage from 'views/PrivacyPolicy';
 import UserPage from 'views/User';
 import StaticPage from 'views/StaticPage';
 
@@ -244,20 +242,6 @@ const routes = [
     title: 'profile',
     path: ROUTES.PROFILE,
     component: ProfilePage,
-    exact: true,
-    type: PRIVATE
-  },
-  {
-    title: 'term-condition',
-    path: ROUTES.TC,
-    component: TermCondition,
-    exact: true,
-    type: PRIVATE
-  },
-  {
-    title: 'privacy-policy',
-    path: ROUTES.PP,
-    component: PrivacyPolicyPage,
     exact: true,
     type: PRIVATE
   },
