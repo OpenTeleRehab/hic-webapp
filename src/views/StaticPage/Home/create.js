@@ -206,20 +206,6 @@ const CreateHomePage = ({ type, editId }) => {
   const handleConfirm = () => {
     let canSave = true;
 
-    if (formFields.title === '') {
-      canSave = false;
-      setErrorTitle(true);
-    } else {
-      setErrorTitle(false);
-    }
-
-    if (content === '') {
-      canSave = false;
-      setErrorContent(true);
-    } else {
-      setErrorContent(false);
-    }
-
     if (formFields.display_feature_resource && (featureResources === '' || errorFeaturedResource)) {
       setErrorFeaturedResource(true);
       canSave = false;
@@ -233,6 +219,20 @@ const CreateHomePage = ({ type, editId }) => {
       setFileError(true);
     } else {
       setFileError(false);
+    }
+
+    if (formFields.title === '') {
+      canSave = false;
+      setErrorTitle(true);
+    } else {
+      setErrorTitle(false);
+    }
+
+    if (content === '') {
+      canSave = false;
+      setErrorContent(true);
+    } else {
+      setErrorContent(false);
     }
 
     if (canSave) {
