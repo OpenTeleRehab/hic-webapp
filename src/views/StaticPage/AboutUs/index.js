@@ -273,7 +273,7 @@ const AboutUs = ({ type }) => {
               onEditorChange={handleEditorChange}
             />
             {errorContent &&
-            <div className="invalid-feedback d-block">{translate('error.home_introduction_text')}</div>
+            <div className="invalid-feedback d-block">{translate('error.about_us_content')}</div>
             }
           </Col>
         </Form.Group>
