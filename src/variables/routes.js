@@ -7,8 +7,8 @@ export const LIBRARY_EDUCATION_MATERIAL_DETAIL = LIBRARY + '/education_material/
 export const LIBRARY_QUESTIONNAIRE_DETAIL = LIBRARY + '/questionnaire/detail/:id';
 
 export const CONTRIBUTE = '/:lang?/contribute';
-export const TERM_CONDITION = '/:lang?/term_condition';
-export const ABOUT_US = '/:lang?/about_us';
+export const TERM_CONDITION = '/:lang?/term-condition';
+export const ABOUT_US = '/:lang?/about-us';
 
 export const CONTRIBUTE_EDUCATION_MATERIAL = '/:lang?/contribute#education';
 export const CONTRIBUTE_QUESTIONNAIRE = '/:lang?/contribute#questionnaire';
@@ -49,7 +49,4 @@ export const QUESTIONNAIRE_CREATE = SERVICE_SETUP + '/questionnaire/create';
 export const QUESTIONNAIRE_EDIT = SERVICE_SETUP + '/questionnaire/edit/:id';
 
 export const PROFILE = '/profile';
-export const FAQ = '/faq';
-export const TC = '/term-condition';
-export const PP = '/privacy-policy';
 export const PROFILE_PASSWORD = PROFILE + '#password';

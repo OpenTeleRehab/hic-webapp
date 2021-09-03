@@ -38,7 +38,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
     } else if (location.pathname === replaceRoute(ROUTES.TERM_CONDITION, activeLanguage)) {
       setShowBanner(true);
       setIsHome(false);
-      SetBannerTitle(publishTermAndConditionPage.title);
+      publishTermAndConditionPage ? SetBannerTitle(publishTermAndConditionPage.title) : SetBannerTitle('');
       if (termConditionBanner && termConditionBanner.id) {
         setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${termConditionBanner.id}`);
       }
