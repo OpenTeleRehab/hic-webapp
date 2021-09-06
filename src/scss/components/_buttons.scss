@@ -33,3 +33,31 @@
 .btn-warning-info {
 	color: $orange;
 }
+
+.btn-xlarge {
+  padding: 30px;
+  font-size: toRem(18);
+  line-height: 24px;
+  font-weight: $font-weight-bold;
+}
+
+.btn-custom {
+  background-color: $orange;
+  border-color: $orange;
+  text-decoration: none;
+  color: $white;
+
+  &:focus {
+	box-shadow: 0 0 0 0.2rem rgb(227, 82, 5 / 50%);
+	background-color: $dark-orange;
+	border-color: $dark-orange;
+	text-decoration: none;
+  }
+
+  &:hover, &:active {
+	background-color: $dark-orange;
+	border-color: $dark-orange;
+	text-decoration: none;
+	color: $white;
+  }
+}

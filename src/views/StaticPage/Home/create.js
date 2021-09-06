@@ -30,9 +30,11 @@ const CreateHomePage = ({ type, editId }) => {
   const { maxFileSize } = settings.educationMaterial;
 
   const [errorContent, setErrorContent] = useState(false);
+  const [errorClass, setErrorClass] = useState('');
   const [errorTitle, setErrorTitle] = useState(false);
   const [materialFile, setMaterialFile] = useState(undefined);
   const [fileError, setFileError] = useState(false);
+  const [fileMaxSizeError, setFileMaxSizeError] = useState(false);
   const { languages } = useSelector(state => state.language);
   const { profile } = useSelector((state) => state.auth);
   const [featureResources, setFeatureResources] = useState('');
@@ -214,13 +216,6 @@ const CreateHomePage = ({ type, editId }) => {
       canSave = true;
     }
 
-    if (formFields.file !== undefined && toMB(formFields.file.size) > maxFileSize) {
-      canSave = false;
-      setFileError(true);
-    } else {
-      setFileError(false);
-    }
-
     if (formFields.title === '') {
       canSave = false;
       setErrorTitle(true);
@@ -235,6 +230,21 @@ const CreateHomePage = ({ type, editId }) => {
       setErrorContent(false);
     }
 
+    if (!materialFile && formFields.file === undefined) {
+      canSave = false;
+      setFileError(true);
+      setErrorClass('error-feedback');
+    } else {
+      setFileError(false);
+      setErrorClass('');
+      if (formFields.file && toMB(formFields.file.size) > maxFileSize) {
+        canSave = false;
+        setFileMaxSizeError(true);
+      } else {
+        setFileMaxSizeError(false);
+      }
+    }
+
     if (canSave) {
       if (staticPage.id) {
         dispatch(updateStaticPage(staticPage.id, { ...formFields, content, partnerContent, featureResources, lang: language }))
@@ -242,7 +252,7 @@ const CreateHomePage = ({ type, editId }) => {
             if (result) {
               dispatch(getStaticPage({
                 'url-segment': type,
-                lang: profile && profile.language_id
+                lang: language
               }));
             }
           });
@@ -251,7 +261,7 @@ const CreateHomePage = ({ type, editId }) => {
           if (result) {
             dispatch(getStaticPage({
               'url-segment': type,
-              lang: profile && profile.language_id
+              lang: language
             }));
           }
         });
@@ -281,12 +291,6 @@ const CreateHomePage = ({ type, editId }) => {
             <span className="text-dark ml-1">*</span>
           </Form.Label>
           <Col sm="9">
-            <Form.Control.Feedback type="invalid">
-              {formFields.file !== undefined
-                ? translate('education_material.upload_file.max_size', { size: maxFileSize }) : ''
-              }
-            </Form.Control.Feedback>
-
             <div className="w-50">
               {materialFile && (
                 <div className="mb-2 position-relative">
@@ -300,10 +304,22 @@ const CreateHomePage = ({ type, editId }) => {
                 </div>
               )}
               {enableButtons() && (
-                <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden" >
-                  <BsUpload size={15}/> Upload Image
-                  <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} accept="image/*" isInvalid={fileError} />
-                </div>
+                <>
+                  <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden" >
+                    <BsUpload size={15}/> Upload Image
+                    <Form.File.Input
+                      name='file'
+                      className="position-absolute upload-btn"
+                      onChange={handleFileChange}
+                      isInvalid={fileError || fileMaxSizeError}
+                      accept="audio/*, video/*, image/*, .pdf"
+                    />
+                  </div>
+                  <div className={errorClass}>
+                    {fileError && translate('education_material.upload_file.required')}
+                    {fileMaxSizeError && translate('education_material.upload_file.max_size', { size: maxFileSize })}
+                  </div>
+                </>
               )}
             </div>
           </Col>
