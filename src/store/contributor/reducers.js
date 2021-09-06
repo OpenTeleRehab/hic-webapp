@@ -7,6 +7,11 @@ export const contributor = (state = initialState, action) => {
         contributors: action.data
       });
     }
+    case 'GET_CONTRIBUTOR_STATISTICS_SUCCESS': {
+      return Object.assign({}, state, {
+        contributorStatistics: action.data
+      });
+    }
     default:
       return state;
   }

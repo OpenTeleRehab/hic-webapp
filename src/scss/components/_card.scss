@@ -151,3 +151,23 @@
 .material-detail-file-wrapper {
 	height: toRem(300);
 }
+
+.contributor-card {
+	height: toRem(65);
+	font-size: toRem(12);
+	border-radius: toRem(7);
+
+	.icon-wrapper {
+		background-color: $purple;
+		border-top-left-radius: toRem(7);
+		border-bottom-left-radius: toRem(7);
+	}
+
+	.contributor-name {
+		font-size: toRem(16);
+	}
+	.statistic-text {
+		font-size: toRem(11);
+		font-weight: bold;
+	}
+}

@@ -251,7 +251,8 @@ const CreateExercise = ({ translate }) => {
         const contributor = {
           email: profile.email,
           last_name: profile.last_name,
-          first_name: profile.first_name
+          first_name: profile.first_name,
+          included_in_acknowledgment: true
         };
         dispatch(createExercise({ ...payload, ...contributor }, mediaUploads))
           .then(result => {

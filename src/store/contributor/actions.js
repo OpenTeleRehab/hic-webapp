@@ -40,3 +40,19 @@ export const confirmSubmission = (hash) => async dispatch => {
     return data.message;
   }
 };
+
+export const getContributorStatistics = () => async dispatch => {
+  dispatch(mutation.getContributorStatisticsRequest());
+  dispatch(showSpinner(true));
+  const data = await Contributor.getContributorStatistics();
+  if (data.success) {
+    dispatch(mutation.getContributorStatisticsSuccess(data.data));
+    dispatch(showSpinner(false));
+  } else {
+    dispatch(mutation.getContributorStatisticsFail());
+    dispatch(showSpinner(false));
+    if (data.message) {
+      dispatch(showErrorNotification('toast_title.error_message', data.message));
+    }
+  }
+};

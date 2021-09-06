@@ -160,7 +160,8 @@ const CreateEducationMaterial = ({ translate }) => {
         const contributor = {
           email: profile.email,
           last_name: profile.last_name,
-          first_name: profile.first_name
+          first_name: profile.first_name,
+          included_in_acknowledgment: true
         };
         dispatch(createEducationMaterial({ ...formFields, ...contributor, categories: serializedSelectedCats, lang: language }))
           .then(result => {

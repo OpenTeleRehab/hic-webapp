@@ -39,7 +39,6 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
   const [lastNameError, setLastNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [agreeTermsAndCondition, setAgreeTermsAndCondition] = useState(false);
-  const [agreeToInclude, setAgreeToInclude] = useState(false);
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [selectedEducationMaterials, setSelectedEducationMaterials] = useState([]);
   const [selectedQuestionnaires, setSelectedQuestionnaires] = useState([]);
@@ -77,7 +76,8 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
   };
 
   const handleIncludeCheck = (e) => {
-    setAgreeToInclude(e.target.checked);
+    const { name, checked } = e.target;
+    setFormFields({ ...formFields, [name]: checked });
   };
 
   const handleChange = (e) => {
@@ -386,8 +386,8 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
         </Form.Group>
         <Form.Group controlId="formIncludeInContributorsList">
           <Form.Check
-            type="checkbox"
-            value={agreeToInclude}
+            name="included_in_acknowledgment"
+            value={formFields.included_in_acknowledgment}
             label={translate('contribute.agree_include_in_contributors_list')}
             custom
             onChange={handleIncludeCheck}
