@@ -276,7 +276,10 @@ const CreateHomePage = ({ type, editId }) => {
           </Col>
         </Form.Group>
         <Form.Group as={Row} controlId="formFile">
-          <Form.Label column sm="3">{translate('static_page.image')}</Form.Label>
+          <Form.Label column sm="3">
+            {translate('static_page.image')}
+            <span className="text-dark ml-1">*</span>
+          </Form.Label>
           <Col sm="9">
             <Form.Control.Feedback type="invalid">
               {formFields.file !== undefined
@@ -339,12 +342,13 @@ const CreateHomePage = ({ type, editId }) => {
               init={{
                 height: 500,
                 plugins: [
-                  'advlist autolink lists link image charmap print preview anchor',
+                  'advlist autolink lists link image code charmap print preview anchor',
                   'searchreplace visualblocks code fullscreen',
                   'insertdatetime media table paste code help wordcount'
                 ],
+                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
                 toolbar:
-                'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link | help'
+                  'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image | code | help'
               }}
               onEditorChange={handleEditorChange}
             />
@@ -408,12 +412,13 @@ const CreateHomePage = ({ type, editId }) => {
               init={{
                 height: 500,
                 plugins: [
-                  'advlist autolink lists link image charmap print preview anchor',
+                  'advlist autolink lists link image code charmap print preview anchor',
                   'searchreplace visualblocks code fullscreen',
                   'insertdatetime media table paste code help wordcount'
                 ],
+                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
                 toolbar:
-                  'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link | help'
+                  'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image | code | help'
               }}
               onEditorChange={handlePartnerChange}
             />
