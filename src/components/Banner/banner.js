@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 
-const Banner = ({ bannerImagePath, isHome, title }) => {
+const Banner = ({ bannerImagePath, isHome, title, introductionText }) => {
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 
@@ -15,12 +15,10 @@ const Banner = ({ bannerImagePath, isHome, title }) => {
         <div className="header-banner" style={{ backgroundImage: `url(${bannerImagePath})` }}>
           <Container>
             <div className="header-banner__wrapper mx-auto">
-              <h1 className={!isHome && 'mt-5'}>{isHome ? 'Open Rehabilitation Library' : title}</h1>
+              <h1 className={!isHome && 'mt-5'}>{title}</h1>
               {isHome && (
                 <>
-                  <p className="lead">The Open Library is a center of free and accessible resources for rehabilitation and physiotherapy. The library collects these materials in various forms and made available for public use.</p>
-                  <p className="lead">You can contribute to the library by clicking on the <a href="/contribute">Contribute</a> menu above.</p>
-
+                  <div className="lead" dangerouslySetInnerHTML={{ __html: introductionText }} />
                   <Form className="search-form position-relative">
                     <Form.Group className="m-0" controlId="search">
                       <Form.Label className="d-none">{translate('common.search.label')}</Form.Label>
@@ -39,7 +37,7 @@ const Banner = ({ bannerImagePath, isHome, title }) => {
         <div>
           <Container>
             <div className="header-banner__wrapper mx-auto">
-              <h1 className={!isHome && 'mt-4 text-primary'}>{isHome ? 'Open Rehabilitation Library' : title}</h1>
+              <h1 className={!isHome && 'mt-4 text-primary'}>{title}</h1>
             </div>
           </Container>
         </div>
@@ -51,7 +49,8 @@ const Banner = ({ bannerImagePath, isHome, title }) => {
 Banner.propTypes = {
   bannerImagePath: PropTypes.string,
   isHome: PropTypes.bool,
-  title: PropTypes.string
+  title: PropTypes.string,
+  introductionText: PropTypes.string
 };
 
 export default Banner;

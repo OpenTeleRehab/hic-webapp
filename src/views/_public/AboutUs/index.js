@@ -6,6 +6,7 @@ import { replaceRoute } from '../../../utils/route';
 import * as ROUTES from '../../../variables/routes';
 import { useHistory } from 'react-router-dom';
 import { getStaticPage } from '../../../store/staticPage/actions';
+import { PAGE_TYPES } from '../../../variables/staticPage';
 
 const AboutUsPage = ({ translate }) => {
   const dispatch = useDispatch();
@@ -17,7 +18,7 @@ const AboutUsPage = ({ translate }) => {
   useEffect(() => {
     const lang = languages.find(language => language.code === activeLanguage);
     dispatch(getStaticPage({
-      'url-segment': 'about-us',
+      'url-segment': PAGE_TYPES.ABOUT_US,
       lang: lang && lang.id
     }));
   }, [dispatch, activeLanguage, languages]);

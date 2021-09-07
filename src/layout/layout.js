@@ -22,9 +22,9 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
   const location = useLocation();
   const [showBanner, setShowBanner] = useState(false);
   const [isHome, setIsHome] = useState(false);
-  const [bannerTitle, SetBannerTitle] = useState('');
+  const [bannerTitle, setBannerTitle] = useState('');
+  const [introductionText, setIntroductionText] = useState('');
   const [filePath, setFilePath] = useState('');
-  const bannerImagePath = '/images/header-banner.png';
 
   // set page title
   useEffect(() => {
@@ -35,18 +35,23 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
     if (location.pathname === replaceRoute(ROUTES.HOME, activeLanguage)) {
       setShowBanner(true);
       setIsHome(true);
+      setBannerTitle(staticPage.title);
+      staticPage ? setIntroductionText(staticPage.content) : setIntroductionText('');
+      if (staticPage && staticPage.file) {
+        setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${staticPage.file.id}`);
+      }
     } else if (location.pathname === replaceRoute(ROUTES.TERM_CONDITION, activeLanguage)) {
       setShowBanner(true);
       setIsHome(false);
-      publishTermAndConditionPage ? SetBannerTitle(publishTermAndConditionPage.title) : SetBannerTitle('');
+      publishTermAndConditionPage ? setBannerTitle(publishTermAndConditionPage.title) : setBannerTitle('');
       if (termConditionBanner && termConditionBanner.id) {
         setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${termConditionBanner.id}`);
       }
     } else if (location.pathname === replaceRoute(ROUTES.ABOUT_US, activeLanguage)) {
       setShowBanner(true);
       setIsHome(false);
-      SetBannerTitle(staticPage.title);
-      if (staticPage.file) {
+      setBannerTitle(staticPage.title);
+      if (staticPage && staticPage.file) {
         setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${staticPage.file.id}`);
       }
     }
@@ -56,7 +61,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
     <>
       <header className="header">
         <Navigation translate={translate} />
-        {showBanner && <Banner bannerImagePath={ isHome ? bannerImagePath : filePath} isHome={isHome} title = {bannerTitle} />}
+        {showBanner && <Banner bannerImagePath={ filePath} isHome={isHome} title = {bannerTitle} introductionText={ isHome ? introductionText : ''} />}
       </header>
 
       {defaultTemplate ? (
