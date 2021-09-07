@@ -50,28 +50,12 @@ const ExerciseDetail = () => {
     history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL, activeLanguage).replace(':id', id));
   }, [activeLanguage, history, id]);
 
-  const handleDownload = async (event, fileName, fileUrl) => {
-    event.preventDefault();
-    const response = await fetch(fileUrl);
-    if (response.status === 200) {
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      return { success: true };
-    }
-  };
-
   return (
     <>
       <h1 className="text-primary font-weight-bold mb-3">{exercise.title}</h1>
       <Row>
         <Col sm={7} md={8}>
-          <Carousel activeIndex={index} onSelect={handleSelect} controls={mediaUploads.length > 1} indicators={mediaUploads.length > 1} className="view-exercise-carousel">
+          <Carousel onContextMenu={(e) => e.preventDefault()} activeIndex={index} onSelect={handleSelect} controls={mediaUploads.length > 1} indicators={mediaUploads.length > 1} className="view-exercise-carousel">
             { mediaUploads.map((mediaUpload, index) => (
               <Carousel.Item key={index}>
                 { mediaUpload.fileType === 'audio/mpeg' &&
@@ -135,20 +119,20 @@ const ExerciseDetail = () => {
               <Row key={index}>
                 <Col sm={5}>
                   { mediaUpload.fileType === 'audio/mpeg' &&
-                    <div className="img-thumbnail w-100 pt-2 pl-5 pr-5 bg-light audio-wrapper">
+                    <div className="img-thumbnail w-100 pt-2 pl-5 pr-5 bg-light audio-wrapper" onContextMenu={(e) => e.preventDefault()}>
                       <audio controls className="w-100 mt-4">
                         <source src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} type="audio/ogg" />
                       </audio>
                     </div>
                   }
                   { (mediaUpload.fileType !== 'audio/mpeg' && mediaUpload.fileType !== 'video/mp4') &&
-                    <img
+                    <img onContextMenu={(e) => e.preventDefault()}
                       className="d-block w-100"
                       src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} alt="..."
                     />
                   }
                   { mediaUpload.fileType === 'video/mp4' &&
-                    <video className="w-100 img-thumbnail" controls>
+                    <video className="w-100 img-thumbnail" controls onContextMenu={(e) => e.preventDefault()}>
                       <source src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} type="video/mp4" />
                     </video>
                   }
@@ -164,11 +148,6 @@ const ExerciseDetail = () => {
                     <dt className="col-6 pr-1">{translate('exercise.file_type')}:</dt>
                     <dd className="col-6 text-break">{translate(mediaUpload.fileGroupType)}</dd>
                   </dl>
-                </Col>
-              </Row>
-              <Row className="mb-3 mt-3">
-                <Col>
-                  <Button className="w-100" size="sm" onClick={(event) => handleDownload(event, mediaUpload.fileName, mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`)}>{translate('exercise.attachment.download')}</Button>
                 </Col>
               </Row>
             </>
