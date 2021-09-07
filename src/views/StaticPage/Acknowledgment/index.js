@@ -17,6 +17,7 @@ import { BsUpload, BsXCircle } from 'react-icons/bs';
 import { Editor } from '@tinymce/tinymce-react';
 import { getContributors } from '../../../store/contributor/actions';
 import Multiselect from 'multiselect-react-dropdown';
+import ContributorCard from './contributorCards';
 
 const Acknowledgment = ({ type }) => {
   const localize = useSelector((state) => state.localize);
@@ -92,7 +93,7 @@ const Acknowledgment = ({ type }) => {
   }, [selectedContributors, hideContributors]);
 
   useEffect(() => {
-    dispatch(getContributors());
+    dispatch(getContributors({ included_in_acknowledgment: true }));
   }, [dispatch]);
 
   const handleLanguageChange = (value) => {
@@ -322,6 +323,12 @@ const Acknowledgment = ({ type }) => {
             />
           </Col>
         </Form.Group>
+        <Row className="mb-2">
+          <Col sm={3}></Col>
+          <Col sm={9}>
+            <ContributorCard hideContributors={hideContributors}/>
+          </Col>
+        </Row>
         <Form.Group as={Row} controlId="partner_content">
           <Form.Label column sm="3">{translate('static_page_partner_content')}</Form.Label>
           <Col sm="9">
