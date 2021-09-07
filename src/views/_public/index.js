@@ -16,6 +16,7 @@ const Dashboard = () => {
   const translate = getTranslate(localize);
   const { activeLanguage } = useSelector((state) => state.language);
   const { statistics } = useSelector((state) => state.dashboard);
+  const { staticPage } = useSelector(state => state.staticPage);
 
   useEffect(() => {
     if (keycloak.authenticated) {
@@ -90,10 +91,10 @@ const Dashboard = () => {
           </Row>
         </Container>
       </section>
-
       <section className="section__wrapper bg-white">
         <Container>
-          <h2 className="text-primary section__heading">Our Partners</h2>
+          <h2 className="text-primary section__heading">{translate('static_page.partner').toUpperCase()}</h2>
+          <div className="p-3 flex-grow-1" dangerouslySetInnerHTML={{ __html: staticPage.partner_content }} />
         </Container>
       </section>
     </>
