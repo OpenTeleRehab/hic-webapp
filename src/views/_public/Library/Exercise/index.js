@@ -175,7 +175,7 @@ const Exercise = ({ translate, lang }) => {
                   { exercises.map(exercise => (
                     <Col key={exercise.id} md={6} lg={4}>
                       <Card className="exercise-card shadow-sm mb-4">
-                        <div className="card-img bg-light">
+                        <div className="card-img bg-light" onContextMenu={(e) => e.preventDefault()}>
                           {
                             exercise.files.length > 0 && (
                               (exercise.files[0].fileType === 'audio/mpeg' &&
