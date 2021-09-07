@@ -18,6 +18,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { getContributors } from '../../../store/contributor/actions';
 import Multiselect from 'multiselect-react-dropdown';
 import ContributorCard from './contributorCards';
+import { Contributor as contributorService } from 'services/contributor';
 
 const Acknowledgment = ({ type }) => {
   const localize = useSelector((state) => state.localize);
@@ -63,7 +64,7 @@ const Acknowledgment = ({ type }) => {
   }, [dispatch, language, type]);
 
   useEffect(() => {
-    if (staticPage.id) {
+    if (staticPage && staticPage.url === type) {
       setFormFields({
         title: staticPage.title || '',
         url: staticPage.url || type,
@@ -78,11 +79,16 @@ const Acknowledgment = ({ type }) => {
   const selectedContributors = [];
   if (staticPage && staticPage.acknowledgmentData) {
     contributors.forEach((contributor) => {
-      const test = staticPage.acknowledgmentData.hide_contributors.includes(contributor.id);
-      if (test) {
+      const hideContributors = staticPage.acknowledgmentData.hide_contributors.includes(contributor.id);
+      if (hideContributors || contributor.included_in_acknowledgment === 0) {
         selectedContributors.push(contributor);
       }
     });
+  } else {
+    const contributor = contributors.find(contributor => contributor.included_in_acknowledgment === 0);
+    if (contributor) {
+      selectedContributors.push(contributor);
+    }
   }
 
   useEffect(() => {
@@ -93,7 +99,7 @@ const Acknowledgment = ({ type }) => {
   }, [selectedContributors, hideContributors]);
 
   useEffect(() => {
-    dispatch(getContributors({ included_in_acknowledgment: true }));
+    dispatch(getContributors());
   }, [dispatch]);
 
   const handleLanguageChange = (value) => {
@@ -184,6 +190,11 @@ const Acknowledgment = ({ type }) => {
               }));
             }
           });
+        contributors.forEach(contributor => {
+          if (contributor.included_in_acknowledgment === 0 && !hideContributors.includes(contributor.id)) {
+            contributorService.updateIncludedStatus(contributor.id, { included_in_acknowledgment: true });
+          }
+        });
       } else {
         dispatch(createStaticPage({ ...formFields, content, partnerContent, hideContributors: JSON.stringify(hideContributors), lang: language })).then(result => {
           if (result) {
@@ -326,7 +337,7 @@ const Acknowledgment = ({ type }) => {
         <Row className="mb-2">
           <Col sm={3}></Col>
           <Col sm={9}>
-            <ContributorCard hideContributors={hideContributors}/>
+            <ContributorCard hideContributors={hideContributors} isAdmin={true}/>
           </Col>
         </Row>
         <Form.Group as={Row} controlId="partner_content">

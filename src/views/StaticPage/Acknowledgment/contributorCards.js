@@ -8,17 +8,27 @@ import {
   FaLanguage,
   FaUserCircle
 } from 'react-icons/fa';
-import { getContributorStatistics } from 'store/contributor/actions';
+import {
+  getContributors,
+  getContributorStatistics
+} from 'store/contributor/actions';
 import _ from 'lodash';
 import { RiShieldUserFill } from 'react-icons/all';
+import { getTranslate } from 'react-localize-redux';
 
-const ContributorCard = ({ hideContributors }) => {
+const ContributorCard = ({ hideContributors, isAdmin }) => {
   const dispatch = useDispatch();
+  const localize = useSelector((state) => state.localize);
+  const translate = getTranslate(localize);
   const { contributorStatistics } = useSelector((state) => state.contributor);
   const { contributors } = useSelector((state) => state.contributor);
   const [exercise, setExercise] = useState([]);
   const [education, setEducation] = useState([]);
   const [questionnaire, setQuestionnaire] = useState([]);
+
+  useEffect(() => {
+    dispatch(getContributors());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getContributorStatistics());
@@ -49,26 +59,35 @@ const ContributorCard = ({ hideContributors }) => {
           totalTranslation += (totalExerciseTranslation ? totalExerciseTranslation.total_translation : 0) + (totalEducationTranslation ? totalEducationTranslation.total_translation : 0) + (totalQuestionnaireTranslation ? totalQuestionnaireTranslation.total_translation : 0);
           return (
             <Col sm={4}>
-              <div className="mb-2 pr-2 d-flex border border-light contributor-card" key={index}>
-                <div className="p-2 text-white icon-wrapper">
+              <div className="mb-2 pr-2 d-flex border border-light contributor-card bg-white w-100" key={index}>
+                <div className={`${isAdmin ? 'p-2' : 'p-4'} text-white icon-wrapper`}>
                   {contributor.isModerator ? (
-                    <RiShieldUserFill size={45} />
+                    <RiShieldUserFill size={ isAdmin ? 45 : 55} />
                   ) : (
-                    <FaUserCircle size={45} />
+                    <FaUserCircle size={isAdmin ? 45 : 55} />
                   )}
                 </div>
-                <div className="p-1">
+                <div className={isAdmin ? 'p-1' : 'pl-3 pt-2'}>
                   <div className="ml-2 mt-1 contributor-name">{contributor.name}</div>
-                  <div className="mt-2 statistic-text ml-2">
-                    <span className="ml-1"><FaEdit size={17} className="mb-1"/></span>
-                    <span>{'- '}{totalUpload}</span>
-                    <span className="ml-2"><FaLanguage size={20} className="mb-1"/></span>
-                    <span>{' - '}{totalTranslation}</span>
-                  </div>
+                  {isAdmin ? (
+                    <div className="mt-2 statistic-text ml-2">
+                      <span className="ml-1"><FaEdit size={17} className="mb-1"/></span>
+                      <span>{'- '}{totalUpload}</span>
+                      <span className="ml-2"><FaLanguage size={20} className="mb-1"/></span>
+                      <span>{' - '}{totalTranslation}</span>
+                    </div>
+                  ) : (
+                    <ul className="pl-2 mt-2">
+                      <li className="d-flex justify-content-between align-content-center"><span>{translate('contributor.resources_contributed')}</span> <span className="ml-5">{totalUpload}</span></li>
+                      <li className="d-flex justify-content-between"><span>{translate('contributor.translations_approved')}</span> <span className="ml-5">{totalTranslation}</span></li>
+                    </ul>
+                  )}
                 </div>
               </div>
             </Col>
           );
+        } else {
+          return null;
         }
       })}
     </Row>
@@ -76,7 +95,8 @@ const ContributorCard = ({ hideContributors }) => {
 };
 
 ContributorCard.propTypes = {
-  hideContributors: PropTypes.array
+  hideContributors: PropTypes.array,
+  isAdmin: PropTypes.bool
 };
 
 export default ContributorCard;
