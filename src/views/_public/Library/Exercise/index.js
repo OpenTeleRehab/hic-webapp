@@ -174,7 +174,7 @@ const Exercise = ({ translate, lang }) => {
                 <Row>
                   { exercises.map(exercise => (
                     <Col key={exercise.id} md={6} lg={4}>
-                      <Card className="exercise-card shadow-sm mb-4">
+                      <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewDetail(exercise.id)}>
                         <div className="card-img bg-light" onContextMenu={(e) => e.preventDefault()}>
                           {
                             exercise.files.length > 0 && (
@@ -224,7 +224,7 @@ const Exercise = ({ translate, lang }) => {
                           )}
                         </Card.Body>
                         <Card.Footer>
-                          <Button variant="link" className="text-decoration-none" onClick={() => handleViewDetail(exercise.id)}>{translate('exercise.learn_more')}</Button>
+                          <Button variant="link" className="text-decoration-none">{translate('exercise.learn_more')}</Button>
                         </Card.Footer>
                       </Card>
                     </Col>
