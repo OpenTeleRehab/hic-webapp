@@ -9,6 +9,7 @@ export const LIBRARY_QUESTIONNAIRE_DETAIL = LIBRARY + '/questionnaire/detail/:id
 export const CONTRIBUTE = '/:lang?/contribute';
 export const TERM_CONDITION = '/:lang?/term-condition';
 export const ABOUT_US = '/:lang?/about-us';
+export const ACKNOWLEDGMENT = '/:lang?/acknowledgment';
 
 export const CONTRIBUTE_EDUCATION_MATERIAL = '/:lang?/contribute#education';
 export const CONTRIBUTE_QUESTIONNAIRE = '/:lang?/contribute#questionnaire';

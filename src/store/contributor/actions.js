@@ -9,12 +9,12 @@ import {
   showSpinner
 } from 'store/spinnerOverlay/actions';
 
-export const getContributors = payload => async dispatch => {
+export const getContributors = () => async dispatch => {
   dispatch(mutation.getContributorsRequest());
   dispatch(showSpinner(true));
-  const data = await Contributor.getContributors(payload);
+  const data = await Contributor.getContributors();
   if (data.success) {
-    dispatch(mutation.getContributorsSuccess(data.data, payload));
+    dispatch(mutation.getContributorsSuccess(data.data));
     dispatch(showSpinner(false));
     return data.info;
   } else {

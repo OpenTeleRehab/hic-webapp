@@ -24,6 +24,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
   const [isHome, setIsHome] = useState(false);
   const [bannerTitle, setBannerTitle] = useState('');
   const [introductionText, setIntroductionText] = useState('');
+  const [isAcknowledgment, setIsAcknowledgment] = useState(false);
   const [filePath, setFilePath] = useState('');
 
   // set page title
@@ -42,16 +43,22 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
       }
     } else if (location.pathname === replaceRoute(ROUTES.TERM_CONDITION, activeLanguage)) {
       setShowBanner(true);
-      setIsHome(false);
       publishTermAndConditionPage ? setBannerTitle(publishTermAndConditionPage.title) : setBannerTitle('');
       if (termConditionBanner && termConditionBanner.id) {
         setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${termConditionBanner.id}`);
       }
     } else if (location.pathname === replaceRoute(ROUTES.ABOUT_US, activeLanguage)) {
       setShowBanner(true);
-      setIsHome(false);
       setBannerTitle(staticPage.title);
       if (staticPage && staticPage.file) {
+        setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${staticPage.file.id}`);
+      }
+    } else if (location.pathname === replaceRoute(ROUTES.ACKNOWLEDGMENT, activeLanguage)) {
+      setShowBanner(true);
+      setIsAcknowledgment(true);
+      setBannerTitle(staticPage.title);
+      setIntroductionText(staticPage.content);
+      if (staticPage.file) {
         setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${staticPage.file.id}`);
       }
     }
@@ -61,7 +68,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
     <>
       <header className="header">
         <Navigation translate={translate} />
-        {showBanner && <Banner bannerImagePath={ filePath} isHome={isHome} title = {bannerTitle} introductionText={ isHome ? introductionText : ''} />}
+        {showBanner && <Banner bannerImagePath={ filePath} isHome={isHome} title = {bannerTitle} introductionText={introductionText} isAcknowledgment={isAcknowledgment} />}
       </header>
 
       {defaultTemplate ? (

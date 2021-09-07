@@ -1,7 +1,7 @@
 import axios from 'utils/axios';
 
-const getContributors = (payload) => {
-  return axios.get('/contributor', { params: payload })
+const getContributors = () => {
+  return axios.get('/contributor')
     .then(
       res => {
         return res.data;
@@ -36,8 +36,21 @@ const getContributorStatistics = () => {
     });
 };
 
+const updateIncludedStatus = (id, payload) => {
+  return axios.post(`contributor/update-included-status/${id}`, payload)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Contributor = {
   getContributors,
   confirmSubmission,
-  getContributorStatistics
+  getContributorStatistics,
+  updateIncludedStatus
 };

@@ -12,6 +12,7 @@ import ContributePage from 'views/_public/Contribute';
 import ConfirmSubmissionPage from 'views/_public/Contribute/ConfirmSubmission';
 import TermConditionPage from 'views/_public/TermCondition';
 import AboutUsPage from 'views/_public/AboutUs';
+import AcknowledgmentPage from 'views/_public/Acknowlegment';
 import ExerciseDetail from 'views/_public/Library/Exercise/detail';
 import EducationMaterialDetail from 'views/_public/Library/EducationMaterial/detail';
 import QuestionnaireDetail from 'views/_public/Library/Questionnaire/detail';
@@ -120,6 +121,14 @@ const publicRoutes = [
     title: 'term_condition',
     path: ROUTES.TERM_CONDITION,
     component: TermConditionPage,
+    exact: true,
+    type: PUBLIC,
+    defaultTemplate: true
+  },
+  {
+    title: 'acknowledgment',
+    path: ROUTES.ACKNOWLEDGMENT,
+    component: AcknowledgmentPage,
     exact: true,
     type: PUBLIC,
     defaultTemplate: true
