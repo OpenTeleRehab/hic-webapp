@@ -172,7 +172,7 @@ const Questionnaire = ({ translate, lang }) => {
                 <Row>
                   { questionnaires.map(questionnaire => (
                     <Col key={questionnaire.id} md={6} lg={4}>
-                      <Card className="exercise-card shadow-sm mb-4">
+                      <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewDetail(questionnaire.id)}>
                         <div className="card-img bg-light">
                           <div className="w-100 h-100 px-2 py-4 text-center questionnaire-header">
                             <img src={'/images/questionnaire-icon.svg'} alt="Questionnaire" />
@@ -202,7 +202,7 @@ const Questionnaire = ({ translate, lang }) => {
                           </Card.Text>
                         </Card.Body>
                         <Card.Footer>
-                          <Button variant="link" className="text-decoration-none" onClick={() => handleViewDetail(questionnaire.id)}>{translate('exercise.learn_more')}</Button>
+                          <Button variant="link" className="text-decoration-none">{translate('exercise.learn_more')}</Button>
                         </Card.Footer>
                       </Card>
                     </Col>

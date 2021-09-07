@@ -125,30 +125,30 @@ const Dashboard = () => {
           <Row className="mt-5">
             { staticPage.homeData && staticPage.homeData.display_feature_resource === 1 && staticPage.homeData.featured_resources.exercises !== undefined && staticPage.homeData.featured_resources.exercises.map(exercise => (
               <Col key={exercise.id} md={4} lg={3}>
-                <Card className="exercise-card shadow-sm mb-4">
+                <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewDetail(exercise.id)}>
                   <div className="card-img bg-light">
                     {
                       exercise.files.length > 0 && (
                         (exercise.files[0].fileType === 'audio/mpeg' &&
-                          <div className="w-100 pt-5 pl-3 pr-3">
+                          <div className="w-100 pt-5 pl-3 pr-3" onContextMenu={(e) => e.preventDefault()}>
                             <audio controls className="w-100">
                               <source src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} type="audio/ogg" />
                             </audio>
                           </div>
                         ) ||
                         (exercise.files[0].fileType === 'video/mp4' &&
-                          <img className="img-fluid mx-auto d-block" src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}?thumbnail=1`} alt="Exercise"
+                          <img onContextMenu={(e) => e.preventDefault()} className="img-fluid mx-auto d-block" src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}?thumbnail=1`} alt="Exercise"
                           />
                         ) ||
                         ((exercise.files[0].fileType !== 'audio/mpeg' && exercise.files[0].fileType !== 'video/mp4') &&
-                          <img className="img-fluid mx-auto d-block" src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} alt="Exercise"
+                          <img onContextMenu={(e) => e.preventDefault()} className="img-fluid mx-auto d-block" src={`${process.env.REACT_APP_API_BASE_URL}/file/${exercise.files[0].id}`} alt="Exercise"
                           />
                         )
                       )
                     }
                     {
                       exercise.files.length === 0 && (
-                        <div className="w-100 h-100 px-2 py-4 text-center d-flex justify-content-center exercise-header">
+                        <div onContextMenu={(e) => e.preventDefault()} className="w-100 h-100 px-2 py-4 text-center d-flex justify-content-center exercise-header">
                           <img src={'/images/exercise.svg'} alt='exercise' />
                         </div>
                       )
@@ -175,14 +175,14 @@ const Dashboard = () => {
                     )}
                   </Card.Body>
                   <Card.Footer>
-                    <Button variant="link" className="text-decoration-none" onClick={() => handleViewDetail(exercise.id)}>{translate('exercise.learn_more')}</Button>
+                    <Button variant="link" className="text-decoration-none">{translate('exercise.learn_more')}</Button>
                   </Card.Footer>
                 </Card>
               </Col>
             ))}
             { staticPage.homeData && staticPage.homeData.display_feature_resource === 1 && staticPage.homeData.featured_resources.education_materials !== undefined && staticPage.homeData.featured_resources.education_materials.map(material => (
               <Col key={material.id} md={4} lg={3}>
-                <Card className="exercise-card shadow-sm mb-4">
+                <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewMaterialDetail(material.id)}>
                   <div className="card-img bg-light">
                     {(material.file && (material.file.hasThumbnail || material.file.fileGroupType === MATERIAL_TYPE.image)) ? (
                       <img
@@ -220,14 +220,14 @@ const Dashboard = () => {
                     </Card.Text>
                   </Card.Body>
                   <Card.Footer>
-                    <Button variant="link" className="text-decoration-none" onClick={() => handleViewMaterialDetail(material.id)}>{translate('exercise.learn_more')}</Button>
+                    <Button variant="link" className="text-decoration-none">{translate('exercise.learn_more')}</Button>
                   </Card.Footer>
                 </Card>
               </Col>
             ))}
             { staticPage.homeData && staticPage.homeData.display_feature_resource === 1 && staticPage.homeData.featured_resources.questionnaires !== undefined && staticPage.homeData.featured_resources.questionnaires.map(questionnaire => (
               <Col key={questionnaire.id} md={4} lg={3}>
-                <Card className="exercise-card shadow-sm mb-4">
+                <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewQuestionnaireDetail(questionnaire.id)}>
                   <div className="card-img bg-light">
                     <div className="w-100 h-100 px-2 py-4 text-center questionnaire-header">
                       <img src={'/images/questionnaire-icon.svg'} alt="Questionnaire" />
@@ -257,7 +257,7 @@ const Dashboard = () => {
                     </Card.Text>
                   </Card.Body>
                   <Card.Footer>
-                    <Button variant="link" className="text-decoration-none" onClick={() => handleViewQuestionnaireDetail(questionnaire.id)}>{translate('exercise.learn_more')}</Button>
+                    <Button variant="link" className="text-decoration-none">{translate('exercise.learn_more')}</Button>
                   </Card.Footer>
                 </Card>
               </Col>

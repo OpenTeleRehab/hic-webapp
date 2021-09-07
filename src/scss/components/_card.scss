@@ -1,4 +1,8 @@
 .exercise-card {
+	&:hover {
+	  cursor: pointer;
+	}
+
 	overflow: hidden;
 	height: 350px;
 

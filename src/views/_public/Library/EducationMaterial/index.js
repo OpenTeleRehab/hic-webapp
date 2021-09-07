@@ -173,7 +173,7 @@ const EducationMaterial = ({ translate, lang }) => {
                 <Row>
                   { educationMaterials.map(material => (
                     <Col key={material.id} md={6} lg={4}>
-                      <Card className="exercise-card shadow-sm mb-4">
+                      <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewDetail(material.id)}>
                         <div className="card-img bg-light">
                           {(material.file && (material.file.hasThumbnail || material.file.fileGroupType === MATERIAL_TYPE.image)) ? (
                             <img
@@ -211,7 +211,7 @@ const EducationMaterial = ({ translate, lang }) => {
                           </Card.Text>
                         </Card.Body>
                         <Card.Footer>
-                          <Button variant="link" className="text-decoration-none" onClick={() => handleViewDetail(material.id)}>{translate('exercise.learn_more')}</Button>
+                          <Button variant="link" className="text-decoration-none">{translate('exercise.learn_more')}</Button>
                         </Card.Footer>
                       </Card>
                     </Col>
