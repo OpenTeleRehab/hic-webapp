@@ -86,3 +86,20 @@
 		box-shadow: none;
 	}
 }
+
+//edit translation
+.cta-edit-translation {
+	display: flex;
+
+	button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 0 toRem(8) 0 0;
+		width: toRem(90);
+
+		&:last-child {
+			margin: 0;
+		}
+	}
+}

@@ -18,7 +18,7 @@ import {
   BsSquare,
   BsDashSquare
 } from 'react-icons/bs';
-import { FaRegCheckSquare } from 'react-icons/fa';
+import { FaLanguage, FaRegCheckSquare } from 'react-icons/fa';
 import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import Select from 'react-select';
@@ -222,6 +222,17 @@ const Questionnaire = ({ translate }) => {
             hideSearchFilter={true}
             onRowClick={handleRowClick}
             rows={questionnaires.map(questionnaire => {
+              const action = (
+                <>
+                  {questionnaire.status === STATUS.pending && <BiEdit size={26} className="btn-warning-info" />}
+                  {!_.isEmpty(questionnaire.edit_translations) && questionnaire.status === STATUS.approved &&
+                  <div className="d-flex justify-content-center align-items-center">
+                    <span className="mr-2">{questionnaire.edit_translations.length}</span>
+                    <FaLanguage size={26} className="btn-warning-info" />
+                  </div>
+                  }
+                </>
+              );
               return {
                 id: questionnaire.id,
                 title: questionnaire.title,
@@ -242,7 +253,7 @@ const Questionnaire = ({ translate }) => {
                     __html: questionnaire.reviewed_by
                   }}
                 />,
-                action: questionnaire.status === STATUS.pending ? <BiEdit size={25} className="btn-warning-info" /> : null
+                action
               };
             })}
           />

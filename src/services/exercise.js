@@ -121,8 +121,45 @@ const updateExercise = (id, payload, mediaUploads) => {
     });
 };
 
+const approveEditTranslation = (id, payload, mediaUploads) => {
+  const formData = new FormData();
+  _.forIn(payload, (value, key) => {
+    formData.append(key, value);
+  });
+
+  _.forIn(mediaUploads, (value, key) => {
+    if (value.file) {
+      formData.append(key, value.file);
+    } else {
+      formData.append('media_files[]', value.id);
+    }
+  });
+
+  return axios.post(`/exercise/approve-translate/${id}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }).then(
+    res => {
+      return res.data;
+    }
+  ).catch((e) => {
+    return e.response.data;
+  });
+};
+
 const rejectExercise = id => {
   return axios.post(`/exercise/reject/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const rejectEditTranslation = id => {
+  return axios.delete(`/exercise/${id}`)
     .then(
       res => {
         return res.data;
@@ -181,7 +218,9 @@ export const Exercise = {
   createExercise,
   contributeExercise,
   updateExercise,
+  approveEditTranslation,
   rejectExercise,
+  rejectEditTranslation,
   deleteExercise,
   downloadExercises,
   uploadExercises

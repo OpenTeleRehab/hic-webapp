@@ -117,7 +117,44 @@ const updateQuestionnaire = (id, payload) => {
     });
 };
 
+const approveEditTranslation = (id, payload) => {
+  const formData = new FormData();
+  formData.append('lang', payload.lang);
+  formData.append('data', JSON.stringify(payload));
+  _.map(payload.questions, (question, index) => {
+    if (question.file) {
+      if (question.file.size) {
+        formData.append(index, question.file);
+      } else {
+        formData.append('no_changed_files[]', question.id);
+      }
+    }
+  });
+
+  return axios.post(`/questionnaire/approve-translate/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const deleteQuestionnaire = id => {
+  return axios.delete(`/questionnaire/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const rejectEditTranslation = id => {
   return axios.delete(`/questionnaire/${id}`)
     .then(
       res => {
@@ -136,5 +173,7 @@ export const Questionnaire = {
   contributeQuestionnaire,
   updateQuestionnaire,
   deleteQuestionnaire,
-  rejectQuestionnaire
+  rejectQuestionnaire,
+  rejectEditTranslation,
+  approveEditTranslation
 };

@@ -25,6 +25,19 @@ const getEducationMaterialFail = () => ({
   type: 'GET_EDUCATION_MATERIAL_FAIL'
 });
 
+const getEditTranslationRequest = () => ({
+  type: 'GET_EDIT_TRANSLATION_REQUEST'
+});
+
+const getEditTranslationSuccess = (data) => ({
+  type: 'GET_EDIT_TRANSLATION_SUCCESS',
+  data
+});
+
+const getEditTranslationFail = () => ({
+  type: 'GET_EDIT_TRANSLATION_FAIL'
+});
+
 const createEducationMaterialRequest = () => ({
   type: 'CREATE_EDUCATION_MATERIAL_REQUEST'
 });
@@ -81,6 +94,10 @@ const clearFilterEducationMaterialsRequest = () => ({
   type: 'CLEAR_FILTER_EDUCATION_MATERIALS_REQUEST'
 });
 
+const clearEditTranslationRequest = () => ({
+  type: 'CLEAR_EDIT_TRANSLATION_REQUEST'
+});
+
 const rejectEducationMaterialFail = () => ({
   type: 'REJECT_EDUCATION_MATERIAL_FAIL'
 });
@@ -94,10 +111,39 @@ const rejectEducationMaterialSuccess = (data) => ({
   data
 });
 
+const rejectEditTranslationRequest = () => ({
+  type: 'REJECT_EDIT_TRANSLATION_REQUEST'
+});
+
+const rejectEditTranslationSuccess = (data) => ({
+  type: 'REJECT_EDIT_TRANSLATION_SUCCESS',
+  data
+});
+
+const rejectEditTranslationFail = () => ({
+  type: 'REJECT_EDIT_TRANSLATION_FAIL'
+});
+
+const approveEditTranslationRequest = () => ({
+  type: 'APPROVE_EDIT_TRANSLATION_REQUEST'
+});
+
+const approveEditTranslationSuccess = (data) => ({
+  type: 'APPROVE_EDIT_TRANSLATION_SUCCESS',
+  data
+});
+
+const approveEditTranslationFail = () => ({
+  type: 'APPROVE_EDIT_TRANSLATION_FAIL'
+});
+
 export const mutation = {
   getEducationMaterialRequest,
   getEducationMaterialSuccess,
   getEducationMaterialFail,
+  getEditTranslationRequest,
+  getEditTranslationSuccess,
+  getEditTranslationFail,
   createEducationMaterialRequest,
   createEducationMaterialSuccess,
   createEducationMaterialFail,
@@ -114,7 +160,14 @@ export const mutation = {
   deleteEducationMaterialSuccess,
   deleteEducationMaterialFail,
   clearFilterEducationMaterialsRequest,
+  clearEditTranslationRequest,
   rejectEducationMaterialSuccess,
   rejectEducationMaterialFail,
-  rejectEducationMaterialRequest
+  rejectEducationMaterialRequest,
+  rejectEditTranslationRequest,
+  rejectEditTranslationSuccess,
+  rejectEditTranslationFail,
+  approveEditTranslationRequest,
+  approveEditTranslationSuccess,
+  approveEditTranslationFail
 };

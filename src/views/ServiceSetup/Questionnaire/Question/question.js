@@ -8,12 +8,19 @@ import {
   Form,
   Row
 } from 'react-bootstrap';
-import { BsPlus, BsUpload, BsX, BsArrowsMove } from 'react-icons/bs';
-import { useSelector } from 'react-redux';
+import {
+  BsPlus,
+  BsUpload,
+  BsX,
+  BsArrowsMove,
+  BsXCircle
+} from 'react-icons/bs';
 import { FaCopy, FaTrashAlt } from 'react-icons/fa';
 import settings from '../../../../settings';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import _ from 'lodash';
+import FallbackText from '../../../../components/Form/FallbackText';
+import scssColors from '../../../../scss/custom.scss';
 
 const reorderQuestion = (questions, startIndex, endIndex) => {
   const result = Array.from(questions);
@@ -22,9 +29,7 @@ const reorderQuestion = (questions, startIndex, endIndex) => {
   return result;
 };
 
-const Question = ({ translate, questions, setQuestions, language, questionTitleError, answerFieldError, modifiable }) => {
-  const { languages } = useSelector(state => state.language);
-
+const Question = ({ translate, questionnaire, questions, setQuestions, questionTitleError, answerFieldError, modifiable, showFallbackText }) => {
   const handleFileChange = (e, index) => {
     const { name, files } = e.target;
     const values = [...questions];
@@ -94,11 +99,6 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
     setQuestions([...questions]);
   };
 
-  const enableButtons = () => {
-    const languageObj = languages.find(item => item.id === parseInt(language, 10));
-    return languageObj && languageObj.code === languageObj.fallback && modifiable;
-  };
-
   const handleCloneQuestion = (index) => {
     const { title, type } = questions[index];
     const answers = _.cloneDeep(questions[index].answers);
@@ -143,7 +143,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                         <Card.Header className="card-header">
                           <Card.Title className="d-flex justify-content-between">
                             <h5>{translate('questionnaire.question_number', { number: index + 1 })}</h5>
-                            {enableButtons() &&
+                            {modifiable &&
                               <>
                                 <div
                                   {...provided.dragHandleProps}
@@ -181,6 +181,9 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                           <Row>
                             <Col sm={8} xl={7}>
                               <Form.Group controlId={`formTitle${index}`}>
+                                {showFallbackText && question.fallback &&
+                                  <FallbackText translate={translate} text={questionnaire.questions[index].fallback.title} />
+                                }
                                 <Form.Control
                                   name="title"
                                   onChange={e => handleQuestionTitleChange(index, e)}
@@ -194,38 +197,38 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                                 </Form.Control.Feedback>
                               </Form.Group>
                               { question.file &&
-                                <div className="mb-2 w-50 d-flex justify-content-between">
-                                  <img src={readImage(question.file)} alt="..." className="img-thumbnail"/>
-                                  {enableButtons() &&
-                                    <div className="ml-3">
-                                      <Button
-                                        variant="outline-danger"
-                                        className="remove-btn"
-                                        onClick={() => handleFileRemove(index)}
-                                      >
-                                        <BsX size={15} />
-                                      </Button>
-                                    </div>
+                                <div className="form-group w-50 position-relative">
+                                  <img src={readImage(question.file)} alt={question.name} className="w-100 img-thumbnail border-danger" />
+                                  {modifiable &&
+                                    <Button
+                                      variant="link"
+                                      className="position-absolute btn-remove"
+                                      onClick={() => handleFileRemove(index)}
+                                    >
+                                      <BsXCircle size={20} color={scssColors.danger} /> <span className="sr-only">{translate('common.remove')}</span>
+                                    </Button>
                                   }
                                 </div>
                               }
-                              {enableButtons() &&
+                              {modifiable &&
                                 <div className="btn btn-sm text-primary position-relative overflow-hidden" >
-                                  <BsUpload size={15}/> Upload Image
+                                  <BsUpload size={15} /> Upload Image
                                   <input type="file" name="file" className="position-absolute upload-btn" onChange={e => handleFileChange(e, index)} accept="image/*"/>
                                 </div>
                               }
                             </Col>
-                            <Col sm={5} xl={4}>
-                              <Form.Group controlId={`formType${index}`}>
-                                <Form.Control name ="type" as="select" value={question.type} onChange={e => handleSelectChange(index, e)} disabled={!enableButtons()}>
-                                  <option value='checkbox'>{translate('question.type.checkbox')}</option>
-                                  <option value='multiple'>{translate('question.type.multiple_choice')}</option>
-                                  <option value='open-text'>{translate('question.type.open_ended_free_text')}</option>
-                                  <option value='open-number'>{translate('question.type.open_ended_numbers_only')}</option>
-                                </Form.Control>
-                              </Form.Group>
-                            </Col>
+                            {modifiable &&
+                              <Col sm={5} xl={4}>
+                                <Form.Group controlId={`formType${index}`}>
+                                  <Form.Control name ="type" as="select" value={question.type} onChange={e => handleSelectChange(index, e)}>
+                                    <option value='checkbox'>{translate('question.type.checkbox')}</option>
+                                    <option value='multiple'>{translate('question.type.multiple_choice')}</option>
+                                    <option value='open-text'>{translate('question.type.open_ended_free_text')}</option>
+                                    <option value='open-number'>{translate('question.type.open_ended_numbers_only')}</option>
+                                  </Form.Control>
+                                </Form.Group>
+                              </Col>
+                            }
                           </Row>
                         </Card.Header>
                         <Card.Body>
@@ -236,6 +239,9 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                                   <Row key={answerIndex}>
                                     <Col sm={8} xs={7}>
                                       <Form.Check type='checkbox'>
+                                        {showFallbackText && answer.fallback &&
+                                          <FallbackText translate={translate} text={questionnaire.questions[index].answers[answerIndex].fallback.description} />
+                                        }
                                         <Form.Check.Input type='checkbox' isValid className="mt-3" disabled />
                                         <Form.Check.Label className="w-100">
                                           <Form.Group controlId={`formValue${answerIndex}`}>
@@ -253,7 +259,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                                         </Form.Check.Label>
                                       </Form.Check>
                                     </Col>
-                                    {enableButtons() &&
+                                    {modifiable &&
                                     <Col sm={4} xl={3} className="mt-1">
                                       <Button
                                         variant="outline-danger"
@@ -275,6 +281,9 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                                   <Row key={answerIndex}>
                                     <Col sm={8} xl={7}>
                                       <Form.Check type='radio'>
+                                        {showFallbackText && answer.fallback &&
+                                          <FallbackText translate={translate} text={questionnaire.questions[index].answers[answerIndex].fallback.description} />
+                                        }
                                         <Form.Check.Input type='radio' isValid className="mt-3" disabled />
                                         <Form.Check.Label className="w-100">
                                           <Form.Group controlId={`formValue${answerIndex}`}>
@@ -292,7 +301,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                                         </Form.Check.Label>
                                       </Form.Check>
                                     </Col>
-                                    {enableButtons() &&
+                                    {modifiable &&
                                     <Col sm={4} xl={3} className="mt-1">
                                       <Button
                                         variant="outline-danger"
@@ -329,8 +338,7 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
                                 </Form.Group>
                               )
                             }
-                            {
-                              (enableButtons() && (question.type === 'checkbox' || question.type === 'multiple')) &&
+                            {(modifiable && (question.type === 'checkbox' || question.type === 'multiple')) &&
                               <Form.Group className="ml-3">
                                 <Button
                                   variant="link"
@@ -359,12 +367,13 @@ const Question = ({ translate, questions, setQuestions, language, questionTitleE
 
 Question.propTypes = {
   translate: PropTypes.func,
+  questionnaire: PropTypes.object,
   questions: PropTypes.array,
   setQuestions: PropTypes.func,
-  language: PropTypes.string,
   questionTitleError: PropTypes.array,
   answerFieldError: PropTypes.array,
-  modifiable: PropTypes.bool
+  modifiable: PropTypes.bool,
+  showFallbackText: PropTypes.bool
 };
 
 export default withLocalize(Question);

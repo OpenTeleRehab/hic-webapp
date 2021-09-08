@@ -26,6 +26,19 @@ const getExerciseFail = () => ({
   type: 'GET_EXERCISE_FAIL'
 });
 
+const getEditTranslationRequest = () => ({
+  type: 'GET_EDIT_TRANSLATION_REQUEST'
+});
+
+const getEditTranslationSuccess = (data) => ({
+  type: 'GET_EDIT_TRANSLATION_SUCCESS',
+  data
+});
+
+const getEditTranslationFail = () => ({
+  type: 'GET_EDIT_TRANSLATION_FAIL'
+});
+
 const createExerciseRequest = () => ({
   type: 'CREATE_EXERCISE_REQUEST'
 });
@@ -61,10 +74,6 @@ const updateExerciseSuccess = (data) => ({
   data
 });
 
-const rejectExerciseFail = () => ({
-  type: 'REJECT_EXERCISE_FAIL'
-});
-
 const rejectExerciseRequest = () => ({
   type: 'REJECT_EXERCISE_REQUEST'
 });
@@ -72,6 +81,36 @@ const rejectExerciseRequest = () => ({
 const rejectExerciseSuccess = (data) => ({
   type: 'REJECT_EXERCISE_SUCCESS',
   data
+});
+
+const rejectExerciseFail = () => ({
+  type: 'REJECT_EXERCISE_FAIL'
+});
+
+const rejectEditTranslationRequest = () => ({
+  type: 'REJECT_EDIT_TRANSLATION_REQUEST'
+});
+
+const rejectEditTranslationSuccess = (data) => ({
+  type: 'REJECT_EDIT_TRANSLATION_SUCCESS',
+  data
+});
+
+const rejectEditTranslationFail = () => ({
+  type: 'REJECT_EDIT_TRANSLATION_FAIL'
+});
+
+const approveEditTranslationRequest = () => ({
+  type: 'APPROVE_EDIT_TRANSLATION_REQUEST'
+});
+
+const approveEditTranslationSuccess = (data) => ({
+  type: 'APPROVE_EDIT_TRANSLATION_SUCCESS',
+  data
+});
+
+const approveEditTranslationFail = () => ({
+  type: 'APPROVE_EDIT_TRANSLATION_FAIL'
 });
 
 const updateExerciseFail = () => ({
@@ -93,6 +132,10 @@ const deleteExerciseFail = () => ({
 
 const clearFilterExercisesRequest = () => ({
   type: 'CLEAR_FILTER_EXERCISES_REQUEST'
+});
+
+const clearEditTranslationRequest = () => ({
+  type: 'CLEAR_EDIT_TRANSLATION_REQUEST'
 });
 
 const downloadExercisesRequest = () => ({
@@ -126,6 +169,9 @@ export const mutation = {
   getExerciseRequest,
   getExerciseSuccess,
   getExerciseFail,
+  getEditTranslationRequest,
+  getEditTranslationSuccess,
+  getEditTranslationFail,
   createExerciseRequest,
   createExerciseSuccess,
   createExerciseFail,
@@ -138,10 +184,17 @@ export const mutation = {
   rejectExerciseRequest,
   rejectExerciseSuccess,
   rejectExerciseFail,
+  rejectEditTranslationRequest,
+  rejectEditTranslationSuccess,
+  rejectEditTranslationFail,
+  approveEditTranslationRequest,
+  approveEditTranslationSuccess,
+  approveEditTranslationFail,
   deleteExerciseRequest,
   deleteExerciseSuccess,
   deleteExerciseFail,
   clearFilterExercisesRequest,
+  clearEditTranslationRequest,
   downloadExercisesRequest,
   downloadExercisesSuccess,
   downloadExercisesFail,

@@ -38,7 +38,7 @@ import { getCategoryTreeData } from '../../../../store/category/actions';
 import { CATEGORY_TYPES } from '../../../../variables/category';
 import { formatFileSize } from '../../../../utils/file';
 import { replaceRoute } from '../../../../utils/route';
-import { Exercise } from '../../../../services/exercise';
+import FallbackText from '../../../../components/Form/FallbackText';
 
 const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModal }) => {
   const dispatch = useDispatch();
@@ -78,7 +78,6 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
   const [inputValueError, setInputValueError] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
-  const [currentResource, setCurrentResource] = useState(undefined);
 
   const [categoryError, setCategoryError] = useState(false);
   const [errorClass, setErrorClass] = useState('');
@@ -98,14 +97,6 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
 
   useEffect(() => {
     if (id && exercise.id) {
-      const fetchExercise = async () => {
-        const data = await Exercise.getExercise(id, '');
-        if (data) {
-          setCurrentResource(data.data);
-        }
-      };
-      fetchExercise();
-
       const showSetsReps = exercise.sets > 0;
       setFormFields({
         id: exercise.id,
@@ -114,7 +105,8 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
         sets: exercise.sets,
         reps: exercise.reps,
         lang: language,
-        edit_translation: true
+        edit_translation: true,
+        fallback: exercise.fallback
       });
       setAdditionalFields(exercise.additional_fields);
       setMediaUploads(exercise.files);
@@ -410,7 +402,7 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
             <h5 className="text-primary">{translate('common.media')}</h5>
 
             { mediaUploads.map((mediaUpload, index) => (
-              <div key={index} className={`form-group position-relative ${id && mediaUpload.id && ' opacity-50'}`}>
+              <div key={index} className={`form-group position-relative ${id && mediaUpload.id && 'opacity-50'}`}>
                 <Button
                   className="position-absolute btn-remove"
                   variant="link"
@@ -441,21 +433,25 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
               </div>
             ))}
 
-            <div className="btn btn-sm bg-primary text-white position-relative overflow-hidden">
-              <BsUpload size={14}/> {translate('common.upload_image')}
-              <Form.Control
-                className="position-absolute upload-btn"
-                onChange={handleFileChange}
-                onClick={(e) => { e.target.value = null; }}
-                type="file"
-                multiple
-                accept="audio/*, video/*, image/*"
-                aria-label={translate('common.upload_image')}
-              />
-            </div>
-            <div className={mediaUploadsError ? 'd-block invalid-feedback' : 'invalid-feedback'}>
-              {translate('exercise.media_upload.required')}
-            </div>
+            {!id &&
+              <>
+                <div className="btn btn-sm bg-primary text-white position-relative overflow-hidden">
+                  <BsUpload size={14}/> {translate('common.upload_image')}
+                  <Form.Control
+                    className="position-absolute upload-btn"
+                    onChange={handleFileChange}
+                    onClick={(e) => { e.target.value = null; }}
+                    type="file"
+                    multiple
+                    accept="audio/*, video/*, image/*"
+                    aria-label={translate('common.upload_image')}
+                  />
+                </div>
+                <div className={mediaUploadsError ? 'd-block invalid-feedback' : 'invalid-feedback'}>
+                  {translate('exercise.media_upload.required')}
+                </div>
+              </>
+            }
           </Col>
 
           <Col xl={9} sm={8}>
@@ -479,7 +475,7 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
             <Form.Group controlId="formTitle">
               <Form.Label>{translate('exercise.title')}</Form.Label>
               <span className="text-dark ml-1">*</span>
-              {id && currentResource && <span className="d-block mb-2">{translate('common.english')}: {currentResource.title}</span>}
+              {formFields.fallback && <FallbackText translate={translate} text={formFields.fallback.title} />}
               <Form.Control
                 name="title"
                 onChange={handleChange}
@@ -601,7 +597,7 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
                     <Form.Group controlId={`formLabel${index}`}>
                       <Form.Label>{translate('exercise.additional_field.label')}</Form.Label>
                       <span className="text-dark ml-1">*</span>
-                      {id && currentResource && <span className="d-block mb-2">{translate('common.english')}: {currentResource.additional_fields[index].field}</span>}
+                      {additionalField.fallback && <FallbackText translate={translate} text={additionalField.fallback.field} />}
                       <Form.Control
                         name="field"
                         placeholder={translate('exercise.additional_field.placeholder.label')}
@@ -616,7 +612,7 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
                     <Form.Group controlId={`formValue${index}`}>
                       <Form.Label>{translate('exercise.additional_field.value')}</Form.Label>
                       <span className="text-dark ml-1">*</span>
-                      {id && currentResource && <span className="d-block mb-2">{translate('common.english')}: {currentResource.additional_fields[index].value}</span>}
+                      {additionalField.fallback && <FallbackText translate={translate} text={additionalField.fallback.value} />}
                       <Form.Control
                         name="value"
                         as="textarea"

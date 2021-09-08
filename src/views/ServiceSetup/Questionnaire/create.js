@@ -10,7 +10,11 @@ import {
   getQuestionnaire,
   updateQuestionnaire,
   rejectQuestionnaire,
-  deleteQuestionnaire
+  deleteQuestionnaire,
+  getEditTranslation,
+  clearEditTranslation,
+  rejectEditTranslation,
+  approveEditTranslation
 } from '../../../store/questionnaire/actions';
 import Question from './Question/question';
 import { getCategoryTreeData } from 'store/category/actions';
@@ -21,24 +25,23 @@ import {
   BsCaretDownFill,
   BsCaretRightFill,
   BsSquare,
-  BsDashSquare, BsPlusCircle
+  BsDashSquare,
+  BsPlusCircle
 } from 'react-icons/bs';
 import { FaRegCheckSquare } from 'react-icons/fa';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
-import scssColors from '../../../scss/custom.scss';
-import Select from 'react-select';
 import { STATUS } from '../../../variables/resourceStatus';
 import Dialog from '../../../components/Dialog';
+import FallbackText from '../../../components/Form/FallbackText';
+import SelectLanguage from '../_Partials/SelectLanguage';
 
 const CreateQuestionnaire = ({ translate }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id } = useParams();
-
-  const { languages } = useSelector(state => state.language);
-  const { questionnaire, filters } = useSelector(state => state.questionnaire);
+  const { questionnaire, editTranslation } = useSelector(state => state.questionnaire);
   const { categoryTreeData } = useSelector((state) => state.category);
-  const [language, setLanguage] = useState('');
+  const [language, setLanguage] = useState({});
   const [formFields, setFormFields] = useState({
     title: '',
     description: ''
@@ -54,26 +57,15 @@ const CreateQuestionnaire = ({ translate }) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
   const [errorClass, setErrorClass] = useState('');
+  const [isEditingItem, setIsEditingItem] = useState(false);
+  const [isEditingTranslation, setIsEditingTranslation] = useState(false);
+  const [editTranslations, setEditTranslations] = useState([]);
+  const [editTranslationIndex, setEditTranslationIndex] = useState(1);
+  const [showFallbackText, setShowFallbackText] = useState(false);
 
   useEffect(() => {
-    if (languages.length) {
-      if (id && filters && filters.lang) {
-        setLanguage(filters.lang);
-      } else {
-        setLanguage(languages[0].id);
-      }
-    }
-  }, [languages, filters, id]);
-
-  useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: language }));
+    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: language.id }));
   }, [language, dispatch]);
-
-  useEffect(() => {
-    if (id && language) {
-      dispatch(getQuestionnaire(id, language));
-    }
-  }, [id, language, dispatch]);
 
   useEffect(() => {
     if (categoryTreeData.length) {
@@ -86,7 +78,83 @@ const CreateQuestionnaire = ({ translate }) => {
   }, [categoryTreeData]);
 
   useEffect(() => {
-    if (id && questionnaire.id) {
+    if (id && language) {
+      dispatch(getQuestionnaire(id, language.id));
+    }
+  }, [id, language, dispatch]);
+
+  useEffect(() => {
+    if (!_.isEmpty(editTranslations)) {
+      dispatch(getEditTranslation(editTranslations[editTranslationIndex - 1].id, language.id));
+    } else {
+      dispatch(clearEditTranslation());
+    }
+    // eslint-disable-next-line
+  }, [editTranslations, editTranslationIndex]);
+
+  useEffect(() => {
+    if (id && questionnaire.id && questionnaire.status === STATUS.approved) {
+      setIsEditingItem(false);
+      setIsEditingTranslation(true);
+    }
+
+    if (id && questionnaire.id && (questionnaire.status === STATUS.pending || questionnaire.status === STATUS.rejected)) {
+      setIsEditingItem(true);
+      setIsEditingTranslation(false);
+    }
+  }, [id, questionnaire]);
+
+  useEffect(() => {
+    if (isEditingTranslation && questionnaire) {
+      if (_.isEmpty(editTranslation)) {
+        setFormFields({
+          title: questionnaire.title,
+          description: questionnaire.description,
+          fallback: questionnaire.fallback
+        });
+        if (questionnaire.questions) {
+          questionnaire.questions.forEach((question) => {
+            if (question.file) {
+              delete question.file.size;
+            }
+          });
+        }
+        setQuestions(questionnaire.questions);
+        setShowFallbackText(false);
+      } else {
+        setFormFields({
+          title: editTranslation.title,
+          description: editTranslation.description,
+          fallback: questionnaire.fallback
+        });
+        if (editTranslation.questions) {
+          editTranslation.questions.forEach((question) => {
+            if (question.file) {
+              delete question.file.size;
+            }
+          });
+        }
+        setQuestions(editTranslation.questions);
+        setShowFallbackText(true);
+      }
+
+      if (categoryTreeData.length) {
+        const rootCategoryStructure = {};
+        categoryTreeData.forEach(category => {
+          const ids = [];
+          JSON.stringify(category, (key, value) => {
+            if (key === 'value') ids.push(value);
+            return value;
+          });
+          rootCategoryStructure[category.value] = _.intersectionWith(questionnaire.categories, ids);
+        });
+        setSelectedCategories(rootCategoryStructure);
+      }
+    }
+  }, [isEditingTranslation, editTranslation, categoryTreeData, questionnaire]);
+
+  useEffect(() => {
+    if (isEditingItem) {
       setFormFields({
         title: questionnaire.title,
         description: questionnaire.description
@@ -112,7 +180,7 @@ const CreateQuestionnaire = ({ translate }) => {
         setSelectedCategories(rootCategoryStructure);
       }
     }
-  }, [id, questionnaire, categoryTreeData]);
+  }, [isEditingItem, categoryTreeData, questionnaire]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -171,15 +239,25 @@ const CreateQuestionnaire = ({ translate }) => {
     if (canSave) {
       setIsLoading(true);
       if (id) {
-        dispatch(updateQuestionnaire(id, { ...formFields, categories: serializedSelectedCats, lang: language, questions }))
-          .then(result => {
-            if (result) {
-              history.push(ROUTES.SERVICE_SETUP_QUESTIONNAIRE);
-            }
-            setIsLoading(false);
-          });
+        if (!_.isEmpty(editTranslation)) {
+          dispatch(approveEditTranslation(id, { ...formFields, categories: serializedSelectedCats, lang: language.id, questions }))
+            .then(result => {
+              if (result) {
+                setIsLoading(false);
+              }
+              setIsLoading(false);
+            });
+        } else {
+          dispatch(updateQuestionnaire(id, { ...formFields, categories: serializedSelectedCats, lang: language.id, questions }))
+            .then(result => {
+              if (result) {
+                history.push(ROUTES.SERVICE_SETUP_QUESTIONNAIRE);
+              }
+              setIsLoading(false);
+            });
+        }
       } else {
-        dispatch(createQuestionnaire({ ...formFields, categories: serializedSelectedCats, lang: language, questions }))
+        dispatch(createQuestionnaire({ ...formFields, categories: serializedSelectedCats, lang: language.id, questions }))
           .then(result => {
             if (result) {
               history.push(ROUTES.SERVICE_SETUP_QUESTIONNAIRE);
@@ -191,13 +269,23 @@ const CreateQuestionnaire = ({ translate }) => {
   };
 
   const handleReject = () => {
-    setIsLoading(true);
-    dispatch(rejectQuestionnaire(id)).then(result => {
-      if (result) {
-        dispatch(getQuestionnaire(id, language));
-      }
-      setIsLoading(false);
-    });
+    if (isEditingTranslation && !_.isEmpty(editTranslation)) {
+      setIsLoading(true);
+      dispatch(rejectEditTranslation(editTranslation.id)).then(result => {
+        if (result) {
+          dispatch(getQuestionnaire(id, language.id));
+        }
+        setIsLoading(false);
+      });
+    } else {
+      setIsLoading(true);
+      dispatch(rejectQuestionnaire(id)).then(result => {
+        if (result) {
+          dispatch(getQuestionnaire(id, language.id));
+        }
+        setIsLoading(false);
+      });
+    }
   };
 
   const handleDeleteDialogConfirm = () => {
@@ -212,27 +300,11 @@ const CreateQuestionnaire = ({ translate }) => {
     setSelectedCategories({ ...selectedCategories, [parent]: checked.map(item => parseInt(item)) });
   };
 
-  const enableButtons = () => {
-    const languageObj = languages.find(item => item.id === parseInt(language, 10));
-    return languageObj && languageObj.code === languageObj.fallback && (!questionnaire.is_used || !id);
-  };
-
   const handleAddQuestion = () => {
     setQuestions([...questions, { title: '', type: 'checkbox', answers: [{ description: '' }, { description: '' }], file: null }]);
     setTimeout(() => {
       window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: 'smooth' });
     }, 300);
-  };
-
-  const customSelectStyles = {
-    option: (provided) => ({
-      ...provided,
-      color: 'black',
-      backgroundColor: 'white',
-      '&:hover': {
-        backgroundColor: scssColors.infoLight
-      }
-    })
   };
 
   const handleFormSubmit = (e) => {
@@ -249,10 +321,25 @@ const CreateQuestionnaire = ({ translate }) => {
       </div>
       <Form onKeyPress={(e) => handleFormSubmit(e)}>
         <Row>
-          <Col sm={6} xl={6}>
+          <Col sm={12} xl={11}>
+            <Form.Group controlId="formLanguage">
+              <Form.Label>{translate('common.language')}</Form.Label>
+              <SelectLanguage
+                translate={translate}
+                resource={questionnaire}
+                setLanguage={setLanguage}
+                setEditTranslationIndex={setEditTranslationIndex}
+                setEditTranslations={setEditTranslations}
+                isDisabled={!isEditingTranslation}
+              />
+            </Form.Group>
+
             <Form.Group controlId="formTitle">
               <Form.Label>{translate('questionnaire.title')}</Form.Label>
               <span className="text-dark ml-1">*</span>
+              {showFallbackText && questionnaire.fallback &&
+                <FallbackText translate={translate} text={questionnaire.fallback.title} />
+              }
               <Form.Control
                 name="title"
                 onChange={handleChange}
@@ -265,26 +352,12 @@ const CreateQuestionnaire = ({ translate }) => {
                 {translate('questionnaire.title.required')}
               </Form.Control.Feedback>
             </Form.Group>
-          </Col>
-          <Col sm={6} xl={5}>
-            <Form.Group controlId="formLanguage">
-              <Form.Label>{translate('common.show_language.version')}</Form.Label>
-              <Select
-                isDisabled={!id || (questionnaire && questionnaire.status !== STATUS.approved)}
-                classNamePrefix="filter"
-                value={languages.filter(option => option.id === language)}
-                getOptionLabel={option => option.name}
-                options={languages}
-                onChange={(e) => setLanguage(e.id)}
-                styles={customSelectStyles}
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={12} xl={11}>
+
             <Form.Group controlId={'formDescription'}>
               <Form.Label>{translate('questionnaire.description')}</Form.Label>
+              {showFallbackText && questionnaire.fallback &&
+                <FallbackText translate={translate} text={questionnaire.fallback.description} />
+              }
               <Form.Control
                 name="description"
                 as="textarea" rows={3}
@@ -293,62 +366,63 @@ const CreateQuestionnaire = ({ translate }) => {
                 onChange={handleChange}
               />
             </Form.Group>
+
+            {!editTranslation &&
+              <Accordion className="mb-3" defaultActiveKey={1}>
+                {
+                  categoryTreeData.map((category, index) => (
+                    <Card key={index}>
+                      <Accordion.Toggle as={Card.Header} eventKey={index + 1} className="d-flex align-items-center">
+                        {category.label}
+                        <div className="ml-auto">
+                          <span className="mr-3">
+                            {selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('category.selected')}
+                          </span>
+                          <ContextAwareToggle eventKey={index + 1} />
+                        </div>
+                      </Accordion.Toggle>
+                      <Accordion.Collapse eventKey={index + 1}>
+                        <Card.Body>
+                          <CheckboxTree
+                            nodes={category.children || []}
+                            checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
+                            expanded={expanded}
+                            onCheck={(checked) => handleSetSelectedCategories(category.value, checked)}
+                            onExpand={expanded => setExpanded(expanded)}
+                            icons={{
+                              check: <FaRegCheckSquare size={40} color="black" />,
+                              uncheck: <BsSquare size={40} color="black" />,
+                              halfCheck: <BsDashSquare size={40} color="black" />,
+                              expandClose: <BsCaretRightFill size={40} color="black" />,
+                              expandOpen: <BsCaretDownFill size={40} color="black" />
+                            }}
+                            showNodeIcon={false}
+                          />
+                        </Card.Body>
+                      </Accordion.Collapse>
+                    </Card>
+                  ))
+                }
+                <span className={errorClass}>
+                  {categoryError && translate('resources.category.required')}
+                </span>
+              </Accordion>
+            }
           </Col>
         </Row>
-        <Row>
-          <Col sm={12} xl={11}>
-            <Accordion className="mb-3" defaultActiveKey={1}>
-              {
-                categoryTreeData.map((category, index) => (
-                  <Card key={index}>
-                    <Accordion.Toggle as={Card.Header} eventKey={index + 1} className="d-flex align-items-center">
-                      {category.label}
-                      <div className="ml-auto">
-                        <span className="mr-3">
-                          {selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('category.selected')}
-                        </span>
-                        <ContextAwareToggle eventKey={index + 1} />
-                      </div>
-                    </Accordion.Toggle>
-                    <Accordion.Collapse eventKey={index + 1}>
-                      <Card.Body>
-                        <CheckboxTree
-                          nodes={category.children || []}
-                          checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
-                          expanded={expanded}
-                          onCheck={(checked) => handleSetSelectedCategories(category.value, checked)}
-                          onExpand={expanded => setExpanded(expanded)}
-                          icons={{
-                            check: <FaRegCheckSquare size={40} color="black" />,
-                            uncheck: <BsSquare size={40} color="black" />,
-                            halfCheck: <BsDashSquare size={40} color="black" />,
-                            expandClose: <BsCaretRightFill size={40} color="black" />,
-                            expandOpen: <BsCaretDownFill size={40} color="black" />
-                          }}
-                          showNodeIcon={false}
-                        />
-                      </Card.Body>
-                    </Accordion.Collapse>
-                  </Card>
-                ))
-              }
-              <span className={errorClass}>
-                {categoryError && translate('resources.category.required')}
-              </span>
-            </Accordion>
-          </Col>
-        </Row>
+
         <Row>
           <Col sm={12} xl={11} className="question-wrapper">
             <Question
+              questionnaire={questionnaire}
               questions={questions}
               setQuestions={setQuestions}
-              language={language}
               questionTitleError={questionTitleError}
               answerFieldError={answerFieldError}
-              modifiable={!questionnaire.is_used || !id}
+              modifiable={!isEditingTranslation}
+              showFallbackText={showFallbackText}
             />
-            {enableButtons() &&
+            {!isEditingTranslation &&
               <div className="sticky-bottom d-flex justify-content-between">
                 <div className="py-1 px-1">
                   <Button
@@ -376,13 +450,23 @@ const CreateQuestionnaire = ({ translate }) => {
                       }
 
                       {questionnaire.status === STATUS.rejected &&
-                        <Button onClick={() => setShowDeleteDialog(true)} className="ml-2" variant="outline-danger" disabled={isLoading}>
+                        <Button
+                          onClick={() => setShowDeleteDialog(true)}
+                          className="ml-2"
+                          variant="outline-danger"
+                          disabled={isLoading}
+                        >
                           {translate('common.delete')}
                         </Button>
                       }
 
                       {(questionnaire.status === STATUS.pending || questionnaire.status === STATUS.approved) &&
-                        <Button onClick={handleReject} className="ml-2" variant="outline-primary" disabled={isLoading}>
+                        <Button
+                          onClick={handleReject}
+                          className="ml-2"
+                          variant="outline-primary"
+                          disabled={isLoading}
+                        >
                           {translate('common.reject')}
                         </Button>
                       }
@@ -400,37 +484,57 @@ const CreateQuestionnaire = ({ translate }) => {
                 </div>
               </div>
             }
-            {!enableButtons() &&
+
+            {isEditingTranslation &&
               <div className="sticky-bottom d-flex justify-content-end">
                 <div className="py-2 questionnaire-save-cancel-wrapper px-3">
                   { !id && (
-                    <Button onClick={handleSave} disabled={isLoading}>
+                    <Button
+                      onClick={handleSave}
+                      disabled={isLoading}
+                    >
                       {translate('common.save')}
                     </Button>
                   )}
 
                   { id && (
                     <>
-                      {questionnaire.status === STATUS.approved
+                      {questionnaire.status === STATUS.approved && _.isEmpty(editTranslations)
                         ? <Button onClick={handleSave} disabled={isLoading}>{translate('common.save')}</Button>
                         : <Button onClick={handleSave} disabled={isLoading}>{translate('common.approve')}</Button>
                       }
 
                       {questionnaire.status === STATUS.rejected &&
-                        <Button onClick={() => setShowDeleteDialog(true)} className="ml-2" variant="outline-danger" disabled={isLoading}>
+                        <Button
+                          onClick={() => setShowDeleteDialog(true)}
+                          className="ml-2"
+                          variant="outline-danger"
+                          disabled={isLoading}
+                        >
                           {translate('common.delete')}
                         </Button>
                       }
 
                       {(questionnaire.status === STATUS.pending || questionnaire.status === STATUS.approved) &&
-                        <Button onClick={handleReject} className="ml-2" variant="outline-primary" disabled={isLoading}>
+                        <Button
+                          onClick={handleReject}
+                          className="ml-2"
+                          variant="outline-primary"
+                          disabled={isLoading}
+                        >
                           {translate('common.reject')}
                         </Button>
                       }
                     </>
                   )}
 
-                  <Button className="ml-2" variant="outline-dark" as={Link} to={ROUTES.SERVICE_SETUP_QUESTIONNAIRE} disabled={isLoading}>
+                  <Button
+                    className="ml-2"
+                    variant="outline-dark"
+                    as={Link}
+                    to={ROUTES.SERVICE_SETUP_QUESTIONNAIRE}
+                    disabled={isLoading}
+                  >
                     {translate('common.cancel')}
                   </Button>
                 </div>

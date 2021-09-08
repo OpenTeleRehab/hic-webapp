@@ -28,7 +28,7 @@ import {
   BsSquare,
   BsDashSquare
 } from 'react-icons/bs';
-import { FaRegCheckSquare } from 'react-icons/fa';
+import { FaLanguage, FaRegCheckSquare } from 'react-icons/fa';
 import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import Select from 'react-select';
@@ -249,6 +249,17 @@ const Exercise = ({ translate }) => {
             hideSearchFilter={true}
             onRowClick={handleRowClick}
             rows={exercises.map(exercise => {
+              const action = (
+                <>
+                  {exercise.status === STATUS.pending && <BiEdit size={26} className="btn-warning-info" />}
+                  {!_.isEmpty(exercise.edit_translations) && exercise.status === STATUS.approved &&
+                    <div className="d-flex justify-content-center align-items-center">
+                      <span className="mr-2">{exercise.edit_translations.length}</span>
+                      <FaLanguage size={26} className="btn-warning-info" />
+                    </div>
+                  }
+                </>
+              );
               return {
                 id: exercise.id,
                 title: exercise.title,
@@ -269,7 +280,7 @@ const Exercise = ({ translate }) => {
                     __html: exercise.reviewed_by
                   }}
                 />,
-                action: exercise.status === STATUS.pending ? <BiEdit size={25} className="btn-warning-info" /> : null
+                action
               };
             })}
           />

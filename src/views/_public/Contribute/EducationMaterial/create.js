@@ -27,9 +27,9 @@ import { getEducationMaterial } from '../../../../store/educationMaterial/action
 import Dialog from '../../../../components/Dialog';
 import * as ROUTES from '../../../../variables/routes';
 import { replaceRoute } from '../../../../utils/route';
-import { EducationMaterial } from '../../../../services/educationMaterial';
 import Select from 'react-select';
 import scssColors from '../../../../scss/custom.scss';
+import FallbackText from '../../../../components/Form/FallbackText';
 
 const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showReviewModal }) => {
   const dispatch = useDispatch();
@@ -57,7 +57,6 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
   const [titleError, setTitleError] = useState(false);
   const [fileError, setFileError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentResource, setCurrentResource] = useState(undefined);
 
   const [categoryError, setCategoryError] = useState(false);
   const [errorClass, setErrorClass] = useState('');
@@ -77,18 +76,12 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
 
   useEffect(() => {
     if (id && educationMaterial.id) {
-      const fetchEducationMaterial = async () => {
-        const data = await EducationMaterial.getEducationMaterial(id, '');
-        if (data) {
-          setCurrentResource(data.data);
-        }
-      };
-      fetchEducationMaterial();
       setFormFields({
         id: educationMaterial.id,
         title: educationMaterial.title,
         lang: language,
-        edit_translation: true
+        edit_translation: true,
+        fallback: educationMaterial.fallback
       });
       setMaterialFile(educationMaterial.file);
     }
@@ -312,7 +305,7 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
             <Form.Group controlId="formTitle">
               <Form.Label>{translate('education_material.title')}</Form.Label>
               <span className="text-dark ml-1">*</span>
-              {id && currentResource && <span className="d-block mb-2">{translate('common.english')}: {currentResource.title}</span>}
+              {formFields.fallback && <FallbackText translate={translate} text={formFields.fallback.title} />}
               <Form.Control
                 name="title"
                 onChange={handleChange}

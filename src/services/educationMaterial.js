@@ -93,6 +93,29 @@ const updateEducationMaterial = (id, payload) => {
     });
 };
 
+const approveEditTranslation = (id, payload) => {
+  const formData = new FormData();
+  _.forIn(payload, (value, key) => {
+    if (value.size) {
+      formData.append(key, value.id);
+    } else {
+      formData.append(key, value);
+    }
+  });
+
+  return axios.post(`/education-material/approve-translate/${id}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const deleteEducationMaterial = id => {
   return axios.delete(`/education-material/${id}`)
     .then(
@@ -117,6 +140,18 @@ const rejectEducationMaterial = id => {
     });
 };
 
+const rejectEditTranslation = id => {
+  return axios.delete(`/education-material/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const EducationMaterial = {
   getEducationMaterial,
   createEducationMaterial,
@@ -124,5 +159,7 @@ export const EducationMaterial = {
   updateEducationMaterial,
   getEducationMaterials,
   deleteEducationMaterial,
-  rejectEducationMaterial
+  rejectEducationMaterial,
+  rejectEditTranslation,
+  approveEditTranslation
 };
