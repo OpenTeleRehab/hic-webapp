@@ -53,6 +53,8 @@ const CreateEducationMaterial = ({ translate }) => {
 
   const [titleError, setTitleError] = useState(false);
   const [fileError, setFileError] = useState(false);
+  const [categoryError, setCategoryError] = useState(false);
+  const [errorClass, setErrorClass] = useState('');
   const [fileMaxSizeError, setFileMaxSizeError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -145,6 +147,15 @@ const CreateEducationMaterial = ({ translate }) => {
     Object.keys(selectedCategories).forEach(function (key) {
       serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
     });
+
+    if (serializedSelectedCats.length === 0) {
+      canSave = false;
+      setErrorClass('error-feedback');
+      setCategoryError(true);
+    } else {
+      setErrorClass('');
+      setCategoryError(false);
+    }
 
     if (canSave) {
       setIsLoading(true);
@@ -296,38 +307,43 @@ const CreateEducationMaterial = ({ translate }) => {
             <Accordion className="material-category-wrapper" defaultActiveKey={1}>
               {
                 categoryTreeData.map((category, index) => (
-                  <Card key={index}>
-                    <Accordion.Toggle as={Card.Header} eventKey={index + 1} className="d-flex align-items-center">
-                      {category.label}
-                      <div className="ml-auto">
-                        <span className="mr-3">
-                          {selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('category.selected')}
-                        </span>
-                        <ContextAwareToggle eventKey={index + 1} />
-                      </div>
-                    </Accordion.Toggle>
-                    <Accordion.Collapse eventKey={index + 1}>
-                      <Card.Body>
-                        <CheckboxTree
-                          nodes={category.children || []}
-                          checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
-                          expanded={expanded}
-                          onCheck={(checked) => handleSetSelectedCategories(category.value, checked)}
-                          onExpand={expanded => setExpanded(expanded)}
-                          icons={{
-                            check: <FaRegCheckSquare size={40} color="black" />,
-                            uncheck: <BsSquare size={40} color="black" />,
-                            halfCheck: <BsDashSquare size={40} color="black" />,
-                            expandClose: <BsCaretRightFill size={40} color="black" />,
-                            expandOpen: <BsCaretDownFill size={40} color="black" />
-                          }}
-                          showNodeIcon={false}
-                        />
-                      </Card.Body>
-                    </Accordion.Collapse>
-                  </Card>
+                  <>
+                    <Card key={index}>
+                      <Accordion.Toggle as={Card.Header} eventKey={index + 1} className="d-flex align-items-center">
+                        {category.label}
+                        <div className="ml-auto">
+                          <span className="mr-3">
+                            {selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('category.selected')}
+                          </span>
+                          <ContextAwareToggle eventKey={index + 1} />
+                        </div>
+                      </Accordion.Toggle>
+                      <Accordion.Collapse eventKey={index + 1}>
+                        <Card.Body>
+                          <CheckboxTree
+                            nodes={category.children || []}
+                            checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
+                            expanded={expanded}
+                            onCheck={(checked) => handleSetSelectedCategories(category.value, checked)}
+                            onExpand={expanded => setExpanded(expanded)}
+                            icons={{
+                              check: <FaRegCheckSquare size={40} color="black" />,
+                              uncheck: <BsSquare size={40} color="black" />,
+                              halfCheck: <BsDashSquare size={40} color="black" />,
+                              expandClose: <BsCaretRightFill size={40} color="black" />,
+                              expandOpen: <BsCaretDownFill size={40} color="black" />
+                            }}
+                            showNodeIcon={false}
+                          />
+                        </Card.Body>
+                      </Accordion.Collapse>
+                    </Card>
+                  </>
                 ))
               }
+              <span className={errorClass}>
+                {categoryError && translate('resources.category.required')}
+              </span>
             </Accordion>
           </Col>
         </Row>

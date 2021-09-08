@@ -59,6 +59,9 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
   const [isLoading, setIsLoading] = useState(false);
   const [currentResource, setCurrentResource] = useState(undefined);
 
+  const [categoryError, setCategoryError] = useState(false);
+  const [errorClass, setErrorClass] = useState('');
+
   useEffect(() => {
     const lang = languages.find((language) => language.code === activeLanguage);
     if (lang && language === '') {
@@ -248,6 +251,15 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
       serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
     });
 
+    if (serializedSelectedCats.length === 0) {
+      canSave = false;
+      setErrorClass('error-feedback');
+      setCategoryError(true);
+    } else {
+      setErrorClass('');
+      setCategoryError(false);
+    }
+
     return canSave;
   };
 
@@ -384,6 +396,9 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
                     </Card>
                   ))
                 }
+                <span className={errorClass}>
+                  {categoryError && translate('resources.category.required')}
+                </span>
               </Accordion>
             }
           </Col>

@@ -80,6 +80,9 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
   const [expanded, setExpanded] = useState([]);
   const [currentResource, setCurrentResource] = useState(undefined);
 
+  const [categoryError, setCategoryError] = useState(false);
+  const [errorClass, setErrorClass] = useState('');
+
   useEffect(() => {
     const lang = languages.find((language) => language.code === activeLanguage);
     if (lang && language === '') {
@@ -358,6 +361,20 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
       setRepsError(false);
     }
 
+    let serializedSelectedCats = [];
+    Object.keys(selectedCategories).forEach(function (key) {
+      serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
+    });
+
+    if (serializedSelectedCats.length === 0) {
+      canSave = false;
+      setErrorClass('error-feedback');
+      setCategoryError(true);
+    } else {
+      setErrorClass('');
+      setCategoryError(false);
+    }
+
     return canSave;
   };
 
@@ -559,6 +576,9 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
                         </Accordion.Collapse>
                       </Card>
                     ))}
+                    <span className={errorClass}>
+                      {categoryError && translate('resources.category.required')}
+                    </span>
                   </Accordion>
                 </Form.Group>
               </>
