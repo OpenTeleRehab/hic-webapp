@@ -258,7 +258,7 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
 
   const handleCancel = () => {
     if (id) {
-      history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL.replace(':id', id), activeLanguage));
+      history.push(replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL.replace(':id', id), activeLanguage));
     } else {
       setShowCancelModal(true);
     }
