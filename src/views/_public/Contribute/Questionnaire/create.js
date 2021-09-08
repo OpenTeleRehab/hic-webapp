@@ -59,6 +59,9 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
   const history = useHistory();
   const { id } = useParams();
 
+  const [categoryError, setCategoryError] = useState(false);
+  const [errorClass, setErrorClass] = useState('');
+
   useEffect(() => {
     const lang = languages.find((language) => language.code === activeLanguage);
     if (lang && language === '') {
@@ -262,6 +265,20 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
     setQuestionTitleError(errorQuestionTitle);
     setAnswerFieldError(errorAnswerField);
 
+    let serializedSelectedCats = [];
+    Object.keys(selectedCategories).forEach(function (key) {
+      serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
+    });
+
+    if (serializedSelectedCats.length === 0) {
+      canSave = false;
+      setErrorClass('error-feedback');
+      setCategoryError(true);
+    } else {
+      setErrorClass('');
+      setCategoryError(false);
+    }
+
     return canSave;
   };
 
@@ -381,6 +398,9 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
                     </Card>
                   ))
                 }
+                <span className={errorClass}>
+                  {categoryError && translate('resources.category.required')}
+                </span>
               </Accordion>
             </Col>
           </Row>
