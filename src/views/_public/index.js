@@ -122,7 +122,7 @@ const Dashboard = () => {
               </Col>
             </Row>
           )}
-          <Row className="mt-5">
+          <Row className="mt-5 justify-content-center">
             { staticPage.homeData && staticPage.homeData.display_feature_resource === 1 && staticPage.homeData.featured_resources.exercises !== undefined && staticPage.homeData.featured_resources.exercises.map(exercise => (
               <Col key={exercise.id} md={4} lg={3}>
                 <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewDetail(exercise.id)}>

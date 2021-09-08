@@ -43,7 +43,7 @@ const ContributorCard = ({ hideContributors, isAdmin }) => {
   }, [contributorStatistics]);
 
   return (
-    <Row>
+    <Row className="justify-content-center">
       {contributors.map((contributor, index) => {
         if (!hideContributors.includes(contributor.id)) {
           let totalUpload = 0;
@@ -57,10 +57,14 @@ const ContributorCard = ({ hideContributors, isAdmin }) => {
           const totalQuestionnaireTranslation = questionnaire.totalTranslation && questionnaire.totalTranslation.find(questionnaireTranslation => questionnaireTranslation.uploaded_by === contributor.id);
           totalUpload += (totalExercise ? totalExercise.total_upload : 0) + (totalEducation ? totalEducation.total_upload : 0) + (totalQuestionnaire ? totalQuestionnaire.total_upload : 0);
           totalTranslation += (totalExerciseTranslation ? totalExerciseTranslation.total_translation : 0) + (totalEducationTranslation ? totalEducationTranslation.total_translation : 0) + (totalQuestionnaireTranslation ? totalQuestionnaireTranslation.total_translation : 0);
+          const style = {
+            backgroundColor: contributor.background_colors
+          };
+
           return (
             <Col sm={4}>
               <div className="mb-2 pr-2 d-flex border border-light contributor-card bg-white w-100" key={index}>
-                <div className={`${isAdmin ? 'p-2' : 'p-4'} text-white icon-wrapper`}>
+                <div className={`${isAdmin ? 'p-2' : 'p-4'} text-white icon-wrapper`} style={style}>
                   {contributor.isModerator ? (
                     <RiShieldUserFill size={ isAdmin ? 45 : 55} />
                   ) : (
