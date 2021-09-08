@@ -19,6 +19,7 @@ import { getContributors } from '../../../store/contributor/actions';
 import Multiselect from 'multiselect-react-dropdown';
 import ContributorCard from './contributorCards';
 import { Contributor as contributorService } from 'services/contributor';
+import _ from 'lodash';
 
 const Acknowledgment = ({ type }) => {
   const localize = useSelector((state) => state.localize);
@@ -80,15 +81,16 @@ const Acknowledgment = ({ type }) => {
   if (staticPage && staticPage.acknowledgmentData) {
     contributors.forEach((contributor) => {
       const hideContributors = staticPage.acknowledgmentData.hide_contributors.includes(contributor.id);
-      if (hideContributors || contributor.included_in_acknowledgment === 0) {
+      if (hideContributors || contributor.included_in_acknowledgment === false) {
         selectedContributors.push(contributor);
       }
     });
   } else {
-    const contributor = contributors.find(contributor => contributor.included_in_acknowledgment === 0);
-    if (contributor) {
-      selectedContributors.push(contributor);
-    }
+    contributors.forEach((contributor) => {
+      if (contributor.included_in_acknowledgment === false) {
+        selectedContributors.push(contributor);
+      }
+    });
   }
 
   useEffect(() => {
@@ -147,7 +149,10 @@ const Acknowledgment = ({ type }) => {
   };
 
   const handleMultipleRemove = (selectedList, selectedItem) => {
-    setHideContributors(JSON.stringify([...selectedList]));
+    _.remove(hideContributors, function (c) {
+      return (c === selectedItem.id);
+    });
+    setHideContributors([...hideContributors]);
   };
 
   const enableButtons = () => {
@@ -191,7 +196,7 @@ const Acknowledgment = ({ type }) => {
             }
           });
         contributors.forEach(contributor => {
-          if (contributor.included_in_acknowledgment === 0 && !hideContributors.includes(contributor.id)) {
+          if (contributor.included_in_acknowledgment === false && !hideContributors.includes(contributor.id)) {
             contributorService.updateIncludedStatus(contributor.id, { included_in_acknowledgment: true });
           }
         });
@@ -202,6 +207,11 @@ const Acknowledgment = ({ type }) => {
               'url-segment': type,
               lang: language
             }));
+          }
+        });
+        contributors.forEach(contributor => {
+          if (contributor.included_in_acknowledgment === false && !hideContributors.includes(contributor.id)) {
+            contributorService.updateIncludedStatus(contributor.id, { included_in_acknowledgment: true });
           }
         });
       }
