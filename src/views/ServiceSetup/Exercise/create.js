@@ -9,7 +9,7 @@ import {
   Row,
   Tooltip,
   Card,
-  Accordion
+  Accordion, Alert
 } from 'react-bootstrap';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -47,6 +47,8 @@ import { STATUS } from '../../../variables/resourceStatus';
 import Dialog from '../../../components/Dialog';
 import FallbackText from '../../../components/Form/FallbackText';
 import SelectLanguage from '../_Partials/SelectLanguage';
+import useInterval from 'hook/useInterval';
+import { Exercise } from 'services/exercise';
 
 const CreateExercise = ({ translate }) => {
   const dispatch = useDispatch();
@@ -174,8 +176,7 @@ const CreateExercise = ({ translate }) => {
         include_feedback: showSetsReps && exercise.include_feedback,
         get_pain_level: exercise.get_pain_level,
         show_sets_reps: showSetsReps,
-        sets: exercise.sets,
-        reps: exercise.reps
+        sets: exercise.sets
       });
       setAdditionalFields(exercise.additional_fields);
       setMediaUploads(exercise.files);
@@ -193,6 +194,12 @@ const CreateExercise = ({ translate }) => {
       }
     }
   }, [isEditingItem, categoryTreeData, exercise]);
+
+  useInterval(() => {
+    if (id && !exercise.blocked_editing) {
+      Exercise.continueEditing(id);
+    }
+  }, 30000);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -402,11 +409,27 @@ const CreateExercise = ({ translate }) => {
     }
   };
 
+  const disabledEditing = () => {
+    return exercise.blocked_editing;
+  };
+
+  const cancelEditing = () => {
+    if (id && !exercise.blocked_editing) {
+      return Exercise.cancelEditing(id);
+    }
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1 className="text-primary">{id ? translate('exercise.edit') : translate('exercise.create')}</h1>
       </div>
+
+      { disabledEditing() && (
+        <Alert variant="warning" className="mb-0">
+          {translate('resources.block_editing_message', { editing_by: exercise.editing_by })}
+        </Alert>
+      )}
 
       <Form onKeyPress={(e) => handleFormSubmit(e)}>
         <Row className="no-gutters bg-white">
@@ -449,7 +472,7 @@ const CreateExercise = ({ translate }) => {
               <>
                 <div className="btn btn-sm bg-primary text-white position-relative overflow-hidden">
                   <BsUpload size={15}/> Upload Image
-                  <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} multiple accept="audio/*, video/*, image/*" />
+                  <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} multiple accept="audio/*, video/*, image/*" disabled={disabledEditing()} />
                 </div>
                 <div className={mediaUploadsError ? 'd-block invalid-feedback' : 'invalid-feedback'}>
                   {translate('exercise.media_upload.required')}
@@ -483,6 +506,7 @@ const CreateExercise = ({ translate }) => {
                 value={formFields.title}
                 placeholder={translate('exercise.title.placeholder')}
                 isInvalid={titleError}
+                disabled={disabledEditing()}
               />
               <Form.Control.Feedback type="invalid">
                 {translate('exercise.title.required')}
@@ -499,6 +523,7 @@ const CreateExercise = ({ translate }) => {
                     checked={formFields.show_sets_reps}
                     label={translate('exercise.show_sets_reps')}
                     custom
+                    disabled={disabledEditing()}
                   />
                 </Form.Group>
 
@@ -531,6 +556,7 @@ const CreateExercise = ({ translate }) => {
                           value={formFields.reps}
                           onChange={handleChange}
                           isInvalid={repsError}
+                          disabled={disabledEditing()}
                         />
                         <Form.Control.Feedback type="invalid">
                           {translate('exercise.reps.required')}
@@ -592,6 +618,7 @@ const CreateExercise = ({ translate }) => {
                             variant="outline-danger"
                             className="btn-remove"
                             onClick={() => handleRemoveFields(index)}
+                            disabled={disabledEditing()}
                           >
                             <BsX size={20} />
                           </Button>
@@ -611,6 +638,7 @@ const CreateExercise = ({ translate }) => {
                         value={additionalField.field}
                         onChange={e => handleChangeInput(index, e)}
                         isInvalid={inputFieldError[index]}
+                        disabled={disabledEditing()}
                       />
                       <Form.Control.Feedback type="invalid">
                         {translate('exercise.additional_field.label.required')}
@@ -630,6 +658,7 @@ const CreateExercise = ({ translate }) => {
                         value={additionalField.value}
                         onChange={event => handleChangeInput(index, event)}
                         isInvalid={inputValueError[index]}
+                        disabled={disabledEditing()}
                       />
                       <Form.Control.Feedback type="invalid">
                         {translate('exercise.additional_field.value.required')}
@@ -642,7 +671,7 @@ const CreateExercise = ({ translate }) => {
 
             {!isEditingTranslation &&
               <Form.Group>
-                <Button variant="link" onClick={handleAddFields} className="p-0">
+                <Button variant="link" onClick={handleAddFields} className="p-0" disabled={disabledEditing()}>
                   <BsPlusCircle size={20} /> {translate('common.add_more_fields')}
                 </Button>
               </Form.Group>
@@ -652,7 +681,7 @@ const CreateExercise = ({ translate }) => {
 
         <div className="sticky-bottom d-flex justify-content-end">
           { !id && (
-            <Button onClick={handleSave} disabled={isLoading}>
+            <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>
               {translate('common.save')}
             </Button>
           )}
@@ -660,8 +689,8 @@ const CreateExercise = ({ translate }) => {
           { id && (
             <>
               {exercise.status === STATUS.approved && _.isEmpty(editTranslations)
-                ? <Button onClick={handleSave} disabled={isLoading}>{translate('common.save')}</Button>
-                : <Button onClick={handleSave} disabled={isLoading}>{translate('common.approve')}</Button>
+                ? <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>{translate('common.save')}</Button>
+                : <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>{translate('common.approve')}</Button>
               }
 
               {exercise.status === STATUS.rejected &&
@@ -680,7 +709,7 @@ const CreateExercise = ({ translate }) => {
                   onClick={handleReject}
                   className="ml-2"
                   variant="outline-primary"
-                  disabled={isLoading}
+                  disabled={isLoading || disabledEditing()}
                 >
                   {translate('common.reject')}
                 </Button>
@@ -694,6 +723,7 @@ const CreateExercise = ({ translate }) => {
             as={Link}
             to={ROUTES.ADMIN_RESOURCES}
             disabled={isLoading}
+            onClick={cancelEditing}
           >
             {translate('common.cancel')}
           </Button>

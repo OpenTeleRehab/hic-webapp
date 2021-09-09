@@ -146,6 +146,30 @@ const approveEditTranslation = (id, payload, mediaUploads) => {
   });
 };
 
+const cancelEditing = id => {
+  return axios.post(`/exercise/cancel-editing/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const continueEditing = id => {
+  return axios.post(`/exercise/continue-editing/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const rejectExercise = id => {
   return axios.post(`/exercise/reject/${id}`)
     .then(
@@ -218,9 +242,11 @@ export const Exercise = {
   createExercise,
   contributeExercise,
   updateExercise,
-  approveEditTranslation,
+  continueEditing,
+  cancelEditing,
   rejectExercise,
   rejectEditTranslation,
+  approveEditTranslation,
   deleteExercise,
   downloadExercises,
   uploadExercises

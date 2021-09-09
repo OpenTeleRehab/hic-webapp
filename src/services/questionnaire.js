@@ -14,6 +14,30 @@ const getQuestionnaires = payload => {
     });
 };
 
+const cancelEditing = id => {
+  return axios.post(`/questionnaire/cancel-editing/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const continueEditing = id => {
+  return axios.post(`/questionnaire/continue-editing/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const rejectQuestionnaire = id => {
   return axios.post(`/questionnaire/reject/${id}`)
     .then(
@@ -173,6 +197,8 @@ export const Questionnaire = {
   contributeQuestionnaire,
   updateQuestionnaire,
   deleteQuestionnaire,
+  continueEditing,
+  cancelEditing,
   rejectQuestionnaire,
   rejectEditTranslation,
   approveEditTranslation
