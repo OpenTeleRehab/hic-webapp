@@ -25,10 +25,10 @@ import { replaceRoute } from '../../../../utils/route';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import Dialog from '../../../../components/Dialog';
 import { getQuestionnaire } from '../../../../store/questionnaire/actions';
-import { Questionnaire } from '../../../../services/questionnaire';
 import Select from 'react-select';
 import scssColors from '../../../../scss/custom.scss';
 import Question from './Question';
+import FallbackText from '../../../../components/Form/FallbackText';
 
 const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showReviewModal }) => {
   const dispatch = useDispatch();
@@ -55,7 +55,6 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
   const [questions, setQuestions] = useState([resetQuestionFormFields]);
   const [questionTitleError, setQuestionTitleError] = useState([]);
   const [answerFieldError, setAnswerFieldError] = useState([]);
-  const [currentResource, setCurrentResource] = useState(undefined);
   const history = useHistory();
   const { id } = useParams();
 
@@ -81,20 +80,13 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
 
   useEffect(() => {
     if (id && questionnaire.id) {
-      const fetchQuestionnaire = async () => {
-        const data = await Questionnaire.getQuestionnaire(id, '');
-        if (data) {
-          setCurrentResource(data.data);
-        }
-      };
-      fetchQuestionnaire();
-
       setFormFields({
         id: questionnaire.id,
         title: questionnaire.title,
         description: questionnaire.description,
         lang: language,
-        edit_translation: true
+        edit_translation: true,
+        fallback: questionnaire.fallback
       });
       setQuestions(questionnaire.questions);
       if (categoryTreeData.length) {
@@ -329,7 +321,7 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
             <Form.Group controlId="formTitle">
               <Form.Label>{translate('questionnaire.title')}</Form.Label>
               <span className="text-dark ml-1">*</span>
-              {id && currentResource && <span className="d-block mb-2">{translate('common.english')}: {currentResource.title}</span>}
+              {formFields.fallback && <FallbackText translate={translate} text={formFields.fallback.title} />}
               <Form.Control
                 name="title"
                 onChange={handleChange}
@@ -348,7 +340,7 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
           <Col sm={12} xl={11}>
             <Form.Group controlId={'formDescription'}>
               <Form.Label>{translate('questionnaire.description')}</Form.Label>
-              {id && currentResource && <span className="d-block mb-2">{translate('common.english')}: {currentResource.description}</span>}
+              {formFields.fallback && <FallbackText translate={translate} text={formFields.fallback.description} />}
               <Form.Control
                 name="description"
                 as="textarea"
@@ -413,7 +405,6 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
               setQuestions={setQuestions}
               questionTitleError={questionTitleError}
               answerFieldError={answerFieldError}
-              currentResource={currentResource}
               modifiable={!!id}
             />
           </Col>

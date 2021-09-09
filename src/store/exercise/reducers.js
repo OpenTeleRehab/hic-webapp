@@ -25,9 +25,19 @@ export const exercise = (state = initialState, action) => {
         exercise: action.data
       });
     }
+    case 'GET_EDIT_TRANSLATION_SUCCESS': {
+      return Object.assign({}, state, {
+        editTranslation: action.data
+      });
+    }
     case 'CLEAR_FILTER_EXERCISES_REQUEST': {
       return Object.assign({}, state, {
         filters: {}
+      });
+    }
+    case 'CLEAR_EDIT_TRANSLATION_REQUEST': {
+      return Object.assign({}, state, {
+        editTranslation: {}
       });
     }
     default:

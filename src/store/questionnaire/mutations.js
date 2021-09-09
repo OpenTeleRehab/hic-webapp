@@ -25,6 +25,19 @@ const getQuestionnaireFail = () => ({
   type: 'GET_QUESTIONNAIRE_FAIL'
 });
 
+const getEditTranslationRequest = () => ({
+  type: 'GET_EDIT_TRANSLATION_REQUEST'
+});
+
+const getEditTranslationSuccess = (data) => ({
+  type: 'GET_EDIT_TRANSLATION_SUCCESS',
+  data
+});
+
+const getEditTranslationFail = () => ({
+  type: 'GET_EDIT_TRANSLATION_FAIL'
+});
+
 const createQuestionnaireRequest = () => ({
   type: 'CREATE_QUESTIONNAIRE_REQUEST'
 });
@@ -60,7 +73,7 @@ const updateQuestionnaireSuccess = () => ({
 
 const updateQuestionnaireFail = () => ({
   type: 'UPDATE_QUESTIONNAIRE_FAIL'
-}); ;
+});
 
 const deleteQuestionnaireRequest = () => ({
   type: 'DELETE_QUESTIONNAIRE_REQUEST'
@@ -78,6 +91,10 @@ const clearFilterQuestionnairesRequest = () => ({
   type: 'CLEAR_FILTER_QUESTIONNAIRES_REQUEST'
 });
 
+const clearEditTranslationRequest = () => ({
+  type: 'CLEAR_EDIT_TRANSLATION_REQUEST'
+});
+
 const rejectQuestionnaireFail = () => ({
   type: 'REJECT_QUESTIONNAIRE_FAIL'
 });
@@ -91,12 +108,41 @@ const rejectQuestionnaireSuccess = (data) => ({
   data
 });
 
+const rejectEditTranslationRequest = () => ({
+  type: 'REJECT_EDIT_TRANSLATION_REQUEST'
+});
+
+const rejectEditTranslationSuccess = (data) => ({
+  type: 'REJECT_EDIT_TRANSLATION_SUCCESS',
+  data
+});
+
+const rejectEditTranslationFail = () => ({
+  type: 'REJECT_EDIT_TRANSLATION_FAIL'
+});
+
+const approveEditTranslationRequest = () => ({
+  type: 'APPROVE_EDIT_TRANSLATION_REQUEST'
+});
+
+const approveEditTranslationSuccess = (data) => ({
+  type: 'APPROVE_EDIT_TRANSLATION_SUCCESS',
+  data
+});
+
+const approveEditTranslationFail = () => ({
+  type: 'APPROVE_EDIT_TRANSLATION_FAIL'
+});
+
 export const mutation = {
   getQuestionnairesRequest,
   getQuestionnairesSuccess,
   getQuestionnairesFail,
   getQuestionnaireRequest,
   getQuestionnaireSuccess,
+  getEditTranslationRequest,
+  getEditTranslationSuccess,
+  getEditTranslationFail,
   getQuestionnaireFail,
   createQuestionnaireFail,
   createQuestionnaireRequest,
@@ -111,7 +157,14 @@ export const mutation = {
   deleteQuestionnaireSuccess,
   deleteQuestionnaireFail,
   clearFilterQuestionnairesRequest,
+  clearEditTranslationRequest,
   rejectQuestionnaireRequest,
   rejectQuestionnaireSuccess,
-  rejectQuestionnaireFail
+  rejectQuestionnaireFail,
+  rejectEditTranslationRequest,
+  rejectEditTranslationSuccess,
+  rejectEditTranslationFail,
+  approveEditTranslationRequest,
+  approveEditTranslationSuccess,
+  approveEditTranslationFail
 };

@@ -23,6 +23,7 @@ import settings from '../../../../../settings';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import _ from 'lodash';
 import scssColors from '../../../../../scss/custom.scss';
+import FallbackText from '../../../../../components/Form/FallbackText';
 
 const reorderQuestion = (questions, startIndex, endIndex) => {
   const result = Array.from(questions);
@@ -31,7 +32,7 @@ const reorderQuestion = (questions, startIndex, endIndex) => {
   return result;
 };
 
-const Question = ({ translate, questions, setQuestions, questionTitleError, answerFieldError, currentResource, modifiable }) => {
+const Question = ({ translate, questions, setQuestions, questionTitleError, answerFieldError, modifiable }) => {
   const handleFileChange = (e, index) => {
     const { name, files } = e.target;
     const values = [...questions];
@@ -171,7 +172,7 @@ const Question = ({ translate, questions, setQuestions, questionTitleError, answ
                           <Row>
                             <Col sm={8} xl={7}>
                               <Form.Group controlId={`formTitle${index}`}>
-                                {modifiable && currentResource && <span className="d-block mb-2">{translate('common.english')}: {currentResource.questions[index].title}</span>}
+                                {modifiable && question.fallback && <FallbackText translate={translate} text={question.fallback.title} />}
                                 <Form.Control
                                   name="title"
                                   onChange={e => handleQuestionTitleChange(index, e)}
@@ -185,7 +186,7 @@ const Question = ({ translate, questions, setQuestions, questionTitleError, answ
                                 </Form.Control.Feedback>
                               </Form.Group>
                               { question.file &&
-                                <div className={`form-group w-50 position-relative ${modifiable && question.file.id && ' opacity-50'}`}>
+                                <div className={`form-group w-50 position-relative ${modifiable && question.file.id && 'opacity-50'}`}>
                                   <img src={question.file.url || `${process.env.REACT_APP_API_BASE_URL}/file/${question.file.id}`} alt={question.name} className="w-100 img-thumbnail border-danger" />
                                   <Button
                                     disabled={modifiable && question.file.id}
@@ -197,10 +198,12 @@ const Question = ({ translate, questions, setQuestions, questionTitleError, answ
                                   </Button>
                                 </div>
                               }
-                              <div className="btn btn-sm text-primary position-relative overflow-hidden" >
-                                <BsUpload size={15}/> Upload Image
-                                <input type="file" name="file" className="position-absolute upload-btn" onChange={e => handleFileChange(e, index)} accept="image/*"/>
-                              </div>
+                              {!modifiable &&
+                                <div className="btn btn-sm text-primary position-relative overflow-hidden" >
+                                  <BsUpload size={15}/> Upload Image
+                                  <input type="file" name="file" className="position-absolute upload-btn" onChange={e => handleFileChange(e, index)} accept="image/*"/>
+                                </div>
+                              }
                             </Col>
                             <Col sm={3} xl={4}>
                               {!modifiable &&
@@ -228,7 +231,7 @@ const Question = ({ translate, questions, setQuestions, questionTitleError, answ
                                 question.answers.map((answer, answerIndex) => (
                                   <Row key={answerIndex}>
                                     <Col sm={8} xl={7}>
-                                      {modifiable && currentResource && <span className="d-block mb-2 translate-text">{translate('common.english')}: {currentResource.questions[index].answers[answerIndex].description}</span>}
+                                      {modifiable && answer.fallback && <FallbackText translate={translate} text={answer.fallback.description} />}
                                       <Form.Check type='checkbox'>
                                         <Form.Check.Input type='checkbox' isValid className="mt-3" disabled />
                                         <Form.Check.Label className="w-100">
@@ -268,7 +271,7 @@ const Question = ({ translate, questions, setQuestions, questionTitleError, answ
                                 question.answers.map((answer, answerIndex) => (
                                   <Row key={answerIndex}>
                                     <Col sm={8} xl={7}>
-                                      {modifiable && currentResource && <span className="d-block mb-2 translate-text">{translate('common.english')}: {currentResource.questions[index].answers[answerIndex].description}</span>}
+                                      {modifiable && answer.fallback && <FallbackText translate={translate} text={answer.fallback.description} />}
                                       <Form.Check type='radio'>
                                         <Form.Check.Input type='radio' isValid className="mt-3" disabled />
                                         <Form.Check.Label className="w-100">
@@ -357,7 +360,6 @@ Question.propTypes = {
   setQuestions: PropTypes.func,
   questionTitleError: PropTypes.array,
   answerFieldError: PropTypes.array,
-  currentResource: PropTypes.object,
   modifiable: PropTypes.bool
 };
 

@@ -31,6 +31,17 @@ export const getExercise = (id, language) => async dispatch => {
   }
 };
 
+export const getEditTranslation = (id, language) => async dispatch => {
+  dispatch(mutation.getEditTranslationRequest());
+  const data = await Exercise.getExercise(id, language);
+  if (data) {
+    dispatch(mutation.getEditTranslationSuccess(data.data));
+  } else {
+    dispatch(mutation.getEditTranslationFail());
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
+  }
+};
+
 export const createExercise = (payload, mediaUploads) => async dispatch => {
   dispatch(mutation.createExerciseRequest());
   const data = await Exercise.createExercise(payload, mediaUploads);
@@ -73,6 +84,20 @@ export const approveExercise = (id, payload, mediaUploads) => async (dispatch, g
   }
 };
 
+export const approveEditTranslation = (id, payload, mediaUploads) => async (dispatch) => {
+  dispatch(mutation.approveEditTranslationRequest());
+  const data = await Exercise.approveEditTranslation(id, payload, mediaUploads);
+  if (data.success) {
+    dispatch(mutation.approveEditTranslationSuccess());
+    dispatch(showSuccessNotification('toast_title.edit_translation.approve', 'success_message.edit_translation.approve'));
+    return true;
+  } else {
+    dispatch(mutation.approveEditTranslationFail());
+    dispatch(showSuccessNotification('toast_title.edit_translation.approve', 'success_message.edit_translation.approve'));
+    return false;
+  }
+};
+
 export const rejectExercise = (id) => async dispatch => {
   dispatch(mutation.rejectExerciseRequest());
   const data = await Exercise.rejectExercise(id);
@@ -83,6 +108,20 @@ export const rejectExercise = (id) => async dispatch => {
   } else {
     dispatch(mutation.rejectExerciseFail());
     dispatch(showErrorNotification('toast_title.reject_exercise', data.message));
+    return false;
+  }
+};
+
+export const rejectEditTranslation = (id) => async dispatch => {
+  dispatch(mutation.rejectEditTranslationRequest());
+  const data = await Exercise.rejectEditTranslation(id);
+  if (data.success) {
+    dispatch(mutation.rejectEditTranslationSuccess());
+    dispatch(showSuccessNotification('toast_title.edit_translation.reject', 'success_message.edit_translation.reject'));
+    return true;
+  } else {
+    dispatch(mutation.rejectEditTranslationFail());
+    dispatch(showErrorNotification('toast_title.edit_translation.reject', 'success_message.edit_translation.reject'));
     return false;
   }
 };
@@ -105,6 +144,10 @@ export const deleteExercise = id => async (dispatch, getState) => {
 
 export const clearFilterExercises = () => async dispatch => {
   dispatch(mutation.clearFilterExercisesRequest());
+};
+
+export const clearEditTranslation = () => async dispatch => {
+  dispatch(mutation.clearEditTranslationRequest());
 };
 
 export const downloadExercises = payload => async dispatch => {

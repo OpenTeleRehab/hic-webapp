@@ -31,6 +31,17 @@ export const getQuestionnaire = (id, language) => async dispatch => {
   }
 };
 
+export const getEditTranslation = (id, language) => async dispatch => {
+  dispatch(mutation.getEditTranslationRequest());
+  const data = await Questionnaire.getQuestionnaire(id, language);
+  if (data) {
+    dispatch(mutation.getEditTranslationSuccess(data.data));
+  } else {
+    dispatch(mutation.getEditTranslationFail());
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
+  }
+};
+
 export const createQuestionnaire = (payload) => async dispatch => {
   dispatch(mutation.createQuestionnaireRequest());
   const data = await Questionnaire.createQuestionnaire(payload);
@@ -64,11 +75,25 @@ export const updateQuestionnaire = (id, payload) => async (dispatch, getState) =
   const translate = getTranslate(getState().localize);
   if (data.success) {
     dispatch(mutation.updateQuestionnaireSuccess());
-    dispatch(showSuccessNotification(questionnaire.status === STATUS.approved ? 'toast_title.save_questionnaire' : 'toast_title.approve_questionnaire', data.message, { status: questionnaire.status === STATUS.approved ? translate('exercise.saved') : translate('exercise.approved') }));
+    dispatch(showSuccessNotification(questionnaire.status === STATUS.approved ? 'toast_title.save_questionnaire' : 'toast_title.approve_questionnaire', data.message, { status: questionnaire.status === STATUS.approved ? translate('questionnaire.saved') : translate('questionnaire.approved') }));
     return true;
   } else {
     dispatch(mutation.updateQuestionnaireFail());
     dispatch(showErrorNotification('toast_title.update_questionnaire', data.message));
+    return false;
+  }
+};
+
+export const approveEditTranslation = (id, payload, mediaUploads) => async (dispatch) => {
+  dispatch(mutation.approveEditTranslationRequest());
+  const data = await Questionnaire.approveEditTranslation(id, payload, mediaUploads);
+  if (data.success) {
+    dispatch(mutation.approveEditTranslationSuccess());
+    dispatch(showSuccessNotification('toast_title.edit_translation.approve', 'success_message.edit_translation.approve'));
+    return true;
+  } else {
+    dispatch(mutation.approveEditTranslationFail());
+    dispatch(showSuccessNotification('toast_title.edit_translation.approve', 'success_message.edit_translation.approve'));
     return false;
   }
 };
@@ -83,6 +108,20 @@ export const rejectQuestionnaire = (id) => async dispatch => {
   } else {
     dispatch(mutation.rejectQuestionnaireFail());
     dispatch(showErrorNotification('toast_title.reject_questionnaire', data.message));
+    return false;
+  }
+};
+
+export const rejectEditTranslation = (id) => async dispatch => {
+  dispatch(mutation.rejectEditTranslationRequest());
+  const data = await Questionnaire.rejectEditTranslation(id);
+  if (data.success) {
+    dispatch(mutation.rejectEditTranslationSuccess());
+    dispatch(showSuccessNotification('toast_title.edit_translation.reject', 'success_message.edit_translation.reject'));
+    return true;
+  } else {
+    dispatch(mutation.rejectEditTranslationFail());
+    dispatch(showErrorNotification('toast_title.edit_translation.reject', 'success_message.edit_translation.reject'));
     return false;
   }
 };
@@ -105,4 +144,8 @@ export const deleteQuestionnaire = id => async (dispatch, getState) => {
 
 export const clearFilterQuestionnaires = () => async dispatch => {
   dispatch(mutation.clearFilterQuestionnairesRequest());
+};
+
+export const clearEditTranslation = () => async dispatch => {
+  dispatch(mutation.clearEditTranslationRequest());
 };

@@ -7,6 +7,11 @@ export const educationMaterial = (state = initialState, action) => {
         educationMaterial: action.data
       });
     }
+    case 'GET_EDIT_TRANSLATION_SUCCESS': {
+      return Object.assign({}, state, {
+        editTranslation: action.data
+      });
+    }
     case 'GET_EDUCATION_MATERIALS_SUCCESS': {
       return Object.assign({}, state, {
         educationMaterials: action.data,
@@ -17,6 +22,11 @@ export const educationMaterial = (state = initialState, action) => {
     case 'CLEAR_FILTER_EDUCATION_MATERIALS_REQUEST': {
       return Object.assign({}, state, {
         filters: {}
+      });
+    }
+    case 'CLEAR_EDIT_TRANSLATION_REQUEST': {
+      return Object.assign({}, state, {
+        editTranslation: {}
       });
     }
     default:

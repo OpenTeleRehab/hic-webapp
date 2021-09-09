@@ -19,7 +19,7 @@ import {
   BsSquare,
   BsDashSquare
 } from 'react-icons/bs';
-import { FaRegCheckSquare } from 'react-icons/fa';
+import { FaLanguage, FaRegCheckSquare } from 'react-icons/fa';
 import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import Select from 'react-select';
@@ -228,6 +228,17 @@ const EducationMaterial = ({ translate }) => {
             filters={filters}
             onRowClick={handleRowClick}
             rows={educationMaterials.map(educationMaterial => {
+              const action = (
+                <>
+                  {educationMaterial.status === STATUS.pending && <BiEdit size={25} className="btn-warning-info" />}
+                  {!_.isEmpty(educationMaterial.edit_translations) && educationMaterial.status === STATUS.approved &&
+                    <div className="d-flex justify-content-center align-items-center">
+                      <span className="mr-2">{educationMaterial.edit_translations.length}</span>
+                      <FaLanguage size={26} className="btn-warning-info" />
+                    </div>
+                  }
+                </>
+              );
               return {
                 id: educationMaterial.id,
                 title: educationMaterial.title,
@@ -248,7 +259,7 @@ const EducationMaterial = ({ translate }) => {
                     __html: educationMaterial.reviewed_by
                   }}
                 />,
-                action: educationMaterial.status === STATUS.pending ? <BiEdit size={25} className="btn-warning-info" /> : null
+                action
               };
             })}
           />

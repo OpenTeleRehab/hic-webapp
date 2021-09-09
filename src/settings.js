@@ -1,4 +1,5 @@
 const settings = {
+  locale: 'en',
   date_format: 'DD/MM/YYYY',
   datetime_format: 'DD/MM/YYYY HH:mm:ss',
   textMaxLength: 255,

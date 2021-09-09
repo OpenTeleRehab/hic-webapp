@@ -31,7 +31,11 @@ import {
   getExercise,
   approveExercise,
   rejectExercise,
-  deleteExercise
+  deleteExercise,
+  getEditTranslation,
+  clearEditTranslation,
+  rejectEditTranslation,
+  approveEditTranslation
 } from 'store/exercise/actions';
 import { getCategoryTreeData } from 'store/category/actions';
 import { CATEGORY_TYPES } from 'variables/category';
@@ -40,8 +44,9 @@ import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import scssColors from '../../../scss/custom.scss';
 import { formatFileSize } from '../../../utils/file';
 import { STATUS } from '../../../variables/resourceStatus';
-import Select from 'react-select';
 import Dialog from '../../../components/Dialog';
+import FallbackText from '../../../components/Form/FallbackText';
+import SelectLanguage from '../_Partials/SelectLanguage';
 
 const CreateExercise = ({ translate }) => {
   const dispatch = useDispatch();
@@ -49,11 +54,10 @@ const CreateExercise = ({ translate }) => {
   const { id } = useParams();
 
   const { profile } = useSelector((state) => state.auth);
-  const { languages } = useSelector(state => state.language);
-  const { exercise, filters } = useSelector(state => state.exercise);
+  const { exercise, editTranslation } = useSelector(state => state.exercise);
   const { categoryTreeData } = useSelector((state) => state.category);
 
-  const [language, setLanguage] = useState('');
+  const [language, setLanguage] = useState({});
   const [formFields, setFormFields] = useState({
     title: '',
     include_feedback: true,
@@ -81,19 +85,14 @@ const CreateExercise = ({ translate }) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
   const [errorClass, setErrorClass] = useState('');
+  const [isEditingItem, setIsEditingItem] = useState(false);
+  const [isEditingTranslation, setIsEditingTranslation] = useState(false);
+  const [editTranslations, setEditTranslations] = useState([]);
+  const [editTranslationIndex, setEditTranslationIndex] = useState(1);
+  const [showFallbackText, setShowFallbackText] = useState(false);
 
   useEffect(() => {
-    if (languages.length) {
-      if (id && filters && filters.lang) {
-        setLanguage(filters.lang);
-      } else {
-        setLanguage(languages[0].id);
-      }
-    }
-  }, [languages, filters, id]);
-
-  useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: language }));
+    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: language.id }));
   }, [language, dispatch]);
 
   useEffect(() => {
@@ -108,12 +107,67 @@ const CreateExercise = ({ translate }) => {
 
   useEffect(() => {
     if (id && language) {
-      dispatch(getExercise(id, language));
+      dispatch(getExercise(id, language.id));
     }
   }, [id, language, dispatch]);
 
   useEffect(() => {
-    if (id && exercise.id) {
+    if (!_.isEmpty(editTranslations)) {
+      dispatch(getEditTranslation(editTranslations[editTranslationIndex - 1].id, language.id));
+    } else {
+      dispatch(clearEditTranslation());
+    }
+    // eslint-disable-next-line
+  }, [editTranslations, editTranslationIndex]);
+
+  useEffect(() => {
+    if ((id && exercise.id && exercise.status === STATUS.approved)) {
+      setIsEditingItem(false);
+      setIsEditingTranslation(true);
+    }
+    if (id && exercise.id && (exercise.status === STATUS.pending || exercise.status === STATUS.rejected)) {
+      setIsEditingItem(true);
+      setIsEditingTranslation(false);
+    }
+  }, [id, exercise]);
+
+  useEffect(() => {
+    if (isEditingTranslation && exercise) {
+      if (_.isEmpty(editTranslation)) {
+        setFormFields({
+          title: exercise.title,
+          fallback: exercise.fallback
+        });
+        setAdditionalFields(exercise.additional_fields);
+        setMediaUploads(exercise.files);
+        setShowFallbackText(false);
+      } else {
+        setFormFields({
+          title: editTranslation.title,
+          fallback: exercise.fallback
+        });
+        setAdditionalFields(editTranslation.additional_fields);
+        setMediaUploads(_.isEmpty(editTranslation.files) ? exercise.files : editTranslation.files);
+        setShowFallbackText(true);
+      }
+
+      if (categoryTreeData.length) {
+        const rootCategoryStructure = {};
+        categoryTreeData.forEach(category => {
+          const ids = [];
+          JSON.stringify(category, (key, value) => {
+            if (key === 'value') ids.push(value);
+            return value;
+          });
+          rootCategoryStructure[category.value] = _.intersectionWith(exercise.categories, ids);
+        });
+        setSelectedCategories(rootCategoryStructure);
+      }
+    }
+  }, [isEditingTranslation, editTranslation, categoryTreeData, exercise]);
+
+  useEffect(() => {
+    if (isEditingItem) {
       const showSetsReps = exercise.sets > 0;
       setFormFields({
         title: exercise.title,
@@ -138,7 +192,7 @@ const CreateExercise = ({ translate }) => {
         setSelectedCategories(rootCategoryStructure);
       }
     }
-  }, [id, exercise, categoryTreeData]);
+  }, [isEditingItem, categoryTreeData, exercise]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -248,16 +302,23 @@ const CreateExercise = ({ translate }) => {
         include_feedback: formFields.show_sets_reps && formFields.include_feedback,
         additional_fields: JSON.stringify(additionalFields),
         categories: serializedSelectedCats,
-        lang: language
+        lang: language.id
       };
       if (id) {
-        dispatch(approveExercise(id, payload, mediaUploads))
-          .then(result => {
+        if (!_.isEmpty(editTranslation)) {
+          dispatch(approveEditTranslation(id, payload, mediaUploads)).then(result => {
+            if (result) {
+              setIsLoading(false);
+            }
+          });
+        } else {
+          dispatch(approveExercise(id, payload, mediaUploads)).then(result => {
             if (result) {
               history.push(ROUTES.ADMIN_RESOURCES);
             }
             setIsLoading(false);
           });
+        }
       } else {
         const contributor = {
           email: profile.email,
@@ -277,13 +338,23 @@ const CreateExercise = ({ translate }) => {
   };
 
   const handleReject = () => {
-    setIsLoading(true);
-    dispatch(rejectExercise(id)).then(result => {
-      if (result) {
-        dispatch(getExercise(id, language));
-      }
-      setIsLoading(false);
-    });
+    if (isEditingTranslation && !_.isEmpty(editTranslation)) {
+      setIsLoading(true);
+      dispatch(rejectEditTranslation(editTranslation.id)).then(result => {
+        if (result) {
+          dispatch(getExercise(id, language));
+        }
+        setIsLoading(false);
+      });
+    } else {
+      setIsLoading(true);
+      dispatch(rejectExercise(id)).then(result => {
+        if (result) {
+          dispatch(getExercise(id, language));
+        }
+        setIsLoading(false);
+      });
+    }
   };
 
   const handleDeleteDialogConfirm = () => {
@@ -331,17 +402,6 @@ const CreateExercise = ({ translate }) => {
     }
   };
 
-  const customSelectStyles = {
-    option: (provided) => ({
-      ...provided,
-      color: 'black',
-      backgroundColor: 'white',
-      '&:hover': {
-        backgroundColor: scssColors.infoLight
-      }
-    })
-  };
-
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
@@ -354,8 +414,13 @@ const CreateExercise = ({ translate }) => {
             <h5 className="text-primary">{translate('common.media')}</h5>
 
             { mediaUploads.map((mediaUpload, index) => (
-              <div key={index} className="mb-2 position-relative">
-                <Button variant="link" onClick={() => handleFileRemove(index)} className="position-absolute btn-remove">
+              <div key={index} className={`mb-2 position-relative ${isEditingTranslation && mediaUpload.id && 'opacity-50'}`}>
+                <Button
+                  variant="link"
+                  onClick={() => handleFileRemove(index)}
+                  className="position-absolute btn-remove"
+                  disabled={isEditingTranslation && mediaUpload.id}
+                >
                   <BsXCircle size={20} color={scssColors.danger} />
                 </Button>
 
@@ -380,32 +445,38 @@ const CreateExercise = ({ translate }) => {
               </div>
             ))}
 
-            <div className="btn btn-sm bg-primary text-white position-relative overflow-hidden">
-              <BsUpload size={15}/> Upload Image
-              <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} multiple accept="audio/*, video/*, image/*" />
-            </div>
-
-            <div className={mediaUploadsError ? 'd-block invalid-feedback' : 'invalid-feedback'}>
-              {translate('exercise.media_upload.required')}
-            </div>
+            {!isEditingTranslation &&
+              <>
+                <div className="btn btn-sm bg-primary text-white position-relative overflow-hidden">
+                  <BsUpload size={15}/> Upload Image
+                  <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} multiple accept="audio/*, video/*, image/*" />
+                </div>
+                <div className={mediaUploadsError ? 'd-block invalid-feedback' : 'invalid-feedback'}>
+                  {translate('exercise.media_upload.required')}
+                </div>
+              </>
+            }
           </Col>
           <Col sm={7} xl={8} className="p-4">
             <h5 className="text-primary">{translate('common.information')}</h5>
             <Form.Group controlId="formLanguage">
-              <Form.Label>{translate('common.show_language.version')}</Form.Label>
-              <Select
-                isDisabled={!id || (exercise && exercise.status !== STATUS.approved)}
-                classNamePrefix="filter"
-                value={languages.filter(option => option.id === language)}
-                getOptionLabel={option => option.name}
-                options={languages}
-                onChange={(e) => setLanguage(e.id)}
-                styles={customSelectStyles}
+              <Form.Label>{translate('common.language')}</Form.Label>
+              <SelectLanguage
+                translate={translate}
+                resource={exercise}
+                setLanguage={setLanguage}
+                setEditTranslationIndex={setEditTranslationIndex}
+                setEditTranslations={setEditTranslations}
+                isDisabled={!isEditingTranslation}
               />
             </Form.Group>
+
             <Form.Group controlId="formTitle">
               <Form.Label>{translate('exercise.title')}</Form.Label>
               <span className="text-dark ml-1">*</span>
+              {showFallbackText && formFields.fallback &&
+                <FallbackText translate={translate} text={formFields.fallback.title} />
+              }
               <Form.Control
                 name="title"
                 onChange={handleChange}
@@ -418,115 +489,122 @@ const CreateExercise = ({ translate }) => {
               </Form.Control.Feedback>
             </Form.Group>
 
-            <Form.Group controlId="formShowSetsReps">
-              <Form.Check
-                name="show_sets_reps"
-                onChange={handleCheck}
-                value={true}
-                checked={formFields.show_sets_reps}
-                label={translate('exercise.show_sets_reps')}
-                custom
-              />
-            </Form.Group>
+            {!isEditingTranslation &&
+              <>
+                <Form.Group controlId="formShowSetsReps">
+                  <Form.Check
+                    name="show_sets_reps"
+                    onChange={handleCheck}
+                    value={true}
+                    checked={formFields.show_sets_reps}
+                    label={translate('exercise.show_sets_reps')}
+                    custom
+                  />
+                </Form.Group>
 
-            {formFields.show_sets_reps && (
-              <Card bg="light" body className="mb-3">
-                <Form.Row>
-                  <Form.Group as={Col} controlId="formSets">
-                    <Form.Label>{translate('exercise.sets')}</Form.Label>
-                    <span className="text-dark ml-1">*</span>
-                    <Form.Control
-                      type="number"
-                      name="sets"
-                      placeholder={translate('exercise.sets.placeholder')}
-                      value={formFields.sets}
-                      onChange={handleChange}
-                      isInvalid={setsError}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {translate('exercise.sets.required')}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-
-                  <Form.Group as={Col} controlId="formReps">
-                    <Form.Label>{translate('exercise.reps')}</Form.Label>
-                    <span className="text-dark ml-1">*</span>
-                    <Form.Control
-                      type="number"
-                      name="reps"
-                      placeholder={translate('exercise.reps.placeholder')}
-                      value={formFields.reps}
-                      onChange={handleChange}
-                      isInvalid={repsError}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {translate('exercise.reps.required')}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Form.Row>
-              </Card>
-            )}
-
-            <h5 className="text-primary">{translate('common.categories')}</h5>
-
-            <Form.Group>
-              <Accordion defaultActiveKey="0">
-                {categoryTreeData.map((category, index) => (
-                  <Card key={index}>
-                    <Card.Header>
-                      <Accordion.Toggle as={Button} variant="link" eventKey={index + 1} className="d-flex justify-content-between align-items-center">
-                        <span>{category.label}</span>
-                        <span>{selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('common.selected')} <ContextAwareToggle eventKey={index + 1} /></span>
-                      </Accordion.Toggle>
-                    </Card.Header>
-                    <Accordion.Collapse eventKey={index + 1}>
-                      <Card.Body>
-                        <CheckboxTree
-                          nodes={category.children || []}
-                          checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
-                          expanded={expanded}
-                          onCheck={(checked) => handleSetSelectedCategories(category.value, checked)}
-                          onExpand={expanded => setExpanded(expanded)}
-                          icons={{
-                            check: <FaRegCheckSquare size={40} color="black" />,
-                            uncheck: <BsSquare size={40} color="black" />,
-                            halfCheck: <BsDashSquare size={40} color="black" />,
-                            expandClose: <BsCaretRightFill size={40} color="black" />,
-                            expandOpen: <BsCaretDownFill size={40} color="black" />
-                          }}
-                          showNodeIcon={false}
+                {formFields.show_sets_reps && (
+                  <Card bg="light" body className="mb-3">
+                    <Form.Row>
+                      <Form.Group as={Col} controlId="formSets">
+                        <Form.Label>{translate('exercise.sets')}</Form.Label>
+                        <span className="text-dark ml-1">*</span>
+                        <Form.Control
+                          type="number"
+                          name="sets"
+                          placeholder={translate('exercise.sets.placeholder')}
+                          value={formFields.sets}
+                          onChange={handleChange}
+                          isInvalid={setsError}
                         />
-                      </Card.Body>
-                    </Accordion.Collapse>
+                        <Form.Control.Feedback type="invalid">
+                          {translate('exercise.sets.required')}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+
+                      <Form.Group as={Col} controlId="formReps">
+                        <Form.Label>{translate('exercise.reps')}</Form.Label>
+                        <span className="text-dark ml-1">*</span>
+                        <Form.Control
+                          type="number"
+                          name="reps"
+                          placeholder={translate('exercise.reps.placeholder')}
+                          value={formFields.reps}
+                          onChange={handleChange}
+                          isInvalid={repsError}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          {translate('exercise.reps.required')}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Form.Row>
                   </Card>
-                ))}
-                <span className={errorClass}>
-                  {categoryError && translate('resources.category.required')}
-                </span>
-              </Accordion>
-            </Form.Group>
+                )}
+
+                <h5 className="text-primary">{translate('common.categories')}</h5>
+                <Form.Group>
+                  <Accordion defaultActiveKey="0">
+                    {categoryTreeData.map((category, index) => (
+                      <Card key={index}>
+                        <Card.Header>
+                          <Accordion.Toggle as={Button} variant="link" eventKey={index + 1} className="d-flex justify-content-between align-items-center">
+                            <span>{category.label}</span>
+                            <span>{selectedCategories[category.value] ? selectedCategories[category.value].length : 0} {translate('common.selected')} <ContextAwareToggle eventKey={index + 1} /></span>
+                          </Accordion.Toggle>
+                        </Card.Header>
+                        <Accordion.Collapse eventKey={index + 1}>
+                          <Card.Body>
+                            <CheckboxTree
+                              nodes={category.children || []}
+                              checked={selectedCategories[category.value] ? selectedCategories[category.value] : []}
+                              expanded={expanded}
+                              onCheck={(checked) => handleSetSelectedCategories(category.value, checked)}
+                              onExpand={expanded => setExpanded(expanded)}
+                              icons={{
+                                check: <FaRegCheckSquare size={40} color="black" />,
+                                uncheck: <BsSquare size={40} color="black" />,
+                                halfCheck: <BsDashSquare size={40} color="black" />,
+                                expandClose: <BsCaretRightFill size={40} color="black" />,
+                                expandOpen: <BsCaretDownFill size={40} color="black" />
+                              }}
+                              showNodeIcon={false}
+                            />
+                          </Card.Body>
+                        </Accordion.Collapse>
+                      </Card>
+                    ))}
+                    <span className={errorClass}>
+                      {categoryError && translate('resources.category.required')}
+                    </span>
+                  </Accordion>
+                </Form.Group>
+              </>
+            }
 
             <h5 className="text-primary">{translate('common.additional_fields')}</h5>
-
             {
               additionalFields.map((additionalField, index) => (
                 <Card key={index} className="bg-light mb-3 additional-field">
                   <Card.Body>
-                    <div className="remove-btn-container">
-                      <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{translate('common.remove')}</Tooltip>}>
-                        <Button
-                          variant="outline-danger"
-                          className="btn-remove"
-                          onClick={() => handleRemoveFields(index)}
-                        >
-                          <BsX size={20} />
-                        </Button>
-                      </OverlayTrigger>
-                    </div>
+                    {!isEditingTranslation &&
+                      <div className="remove-btn-container">
+                        <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{translate('common.remove')}</Tooltip>}>
+                          <Button
+                            variant="outline-danger"
+                            className="btn-remove"
+                            onClick={() => handleRemoveFields(index)}
+                          >
+                            <BsX size={20} />
+                          </Button>
+                        </OverlayTrigger>
+                      </div>
+                    }
 
                     <Form.Group controlId={`formLabel${index}`}>
                       <Form.Label>{translate('exercise.additional_field.label')}</Form.Label>
                       <span className="text-dark ml-1">*</span>
+                      {showFallbackText && additionalField.fallback &&
+                        <FallbackText translate={translate} text={additionalField.fallback.field} />
+                      }
                       <Form.Control
                         name="field"
                         placeholder={translate('exercise.additional_field.placeholder.label')}
@@ -541,6 +619,9 @@ const CreateExercise = ({ translate }) => {
                     <Form.Group controlId={`formValue${index}`}>
                       <Form.Label>{translate('exercise.additional_field.value')}</Form.Label>
                       <span className="text-dark ml-1">*</span>
+                      {showFallbackText && additionalField.fallback &&
+                        <FallbackText translate={translate} text={additionalField.fallback.value} />
+                      }
                       <Form.Control
                         name="value"
                         as="textarea"
@@ -559,11 +640,13 @@ const CreateExercise = ({ translate }) => {
               ))
             }
 
-            <Form.Group>
-              <Button variant="link" onClick={handleAddFields} className="p-0">
-                <BsPlusCircle size={20} /> {translate('common.add_more_fields')}
-              </Button>
-            </Form.Group>
+            {!isEditingTranslation &&
+              <Form.Group>
+                <Button variant="link" onClick={handleAddFields} className="p-0">
+                  <BsPlusCircle size={20} /> {translate('common.add_more_fields')}
+                </Button>
+              </Form.Group>
+            }
           </Col>
         </Row>
 
@@ -576,26 +659,42 @@ const CreateExercise = ({ translate }) => {
 
           { id && (
             <>
-              {exercise.status === STATUS.approved
+              {exercise.status === STATUS.approved && _.isEmpty(editTranslations)
                 ? <Button onClick={handleSave} disabled={isLoading}>{translate('common.save')}</Button>
                 : <Button onClick={handleSave} disabled={isLoading}>{translate('common.approve')}</Button>
               }
 
               {exercise.status === STATUS.rejected &&
-                <Button onClick={() => setShowDeleteDialog(true)} className="ml-2" variant="outline-danger" disabled={isLoading}>
+                <Button
+                  onClick={() => setShowDeleteDialog(true)}
+                  className="ml-2"
+                  variant="outline-danger"
+                  disabled={isLoading}
+                >
                   {translate('common.delete')}
                 </Button>
               }
 
               {(exercise.status === STATUS.pending || exercise.status === STATUS.approved) &&
-                <Button onClick={handleReject} className="ml-2" variant="outline-primary" disabled={isLoading}>
+                <Button
+                  onClick={handleReject}
+                  className="ml-2"
+                  variant="outline-primary"
+                  disabled={isLoading}
+                >
                   {translate('common.reject')}
                 </Button>
               }
             </>
           )}
 
-          <Button className="ml-2" variant="outline-dark" as={Link} to={ROUTES.ADMIN_RESOURCES} disabled={isLoading}>
+          <Button
+            className="ml-2"
+            variant="outline-dark"
+            as={Link}
+            to={ROUTES.ADMIN_RESOURCES}
+            disabled={isLoading}
+          >
             {translate('common.cancel')}
           </Button>
         </div>
