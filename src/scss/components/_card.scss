@@ -174,3 +174,92 @@
 		font-weight: bold;
 	}
 }
+
+//display responsive card
+@media (min-width: 1400px) {
+	.container, .container-sm, .container-md, .container-lg, .container-xl {
+		max-width: 1300px;
+	}
+}
+
+@media (min-width: 1600px) {
+	.container, .container-sm, .container-md, .container-lg, .container-xl {
+		max-width: 1480px;
+	}
+}
+
+@media (min-width: 1720px) and (max-width: 1920px) {
+	.container, .container-sm, .container-md, .container-lg, .container-xl {
+		max-width: 1680px;
+	}
+}
+
+@media (min-width: 2560px) {
+	.container, .container-sm, .container-md, .container-lg, .container-xl {
+		max-width: 2280px;
+	}
+}
+
+@media only screen and (min-width: 1930px) and (max-width: 2320px) {
+	.col-lg-4 {
+		flex: 0 0 18.33333%;
+		max-width: 33.33333%;
+	}
+	.card-wrapper {
+		width: 253px;
+		margin-right: 22px;
+	}
+	.exercise-card {
+		width: 253px;
+	}
+}
+
+@media only screen and (min-width: 1410px) and (max-width: 1920px) {
+	.col-lg-4 {
+		flex: 0 0 18.33333%;
+		max-width: 33.33333%;
+	}
+	.card-wrapper {
+		width: 253px;
+		margin-right: 22px;
+	}
+	.exercise-card {
+		width: 253px;
+	}
+	.home-resource-wrapper {
+		.col-lg-4 {
+			flex: 0 0 15.33333%;
+			max-width: 33.33333%;
+		}
+	}
+}
+
+@media only screen and (min-width: 1025px) and (max-width: 1400px) {
+	.col-lg-4 {
+		flex: 0 0 31.33333%;
+		max-width: 33.33333%;
+	}
+	.card-wrapper {
+		width: 253px;
+		margin-right: 17px;
+	}
+	.exercise-card {
+		width: 253px;
+	}
+	.home-resource-wrapper {
+		.col-lg-4 {
+			flex: 0 0 23.33333%;
+			max-width: 33.33333%;
+		}
+	}
+}
+
+
+@media only screen and (min-width: 1600px) and (max-width: 1600px){
+	.home-resource-wrapper {
+		.col-lg-4 {
+			flex: 0 0 18.51333%;
+			max-width: 33.33333%;
+		}
+	}
+}

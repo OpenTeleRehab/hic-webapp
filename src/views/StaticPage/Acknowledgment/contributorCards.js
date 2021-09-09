@@ -43,7 +43,7 @@ const ContributorCard = ({ hideContributors, isAdmin }) => {
   }, [contributorStatistics]);
 
   return (
-    <Row className="justify-content-center">
+    <Row className={!isAdmin && 'justify-content-center'}>
       {contributors.map((contributor, index) => {
         if (!hideContributors.includes(contributor.id)) {
           let totalUpload = 0;
@@ -62,7 +62,7 @@ const ContributorCard = ({ hideContributors, isAdmin }) => {
           };
 
           return (
-            <Col sm={4}>
+            <Col sm={4} md={window.screen.width === 768 && 6}>
               <div className="mb-2 pr-2 d-flex border border-light contributor-card bg-white w-100" key={index}>
                 <div className={`${isAdmin ? 'p-2' : 'p-4'} text-white icon-wrapper`} style={style}>
                   {contributor.isModerator ? (
@@ -71,7 +71,7 @@ const ContributorCard = ({ hideContributors, isAdmin }) => {
                     <FaUserCircle size={isAdmin ? 45 : 55} />
                   )}
                 </div>
-                <div className={isAdmin ? 'p-1' : 'pl-3 pt-2'}>
+                <div className={isAdmin ? 'p-1 w-100' : 'pl-3 pt-2 w-100'}>
                   <div className="ml-2 mt-1 contributor-name">{contributor.name}</div>
                   {isAdmin ? (
                     <div className="mt-2 statistic-text ml-2">
@@ -82,8 +82,8 @@ const ContributorCard = ({ hideContributors, isAdmin }) => {
                     </div>
                   ) : (
                     <ul className="pl-2 mt-2">
-                      <li className="d-flex justify-content-between align-content-center"><span>{translate('contributor.resources_contributed')}</span> <span className="ml-5">{totalUpload}</span></li>
-                      <li className="d-flex justify-content-between"><span>{translate('contributor.translations_approved')}</span> <span className="ml-5">{totalTranslation}</span></li>
+                      <li className="d-flex justify-content-between"><span>{translate('contributor.resources_contributed')}</span> <span>{totalUpload}</span></li>
+                      <li className="d-flex justify-content-between"><span>{translate('contributor.translations_approved')}</span> <span>{totalTranslation}</span></li>
                     </ul>
                   )}
                 </div>

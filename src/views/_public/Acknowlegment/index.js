@@ -48,9 +48,7 @@ const AcknowledgmentPage = ({ translate }) => {
         <>
           <section className="section__wrapper">
             <Container>
-              <div className="p-3 flex-grow-1">
-                <ContributorCard hideContributors={hideContributors} />
-              </div>
+              <ContributorCard hideContributors={hideContributors} />
             </Container>
           </section>
           <section className="section__wrapper bg-white">

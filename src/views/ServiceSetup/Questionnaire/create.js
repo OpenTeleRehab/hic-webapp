@@ -367,7 +367,7 @@ const CreateQuestionnaire = ({ translate }) => {
               />
             </Form.Group>
 
-            {!editTranslation &&
+            {!isEditingTranslation &&
               <Accordion className="mb-3" defaultActiveKey={1}>
                 {
                   categoryTreeData.map((category, index) => (
