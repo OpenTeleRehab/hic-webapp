@@ -19,7 +19,7 @@ import {
 import { formatFileSize, toMB } from '../../../utils/file';
 import settings from '../../../settings';
 import { getCategoryTreeData } from 'store/category/actions';
-import { CATEGORY_TYPES } from 'variables/category';
+import { LIBRARY_TYPES } from 'variables/library';
 import {
   BsCaretDownFill,
   BsCaretRightFill,
@@ -66,7 +66,7 @@ const CreateEducationMaterial = ({ translate }) => {
   const [showFallbackText, setShowFallbackText] = useState(false);
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.MATERIAL, lang: language.id }));
+    dispatch(getCategoryTreeData({ type: LIBRARY_TYPES.MATERIAL, lang: language.id }));
   }, [language, dispatch]);
 
   useEffect(() => {

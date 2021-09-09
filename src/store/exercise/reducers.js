@@ -40,6 +40,13 @@ export const exercise = (state = initialState, action) => {
         editTranslation: {}
       });
     }
+    case 'SET_FILTER_EXERCISES_REQUEST': {
+      return Object.assign({}, state, {
+        filters: {
+          filter: action.data
+        }
+      });
+    }
     default:
       return state;
   }

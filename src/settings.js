@@ -18,10 +18,11 @@ const settings = {
       { text: 'Public portal', value: 'public_portal' }
     ]
   },
-  contentTypes: {
+  libraryTypes: {
     options: [
-      { text: 'Activities', value: 'activities' },
-      { text: 'Preset Treatment', value: 'preset_treatment' }
+      { text: 'library.exercises', value: 'exercise' },
+      { text: 'library.education_materials', value: 'education' },
+      { text: 'library.questionnaires', value: 'questionnaire' }
     ]
   },
   educationMaterial: {

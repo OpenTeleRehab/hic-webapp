@@ -137,6 +137,11 @@ const approveEditTranslationFail = () => ({
   type: 'APPROVE_EDIT_TRANSLATION_FAIL'
 });
 
+const setFilterEducationMaterialsRequest = (data) => ({
+  type: 'SET_FILTER_EDUCATION_MATERIALS_REQUEST',
+  data
+});
+
 export const mutation = {
   getEducationMaterialRequest,
   getEducationMaterialSuccess,
@@ -169,5 +174,6 @@ export const mutation = {
   rejectEditTranslationFail,
   approveEditTranslationRequest,
   approveEditTranslationSuccess,
-  approveEditTranslationFail
+  approveEditTranslationFail,
+  setFilterEducationMaterialsRequest
 };

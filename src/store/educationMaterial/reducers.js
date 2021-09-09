@@ -29,6 +29,13 @@ export const educationMaterial = (state = initialState, action) => {
         editTranslation: {}
       });
     }
+    case 'SET_FILTER_EDUCATION_MATERIALS_REQUEST': {
+      return Object.assign({}, state, {
+        filters: {
+          filter: action.data
+        }
+      });
+    }
     default:
       return state;
   }

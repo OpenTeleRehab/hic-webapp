@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import * as ROUTES from 'variables/routes';
 import { getCategoryTreeData } from 'store/category/actions';
-import { CATEGORY_TYPES } from 'variables/category';
+import { LIBRARY_TYPES } from 'variables/library';
 import _ from 'lodash';
 import CheckboxTree from 'react-checkbox-tree';
 import {
@@ -69,7 +69,7 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
   }, [language, languages, activeLanguage]);
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: language }));
+    dispatch(getCategoryTreeData({ type: LIBRARY_TYPES.QUESTIONNAIRE, lang: language }));
   }, [dispatch, language]);
 
   useEffect(() => {

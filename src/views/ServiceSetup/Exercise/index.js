@@ -19,7 +19,7 @@ import SearchInput from 'components/Form/SearchInput';
 import { getCategoryTreeData } from 'store/category/actions';
 import { getReviewers } from 'store/user/actions';
 import { getContributors } from 'store/contributor/actions';
-import { CATEGORY_TYPES } from 'variables/category';
+import { LIBRARY_TYPES } from 'variables/library';
 import CheckboxTree from 'react-checkbox-tree';
 import { BiEdit } from 'react-icons/bi';
 import {
@@ -72,7 +72,7 @@ const Exercise = ({ translate }) => {
   }, [filterData, profile]);
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: language }));
+    dispatch(getCategoryTreeData({ type: LIBRARY_TYPES.EXERCISE, lang: language }));
     dispatch(getReviewers());
     dispatch(getContributors());
   }, [language, dispatch]);

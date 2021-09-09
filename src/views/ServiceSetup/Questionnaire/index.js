@@ -10,7 +10,7 @@ import CustomTable from 'components/Table';
 import SearchInput from 'components/Form/SearchInput';
 import { getQuestionnaires } from 'store/questionnaire/actions';
 import { getCategoryTreeData } from 'store/category/actions';
-import { CATEGORY_TYPES } from 'variables/category';
+import { LIBRARY_TYPES } from 'variables/library';
 import CheckboxTree from 'react-checkbox-tree';
 import {
   BsCaretDownFill,
@@ -58,7 +58,7 @@ const Questionnaire = ({ translate }) => {
   }, [filters, profile]);
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: language }));
+    dispatch(getCategoryTreeData({ type: LIBRARY_TYPES.QUESTIONNAIRE, lang: language }));
     dispatch(getReviewers());
     dispatch(getContributors());
   }, [language, dispatch]);

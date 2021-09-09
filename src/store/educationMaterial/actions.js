@@ -149,3 +149,7 @@ export const clearFilterEducationMaterials = () => async dispatch => {
 export const clearEditTranslation = () => async dispatch => {
   dispatch(mutation.clearEditTranslationRequest());
 };
+
+export const setFilterEducationMaterials = payload => async dispatch => {
+  dispatch(mutation.setFilterEducationMaterialsRequest(payload));
+};

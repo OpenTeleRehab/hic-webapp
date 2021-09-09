@@ -11,7 +11,7 @@ import CustomTable from 'components/Table';
 import SearchInput from 'components/Form/SearchInput';
 import { getEducationMaterials } from 'store/educationMaterial/actions';
 import { getCategoryTreeData } from 'store/category/actions';
-import { CATEGORY_TYPES } from 'variables/category';
+import { LIBRARY_TYPES } from 'variables/library';
 import CheckboxTree from 'react-checkbox-tree';
 import {
   BsCaretDownFill,
@@ -64,7 +64,7 @@ const EducationMaterial = ({ translate }) => {
   }, [filterData, profile]);
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.MATERIAL, lang: language }));
+    dispatch(getCategoryTreeData({ type: LIBRARY_TYPES.MATERIAL, lang: language }));
     dispatch(getReviewers());
     dispatch(getContributors());
   }, [language, dispatch]);
