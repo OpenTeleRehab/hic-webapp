@@ -38,10 +38,6 @@ const EducationMaterialDetail = () => {
     }
   }, [educationMaterial]);
 
-  useEffect(() => {
-    history.push(replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL, activeLanguage).replace(':id', id));
-  }, [activeLanguage, history, id]);
-
   return (
     <>
       <h1 className="text-primary font-weight-bold mb-3">{educationMaterial.title}</h1>

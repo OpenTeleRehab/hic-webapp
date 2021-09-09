@@ -3,6 +3,7 @@ import {
   Link,
   NavLink,
   withRouter
+  , useLocation, useHistory
 } from 'react-router-dom';
 import { Navbar, Nav, Dropdown } from 'react-bootstrap';
 import * as ROUTES from 'variables/routes';
@@ -55,6 +56,8 @@ const Navigation = ({ translate }) => {
   const { profile } = useSelector((state) => state.auth);
   const { languages, activeLanguage } = useSelector((state) => state.language);
   const [languageName, setLanguageName] = useState('English');
+  const location = useLocation();
+  const history = useHistory();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -77,8 +80,22 @@ const Navigation = ({ translate }) => {
     }
   }, [activeLanguage, languages]);
 
+  let path = '';
+  let hash = '';
   const handleLanguageChange = (lang) => {
     dispatch(setActiveLanguage(lang));
+    hash = window.location.hash;
+    if (window.location.pathname.split('/')[1].length === 2) {
+      if (lang === 'en') {
+        path = location.pathname.replace(/^[\s\S]{0,3}/g, '');
+      } else {
+        path = location.pathname.replace(/^[\s\S]{0,3}/g, '/' + lang);
+      }
+    } else {
+      path = '/' + lang + location.pathname;
+    }
+
+    history.push(path + hash);
   };
 
   useEffect(() => {

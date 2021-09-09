@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Nav } from 'react-bootstrap';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import * as ROUTES from 'variables/routes';
@@ -16,7 +16,6 @@ const VIEW_QUESTIONNAIRE = 'questionnaire';
 
 const Library = ({ translate }) => {
   const { hash } = useLocation();
-  const history = useHistory();
   const { languages, activeLanguage } = useSelector((state) => state.language);
   const [view, setView] = useState(undefined);
   const [lang, setLang] = useState('');
@@ -37,16 +36,6 @@ const Library = ({ translate }) => {
       setView(VIEW_EXERCISE);
     }
   }, [hash]);
-
-  useEffect(() => {
-    if (hash.includes('#' + VIEW_EDUCATION)) {
-      history.push(replaceRoute(ROUTES.LIBRARY_EDUCATION, activeLanguage));
-    } else if (hash.includes('#' + VIEW_QUESTIONNAIRE)) {
-      history.push(replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE, activeLanguage));
-    } else {
-      history.push(replaceRoute(ROUTES.LIBRARY, activeLanguage));
-    }
-  }, [activeLanguage, history, hash]);
 
   return (
     <>
