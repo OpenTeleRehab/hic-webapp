@@ -110,8 +110,21 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
       });
       setAdditionalFields(exercise.additional_fields);
       setMediaUploads(exercise.files);
+
+      if (categoryTreeData.length) {
+        const rootCategoryStructure = {};
+        categoryTreeData.forEach(category => {
+          const ids = [];
+          JSON.stringify(category, (key, value) => {
+            if (key === 'value') ids.push(value);
+            return value;
+          });
+          rootCategoryStructure[category.value] = _.intersectionWith(exercise.categories, ids);
+        });
+        setSelectedCategories(rootCategoryStructure);
+      }
     }
-  }, [id, exercise, language]);
+  }, [id, exercise, language, categoryTreeData]);
 
   useEffect(() => {
     if (editItem && hash === '') {
@@ -304,7 +317,7 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
     } else {
       setTitleError(false);
     }
-
+    ;
     if (mediaUploads.length === 0) {
       canSave = false;
       setMediaUploadsError(true);
