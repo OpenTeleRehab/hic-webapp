@@ -83,6 +83,20 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
         edit_translation: true,
         fallback: educationMaterial.fallback
       });
+
+      if (categoryTreeData.length) {
+        const rootCategoryStructure = {};
+        categoryTreeData.forEach(category => {
+          const ids = [];
+          JSON.stringify(category, (key, value) => {
+            if (key === 'value') ids.push(value);
+            return value;
+          });
+          rootCategoryStructure[category.value] = _.intersectionWith(educationMaterial.categories, ids);
+        });
+        setSelectedCategories(rootCategoryStructure);
+      }
+
       setMaterialFile(educationMaterial.file);
     }
   }, [id, educationMaterial, categoryTreeData, language]);
