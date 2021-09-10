@@ -2,15 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Container } from 'react-bootstrap';
-import { replaceRoute } from '../../../utils/route';
-import * as ROUTES from '../../../variables/routes';
-import { useHistory } from 'react-router-dom';
 import { getStaticPage } from '../../../store/staticPage/actions';
 import { PAGE_TYPES } from '../../../variables/staticPage';
 
 const AboutUsPage = ({ translate }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const { staticPage } = useSelector(state => state.staticPage);
   const { languages, activeLanguage } = useSelector(state => state.language);
   const [aboutUs, setAboutUs] = useState({});
@@ -28,10 +24,6 @@ const AboutUsPage = ({ translate }) => {
       setAboutUs(staticPage);
     }
   }, [staticPage]);
-
-  useEffect(() => {
-    history.push(replaceRoute(ROUTES.ABOUT_US, activeLanguage));
-  }, [activeLanguage, history]);
 
   return (
     <>

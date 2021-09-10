@@ -49,22 +49,6 @@ const Contribute = () => {
     }
   }, [hash, pathname]);
 
-  useEffect(() => {
-    if (hash.includes('#' + CATEGORY_TYPES.MATERIAL)) {
-      history.push(replaceRoute(ROUTES.CONTRIBUTE_EDUCATION_MATERIAL, activeLanguage));
-    } else if (hash.includes('#' + CATEGORY_TYPES.QUESTIONNAIRE)) {
-      history.push(replaceRoute(ROUTES.CONTRIBUTE_QUESTIONNAIRE, activeLanguage));
-    } else if (pathname.includes(CATEGORY_TYPES.EXERCISE)) {
-      history.push(replaceRoute(ROUTES.EXERCISE_EDIT_TRANSLATION.replace(':id', id), activeLanguage));
-    } else if (pathname.includes(CATEGORY_TYPES.MATERIAL)) {
-      history.push(replaceRoute(ROUTES.EDUCATION_MATERIAL_EDIT_TRANSLATION.replace(':id', id), activeLanguage));
-    } else if (pathname.includes(CATEGORY_TYPES.QUESTIONNAIRE)) {
-      history.push(replaceRoute(ROUTES.QUESTIONNAIRE_EDIT_TRANSLATION.replace(':id', id), activeLanguage));
-    } else {
-      history.push(replaceRoute(ROUTES.CONTRIBUTE, activeLanguage));
-    }
-  }, [activeLanguage, history, hash, pathname, id]);
-
   const handleChange = (e) => {
     const { value } = e.target;
     history.push(`${replaceRoute(ROUTES.CONTRIBUTE, activeLanguage)}#${value}`);

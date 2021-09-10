@@ -7,13 +7,9 @@ import {
 
 import PropTypes from 'prop-types';
 import { Container } from 'react-bootstrap';
-import { replaceRoute } from '../../../utils/route';
-import * as ROUTES from '../../../variables/routes';
-import { useHistory } from 'react-router-dom';
 
 const TermConditionPage = ({ translate }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const { publishTermAndConditionPage } = useSelector(state => state.termAndCondition);
   const { languages, activeLanguage } = useSelector(state => state.language);
   const [termCondition, setTermCondition] = useState({});
@@ -32,10 +28,6 @@ const TermConditionPage = ({ translate }) => {
       setTermCondition(publishTermAndConditionPage);
     }
   }, [publishTermAndConditionPage]);
-
-  useEffect(() => {
-    history.push(replaceRoute(ROUTES.TERM_CONDITION, activeLanguage));
-  }, [activeLanguage, history]);
 
   return (
     <>

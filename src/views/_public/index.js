@@ -28,10 +28,6 @@ const Dashboard = () => {
   }, [keycloak, history]);
 
   useEffect(() => {
-    history.push(replaceRoute(ROUTES.HOME, activeLanguage));
-  }, [activeLanguage, history]);
-
-  useEffect(() => {
     dispatch(getStatistics());
   }, [dispatch]);
 

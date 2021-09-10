@@ -46,10 +46,6 @@ const ExerciseDetail = () => {
     }
   }, [exercise]);
 
-  useEffect(() => {
-    history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL, activeLanguage).replace(':id', id));
-  }, [activeLanguage, history, id]);
-
   return (
     <>
       <h1 className="text-primary font-weight-bold mb-3">{exercise.title}</h1>
