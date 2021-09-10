@@ -79,6 +79,7 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
       setFormFields({
         id: educationMaterial.id,
         title: educationMaterial.title,
+        file_id: educationMaterial.file.id,
         lang: language,
         edit_translation: true,
         fallback: educationMaterial.fallback
