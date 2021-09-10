@@ -151,5 +151,5 @@ export const clearEditTranslation = () => async dispatch => {
 };
 
 export const setFilterQuestionnaires = payload => async dispatch => {
-  dispatch(mutation.setFilterQuestionnairesRequest(payload));
+  dispatch(mutation.setFilterExercisesRequest(payload));
 };
