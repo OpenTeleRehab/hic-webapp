@@ -48,7 +48,7 @@ const Contribute = () => {
   return (
     <>
       <div className="main-entry__header text-center">
-        <h1>Contribute to the Library</h1>
+        <h1>{translate('contribute.title')}</h1>
       </div>
 
       <div className="main-entry__content">

@@ -12,6 +12,7 @@ import Banner from '../components/Banner/banner';
 import * as ROUTES from '../variables/routes';
 import { Container } from 'react-bootstrap';
 import { replaceRoute } from '../utils/route';
+import MetaTags from 'react-meta-tags';
 
 const Layout = ({ component: Component, title, defaultTemplate }) => {
   const localize = useSelector((state) => state.localize);
@@ -40,6 +41,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
       staticPage ? setIntroductionText(staticPage.content) : setIntroductionText('');
       if (staticPage && staticPage.file) {
         setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${staticPage.file.id}`);
+        localStorage.setItem('homeBannerImagePath', `${process.env.REACT_APP_API_BASE_URL}/file/${staticPage.file.id}`);
       }
     } else if (location.pathname === replaceRoute(ROUTES.TERM_CONDITION, activeLanguage)) {
       setShowBanner(true);
@@ -66,6 +68,13 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
 
   return (
     <>
+      <MetaTags>
+        <meta name="title" content={bannerTitle || ((document.title.split('-')[0]).replace(/\s+/g, '') === translate('contribute') ? translate('contribute.title') : (document.title.split('-')[0])) } />
+        <meta name="description" content={bannerTitle || ((document.title.split('-')[0]).replace(/\s+/g, '') === translate('contribute') ? translate('contribute.title') : (document.title.split('-')[0])) } />
+        <meta property="og:title" content={bannerTitle || ((document.title.split('-')[0]).replace(/\s+/g, '') === translate('contribute') ? translate('contribute.title') : (document.title.split('-')[0])) } />
+        <meta property="og:description" content={bannerTitle || ((document.title.split('-')[0]).replace(/\s+/g, '') === translate('contribute') ? translate('contribute.title') : (document.title.split('-')[0])) } />
+        <meta property="og:image" content={filePath || localStorage.getItem('homeBannerImagePath') } />
+      </MetaTags>
       <header className="header">
         <Navigation translate={translate} />
         {showBanner && <Banner bannerImagePath={ filePath} isHome={isHome} title = {bannerTitle} introductionText={introductionText} isAcknowledgment={isAcknowledgment} />}

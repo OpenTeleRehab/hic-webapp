@@ -39,6 +39,7 @@ const Library = ({ translate }) => {
 
   return (
     <>
+      <h1 className="d-none">{translate('library')}</h1>
       <Nav variant="tabs" activeKey={view} className="mb-3">
         <Nav.Item>
           <Nav.Link as={Link} to={replaceRoute(ROUTES.LIBRARY, activeLanguage)} eventKey={VIEW_EXERCISE}>

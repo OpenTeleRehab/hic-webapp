@@ -4,7 +4,7 @@ import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import { Accordion, AccordionContext, Button, Card, Form } from 'react-bootstrap';
 import { BsChevronDown, BsChevronRight } from 'react-icons/bs';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { getQuestionnaire } from '../../../../store/questionnaire/actions';
 import { replaceRoute } from '../../../../utils/route';
 import * as ROUTES from '../../../../variables/routes';
@@ -14,11 +14,18 @@ const QuestionnaireDetail = () => {
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
   const { questionnaire } = useSelector(state => state.questionnaire);
   const { languages, activeLanguage } = useSelector((state) => state.language);
-  const { id } = useParams();
+  const [id, setId] = useState(undefined);
   const [questions, setQuestions] = useState([]);
   const [totalQuestion, setTotalQuestion] = useState(0);
+
+  useEffect(() => {
+    if (location.state) {
+      setId(location.state.id);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (id) {

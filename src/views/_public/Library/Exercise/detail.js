@@ -3,7 +3,7 @@ import { getTranslate } from 'react-localize-redux';
 import { Button, Col, Image, Row } from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { getExercise } from 'store/exercise/actions';
 import { formatFileSize } from '../../../../utils/file';
 import { replaceRoute } from '../../../../utils/route';
@@ -13,13 +13,20 @@ const ExerciseDetail = () => {
   const localize = useSelector((state) => state.localize);
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
   const translate = getTranslate(localize);
   const { exercise } = useSelector(state => state.exercise);
   const { languages, activeLanguage } = useSelector((state) => state.language);
   const [mediaUploads, setMediaUploads] = useState([]);
   const [additionalFields, setAdditionalFields] = useState([]);
   const [index, setIndex] = useState(0);
-  const { id } = useParams();
+  const [id, setId] = useState(undefined);
+
+  useEffect(() => {
+    if (location.state) {
+      setId(location.state.id);
+    }
+  }, [location.state]);
 
   const handleSelect = (selectedIndex, e) => {
     setIndex(selectedIndex);
