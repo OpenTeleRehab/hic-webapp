@@ -45,6 +45,7 @@ const CreateQuestionnaire = ({ translate }) => {
   const { categoryTreeData } = useSelector((state) => state.category);
   const [language, setLanguage] = useState({});
   const [formFields, setFormFields] = useState({
+    id: '',
     title: '',
     description: ''
   });
@@ -110,6 +111,7 @@ const CreateQuestionnaire = ({ translate }) => {
     if (isEditingTranslation && questionnaire) {
       if (_.isEmpty(editTranslation)) {
         setFormFields({
+          id: questionnaire.id,
           title: questionnaire.title,
           description: questionnaire.description,
           fallback: questionnaire.fallback
@@ -125,6 +127,7 @@ const CreateQuestionnaire = ({ translate }) => {
         setShowFallbackText(false);
       } else {
         setFormFields({
+          id: editTranslation.id,
           title: editTranslation.title,
           description: editTranslation.description,
           fallback: questionnaire.fallback
