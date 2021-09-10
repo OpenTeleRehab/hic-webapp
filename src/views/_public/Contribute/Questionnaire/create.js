@@ -73,9 +73,9 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
   }, [dispatch, language]);
 
   useEffect(() => {
-    setTimeout(() => {
-      id && dispatch(getQuestionnaire(id, language));
-    }, 200);
+    if (id && language) {
+      dispatch(getQuestionnaire(id, language));
+    }
   }, [id, language, dispatch]);
 
   useEffect(() => {

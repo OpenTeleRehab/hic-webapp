@@ -90,9 +90,9 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
   }, [language, languages, activeLanguage]);
 
   useEffect(() => {
-    setTimeout(() => {
-      id && dispatch(getExercise(id, language));
-    }, 200);
+    if (id && language) {
+      dispatch(getExercise(id, language));
+    }
   }, [id, language, dispatch]);
 
   useEffect(() => {
