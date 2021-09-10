@@ -162,6 +162,11 @@ const uploadExercisesFail = () => ({
   type: 'UPLOAD_EXERCISES_FAIL'
 });
 
+const setFilterExercisesRequest = (data) => ({
+  type: 'SET_FILTER_EXERCISES_REQUEST',
+  data
+});
+
 export const mutation = {
   getExercisesFail,
   getExercisesRequest,
@@ -200,5 +205,6 @@ export const mutation = {
   downloadExercisesFail,
   uploadExercisesRequest,
   uploadExercisesSuccess,
-  uploadExercisesFail
+  uploadExercisesFail,
+  setFilterExercisesRequest
 };

@@ -134,6 +134,10 @@ const approveEditTranslationFail = () => ({
   type: 'APPROVE_EDIT_TRANSLATION_FAIL'
 });
 
+export const setFilterQuestionnaires = payload => async dispatch => {
+  dispatch(mutation.setFilterQuestionnairesRequest(payload));
+};
+
 export const mutation = {
   getQuestionnairesRequest,
   getQuestionnairesSuccess,
@@ -166,5 +170,6 @@ export const mutation = {
   rejectEditTranslationFail,
   approveEditTranslationRequest,
   approveEditTranslationSuccess,
-  approveEditTranslationFail
+  approveEditTranslationFail,
+  setFilterQuestionnaires
 };

@@ -149,3 +149,7 @@ export const clearFilterQuestionnaires = () => async dispatch => {
 export const clearEditTranslation = () => async dispatch => {
   dispatch(mutation.clearEditTranslationRequest());
 };
+
+export const setFilterQuestionnaires = payload => async dispatch => {
+  dispatch(mutation.setFilterQuestionnairesRequest(payload));
+};

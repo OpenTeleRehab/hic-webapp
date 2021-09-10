@@ -177,3 +177,7 @@ export const uploadExercises = payload => async dispatch => {
     return { success: false, info: data.errors };
   }
 };
+
+export const setFilterExercises = payload => async dispatch => {
+  dispatch(mutation.setFilterExercisesRequest(payload));
+};

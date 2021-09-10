@@ -18,7 +18,7 @@ import {
 } from '../../../store/questionnaire/actions';
 import Question from './Question/question';
 import { getCategoryTreeData } from 'store/category/actions';
-import { CATEGORY_TYPES } from 'variables/category';
+import { LIBRARY_TYPES } from 'variables/library';
 import _ from 'lodash';
 import CheckboxTree from 'react-checkbox-tree';
 import {
@@ -64,7 +64,7 @@ const CreateQuestionnaire = ({ translate }) => {
   const [showFallbackText, setShowFallbackText] = useState(false);
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: language.id }));
+    dispatch(getCategoryTreeData({ type: LIBRARY_TYPES.QUESTIONNAIRE, lang: language.id }));
   }, [language, dispatch]);
 
   useEffect(() => {

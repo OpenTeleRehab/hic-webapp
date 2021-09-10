@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import SearchInput from 'components/Form/SearchInput';
 import { getQuestionnaires } from 'store/questionnaire/actions';
 import { getCategoryTreeData } from 'store/category/actions';
-import { CATEGORY_TYPES } from 'variables/category';
+import { LIBRARY_TYPES } from 'variables/library';
 import CheckboxTree from 'react-checkbox-tree';
 import {
   BsCaretDownFill,
@@ -34,20 +34,26 @@ let timer = null;
 const Questionnaire = ({ translate, lang }) => {
   const dispatch = useDispatch();
   const history = useHistory();
-
+  const { activeLanguage } = useSelector(state => state.language);
+  const { loading, questionnaires, filters } = useSelector(state => state.questionnaire);
+  const { categoryTreeData } = useSelector((state) => state.category);
   const [formFields, setFormFields] = useState({
     search_value: ''
   });
-  const { activeLanguage } = useSelector(state => state.language);
-  const { loading, questionnaires } = useSelector(state => state.questionnaire);
-  const { categoryTreeData } = useSelector((state) => state.category);
   const [pageSize, setPageSize] = useState(9);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [expanded, setExpanded] = useState([]);
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.QUESTIONNAIRE, lang: lang }));
+    dispatch(getCategoryTreeData({ type: LIBRARY_TYPES.QUESTIONNAIRE, lang: lang }));
   }, [lang, dispatch]);
+
+  useEffect(() => {
+    if (filters.filter && filters.filter.search_value && filters.filter.type) {
+      setFormFields({ ...formFields, search_value: filters.filter.search_value });
+    }
+    // eslint-disable-next-line
+  }, [filters]);
 
   useEffect(() => {
     if (categoryTreeData.length) {

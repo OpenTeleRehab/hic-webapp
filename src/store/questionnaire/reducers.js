@@ -28,6 +28,13 @@ export const questionnaire = (state = initialState, action) => {
         editTranslation: {}
       });
     }
+    case 'SET_FILTER_QUESTIONNAIRES_REQUEST': {
+      return Object.assign({}, state, {
+        filters: {
+          filter: action.data
+        }
+      });
+    }
     default:
       return state;
   }

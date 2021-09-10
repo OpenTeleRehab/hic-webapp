@@ -1,4 +1,4 @@
-export const CATEGORY_TYPES = {
+export const LIBRARY_TYPES = {
   EXERCISE: 'exercise',
   MATERIAL: 'education',
   QUESTIONNAIRE: 'questionnaire'

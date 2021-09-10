@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useHistory, useParams } from 'react-router-dom';
-import { CATEGORY_TYPES } from '../../../variables/category';
+import { LIBRARY_TYPES } from '../../../variables/library';
 import CreateExercise from './Exercises/create';
 import { Form } from 'react-bootstrap';
 import { getTranslate } from 'react-localize-redux';
@@ -11,6 +11,7 @@ import ReviewSubmissionModal from './ReviewSubmission';
 import Dialog from '../../../components/Dialog';
 import * as ROUTES from '../../../variables/routes';
 import { replaceRoute } from '../../../utils/route';
+import settings from '../../../settings';
 
 const Contribute = () => {
   const { hash, pathname } = useLocation();
@@ -24,28 +25,13 @@ const Contribute = () => {
   const [isShowConfirmSubmissionModal, setIsShowConfirmSubmissionModal] = useState(false);
   const history = useHistory();
 
-  const types = [
-    {
-      label: translate('library.exercises'),
-      value: CATEGORY_TYPES.EXERCISE
-    },
-    {
-      label: translate('library.education_materials'),
-      value: CATEGORY_TYPES.MATERIAL
-    },
-    {
-      label: translate('library.questionnaires'),
-      value: CATEGORY_TYPES.QUESTIONNAIRE
-    }
-  ];
-
   useEffect(() => {
-    if (hash.includes('#' + CATEGORY_TYPES.MATERIAL) || pathname.includes(CATEGORY_TYPES.MATERIAL)) {
-      setView(CATEGORY_TYPES.MATERIAL);
-    } else if (hash.includes('#' + CATEGORY_TYPES.QUESTIONNAIRE) || pathname.includes(CATEGORY_TYPES.QUESTIONNAIRE)) {
-      setView(CATEGORY_TYPES.QUESTIONNAIRE);
+    if (hash.includes('#' + LIBRARY_TYPES.MATERIAL) || pathname.includes(LIBRARY_TYPES.MATERIAL)) {
+      setView(LIBRARY_TYPES.MATERIAL);
+    } else if (hash.includes('#' + LIBRARY_TYPES.QUESTIONNAIRE) || pathname.includes(LIBRARY_TYPES.QUESTIONNAIRE)) {
+      setView(LIBRARY_TYPES.QUESTIONNAIRE);
     } else {
-      setView(CATEGORY_TYPES.EXERCISE);
+      setView(LIBRARY_TYPES.EXERCISE);
     }
   }, [hash, pathname]);
 
@@ -73,17 +59,17 @@ const Contribute = () => {
           <h2 className="text-primary mb-5">Choose content to upload</h2>
 
           <Form.Group className="d-flex justify-content-center">
-            {types.map((type) => (
+            {settings.libraryTypes.options.map((type) => (
               <Form.Check
                 name="type"
-                id={type.label}
-                key={type.label}
+                id={type.text}
+                key={type.text}
                 className="ml-3 mr-3"
                 value={type.value}
                 checked={view === type.value}
                 disabled={editItem || id}
                 type="radio"
-                label={type.label}
+                label={translate(type.text)}
                 custom
                 onChange={handleChange}
               />
@@ -91,9 +77,9 @@ const Contribute = () => {
           </Form.Group>
         </Form>
 
-        { view === CATEGORY_TYPES.EXERCISE && <CreateExercise translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} /> }
-        { view === CATEGORY_TYPES.MATERIAL && <CreateEducationMaterial translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} /> }
-        { view === CATEGORY_TYPES.QUESTIONNAIRE && <CreateQuestionnaire translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} /> }
+        { view === LIBRARY_TYPES.EXERCISE && <CreateExercise translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} /> }
+        { view === LIBRARY_TYPES.MATERIAL && <CreateEducationMaterial translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} /> }
+        { view === LIBRARY_TYPES.QUESTIONNAIRE && <CreateQuestionnaire translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} /> }
         { isShowReviewModal && <ReviewSubmissionModal translate={translate} editItem={setEditItem} showReviewModal={setIsShowReviewModal} showConfirmSubmissionModal={setIsShowConfirmSubmissionModal} /> }
 
         <Dialog

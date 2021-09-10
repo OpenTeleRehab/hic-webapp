@@ -19,7 +19,7 @@ import moment from 'moment';
 import * as ROUTES from '../../../../variables/routes';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { replaceRoute } from 'utils/route';
-import { CATEGORY_TYPES } from '../../../../variables/category';
+import { LIBRARY_TYPES } from '../../../../variables/library';
 
 const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfirmSubmissionModal }) => {
   const dispatch = useDispatch();
@@ -172,13 +172,13 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
           dispatch(showSpinner(false));
           showReviewModal(false);
 
-          if (pathname.includes(CATEGORY_TYPES.EXERCISE)) {
+          if (pathname.includes(LIBRARY_TYPES.EXERCISE)) {
             history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL.replace(':id', id), activeLanguage));
           }
-          if (pathname.includes(CATEGORY_TYPES.MATERIAL)) {
+          if (pathname.includes(LIBRARY_TYPES.MATERIAL)) {
             history.push(replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL.replace(':id', id), activeLanguage));
           }
-          if (pathname.includes(CATEGORY_TYPES.QUESTIONNAIRE)) {
+          if (pathname.includes(LIBRARY_TYPES.QUESTIONNAIRE)) {
             history.push(replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL.replace(':id', id), activeLanguage));
           }
         } else {

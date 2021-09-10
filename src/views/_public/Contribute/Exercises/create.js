@@ -35,7 +35,7 @@ import CheckboxTree from 'react-checkbox-tree';
 import Select from 'react-select';
 import Dialog from '../../../../components/Dialog';
 import { getCategoryTreeData } from '../../../../store/category/actions';
-import { CATEGORY_TYPES } from '../../../../variables/category';
+import { LIBRARY_TYPES } from '../../../../variables/library';
 import { formatFileSize } from '../../../../utils/file';
 import { replaceRoute } from '../../../../utils/route';
 import FallbackText from '../../../../components/Form/FallbackText';
@@ -156,7 +156,7 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
   }, [editItem, categoryTreeData, hash]);
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: language }));
+    dispatch(getCategoryTreeData({ type: LIBRARY_TYPES.EXERCISE, lang: language }));
   }, [dispatch, language]);
 
   useEffect(() => {

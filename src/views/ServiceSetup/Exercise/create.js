@@ -38,7 +38,7 @@ import {
   approveEditTranslation
 } from 'store/exercise/actions';
 import { getCategoryTreeData } from 'store/category/actions';
-import { CATEGORY_TYPES } from 'variables/category';
+import { LIBRARY_TYPES } from 'variables/library';
 import _ from 'lodash';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import scssColors from '../../../scss/custom.scss';
@@ -92,7 +92,7 @@ const CreateExercise = ({ translate }) => {
   const [showFallbackText, setShowFallbackText] = useState(false);
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: language.id }));
+    dispatch(getCategoryTreeData({ type: LIBRARY_TYPES.EXERCISE, lang: language.id }));
   }, [language, dispatch]);
 
   useEffect(() => {

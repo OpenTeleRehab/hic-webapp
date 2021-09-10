@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getExercises } from 'store/exercise/actions';
 import SearchInput from 'components/Form/SearchInput';
 import { getCategoryTreeData } from 'store/category/actions';
-import { CATEGORY_TYPES } from 'variables/category';
+import { LIBRARY_TYPES } from 'variables/library';
 import CheckboxTree from 'react-checkbox-tree';
 import {
   BsCaretDownFill,
@@ -35,8 +35,7 @@ let timer = null;
 const Exercise = ({ translate, lang }) => {
   const dispatch = useDispatch();
   const history = useHistory();
-
-  const { loading, exercises } = useSelector(state => state.exercise);
+  const { loading, exercises, filters } = useSelector(state => state.exercise);
   const { categoryTreeData } = useSelector((state) => state.category);
   const { activeLanguage } = useSelector((state) => state.language);
   const [pageSize, setPageSize] = useState(9);
@@ -47,8 +46,15 @@ const Exercise = ({ translate, lang }) => {
   const [expanded, setExpanded] = useState([]);
 
   useEffect(() => {
-    dispatch(getCategoryTreeData({ type: CATEGORY_TYPES.EXERCISE, lang: lang }));
+    dispatch(getCategoryTreeData({ type: LIBRARY_TYPES.EXERCISE, lang: lang }));
   }, [lang, dispatch]);
+
+  useEffect(() => {
+    if (filters.filter && filters.filter.search_value && filters.filter.type) {
+      setFormFields({ ...formFields, search_value: filters.filter.search_value });
+    }
+    // eslint-disable-next-line
+  }, [filters]);
 
   useEffect(() => {
     if (categoryTreeData.length) {
