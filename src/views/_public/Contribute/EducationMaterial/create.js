@@ -69,9 +69,9 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
   }, [language, languages, activeLanguage]);
 
   useEffect(() => {
-    setTimeout(() => {
-      id && dispatch(getEducationMaterial(id, language));
-    }, 200);
+    if (id && language) {
+      dispatch(getEducationMaterial(id, language));
+    }
   }, [id, language, dispatch]);
 
   useEffect(() => {
