@@ -63,7 +63,6 @@ const CreateExercise = ({ translate }) => {
   const [formFields, setFormFields] = useState({
     title: '',
     include_feedback: true,
-    get_pain_level: '',
     show_sets_reps: false,
     sets: '',
     reps: '',
@@ -177,9 +176,9 @@ const CreateExercise = ({ translate }) => {
       setFormFields({
         title: exercise.title,
         include_feedback: showSetsReps && exercise.include_feedback,
-        get_pain_level: exercise.get_pain_level,
         show_sets_reps: showSetsReps,
-        sets: exercise.sets
+        sets: exercise.sets,
+        reps: exercise.reps
       });
       setAdditionalFields(exercise.additional_fields);
       setMediaUploads(exercise.files);
@@ -609,69 +608,72 @@ const CreateExercise = ({ translate }) => {
               </>
             }
 
-            <h5 className="text-primary">{translate('common.additional_fields')}</h5>
-            {
-              additionalFields.map((additionalField, index) => (
-                <Card key={index} className="bg-light mb-3 additional-field">
-                  <Card.Body>
-                    {!isEditingTranslation &&
-                      <div className="remove-btn-container">
-                        <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{translate('common.remove')}</Tooltip>}>
-                          <Button
-                            variant="outline-danger"
-                            className="btn-remove"
-                            onClick={() => handleRemoveFields(index)}
+            {additionalFields.length > 0 && (
+              <>
+                <h5 className="text-primary">{translate('common.additional_fields')}</h5>
+                {
+                  additionalFields.map((additionalField, index) => (
+                    <Card key={index} className="bg-light mb-3 additional-field">
+                      <Card.Body>
+                        {!isEditingTranslation &&
+                        <div className="remove-btn-container">
+                          <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{translate('common.remove')}</Tooltip>}>
+                            <Button
+                              variant="outline-danger"
+                              className="btn-remove"
+                              onClick={() => handleRemoveFields(index)}
+                              disabled={disabledEditing()}
+                            >
+                              <BsX size={20} />
+                            </Button>
+                          </OverlayTrigger>
+                        </div>
+                        }
+
+                        <Form.Group controlId={`formLabel${index}`}>
+                          <Form.Label>{translate('exercise.additional_field.label')}</Form.Label>
+                          <span className="text-dark ml-1">*</span>
+                          {showFallbackText && additionalField.fallback &&
+                          <FallbackText translate={translate} text={additionalField.fallback.field} />
+                          }
+                          <Form.Control
+                            name="field"
+                            placeholder={translate('exercise.additional_field.placeholder.label')}
+                            value={additionalField.field}
+                            onChange={e => handleChangeInput(index, e)}
+                            isInvalid={inputFieldError[index]}
                             disabled={disabledEditing()}
-                          >
-                            <BsX size={20} />
-                          </Button>
-                        </OverlayTrigger>
-                      </div>
-                    }
-
-                    <Form.Group controlId={`formLabel${index}`}>
-                      <Form.Label>{translate('exercise.additional_field.label')}</Form.Label>
-                      <span className="text-dark ml-1">*</span>
-                      {showFallbackText && additionalField.fallback &&
-                        <FallbackText translate={translate} text={additionalField.fallback.field} />
-                      }
-                      <Form.Control
-                        name="field"
-                        placeholder={translate('exercise.additional_field.placeholder.label')}
-                        value={additionalField.field}
-                        onChange={e => handleChangeInput(index, e)}
-                        isInvalid={inputFieldError[index]}
-                        disabled={disabledEditing()}
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {translate('exercise.additional_field.label.required')}
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group controlId={`formValue${index}`}>
-                      <Form.Label>{translate('exercise.additional_field.value')}</Form.Label>
-                      <span className="text-dark ml-1">*</span>
-                      {showFallbackText && additionalField.fallback &&
-                        <FallbackText translate={translate} text={additionalField.fallback.value} />
-                      }
-                      <Form.Control
-                        name="value"
-                        as="textarea"
-                        rows={3}
-                        placeholder={translate('exercise.additional_field.placeholder.value')}
-                        value={additionalField.value}
-                        onChange={event => handleChangeInput(index, event)}
-                        isInvalid={inputValueError[index]}
-                        disabled={disabledEditing()}
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {translate('exercise.additional_field.value.required')}
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Card.Body>
-                </Card>
-              ))
-            }
-
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            {translate('exercise.additional_field.label.required')}
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group controlId={`formValue${index}`}>
+                          <Form.Label>{translate('exercise.additional_field.value')}</Form.Label>
+                          <span className="text-dark ml-1">*</span>
+                          {showFallbackText && additionalField.fallback &&
+                          <FallbackText translate={translate} text={additionalField.fallback.value} />
+                          }
+                          <Form.Control
+                            name="value"
+                            as="textarea"
+                            rows={3}
+                            placeholder={translate('exercise.additional_field.placeholder.value')}
+                            value={additionalField.value}
+                            onChange={event => handleChangeInput(index, event)}
+                            isInvalid={inputValueError[index]}
+                            disabled={disabledEditing()}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            {translate('exercise.additional_field.value.required')}
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                      </Card.Body>
+                    </Card>
+                  ))
+                }
+              </>
+            )}
             {!isEditingTranslation &&
               <Form.Group>
                 <Button variant="link" onClick={handleAddFields} className="p-0" disabled={disabledEditing()}>
