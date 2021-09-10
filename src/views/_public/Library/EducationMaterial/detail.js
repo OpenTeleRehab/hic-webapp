@@ -3,7 +3,7 @@ import { withLocalize } from 'react-localize-redux';
 import { Button, Col, Form, Image, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux/lib/index';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { getEducationMaterial } from '../../../../store/educationMaterial/actions';
 import { replaceRoute } from '../../../../utils/route';
 import * as ROUTES from '../../../../variables/routes';
@@ -11,12 +11,19 @@ import * as ROUTES from '../../../../variables/routes';
 const EducationMaterialDetail = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
   const { educationMaterial } = useSelector(state => state.educationMaterial);
   const localize = useSelector((state) => state.localize);
   const { languages, activeLanguage } = useSelector(state => state.language);
   const translate = getTranslate(localize);
   const [materialFile, setMaterialFile] = useState(undefined);
-  const { id } = useParams();
+  const [id, setId] = useState(undefined);
+
+  useEffect(() => {
+    if (location.state) {
+      setId(location.state.id);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     const language = languages.find((language) => language.code === activeLanguage);

@@ -103,8 +103,11 @@ const Exercise = ({ translate, lang }) => {
     setPageSize(pageSize + 8);
   };
 
-  const handleViewDetail = (id) => {
-    history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL, activeLanguage).replace(':id', id));
+  const handleViewDetail = (id, slug) => {
+    history.push({
+      pathname: replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL, activeLanguage).replace(':id', slug),
+      state: { id: id }
+    });
   };
 
   return (
@@ -180,7 +183,7 @@ const Exercise = ({ translate, lang }) => {
                 <Row>
                   { exercises.map(exercise => (
                     <Col key={exercise.id} md={6} lg={4} xl={window.screen.width >= 2020 && 2} className="card-wrapper">
-                      <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewDetail(exercise.id)}>
+                      <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewDetail(exercise.id, exercise.slug)}>
                         <div className="card-img bg-light" onContextMenu={(e) => e.preventDefault()}>
                           {
                             exercise.files.length > 0 && (
