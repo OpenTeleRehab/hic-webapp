@@ -47,6 +47,7 @@ const CreateEducationMaterial = ({ translate }) => {
   const { profile } = useSelector((state) => state.auth);
   const [language, setLanguage] = useState({});
   const [formFields, setFormFields] = useState({
+    id: '',
     title: '',
     file: undefined
   });
@@ -111,6 +112,7 @@ const CreateEducationMaterial = ({ translate }) => {
     if (isEditingTranslation && educationMaterial) {
       if (_.isEmpty(editTranslation)) {
         setFormFields({
+          id: educationMaterial.id,
           title: educationMaterial.title,
           fallback: educationMaterial.fallback
         });
@@ -118,6 +120,7 @@ const CreateEducationMaterial = ({ translate }) => {
         setShowFallbackText(false);
       } else {
         setFormFields({
+          id: editTranslation.id,
           title: editTranslation.title,
           file: editTranslation.file,
           fallback: educationMaterial.fallback

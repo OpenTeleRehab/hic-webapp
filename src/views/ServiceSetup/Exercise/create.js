@@ -66,7 +66,8 @@ const CreateExercise = ({ translate }) => {
     get_pain_level: '',
     show_sets_reps: false,
     sets: '',
-    reps: ''
+    reps: '',
+    id: ''
   });
   const [additionalFields, setAdditionalFields] = useState([
     { field: translate('additional_field.aim'), value: '' },
@@ -137,6 +138,7 @@ const CreateExercise = ({ translate }) => {
     if (isEditingTranslation && exercise) {
       if (_.isEmpty(editTranslation)) {
         setFormFields({
+          id: exercise.id,
           title: exercise.title,
           fallback: exercise.fallback
         });
@@ -145,6 +147,7 @@ const CreateExercise = ({ translate }) => {
         setShowFallbackText(false);
       } else {
         setFormFields({
+          id: editTranslation.id,
           title: editTranslation.title,
           fallback: exercise.fallback
         });
