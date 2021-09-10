@@ -128,6 +128,30 @@ const deleteEducationMaterial = id => {
     });
 };
 
+const cancelEditing = id => {
+  return axios.post(`/education-material/cancel-editing/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
+const continueEditing = id => {
+  return axios.post(`/education-material/continue-editing/${id}`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 const rejectEducationMaterial = id => {
   return axios.post(`/education-material/reject/${id}`)
     .then(
@@ -159,6 +183,8 @@ export const EducationMaterial = {
   updateEducationMaterial,
   getEducationMaterials,
   deleteEducationMaterial,
+  continueEditing,
+  cancelEditing,
   rejectEducationMaterial,
   rejectEditTranslation,
   approveEditTranslation

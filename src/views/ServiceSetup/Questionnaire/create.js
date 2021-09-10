@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import { Button, Col, Form, Row, Accordion, Card } from 'react-bootstrap';
+import { Button, Col, Form, Row, Accordion, Card, Alert } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import * as ROUTES from '../../../variables/routes';
@@ -34,6 +34,8 @@ import { STATUS } from '../../../variables/resourceStatus';
 import Dialog from '../../../components/Dialog';
 import FallbackText from '../../../components/Form/FallbackText';
 import SelectLanguage from '../_Partials/SelectLanguage';
+import useInterval from 'hook/useInterval';
+import { Questionnaire } from 'services/questionnaire';
 
 const CreateQuestionnaire = ({ translate }) => {
   const dispatch = useDispatch();
@@ -182,6 +184,12 @@ const CreateQuestionnaire = ({ translate }) => {
     }
   }, [isEditingItem, categoryTreeData, questionnaire]);
 
+  useInterval(() => {
+    if (id && !questionnaire.blocked_editing) {
+      Questionnaire.continueEditing(id);
+    }
+  }, 30000);
+
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
@@ -314,12 +322,29 @@ const CreateQuestionnaire = ({ translate }) => {
     }
   };
 
+  const disabledEditing = () => {
+    return questionnaire.blocked_editing;
+  };
+
+  const cancelEditing = () => {
+    if (id && !questionnaire.blocked_editing) {
+      return Questionnaire.cancelEditing(id);
+    }
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
-        <h1>{ id ? translate('questionnaire.edit') : translate('questionnaire.create')}</h1>
+        <h1 className="text-primary">{ id ? translate('questionnaire.edit') : translate('questionnaire.create')}</h1>
       </div>
-      <Form onKeyPress={(e) => handleFormSubmit(e)}>
+
+      { disabledEditing() && (
+        <Alert variant="warning" className="mb-0">
+          {translate('resources.block_editing_message', { editing_by: questionnaire.editing_by })}
+        </Alert>
+      )}
+
+      <Form onKeyPress={(e) => handleFormSubmit(e)} className="no-gutters bg-white p-4">
         <Row>
           <Col sm={12} xl={11}>
             <Form.Group controlId="formLanguage">
@@ -347,6 +372,7 @@ const CreateQuestionnaire = ({ translate }) => {
                 placeholder={translate('questionnaire.title.placeholder')}
                 isInvalid={titleError}
                 maxLength={255}
+                disabled={disabledEditing()}
               />
               <Form.Control.Feedback type="invalid">
                 {translate('questionnaire.title.required')}
@@ -364,6 +390,7 @@ const CreateQuestionnaire = ({ translate }) => {
                 placeholder={translate('questionnaire.description.placeholder')}
                 value={formFields.description}
                 onChange={handleChange}
+                disabled={disabledEditing()}
               />
             </Form.Group>
 
@@ -410,7 +437,6 @@ const CreateQuestionnaire = ({ translate }) => {
             }
           </Col>
         </Row>
-
         <Row>
           <Col sm={12} xl={11} className="question-wrapper">
             <Question
@@ -419,7 +445,7 @@ const CreateQuestionnaire = ({ translate }) => {
               setQuestions={setQuestions}
               questionTitleError={questionTitleError}
               answerFieldError={answerFieldError}
-              modifiable={!isEditingTranslation}
+              modifiable={!isEditingTranslation || disabledEditing()}
               showFallbackText={showFallbackText}
             />
             {!isEditingTranslation &&
@@ -429,6 +455,7 @@ const CreateQuestionnaire = ({ translate }) => {
                     variant="link btn-lg"
                     onClick={handleAddQuestion}
                     className="py-1"
+                    disabled={disabledEditing()}
                   >
                     <BsPlusCircle size={20} /> {translate('questionnaire.new.question')}
                   </Button>
@@ -437,7 +464,7 @@ const CreateQuestionnaire = ({ translate }) => {
                   { !id && (
                     <Button
                       onClick={handleSave}
-                      disabled={isLoading}
+                      disabled={isLoading || disabledEditing()}
                     >
                       {translate('common.save')}
                     </Button>
@@ -445,8 +472,8 @@ const CreateQuestionnaire = ({ translate }) => {
                   { id && (
                     <>
                       {questionnaire.status === STATUS.approved
-                        ? <Button onClick={handleSave} disabled={isLoading}>{translate('common.save')}</Button>
-                        : <Button onClick={handleSave} disabled={isLoading}>{translate('common.approve')}</Button>
+                        ? <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>{translate('common.save')}</Button>
+                        : <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>{translate('common.approve')}</Button>
                       }
 
                       {questionnaire.status === STATUS.rejected &&
@@ -454,7 +481,7 @@ const CreateQuestionnaire = ({ translate }) => {
                           onClick={() => setShowDeleteDialog(true)}
                           className="ml-2"
                           variant="outline-danger"
-                          disabled={isLoading}
+                          disabled={isLoading || disabledEditing()}
                         >
                           {translate('common.delete')}
                         </Button>
@@ -465,7 +492,7 @@ const CreateQuestionnaire = ({ translate }) => {
                           onClick={handleReject}
                           className="ml-2"
                           variant="outline-primary"
-                          disabled={isLoading}
+                          disabled={isLoading || disabledEditing()}
                         >
                           {translate('common.reject')}
                         </Button>
@@ -478,6 +505,7 @@ const CreateQuestionnaire = ({ translate }) => {
                     as={Link}
                     to={ROUTES.SERVICE_SETUP_QUESTIONNAIRE}
                     disabled={isLoading}
+                    onClick={cancelEditing}
                   >
                     {translate('common.cancel')}
                   </Button>
@@ -500,8 +528,8 @@ const CreateQuestionnaire = ({ translate }) => {
                   { id && (
                     <>
                       {questionnaire.status === STATUS.approved && _.isEmpty(editTranslations)
-                        ? <Button onClick={handleSave} disabled={isLoading}>{translate('common.save')}</Button>
-                        : <Button onClick={handleSave} disabled={isLoading}>{translate('common.approve')}</Button>
+                        ? <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>{translate('common.save')}</Button>
+                        : <Button onClick={handleSave} disabled={isLoading || disabledEditing}>{translate('common.approve')}</Button>
                       }
 
                       {questionnaire.status === STATUS.rejected &&
@@ -509,7 +537,7 @@ const CreateQuestionnaire = ({ translate }) => {
                           onClick={() => setShowDeleteDialog(true)}
                           className="ml-2"
                           variant="outline-danger"
-                          disabled={isLoading}
+                          disabled={isLoading || disabledEditing()}
                         >
                           {translate('common.delete')}
                         </Button>
@@ -520,7 +548,7 @@ const CreateQuestionnaire = ({ translate }) => {
                           onClick={handleReject}
                           className="ml-2"
                           variant="outline-primary"
-                          disabled={isLoading}
+                          disabled={isLoading || disabledEditing()}
                         >
                           {translate('common.reject')}
                         </Button>
@@ -533,7 +561,7 @@ const CreateQuestionnaire = ({ translate }) => {
                     variant="outline-dark"
                     as={Link}
                     to={ROUTES.SERVICE_SETUP_QUESTIONNAIRE}
-                    disabled={isLoading}
+                    disabled={isLoading || disabledEditing()}
                   >
                     {translate('common.cancel')}
                   </Button>

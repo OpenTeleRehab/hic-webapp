@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import { Button, Col, Form, Row, Accordion, Card } from 'react-bootstrap';
+import { Button, Col, Form, Row, Accordion, Card, Alert } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import * as ROUTES from '../../../variables/routes';
@@ -34,6 +34,8 @@ import { STATUS } from '../../../variables/resourceStatus';
 import Dialog from '../../../components/Dialog';
 import FallbackText from '../../../components/Form/FallbackText';
 import SelectLanguage from '../_Partials/SelectLanguage';
+import useInterval from 'hook/useInterval';
+import { EducationMaterial } from 'services/educationMaterial';
 
 const CreateEducationMaterial = ({ translate }) => {
   const dispatch = useDispatch();
@@ -158,6 +160,12 @@ const CreateEducationMaterial = ({ translate }) => {
       }
     }
   }, [isEditingItem, educationMaterial, categoryTreeData]);
+
+  useInterval(() => {
+    if (id && !educationMaterial.blocked_editing) {
+      EducationMaterial.continueEditing(id);
+    }
+  }, 30000);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -295,11 +303,27 @@ const CreateEducationMaterial = ({ translate }) => {
     }
   };
 
+  const disabledEditing = () => {
+    return educationMaterial.blocked_editing;
+  };
+
+  const cancelEditing = () => {
+    if (id && !educationMaterial.blocked_editing) {
+      return EducationMaterial.cancelEditing(id);
+    }
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
         <h1 className="text-primary">{id ? translate('education_material.edit') : translate('education_material.create')}</h1>
       </div>
+
+      { disabledEditing() && (
+        <Alert variant="warning" className="mb-0">
+          {translate('resources.block_editing_message', { editing_by: educationMaterial.editing_by })}
+        </Alert>
+      )}
 
       <Form onKeyPress={(e) => handleFormSubmit(e)}>
         <Row className="no-gutters bg-white">
@@ -329,6 +353,7 @@ const CreateEducationMaterial = ({ translate }) => {
                 placeholder={translate('education_material.title.placeholder')}
                 maxLength={settings.textMaxLength}
                 isInvalid={titleError}
+                disabled={disabledEditing()}
               />
               <Form.Control.Feedback type="invalid">
                 {translate('education_material.title.required')}
@@ -344,7 +369,7 @@ const CreateEducationMaterial = ({ translate }) => {
                   onChange={handleFileChange}
                   isInvalid={fileError || fileMaxSizeError}
                   accept="audio/*, video/*, image/*, .pdf"
-                  disabled={isEditingTranslation && !_.isEmpty(editTranslations)}
+                  disabled={isEditingTranslation && !_.isEmpty(editTranslations) && disabledEditing()}
                 />
                 <Form.File.Label>{renderUploadFileName()}</Form.File.Label>
                 <Form.Control.Feedback type="invalid">
@@ -398,6 +423,7 @@ const CreateEducationMaterial = ({ translate }) => {
                               expandOpen: <BsCaretDownFill size={40} color="black" />
                             }}
                             showNodeIcon={false}
+                            disabled={disabledEditing()}
                           />
                         </Card.Body>
                       </Accordion.Collapse>
@@ -413,7 +439,7 @@ const CreateEducationMaterial = ({ translate }) => {
         </Row>
         <div className="sticky-bottom d-flex justify-content-end">
           { !id && (
-            <Button onClick={handleSave} disabled={isLoading}>
+            <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>
               {translate('common.save')}
             </Button>
           )}
@@ -421,8 +447,8 @@ const CreateEducationMaterial = ({ translate }) => {
           { id && (
             <>
               {educationMaterial.status === STATUS.approved && _.isEmpty(editTranslations)
-                ? <Button onClick={handleSave} disabled={isLoading}>{translate('common.save')}</Button>
-                : <Button onClick={handleSave} disabled={isLoading}>{translate('common.approve')}</Button>
+                ? <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>{translate('common.save')}</Button>
+                : <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>{translate('common.approve')}</Button>
               }
 
               {educationMaterial.status === STATUS.rejected &&
@@ -430,7 +456,7 @@ const CreateEducationMaterial = ({ translate }) => {
                   onClick={() => setShowDeleteDialog(true)}
                   className="ml-2"
                   variant="outline-danger"
-                  disabled={isLoading}
+                  disabled={isLoading || disabledEditing()}
                 >
                   {translate('common.delete')}
                 </Button>
@@ -441,7 +467,7 @@ const CreateEducationMaterial = ({ translate }) => {
                   onClick={handleReject}
                   className="ml-2"
                   variant="outline-primary"
-                  disabled={isLoading}
+                  disabled={isLoading || disabledEditing()}
                 >
                   {translate('common.reject')}
                 </Button>
@@ -454,7 +480,8 @@ const CreateEducationMaterial = ({ translate }) => {
             variant="outline-dark"
             as={Link}
             to={ROUTES.SERVICE_SETUP_EDUCATION}
-            disabled={isLoading}
+            disabled={isLoading || disabledEditing()}
+            onClick={cancelEditing}
           >
             {translate('common.cancel')}
           </Button>
