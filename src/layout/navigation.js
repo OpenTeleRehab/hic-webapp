@@ -104,13 +104,13 @@ const Navigation = ({ translate }) => {
   }, [activeLanguage, dispatch, languages]);
 
   return (
-    <Navbar bg="primary" variant="dark" expand="xl" sticky="top" className="main-nav">
+    <Navbar bg="primary" variant="dark" expand="xl" className="main-nav fixed-top">
       <Navbar.Brand>
         <Link to={replaceRoute(ROUTES.HOME, activeLanguage)}>
           <img
             src="/images/logo.png"
             className="d-inline-block align-top"
-            alt="OpenTeleRehap logo"
+            alt={process.env.REACT_APP_SITE_TITLE}
             width="125"
           />
         </Link>
