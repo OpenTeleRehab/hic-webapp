@@ -50,20 +50,26 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
       publishTermAndConditionPage ? setBannerTitle(publishTermAndConditionPage.title) : setBannerTitle('');
       if (termConditionBanner && termConditionBanner.id) {
         setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${termConditionBanner.id}`);
+      } else {
+        setFilePath('');
       }
     } else if (location.pathname === replaceRoute(ROUTES.ABOUT_US, activeLanguage)) {
       setShowBanner(true);
       setBannerTitle(staticPage.title);
       if (staticPage && staticPage.file) {
         setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${staticPage.file.id}`);
+      } else {
+        setFilePath('');
       }
     } else if (location.pathname === replaceRoute(ROUTES.ACKNOWLEDGMENT, activeLanguage)) {
       setShowBanner(true);
       setIsAcknowledgment(true);
       setBannerTitle(staticPage.title);
       setIntroductionText(staticPage.content);
-      if (staticPage.file) {
+      if (staticPage && staticPage.file) {
         setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${staticPage.file.id}`);
+      } else {
+        setFilePath('');
       }
     }
   }, [location, activeLanguage, termConditionBanner, publishTermAndConditionPage, staticPage]);
@@ -96,8 +102,8 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
         <meta property="og:title" content={bannerTitle || siteTitle} />
         <meta property="og:description" content={bannerTitle || siteTitle} />
         <meta property="og:image" content={filePath || homeImagePath} />
-        <meta property="og:image:width" content={getMeta(filePath || homeImagePath)} />
-        <meta property="og:image:height" content={getMeta(filePath || homeImagePath)} />
+        <meta property="og:image:width" content={getMeta(filePath || homeImagePath).width} />
+        <meta property="og:image:height" content={getMeta(filePath || homeImagePath).height} />
         <meta property="og:url" content={window.location.href} />
         <meta property="og:site_name" content={process.env.REACT_APP_SITE_TITLE} />
       </Helmet>
