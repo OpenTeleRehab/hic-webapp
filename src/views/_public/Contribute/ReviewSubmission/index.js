@@ -20,6 +20,7 @@ import * as ROUTES from '../../../../variables/routes';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { replaceRoute } from 'utils/route';
 import { LIBRARY_TYPES } from '../../../../variables/library';
+import validateEmail from 'utils/validateEmail';
 
 const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfirmSubmissionModal }) => {
   const dispatch = useDispatch();
@@ -129,7 +130,7 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
       setLastNameError(false);
     }
 
-    if (formFields.email === '') {
+    if (formFields.email === '' || !validateEmail(formFields.email)) {
       canSubmit = false;
       setEmailError(true);
     } else {
