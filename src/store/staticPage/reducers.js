@@ -9,8 +9,12 @@ export const staticPage = (state = initialState, action) => {
     }
     case 'GET_FEATURED_RESOURCES_SUCCESS': {
       return Object.assign({}, state, {
-        resources: action.data,
-        loading: false
+        resources: action.data
+      });
+    }
+    case 'GET_HOME_BANNER_IMAGE_SUCCESS': {
+      return Object.assign({}, state, {
+        homeBannerImage: action.data
       });
     }
     default:

@@ -18,7 +18,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
   const localize = useSelector((state) => state.localize);
   const { activeLanguage } = useSelector((state) => state.language);
   const { publishTermAndConditionPage, termConditionBanner } = useSelector((state) => state.termAndCondition);
-  const { staticPage } = useSelector((state) => state.staticPage);
+  const { staticPage, homeBannerImage } = useSelector((state) => state.staticPage);
   const translate = getTranslate(localize);
   const location = useLocation();
   const [showBanner, setShowBanner] = useState(false);
@@ -28,6 +28,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
   const [isAcknowledgment, setIsAcknowledgment] = useState(false);
   const [filePath, setFilePath] = useState('');
   const [siteTitle, setSiteTitle] = useState();
+  const [homeImagePath, setHomeImagePath] = useState('');
 
   // set page title
   useEffect(() => {
@@ -43,7 +44,6 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
       staticPage ? setIntroductionText(staticPage.content) : setIntroductionText('');
       if (staticPage && staticPage.file) {
         setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${staticPage.file.id}`);
-        localStorage.setItem('homeBannerImagePath', `${process.env.REACT_APP_API_BASE_URL}/file/${staticPage.file.id}`);
       }
     } else if (location.pathname === replaceRoute(ROUTES.TERM_CONDITION, activeLanguage)) {
       setShowBanner(true);
@@ -68,6 +68,12 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
     }
   }, [location, activeLanguage, termConditionBanner, publishTermAndConditionPage, staticPage]);
 
+  useEffect(() => {
+    if (homeBannerImage && homeBannerImage.file) {
+      setHomeImagePath(`${process.env.REACT_APP_API_BASE_URL}/file/${homeBannerImage.file.id}`);
+    }
+  }, [homeBannerImage]);
+
   const getMeta = (url) => {
     const img = new Image();
     img.src = url;
@@ -89,13 +95,12 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
         <meta property="og:type" content={location.pathname.includes('/detail') ? 'article' : 'website'} />
         <meta property="og:title" content={bannerTitle || siteTitle} />
         <meta property="og:description" content={bannerTitle || siteTitle} />
-        <meta property="og:image" content={filePath || localStorage.getItem('homeBannerImagePath')} />
-        <meta property="og:image:width" content={getMeta(filePath || localStorage.getItem('homeBannerImagePath')).width} />
-        <meta property="og:image:height" content={getMeta(filePath || localStorage.getItem('homeBannerImagePath')).height} />
+        <meta property="og:image" content={filePath || homeImagePath} />
+        <meta property="og:image:width" content={getMeta(filePath || homeImagePath)} />
+        <meta property="og:image:height" content={getMeta(filePath || homeImagePath)} />
         <meta property="og:url" content={window.location.href} />
         <meta property="og:site_name" content={process.env.REACT_APP_SITE_TITLE} />
       </Helmet>
-
       <header className="header">
         <Navigation translate={translate} />
         {showBanner && <Banner bannerImagePath={filePath} isHome={isHome} title={bannerTitle} introductionText={introductionText} isAcknowledgment={isAcknowledgment} />}
