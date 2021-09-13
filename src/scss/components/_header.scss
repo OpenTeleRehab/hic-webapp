@@ -1,5 +1,9 @@
 .header {
 	margin: toRem(59) 0 0 0;
+
+	&.fixed-top {
+		margin: 0;
+	}
 }
 
 @include media-breakpoint-up(xl) {
