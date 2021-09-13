@@ -27,14 +27,18 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
   const [introductionText, setIntroductionText] = useState('');
   const [isAcknowledgment, setIsAcknowledgment] = useState(false);
   const [filePath, setFilePath] = useState('');
-  const [siteTitle, setSiteTitle] = useState();
+  const [siteTitle, setSiteTitle] = useState('');
   const [homeImagePath, setHomeImagePath] = useState('');
+  const documentTitle = document.title;
 
   // set page title
   useEffect(() => {
     document.title = `${translate(title)} - ${process.env.REACT_APP_SITE_TITLE}`;
-    setSiteTitle((document.title.split('-')[0]).replace(/\s+/g, '') === translate('contribute') ? translate('contribute.title') : (document.title.split('-')[0]));
   }, [title, translate]);
+
+  useEffect(() => {
+    setSiteTitle((document.title.split('-')[0]).replace(/\s+/g, '') === translate('contribute') ? translate('contribute.title') : (document.title.split('-')[0].trim()));
+  }, [translate, documentTitle]);
 
   useEffect(() => {
     if (location.pathname === replaceRoute(ROUTES.HOME, activeLanguage)) {
@@ -95,6 +99,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
       >
         <html lang={activeLanguage} />
         <title itemProp="name" lang={activeLanguage}>{bannerTitle || siteTitle}</title>
+        <meta name="title" content={bannerTitle || siteTitle} />
         <meta name="description" content={bannerTitle || siteTitle} />
         <meta property="og:locale" content={activeLanguage} />
         <link rel="canonical" href={window.location.href} />
@@ -107,6 +112,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
         <meta property="og:url" content={window.location.href} />
         <meta property="og:site_name" content={process.env.REACT_APP_SITE_TITLE} />
       </Helmet>
+
       <header className="header">
         <Navigation translate={translate} />
         {showBanner && <Banner bannerImagePath={filePath} isHome={isHome} title={bannerTitle} introductionText={introductionText} isAcknowledgment={isAcknowledgment} />}

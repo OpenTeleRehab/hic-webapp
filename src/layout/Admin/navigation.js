@@ -49,7 +49,7 @@ const Navigation = ({ translate }) => {
   };
 
   return (
-    <Navbar bg="primary" variant="dark" expand="xl" sticky="top" className="main-nav">
+    <Navbar bg="primary" variant="dark" expand="xl" className="main-nav fixed-top">
       <Navbar.Brand className="d-flex justify-content-between">
         <Link to={ROUTES.HOME} className="logo">
           <img
