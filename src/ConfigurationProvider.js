@@ -9,6 +9,7 @@ import { useKeycloak } from '@react-keycloak/web';
 import { useIdleTimer } from 'react-idle-timer';
 import settings from './settings';
 import AppContext from './context/AppContext';
+import { getHomeBannerImage } from './store/staticPage/actions';
 
 const ConfigurationProvider = ({ children }) => {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ const ConfigurationProvider = ({ children }) => {
         }
       });
       dispatch(getLanguages());
+      dispatch(getHomeBannerImage());
     }
   }, [loading, dispatch, keycloak]);
 

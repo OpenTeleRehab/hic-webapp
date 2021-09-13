@@ -48,6 +48,19 @@ const getFeaturedResourcesFail = () => ({
   type: 'GET_FEATURED_RESOURCES_FAIL'
 });
 
+const getHomeBannerImageRequest = () => ({
+  type: 'GET_HOME_BANNER_IMAGE_REQUEST'
+});
+
+const getHomeBannerImageSuccess = (data) => ({
+  type: 'GET_HOME_BANNER_IMAGE_SUCCESS',
+  data
+});
+
+const getHomeBannerImageFail = () => ({
+  type: 'GET_HOME_BANNER_IMAGE_FAIL'
+});
+
 export const mutation = {
   createStaticPageRequest,
   createStaticPageSuccess,
@@ -60,5 +73,8 @@ export const mutation = {
   updateStaticPagesFail,
   getFeaturedResourcesRequest,
   getFeaturedResourcesSuccess,
-  getFeaturedResourcesFail
+  getFeaturedResourcesFail,
+  getHomeBannerImageRequest,
+  getHomeBannerImageSuccess,
+  getHomeBannerImageFail
 };

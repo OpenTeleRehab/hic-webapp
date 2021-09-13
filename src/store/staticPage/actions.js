@@ -69,3 +69,17 @@ export const getFeaturedResources = payload => async dispatch => {
     dispatch(showErrorNotification('toast_title.error_message', data.message));
   }
 };
+
+export const getHomeBannerImage = () => async dispatch => {
+  dispatch(mutation.getHomeBannerImageRequest());
+  dispatch(showSpinner(true));
+  const data = await staticPage.getHomeBannerImage();
+  if (data.success) {
+    dispatch(mutation.getHomeBannerImageSuccess(data.data));
+    dispatch(showSpinner(false));
+  } else {
+    dispatch(mutation.getHomeBannerImageFail());
+    dispatch(showSpinner(false));
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
+  }
+};

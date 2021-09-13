@@ -58,10 +58,24 @@ const getFeaturedResources = (payload) => {
     });
 };
 
+const getHomeBannerImage = () => {
+  const payload = { 'url-segment': 'homePage' };
+  return axios.get('/page/static-page', { params: payload })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const staticPage = {
   createStaticPage,
   updateStaticPage,
   getFeaturedResources,
-  getStaticPage
+  getStaticPage,
+  getHomeBannerImage
 
 };
