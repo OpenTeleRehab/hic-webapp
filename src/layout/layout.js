@@ -12,7 +12,7 @@ import Banner from '../components/Banner/banner';
 import * as ROUTES from '../variables/routes';
 import { Container } from 'react-bootstrap';
 import { replaceRoute } from '../utils/route';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 
 const Layout = ({ component: Component, title, defaultTemplate }) => {
   const localize = useSelector((state) => state.localize);
@@ -27,10 +27,12 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
   const [introductionText, setIntroductionText] = useState('');
   const [isAcknowledgment, setIsAcknowledgment] = useState(false);
   const [filePath, setFilePath] = useState('');
+  const [siteTitle, setSiteTitle] = useState();
 
   // set page title
   useEffect(() => {
     document.title = `${translate(title)} - ${process.env.REACT_APP_SITE_TITLE}`;
+    setSiteTitle((document.title.split('-')[0]).replace(/\s+/g, '') === translate('contribute') ? translate('contribute.title') : (document.title.split('-')[0]));
   }, [title, translate]);
 
   useEffect(() => {
@@ -66,18 +68,37 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
     }
   }, [location, activeLanguage, termConditionBanner, publishTermAndConditionPage, staticPage]);
 
+  const getMeta = (url) => {
+    const img = new Image();
+    img.src = url;
+    return img;
+  };
+
   return (
     <>
-      <MetaTags>
-        <meta name="title" content={bannerTitle || ((document.title.split('-')[0]).replace(/\s+/g, '') === translate('contribute') ? translate('contribute.title') : (document.title.split('-')[0])) } />
-        <meta name="description" content={bannerTitle || ((document.title.split('-')[0]).replace(/\s+/g, '') === translate('contribute') ? translate('contribute.title') : (document.title.split('-')[0])) } />
-        <meta property="og:title" content={bannerTitle || ((document.title.split('-')[0]).replace(/\s+/g, '') === translate('contribute') ? translate('contribute.title') : (document.title.split('-')[0])) } />
-        <meta property="og:description" content={bannerTitle || ((document.title.split('-')[0]).replace(/\s+/g, '') === translate('contribute') ? translate('contribute.title') : (document.title.split('-')[0])) } />
-        <meta property="og:image" content={filePath || localStorage.getItem('homeBannerImagePath') } />
-      </MetaTags>
+      <Helmet
+        encodeSpecialCharacters={true}
+        titleTemplate={bannerTitle || siteTitle}
+        defaultTitle={bannerTitle || siteTitle}
+      >
+        <html lang={activeLanguage} />
+        <title itemProp="name" lang={activeLanguage}>{bannerTitle || siteTitle}</title>
+        <meta name="description" content={bannerTitle || siteTitle} />
+        <meta property="og:locale" content={activeLanguage} />
+        <link rel="canonical" href={window.location.href} />
+        <meta property="og:type" content={location.pathname.includes('/detail') ? 'article' : 'website'} />
+        <meta property="og:title" content={bannerTitle || siteTitle} />
+        <meta property="og:description" content={bannerTitle || siteTitle} />
+        <meta property="og:image" content={filePath || localStorage.getItem('homeBannerImagePath')} />
+        <meta property="og:image:width" content={getMeta(filePath || localStorage.getItem('homeBannerImagePath')).width} />
+        <meta property="og:image:height" content={getMeta(filePath || localStorage.getItem('homeBannerImagePath')).height} />
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:site_name" content={process.env.REACT_APP_SITE_TITLE} />
+      </Helmet>
+
       <header className="header">
         <Navigation translate={translate} />
-        {showBanner && <Banner bannerImagePath={ filePath} isHome={isHome} title = {bannerTitle} introductionText={introductionText} isAcknowledgment={isAcknowledgment} />}
+        {showBanner && <Banner bannerImagePath={filePath} isHome={isHome} title={bannerTitle} introductionText={introductionText} isAcknowledgment={isAcknowledgment} />}
       </header>
 
       {defaultTemplate ? (

@@ -66,7 +66,7 @@ const Dashboard = () => {
           <h2 className="text-primary section__heading">{translate('dashboard.title')}</h2>
           { staticPage.homeData && staticPage.homeData.display_quick_stat === 1 && (
             <Row>
-              <Col lg={window.screen.width <= 1024 && 4}>
+              <Col sm={12} md={4}>
                 <Card bg={'primary'} text={'white'} className="stats-card">
                   <Card.Body>
                     <Card.Link href={replaceRoute(ROUTES.LIBRARY, activeLanguage)} className="d-flex flex-column flex-sm-row justify-content-between align-items-center">
@@ -83,7 +83,7 @@ const Dashboard = () => {
                 </Card>
               </Col>
 
-              <Col lg={window.screen.width <= 1024 && 4}>
+              <Col sm={12} md={4}>
                 <Card bg={'primary'} text={'white'} className="stats-card">
                   <Card.Body>
                     <Card.Link href={replaceRoute(ROUTES.LIBRARY_EDUCATION, activeLanguage)} className="d-flex flex-column flex-sm-row justify-content-between align-items-center">
@@ -100,7 +100,7 @@ const Dashboard = () => {
                 </Card>
               </Col>
 
-              <Col>
+              <Col sm={12} md={4}>
                 <Card bg={'primary'} text={'white'} className="stats-card">
                   <Card.Body>
                     <Card.Link href={replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE, activeLanguage)} className="d-flex flex-column flex-sm-row justify-content-between align-items-center">
