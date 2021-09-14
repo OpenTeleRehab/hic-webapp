@@ -109,16 +109,6 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
   }, [questionnaires]);
 
   useEffect(() => {
-    if (categoryTreeData.length) {
-      const rootCategoryStructure = {};
-      categoryTreeData.forEach(category => {
-        rootCategoryStructure[category.value] = [];
-      });
-      setSelectedCategories(rootCategoryStructure);
-    }
-  }, [categoryTreeData]);
-
-  useEffect(() => {
     if (editItem && hash.includes('#questionnaire')) {
       setFormFields({
         id: editItem.id,
