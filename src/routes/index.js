@@ -33,7 +33,7 @@ import StaticPage from 'views/StaticPage';
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES } from 'variables/user';
 import { useSelector } from 'react-redux';
-import settings from '../settings';
+import { replaceRoute } from '../utils/route';
 
 const PRIVATE = 'private';
 const PUBLIC = 'public';
@@ -276,10 +276,8 @@ const RouteSwitch = () => {
 
   const routeComponents = routes.map(({ path, component, exact, type, title, roles, defaultTemplate }, key) => {
     if (type === PUBLIC) {
-      const localizedPath = activeLanguage === settings.locale ? path : '/' + activeLanguage + path;
-      console.log(localizedPath);
       return (
-        <Route exact={!!exact} path={localizedPath} key={key}>
+        <Route exact={!!exact} path={replaceRoute(path, activeLanguage)} key={key}>
           <DefaultLayout component={component} title={title} defaultTemplate={defaultTemplate} />
         </Route>
       );

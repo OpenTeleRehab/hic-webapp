@@ -49,7 +49,9 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
       if (staticPage && staticPage.file) {
         setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${staticPage.file.id}`);
       }
-    } else if (location.pathname === replaceRoute(ROUTES.TERM_CONDITION, activeLanguage)) {
+    }
+
+    if (location.pathname === replaceRoute(ROUTES.TERM_CONDITION, activeLanguage)) {
       setShowBanner(true);
       publishTermAndConditionPage ? setBannerTitle(publishTermAndConditionPage.title) : setBannerTitle('');
       if (termConditionBanner && termConditionBanner.id) {
@@ -57,7 +59,9 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
       } else {
         setFilePath('');
       }
-    } else if (location.pathname === replaceRoute(ROUTES.ABOUT_US, activeLanguage)) {
+    }
+
+    if (location.pathname === replaceRoute(ROUTES.ABOUT_US, activeLanguage)) {
       setShowBanner(true);
       setBannerTitle(staticPage.title);
       if (staticPage && staticPage.file) {
@@ -65,7 +69,9 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
       } else {
         setFilePath('');
       }
-    } else if (location.pathname === replaceRoute(ROUTES.ACKNOWLEDGMENT, activeLanguage)) {
+    }
+
+    if (location.pathname === replaceRoute(ROUTES.ACKNOWLEDGMENT, activeLanguage)) {
       setShowBanner(true);
       setIsAcknowledgment(true);
       setBannerTitle(staticPage.title);

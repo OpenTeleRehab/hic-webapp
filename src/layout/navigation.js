@@ -16,49 +16,50 @@ import { FaLanguage } from 'react-icons/fa';
 import { setActiveLanguage } from '../store/language/actions';
 import { getTranslations } from '../store/translation/actions';
 import settings from '../settings';
-
-const publicNavItems = [
-  {
-    label: 'home',
-    to: ROUTES.HOME,
-    exact: true
-  },
-  {
-    label: 'library',
-    to: ROUTES.LIBRARY,
-    exact: false
-  },
-  {
-    label: 'contribute',
-    to: ROUTES.CONTRIBUTE,
-    exact: true
-  },
-  {
-    label: 'about_us',
-    to: ROUTES.ABOUT_US,
-    exact: true
-  },
-  {
-    label: 'acknowledgment',
-    to: ROUTES.ACKNOWLEDGMENT,
-    exact: true
-  },
-  {
-    label: 'term_condition',
-    to: ROUTES.TERM_CONDITION,
-    exact: true
-  }
-];
+import { replaceRoute } from '../utils/route';
 
 const Navigation = ({ translate }) => {
+  const location = useLocation();
+  const history = useHistory();
   const { keycloak } = useKeycloak();
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const { profile } = useSelector((state) => state.auth);
   const { languages, activeLanguage } = useSelector((state) => state.language);
   const [languageName, setLanguageName] = useState('English');
-  const location = useLocation();
-  const history = useHistory();
+
+  const publicNavItems = [
+    {
+      label: 'home',
+      to: replaceRoute(ROUTES.HOME, activeLanguage),
+      exact: true
+    },
+    {
+      label: 'library',
+      to: replaceRoute(ROUTES.LIBRARY, activeLanguage),
+      exact: false
+    },
+    {
+      label: 'contribute',
+      to: replaceRoute(ROUTES.CONTRIBUTE, activeLanguage),
+      exact: true
+    },
+    {
+      label: 'about_us',
+      to: replaceRoute(ROUTES.ABOUT_US, activeLanguage),
+      exact: true
+    },
+    {
+      label: 'acknowledgment',
+      to: replaceRoute(ROUTES.ACKNOWLEDGMENT, activeLanguage),
+      exact: true
+    },
+    {
+      label: 'term_condition',
+      to: replaceRoute(ROUTES.TERM_CONDITION, activeLanguage),
+      exact: true
+    }
+  ];
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -86,6 +87,7 @@ const Navigation = ({ translate }) => {
   const handleLanguageChange = (lang) => {
     dispatch(setActiveLanguage(lang));
     hash = window.location.hash;
+
     if (window.location.pathname.split('/')[1].length === 2) {
       if (lang === settings.locale) {
         path = location.pathname.replace(/^[\s\S]{0,3}/g, '');
@@ -96,7 +98,7 @@ const Navigation = ({ translate }) => {
       path = '/' + lang + location.pathname;
     }
 
-    history.push(path + hash);
+    activeLanguage !== lang && history.push(path + hash);
   };
 
   useEffect(() => {
@@ -107,7 +109,7 @@ const Navigation = ({ translate }) => {
   return (
     <Navbar bg="primary" variant="dark" expand="xl" className="main-nav fixed-top">
       <Navbar.Brand>
-        <Link to={ROUTES.HOME}>
+        <Link to={replaceRoute(ROUTES.HOME, activeLanguage)}>
           <img
             src="/images/logo.png"
             className="d-inline-block align-top"
@@ -142,10 +144,8 @@ const Navigation = ({ translate }) => {
                 {profile.email}
               </Dropdown.Toggle>
 
-              <Dropdown.Menu
-                alignRight={true}
-              >
-                <Dropdown.Item as={Link} to={ROUTES.PROFILE}>
+              <Dropdown.Menu alignRight={true}>
+                <Dropdown.Item as={Link} to={replaceRoute(ROUTES.PROFILE, activeLanguage)}>
                   {translate('common.profile.update')}
                 </Dropdown.Item>
                 <Dropdown.Item onClick={handleShow}>{translate('common.logout')}</Dropdown.Item>
