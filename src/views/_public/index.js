@@ -39,16 +39,25 @@ const Dashboard = () => {
     }));
   }, [dispatch, activeLanguage, languages]);
 
-  const handleViewDetail = (id) => {
-    history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL, activeLanguage).replace(':id', id));
+  const handleViewDetail = (id, slug) => {
+    history.push({
+      pathname: replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL, activeLanguage).replace(':id', slug),
+      state: { id: id }
+    });
   };
 
-  const handleViewQuestionnaireDetail = (id) => {
-    history.push(replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL, activeLanguage).replace(':id', id));
+  const handleViewQuestionnaireDetail = (id, slug) => {
+    history.push({
+      pathname: replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL, activeLanguage).replace(':id', slug),
+      state: { id: id }
+    });
   };
 
-  const handleViewMaterialDetail = (id) => {
-    history.push(replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL, activeLanguage).replace(':id', id));
+  const handleViewMaterialDetail = (id, slug) => {
+    history.push({
+      pathname: replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL, activeLanguage).replace(':id', slug),
+      state: { id: id }
+    });
   };
 
   const handleContributeResources = () => {
@@ -121,7 +130,7 @@ const Dashboard = () => {
           <Row className="mt-5 justify-content-center home-resource-wrapper">
             { staticPage.homeData && staticPage.homeData.display_feature_resource === 1 && staticPage.homeData.featured_resources.exercises !== undefined && staticPage.homeData.featured_resources.exercises.map(exercise => (
               <Col key={exercise.id} md={6} lg={4} xl={window.screen.width >= 2020 && 2} className="card-wrapper">
-                <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewDetail(exercise.id)}>
+                <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewDetail(exercise.id, exercise.slug)}>
                   <div className="card-img bg-light">
                     {
                       exercise.files.length > 0 && (
@@ -178,7 +187,7 @@ const Dashboard = () => {
             ))}
             { staticPage.homeData && staticPage.homeData.display_feature_resource === 1 && staticPage.homeData.featured_resources.education_materials !== undefined && staticPage.homeData.featured_resources.education_materials.map(material => (
               <Col key={material.id} md={6} lg={4} xl={window.screen.width >= 2020 && 2} className="card-wrapper">
-                <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewMaterialDetail(material.id)}>
+                <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewMaterialDetail(material.id, material.slug)}>
                   <div className="card-img bg-light">
                     {(material.file && (material.file.hasThumbnail || material.file.fileGroupType === MATERIAL_TYPE.image)) ? (
                       <img
@@ -223,7 +232,7 @@ const Dashboard = () => {
             ))}
             { staticPage.homeData && staticPage.homeData.display_feature_resource === 1 && staticPage.homeData.featured_resources.questionnaires !== undefined && staticPage.homeData.featured_resources.questionnaires.map(questionnaire => (
               <Col key={questionnaire.id} md={6} lg={4} xl={window.screen.width >= 2020 && 2} className="card-wrapper">
-                <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewQuestionnaireDetail(questionnaire.id)}>
+                <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewQuestionnaireDetail(questionnaire.id, questionnaire.slug)}>
                   <div className="card-img bg-light">
                     <div className="w-100 h-100 px-2 py-4 text-center questionnaire-header">
                       <img src={'/images/questionnaire-icon.svg'} alt="Questionnaire" />

@@ -174,13 +174,25 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
           showReviewModal(false);
 
           if (pathname.includes(LIBRARY_TYPES.EXERCISE)) {
-            history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL.replace(':id', id), activeLanguage));
+            const exercise = exercises.find(exercise => exercise.id === id);
+            history.push({
+              pathname: replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL.replace(':id', exercise && exercise.slug), activeLanguage),
+              state: { id: id }
+            });
           }
           if (pathname.includes(LIBRARY_TYPES.MATERIAL)) {
-            history.push(replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL.replace(':id', id), activeLanguage));
+            const material = educationMaterials.find(material => material.id === id);
+            history.push({
+              pathname: replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL.replace(':id', material && material.slug), activeLanguage),
+              state: { id: id }
+            });
           }
           if (pathname.includes(LIBRARY_TYPES.QUESTIONNAIRE)) {
-            history.push(replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL.replace(':id', id), activeLanguage));
+            const questionnaire = questionnaires.find(questionnaire => questionnaire.id === id);
+            history.push({
+              pathname: replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL.replace(':id', questionnaire && questionnaire.slug), activeLanguage),
+              state: { id: id }
+            });
           }
         } else {
           dispatch(contributeSubmission(formFields)).then(result => {
