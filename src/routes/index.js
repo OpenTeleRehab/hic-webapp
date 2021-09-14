@@ -56,7 +56,7 @@ const publicRoutes = [
     defaultTemplate: false
   },
   {
-    title: 'contribute',
+    title: 'contribute.title',
     path: ROUTES.CONTRIBUTE,
     component: ContributePage,
     exact: true,
