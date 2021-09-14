@@ -82,6 +82,13 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
   const [categoryError, setCategoryError] = useState(false);
   const [errorClass, setErrorClass] = useState('');
 
+  // set page title
+  useEffect(() => {
+    if (exercise) {
+      document.title = `${exercise.title} - ${process.env.REACT_APP_SITE_TITLE}`;
+    }
+  }, [exercise]);
+
   useEffect(() => {
     const lang = languages.find((language) => language.code === activeLanguage);
     if (lang && language === '') {
@@ -595,57 +602,59 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
                 </Form.Group>
               </>
             }
+            { additionalFields.length > 0 && (
+              <>
+                <h5 className="text-primary">{translate('common.additional_fields')}</h5>
+                {
+                  additionalFields.map((additionalField, index) => (
+                    <Card key={index} className="bg-light mb-3 additional-field">
+                      <Card.Body>
+                        {!id &&
+                        <div className="remove-btn-container">
+                          <Button variant="outline-danger" className="btn-remove" onClick={() => handleRemoveFields(index)}>
+                            <BsX size={20} />
+                          </Button>
+                        </div>
+                        }
 
-            <h5 className="text-primary">{translate('common.additional_fields')}</h5>
-
-            {
-              additionalFields.map((additionalField, index) => (
-                <Card key={index} className="bg-light mb-3 additional-field">
-                  <Card.Body>
-                    {!id &&
-                      <div className="remove-btn-container">
-                        <Button variant="outline-danger" className="btn-remove" onClick={() => handleRemoveFields(index)}>
-                          <BsX size={20} />
-                        </Button>
-                      </div>
-                    }
-
-                    <Form.Group controlId={`formLabel${index}`}>
-                      <Form.Label>{translate('exercise.additional_field.label')}</Form.Label>
-                      <span className="text-dark ml-1">*</span>
-                      {additionalField.fallback && <FallbackText translate={translate} text={additionalField.fallback.field} />}
-                      <Form.Control
-                        name="field"
-                        placeholder={translate('exercise.additional_field.placeholder.label')}
-                        value={additionalField.field}
-                        onChange={e => handleChangeInput(index, e)}
-                        isInvalid={inputFieldError[index]}
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {translate('exercise.additional_field.label.required')}
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group controlId={`formValue${index}`}>
-                      <Form.Label>{translate('exercise.additional_field.value')}</Form.Label>
-                      <span className="text-dark ml-1">*</span>
-                      {additionalField.fallback && <FallbackText translate={translate} text={additionalField.fallback.value} />}
-                      <Form.Control
-                        name="value"
-                        as="textarea"
-                        rows={3}
-                        placeholder={translate('exercise.additional_field.placeholder.value')}
-                        value={additionalField.value}
-                        onChange={event => handleChangeInput(index, event)}
-                        isInvalid={inputValueError[index]}
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {translate('exercise.additional_field.value.required')}
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Card.Body>
-                </Card>
-              ))
-            }
+                        <Form.Group controlId={`formLabel${index}`}>
+                          <Form.Label>{translate('exercise.additional_field.label')}</Form.Label>
+                          <span className="text-dark ml-1">*</span>
+                          {additionalField.fallback && <FallbackText translate={translate} text={additionalField.fallback.field} />}
+                          <Form.Control
+                            name="field"
+                            placeholder={translate('exercise.additional_field.placeholder.label')}
+                            value={additionalField.field}
+                            onChange={e => handleChangeInput(index, e)}
+                            isInvalid={inputFieldError[index]}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            {translate('exercise.additional_field.label.required')}
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group controlId={`formValue${index}`}>
+                          <Form.Label>{translate('exercise.additional_field.value')}</Form.Label>
+                          <span className="text-dark ml-1">*</span>
+                          {additionalField.fallback && <FallbackText translate={translate} text={additionalField.fallback.value} />}
+                          <Form.Control
+                            name="value"
+                            as="textarea"
+                            rows={3}
+                            placeholder={translate('exercise.additional_field.placeholder.value')}
+                            value={additionalField.value}
+                            onChange={event => handleChangeInput(index, event)}
+                            isInvalid={inputValueError[index]}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            {translate('exercise.additional_field.value.required')}
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                      </Card.Body>
+                    </Card>
+                  ))
+                }
+              </>
+            )}
 
             {!id &&
               <Form.Group>
