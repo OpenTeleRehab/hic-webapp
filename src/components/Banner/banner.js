@@ -54,7 +54,8 @@ const Banner = ({ bannerImagePath, isHome, title, introductionText, isAcknowledg
               <h1 className={!isHome && 'mt-5'}>{title}</h1>
               {(isHome || isAcknowledgment) && (
                 <>
-                  <p className="lead" dangerouslySetInnerHTML={{ __html: introductionText }} />
+                  <div className="lead" dangerouslySetInnerHTML={{ __html: introductionText }} />
+
                   {isHome && (
                     <Form
                       className="search-form"
@@ -110,9 +111,7 @@ const Banner = ({ bannerImagePath, isHome, title, introductionText, isAcknowledg
             <div className="header-banner__wrapper mx-auto">
               <h1 className={!isHome && 'mt-4 text-primary'}>{title}</h1>
               {isAcknowledgment && (
-                <>
-                  <p className="lead" dangerouslySetInnerHTML={{ __html: introductionText }} />
-                </>
+                <div className="lead" dangerouslySetInnerHTML={{ __html: introductionText }} />
               )}
             </div>
           </Container>
@@ -128,7 +127,6 @@ Banner.propTypes = {
   title: PropTypes.string,
   introductionText: PropTypes.string,
   isAcknowledgment: PropTypes.bool
-
 };
 
 export default Banner;
