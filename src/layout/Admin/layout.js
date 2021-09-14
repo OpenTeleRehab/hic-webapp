@@ -20,7 +20,7 @@ const Layout = ({ component: Component, title }) => {
 
   return (
     <>
-      <header className="header fixed-top">
+      <header className="header">
         <Navigation translate={translate} />
       </header>
       <main className="d-flex main main-admin-area">

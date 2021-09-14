@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import {
   Link,
   NavLink,
-  withRouter
-  , useLocation, useHistory
+  withRouter,
+  useLocation,
+  useHistory
 } from 'react-router-dom';
 import { Navbar, Nav, Dropdown } from 'react-bootstrap';
 import * as ROUTES from 'variables/routes';
