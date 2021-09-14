@@ -41,7 +41,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
   }, [translate, documentTitle]);
 
   useEffect(() => {
-    if (location.pathname === replaceRoute(ROUTES.HOME, activeLanguage)) {
+    if (location.pathname === replaceRoute(ROUTES.HOME, activeLanguage) || location.pathname + '/' === replaceRoute(ROUTES.HOME, activeLanguage)) {
       setShowBanner(true);
       setIsHome(true);
       setBannerTitle(staticPage.title);
@@ -51,7 +51,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
       }
     }
 
-    if (location.pathname === replaceRoute(ROUTES.TERM_CONDITION, activeLanguage)) {
+    if (location.pathname === replaceRoute(ROUTES.TERM_CONDITION, activeLanguage) || location.pathname + '/' === replaceRoute(ROUTES.TERM_CONDITION, activeLanguage)) {
       setShowBanner(true);
       publishTermAndConditionPage ? setBannerTitle(publishTermAndConditionPage.title) : setBannerTitle('');
       if (termConditionBanner && termConditionBanner.id) {
@@ -61,7 +61,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
       }
     }
 
-    if (location.pathname === replaceRoute(ROUTES.ABOUT_US, activeLanguage)) {
+    if (location.pathname === replaceRoute(ROUTES.ABOUT_US, activeLanguage) || location.pathname + '/' === replaceRoute(ROUTES.ABOUT_US, activeLanguage)) {
       setShowBanner(true);
       setBannerTitle(staticPage.title);
       if (staticPage && staticPage.file) {
