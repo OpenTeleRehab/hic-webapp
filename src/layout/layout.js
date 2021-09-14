@@ -29,16 +29,15 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
   const [filePath, setFilePath] = useState('');
   const [siteTitle, setSiteTitle] = useState('');
   const [homeImagePath, setHomeImagePath] = useState('');
-  const documentTitle = document.title;
 
   // set page title
   useEffect(() => {
-    document.title = `${translate(title)} - ${process.env.REACT_APP_SITE_TITLE}`;
-  }, [title, translate]);
-
-  useEffect(() => {
-    setSiteTitle((document.title.split('-')[0]).replace(/\s+/g, '') === translate('contribute') ? translate('contribute.title') : (document.title.split('-')[0].trim()));
-  }, [translate, documentTitle]);
+    if (bannerTitle) {
+      setSiteTitle(bannerTitle);
+    } else {
+      setSiteTitle(translate(title));
+    }
+  }, [title, translate, bannerTitle]);
 
   useEffect(() => {
     if (location.pathname === replaceRoute(ROUTES.HOME, activeLanguage) || location.pathname + '/' === replaceRoute(ROUTES.HOME, activeLanguage)) {
@@ -71,7 +70,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
       }
     }
 
-    if (location.pathname === replaceRoute(ROUTES.ACKNOWLEDGMENT, activeLanguage)) {
+    if (location.pathname === replaceRoute(ROUTES.ACKNOWLEDGMENT, activeLanguage) || location.pathname + '/' === replaceRoute(ROUTES.ACKNOWLEDGMENT, activeLanguage)) {
       setShowBanner(true);
       setIsAcknowledgment(true);
       setBannerTitle(staticPage.title);
@@ -100,18 +99,18 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
     <>
       <Helmet
         encodeSpecialCharacters={true}
-        titleTemplate={bannerTitle || siteTitle}
-        defaultTitle={bannerTitle || siteTitle}
+        titleTemplate={siteTitle}
+        defaultTitle={siteTitle}
       >
         <html lang={activeLanguage} />
-        <title itemProp="name" lang={activeLanguage}>{bannerTitle || siteTitle}</title>
-        <meta name="title" content={bannerTitle || siteTitle} />
-        <meta name="description" content={bannerTitle || siteTitle} />
+        <title itemProp="name" lang={activeLanguage}>{siteTitle}</title>
+        <meta name="title" content={siteTitle} />
+        <meta name="description" content={siteTitle} />
         <meta property="og:locale" content={activeLanguage} />
         <link rel="canonical" href={window.location.href} />
         <meta property="og:type" content={location.pathname.includes('/detail') ? 'article' : 'website'} />
-        <meta property="og:title" content={bannerTitle || siteTitle} />
-        <meta property="og:description" content={bannerTitle || siteTitle} />
+        <meta property="og:title" content={siteTitle} />
+        <meta property="og:description" content={siteTitle} />
         <meta property="og:image" content={filePath || homeImagePath} />
         <meta property="og:image:width" content={getMeta(filePath || homeImagePath).width} />
         <meta property="og:image:height" content={getMeta(filePath || homeImagePath).height} />
