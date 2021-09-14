@@ -13,9 +13,9 @@ import Dialog from 'components/Dialog';
 import { useKeycloak } from '@react-keycloak/web';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaLanguage } from 'react-icons/fa';
-import { replaceRoute } from 'utils/route';
 import { setActiveLanguage } from '../store/language/actions';
 import { getTranslations } from '../store/translation/actions';
+import settings from '../settings';
 
 const publicNavItems = [
   {
@@ -87,7 +87,7 @@ const Navigation = ({ translate }) => {
     dispatch(setActiveLanguage(lang));
     hash = window.location.hash;
     if (window.location.pathname.split('/')[1].length === 2) {
-      if (lang === 'en') {
+      if (lang === settings.locale) {
         path = location.pathname.replace(/^[\s\S]{0,3}/g, '');
       } else {
         path = location.pathname.replace(/^[\s\S]{0,3}/g, '/' + lang);
@@ -107,7 +107,7 @@ const Navigation = ({ translate }) => {
   return (
     <Navbar bg="primary" variant="dark" expand="xl" className="main-nav fixed-top">
       <Navbar.Brand>
-        <Link to={replaceRoute(ROUTES.HOME, activeLanguage)}>
+        <Link to={ROUTES.HOME}>
           <img
             src="/images/logo.png"
             className="d-inline-block align-top"
@@ -123,7 +123,7 @@ const Navigation = ({ translate }) => {
             !keycloak.authenticated && publicNavItems.map(({ label, to, exact }, key) => {
               return (
                 <NavLink
-                  to={replaceRoute(to, activeLanguage)}
+                  to={to}
                   exact={exact}
                   key={key}
                   className="d-flex align-items-center nav-link"
@@ -166,9 +166,7 @@ const Navigation = ({ translate }) => {
               <Dropdown.Toggle variant="link" id="dropdown-basic" className="d-flex align-items-center">
                 <FaLanguage size={26} className="mr-1"/><strong className="language-text">{languageName}</strong>
               </Dropdown.Toggle>
-              <Dropdown.Menu
-                alignRight={true}
-              >
+              <Dropdown.Menu alignRight={true}>
                 {languages.map((language) =>
                   <Dropdown.Item key={language.id} onClick={() => handleLanguageChange(language.code)}>
                     {language.name}

@@ -1,23 +1,26 @@
-export const HOME = '/:lang?/';
-export const LIBRARY = '/:lang?/library';
+export const HOME = '/';
+export const LIBRARY = '/library';
 export const LIBRARY_EDUCATION = LIBRARY + '#education';
 export const LIBRARY_QUESTIONNAIRE = LIBRARY + '#questionnaire';
 export const LIBRARY_EXERCISE_DETAIL = LIBRARY + '/exercise/detail/:id';
 export const LIBRARY_EDUCATION_MATERIAL_DETAIL = LIBRARY + '/education_material/detail/:id';
 export const LIBRARY_QUESTIONNAIRE_DETAIL = LIBRARY + '/questionnaire/detail/:id';
 
-export const CONTRIBUTE = '/:lang?/contribute';
-export const TERM_CONDITION = '/:lang?/term-condition';
-export const ABOUT_US = '/:lang?/about-us';
-export const ACKNOWLEDGMENT = '/:lang?/acknowledgment';
+export const CONTRIBUTE = '/contribute';
+export const TERM_CONDITION = '/term-condition';
+export const ABOUT_US = '/about-us';
+export const ACKNOWLEDGMENT = '/acknowledgment';
 
-export const CONTRIBUTE_EDUCATION_MATERIAL = '/:lang?/contribute#education';
-export const CONTRIBUTE_QUESTIONNAIRE = '/:lang?/contribute#questionnaire';
-export const CONFIRM_SUBMISSION = '/:lang?/contribute/confirm-submission';
+export const CONTRIBUTE_EDUCATION_MATERIAL = '/contribute#education';
+export const CONTRIBUTE_QUESTIONNAIRE = '/contribute#questionnaire';
+export const CONFIRM_SUBMISSION = '/contribute/confirm-submission';
 
 export const EXERCISE_EDIT_TRANSLATION = CONTRIBUTE + '/exercises/edit/:id';
 export const EDUCATION_MATERIAL_EDIT_TRANSLATION = CONTRIBUTE + '/education-materials/edit/:id';
 export const QUESTIONNAIRE_EDIT_TRANSLATION = CONTRIBUTE + '/questionnaires/edit/:id';
+
+export const PROFILE = '/profile';
+export const PROFILE_PASSWORD = PROFILE + '#password';
 
 export const ADMIN = '/admin';
 export const ADMIN_DASHBOARD = '/admin';
@@ -48,6 +51,3 @@ export const EDUCATION_MATERIAL_CREATE = SERVICE_SETUP + '/education_material/cr
 export const EDUCATION_MATERIAL_EDIT = SERVICE_SETUP + '/education_material/edit/:id';
 export const QUESTIONNAIRE_CREATE = SERVICE_SETUP + '/questionnaire/create';
 export const QUESTIONNAIRE_EDIT = SERVICE_SETUP + '/questionnaire/edit/:id';
-
-export const PROFILE = '/profile';
-export const PROFILE_PASSWORD = PROFILE + '#password';

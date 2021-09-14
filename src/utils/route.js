@@ -1,4 +1,3 @@
-
 export const replaceRoute = (route, lang) => {
   let newRoute = '';
   if (lang === 'en') {

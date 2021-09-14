@@ -19,7 +19,7 @@ import QuestionnaireDetail from 'views/_public/Library/Questionnaire/detail';
 
 import DashboardPage from 'views/Dashboard';
 import ServiceSetupPage from 'views/ServiceSetup';
-import NotFoundPage from 'views/NotFound';
+import NotFoundPage from 'components/NotFound';
 import CategoryPage from 'views/Category';
 import Translation from 'views/Translation';
 import Language from 'views/Translation/Language';
@@ -32,11 +32,21 @@ import StaticPage from 'views/StaticPage';
 
 import * as ROUTES from 'variables/routes';
 import { USER_ROLES } from 'variables/user';
+import { useSelector } from 'react-redux';
+import settings from '../settings';
 
 const PRIVATE = 'private';
 const PUBLIC = 'public';
 
 const publicRoutes = [
+  {
+    title: 'home',
+    path: ROUTES.HOME,
+    component: PublicHomePage,
+    exact: true,
+    type: PUBLIC,
+    defaultTemplate: true
+  },
   {
     title: 'library',
     path: ROUTES.LIBRARY,
@@ -129,14 +139,6 @@ const publicRoutes = [
     title: 'acknowledgment',
     path: ROUTES.ACKNOWLEDGMENT,
     component: AcknowledgmentPage,
-    exact: true,
-    type: PUBLIC,
-    defaultTemplate: true
-  },
-  {
-    title: 'home',
-    path: ROUTES.HOME,
-    component: PublicHomePage,
     exact: true,
     type: PUBLIC,
     defaultTemplate: true
@@ -256,24 +258,38 @@ const routes = [
   },
   ...publicRoutes,
   {
-    title: 'not_found_page',
-    path: '*',
+    title: '404',
+    path: ROUTES.ADMIN + '/*',
     component: NotFoundPage,
     type: PRIVATE
+  },
+  {
+    title: '404',
+    path: '*',
+    component: NotFoundPage,
+    type: PUBLIC
   }
 ];
 
 const RouteSwitch = () => {
+  const { activeLanguage } = useSelector((state) => state.language);
+
   const routeComponents = routes.map(({ path, component, exact, type, title, roles, defaultTemplate }, key) => {
-    return type === PUBLIC ? (
-      <Route exact={!!exact} path={path} key={key}>
-        <DefaultLayout component={component} title={title} defaultTemplate={defaultTemplate} />
-      </Route>
-    ) : (
-      <PrivateRoute exact={!!exact} path={path} key={key} roles={roles}>
-        <AdminLayout component={component} title={title} />
-      </PrivateRoute>
-    );
+    if (type === PUBLIC) {
+      const localizedPath = activeLanguage === settings.locale ? path : '/' + activeLanguage + path;
+      console.log(localizedPath);
+      return (
+        <Route exact={!!exact} path={localizedPath} key={key}>
+          <DefaultLayout component={component} title={title} defaultTemplate={defaultTemplate} />
+        </Route>
+      );
+    } else {
+      return (
+        <PrivateRoute exact={!!exact} path={path} key={key} roles={roles}>
+          <AdminLayout component={component} title={title} />
+        </PrivateRoute>
+      );
+    }
   });
 
   return (
