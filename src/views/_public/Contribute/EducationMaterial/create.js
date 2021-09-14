@@ -134,16 +134,6 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
     setGetEducationMaterials(educationMaterials);
   }, [educationMaterials]);
 
-  useEffect(() => {
-    if (categoryTreeData.length) {
-      const rootCategoryStructure = {};
-      categoryTreeData.forEach(category => {
-        rootCategoryStructure[category.value] = [];
-      });
-      setSelectedCategories(rootCategoryStructure);
-    }
-  }, [categoryTreeData]);
-
   const handleChange = e => {
     const { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
@@ -258,7 +248,6 @@ const CreateEducationMaterial = ({ translate, hash, editItem, setEditItem, showR
     Object.keys(selectedCategories).forEach(function (key) {
       serializedSelectedCats = _.union(serializedSelectedCats, selectedCategories[key]);
     });
-
     if (serializedSelectedCats.length === 0) {
       canSave = false;
       setErrorClass('error-feedback');

@@ -167,16 +167,6 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
   }, [dispatch, language]);
 
   useEffect(() => {
-    if (categoryTreeData.length) {
-      const rootCategoryStructure = {};
-      categoryTreeData.forEach(category => {
-        rootCategoryStructure[category.value] = [];
-      });
-      setSelectedCategories(rootCategoryStructure);
-    }
-  }, [categoryTreeData]);
-
-  useEffect(() => {
     setGetExercises(exercises);
   }, [exercises]);
 
@@ -324,7 +314,6 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
     } else {
       setTitleError(false);
     }
-    ;
     if (mediaUploads.length === 0) {
       canSave = false;
       setMediaUploadsError(true);
