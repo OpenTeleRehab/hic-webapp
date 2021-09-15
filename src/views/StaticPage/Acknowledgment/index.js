@@ -34,10 +34,10 @@ const Acknowledgment = ({ type }) => {
   const [fileError, setFileError] = useState(false);
   const { languages } = useSelector(state => state.language);
   const { profile } = useSelector((state) => state.auth);
+  const { staticPage } = useSelector(state => state.staticPage);
   const { contributors } = useSelector((state) => state.contributor);
   const [hideContributors, setHideContributors] = useState([]);
-
-  const { staticPage } = useSelector(state => state.staticPage);
+  const [selectedContributors, setSelectedContributors] = useState([]);
 
   const [language, setLanguage] = useState('');
   const [formFields, setFormFields] = useState({
@@ -78,28 +78,17 @@ const Acknowledgment = ({ type }) => {
     }
   }, [staticPage, type]);
 
-  const selectedContributors = [];
-  if (staticPage && staticPage.acknowledgmentData) {
-    contributors.forEach((contributor) => {
-      const hideContributors = staticPage.acknowledgmentData.hide_contributors.includes(contributor.id);
-      if (hideContributors || contributor.included_in_acknowledgment === false) {
-        selectedContributors.push(contributor);
-      }
-    });
-  } else {
-    contributors.forEach((contributor) => {
-      if (contributor.included_in_acknowledgment === false) {
-        selectedContributors.push(contributor);
-      }
-    });
-  }
+  useEffect(() => {
+    if (staticPage && staticPage.acknowledgmentData && staticPage.acknowledgmentData.hide_contributors.length) {
+      setSelectedContributors(_.filter(contributors, (item) => { return staticPage.acknowledgmentData.hide_contributors.indexOf(item.id) > -1; }));
+    } else {
+      setSelectedContributors(_.filter(contributors, (item) => { return item.included_in_acknowledgment === false; }));
+    }
+  }, [contributors, staticPage]);
 
   useEffect(() => {
-    if (selectedContributors.length && !(hideContributors.length)) {
-      const selectedIds = selectedContributors.map(selectedContributor => selectedContributor.id);
-      setHideContributors([...selectedIds]);
-    }
-  }, [selectedContributors, hideContributors]);
+    setHideContributors(selectedContributors.map((item) => { return item.id; }));
+  }, [selectedContributors]);
 
   useEffect(() => {
     dispatch(getContributors());
@@ -145,8 +134,7 @@ const Acknowledgment = ({ type }) => {
   };
 
   const handleMultipleSelectChange = (selectedList, selectedItem) => {
-    hideContributors.push(selectedItem.id);
-    setHideContributors([...hideContributors]);
+    setSelectedContributors(selectedList);
   };
 
   const handleMultipleRemove = (selectedList, selectedItem) => {
@@ -373,7 +361,7 @@ const Acknowledgment = ({ type }) => {
         <Row className="mb-2">
           <Col sm={3}></Col>
           <Col sm={9}>
-            <ContributorCard hideContributors={hideContributors} isAdmin={true}/>
+            <ContributorCard hideContributors={hideContributors} isAdmin={true} />
           </Col>
         </Row>
         <Form.Group as={Row} controlId="partner_content">
