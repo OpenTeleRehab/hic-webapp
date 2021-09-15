@@ -87,8 +87,11 @@ const Acknowledgment = ({ type }) => {
   }, [contributors, staticPage]);
 
   useEffect(() => {
-    setHideContributors(selectedContributors.map((item) => { return item.id; }));
-  }, [selectedContributors]);
+    const selectedIds = selectedContributors.map((item) => { return item.id; });
+    const contributorIds = contributors.map((item) => { return item.id; });
+
+    setHideContributors(_.difference(contributorIds, selectedIds));
+  }, [selectedContributors, contributors]);
 
   useEffect(() => {
     dispatch(getContributors());
@@ -138,10 +141,10 @@ const Acknowledgment = ({ type }) => {
   };
 
   const handleMultipleRemove = (selectedList, selectedItem) => {
-    _.remove(hideContributors, function (c) {
-      return (c === selectedItem.id);
-    });
-    setHideContributors([...hideContributors]);
+    const selectedIds = selectedList.map((item) => { return item.id; });
+    const contributorIds = contributors.map((item) => { return item.id; });
+
+    setHideContributors(_.difference(contributorIds, selectedIds));
   };
 
   const enableButtons = () => {
@@ -174,8 +177,10 @@ const Acknowledgment = ({ type }) => {
     }
 
     if (canSave) {
+      const hideContributorIds = selectedContributors.map((item) => { return item.id; });
+
       if (staticPage.id) {
-        dispatch(updateStaticPage(staticPage.id, { ...formFields, content, partnerContent, hideContributors: JSON.stringify(hideContributors), lang: language }))
+        dispatch(updateStaticPage(staticPage.id, { ...formFields, content, partnerContent, hideContributors: JSON.stringify(hideContributorIds), lang: language }))
           .then(result => {
             if (result) {
               dispatch(getStaticPage({
@@ -185,12 +190,12 @@ const Acknowledgment = ({ type }) => {
             }
           });
         contributors.forEach(contributor => {
-          if (contributor.included_in_acknowledgment === false && !hideContributors.includes(contributor.id)) {
+          if (contributor.included_in_acknowledgment === false && !hideContributorIds.includes(contributor.id)) {
             contributorService.updateIncludedStatus(contributor.id, { included_in_acknowledgment: true });
           }
         });
       } else {
-        dispatch(createStaticPage({ ...formFields, content, partnerContent, hideContributors: JSON.stringify(hideContributors), lang: language })).then(result => {
+        dispatch(createStaticPage({ ...formFields, content, partnerContent, hideContributors: JSON.stringify(hideContributorIds), lang: language })).then(result => {
           if (result) {
             dispatch(getStaticPage({
               'url-segment': type,
@@ -199,7 +204,7 @@ const Acknowledgment = ({ type }) => {
           }
         });
         contributors.forEach(contributor => {
-          if (contributor.included_in_acknowledgment === false && !hideContributors.includes(contributor.id)) {
+          if (contributor.included_in_acknowledgment === false && !hideContributorIds.includes(contributor.id)) {
             contributorService.updateIncludedStatus(contributor.id, { included_in_acknowledgment: true });
           }
         });
