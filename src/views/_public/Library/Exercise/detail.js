@@ -3,8 +3,8 @@ import { getTranslate } from 'react-localize-redux';
 import { Button, Col, Image, Row } from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
-import { getExercise } from 'store/exercise/actions';
+import { useHistory, useParams } from 'react-router-dom';
+import { getExerciseBySlug } from 'store/exercise/actions';
 import { formatFileSize } from '../../../../utils/file';
 import { replaceRoute } from '../../../../utils/route';
 import * as ROUTES from '../../../../variables/routes';
@@ -13,49 +13,42 @@ const ExerciseDetail = () => {
   const localize = useSelector((state) => state.localize);
   const dispatch = useDispatch();
   const history = useHistory();
-  const location = useLocation();
+  const { slug } = useParams();
   const translate = getTranslate(localize);
-  const { exercise } = useSelector(state => state.exercise);
+  const { exerciseBySlug } = useSelector(state => state.exercise);
   const { languages, activeLanguage } = useSelector((state) => state.language);
   const [mediaUploads, setMediaUploads] = useState([]);
   const [additionalFields, setAdditionalFields] = useState([]);
   const [index, setIndex] = useState(0);
-  const [id, setId] = useState(undefined);
-
-  useEffect(() => {
-    if (location.state) {
-      setId(location.state.id);
-    }
-  }, [location.state]);
 
   const handleSelect = (selectedIndex, e) => {
     setIndex(selectedIndex);
   };
 
   useEffect(() => {
-    if (id) {
+    if (slug) {
       const lang = languages.find((language) => language.code === activeLanguage);
-      dispatch(getExercise(id, lang && lang.id));
+      dispatch(getExerciseBySlug({ slug: slug }, lang && lang.id));
     }
-  }, [id, activeLanguage, dispatch, languages]);
+  }, [slug, activeLanguage, dispatch, languages]);
 
   useEffect(() => {
-    if (id && exercise.id) {
-      setMediaUploads(exercise.files);
-      setAdditionalFields(exercise.additional_fields);
+    if (slug && exerciseBySlug.id) {
+      setMediaUploads(exerciseBySlug.files);
+      setAdditionalFields(exerciseBySlug.additional_fields);
     }
-  }, [id, exercise]);
+  }, [slug, exerciseBySlug]);
 
   // set page title
   useEffect(() => {
-    if (exercise) {
-      document.title = `${exercise.title} - ${process.env.REACT_APP_SITE_TITLE}`;
+    if (exerciseBySlug) {
+      document.title = `${exerciseBySlug.title} - ${process.env.REACT_APP_SITE_TITLE}`;
     }
-  }, [exercise]);
+  }, [exerciseBySlug]);
 
   return (
     <>
-      <h1 className="text-primary font-weight-bold mb-3">{exercise.title}</h1>
+      <h1 className="text-primary font-weight-bold mb-3">{exerciseBySlug.title}</h1>
       <Row>
         <Col sm={7} md={8}>
           <Carousel onContextMenu={(e) => e.preventDefault()} activeIndex={index} onSelect={handleSelect} controls={mediaUploads.length > 1} indicators={mediaUploads.length > 1} className="view-exercise-carousel">
@@ -94,9 +87,9 @@ const ExerciseDetail = () => {
             }
           </Carousel>
 
-          {exercise.sets > 0 && (
+          {exerciseBySlug.sets > 0 && (
             <p className="mt-2">
-              {translate('exercise.number_of_sets_and_reps', { sets: exercise.sets, reps: exercise.reps })}
+              {translate('exercise.number_of_sets_and_reps', { sets: exerciseBySlug.sets, reps: exerciseBySlug.reps })}
             </p>
           )}
 
@@ -109,7 +102,7 @@ const ExerciseDetail = () => {
             ))}
           </div>
 
-          {exercise.auto_translated === true && (
+          {exerciseBySlug.auto_translated === true && (
             <div className="d-flex justify-content-end">
               <Image src="/images/google-translation.png" alt="text attribution" />
             </div>
@@ -163,7 +156,7 @@ const ExerciseDetail = () => {
             <Button
               className="btn-block"
               size="sm"
-              onClick={() => history.push(replaceRoute(ROUTES.EXERCISE_EDIT_TRANSLATION.replace(':id', exercise.id), activeLanguage))}
+              onClick={() => history.push(replaceRoute(ROUTES.EXERCISE_EDIT_TRANSLATION, activeLanguage).replace(':id', exerciseBySlug.id))}
             >
               {translate('exercise.edit_translation')}
             </Button>

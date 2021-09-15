@@ -181,3 +181,17 @@ export const uploadExercises = payload => async dispatch => {
 export const setFilterExercises = payload => async dispatch => {
   dispatch(mutation.setFilterExercisesRequest(payload));
 };
+
+export const getExerciseBySlug = (payload, language) => async dispatch => {
+  dispatch(mutation.getExerciseBySlugRequest());
+  dispatch(showSpinner(true));
+  const data = await Exercise.getExerciseBySlug(payload, language);
+  if (data) {
+    dispatch(mutation.getExerciseBySlugSuccess(data.data));
+    dispatch(showSpinner(false));
+  } else {
+    dispatch(mutation.getExerciseBySlugFail());
+    dispatch(showSpinner(false));
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
+  }
+};

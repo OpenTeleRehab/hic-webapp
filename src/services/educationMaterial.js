@@ -176,6 +176,19 @@ const rejectEditTranslation = id => {
     });
 };
 
+const getEducationMaterialBySlug = (payload, language) => {
+  const langParam = language ? `?lang=${language}` : '';
+  return axios.get('/education-material/list/by-slug' + langParam, { params: payload })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const EducationMaterial = {
   getEducationMaterial,
   createEducationMaterial,
@@ -187,5 +200,6 @@ export const EducationMaterial = {
   cancelEditing,
   rejectEducationMaterial,
   rejectEditTranslation,
-  approveEditTranslation
+  approveEditTranslation,
+  getEducationMaterialBySlug
 };

@@ -35,6 +35,11 @@ export const questionnaire = (state = initialState, action) => {
         }
       });
     }
+    case 'GET_QUESTIONNAIRE_BY_SLUG_SUCCESS': {
+      return Object.assign({}, state, {
+        questionnaireBySlug: action.data
+      });
+    }
     default:
       return state;
   }

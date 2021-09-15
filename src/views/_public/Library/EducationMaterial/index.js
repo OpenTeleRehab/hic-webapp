@@ -103,11 +103,8 @@ const EducationMaterial = ({ translate, lang }) => {
     setPageSize(pageSize + 8);
   };
 
-  const handleViewDetail = (id, slug) => {
-    history.push({
-      pathname: replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL, activeLanguage).replace(':id', slug),
-      state: { id: id }
-    });
+  const handleViewDetail = (slug) => {
+    history.push(replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL, activeLanguage).replace(':slug', slug));
   };
 
   return (
@@ -182,7 +179,7 @@ const EducationMaterial = ({ translate, lang }) => {
                 <Row>
                   { educationMaterials.map(material => (
                     <Col key={material.id} md={6} lg={4} xl={window.screen.width >= 2020 && 2} className="card-wrapper">
-                      <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewDetail(material.id, material.slug)}>
+                      <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewDetail(material.slug)}>
                         <div className="card-img bg-light">
                           {(material.file && (material.file.hasThumbnail || material.file.fileGroupType === MATERIAL_TYPE.image)) ? (
                             <img

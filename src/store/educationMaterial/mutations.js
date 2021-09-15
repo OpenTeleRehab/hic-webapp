@@ -142,6 +142,19 @@ const setFilterEducationMaterialsRequest = (data) => ({
   data
 });
 
+const getEducationMaterialBySlugRequest = () => ({
+  type: 'GET_EDUCATION_MATERIAL_BY_SLUG_REQUEST'
+});
+
+const getEducationMaterialBySlugSuccess = (data) => ({
+  type: 'GET_EDUCATION_MATERIAL_BY_SLUG_SUCCESS',
+  data
+});
+
+const getEducationMaterialBySlugFail = () => ({
+  type: 'GET_EDUCATION_MATERIAL_BY_SLUG_FAIL'
+});
+
 export const mutation = {
   getEducationMaterialRequest,
   getEducationMaterialSuccess,
@@ -175,5 +188,8 @@ export const mutation = {
   approveEditTranslationRequest,
   approveEditTranslationSuccess,
   approveEditTranslationFail,
-  setFilterEducationMaterialsRequest
+  setFilterEducationMaterialsRequest,
+  getEducationMaterialBySlugRequest,
+  getEducationMaterialBySlugFail,
+  getEducationMaterialBySlugSuccess
 };

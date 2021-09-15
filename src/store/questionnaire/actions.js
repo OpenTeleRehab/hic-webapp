@@ -153,3 +153,17 @@ export const clearEditTranslation = () => async dispatch => {
 export const setFilterQuestionnaires = payload => async dispatch => {
   dispatch(mutation.setFilterExercisesRequest(payload));
 };
+
+export const getQuestionnaireBySlug = (payload, language) => async dispatch => {
+  dispatch(mutation.getQuestionnaireBySlugRequest());
+  dispatch(showSpinner(true));
+  const data = await Questionnaire.getQuestionnaireBySlug(payload, language);
+  if (data) {
+    dispatch(mutation.getQuestionnaireBySlugSuccess(data.data));
+    dispatch(showSpinner(false));
+  } else {
+    dispatch(mutation.getQuestionnaireBySlugFail());
+    dispatch(showSpinner(false));
+    dispatch(showErrorNotification('toast_title.error_message', data.message));
+  }
+};

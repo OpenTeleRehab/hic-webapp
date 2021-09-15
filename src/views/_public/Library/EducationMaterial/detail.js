@@ -3,51 +3,46 @@ import { withLocalize } from 'react-localize-redux';
 import { Button, Col, Form, Image, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux/lib/index';
-import { useHistory, useLocation } from 'react-router-dom';
-import { getEducationMaterial } from '../../../../store/educationMaterial/actions';
+import { useHistory, useParams } from 'react-router-dom';
+import {
+  getEducationMaterialBySlug
+} from '../../../../store/educationMaterial/actions';
 import { replaceRoute } from '../../../../utils/route';
 import * as ROUTES from '../../../../variables/routes';
 
 const EducationMaterialDetail = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const location = useLocation();
-  const { educationMaterial } = useSelector(state => state.educationMaterial);
+  const { educationMaterialBySlug } = useSelector(state => state.educationMaterial);
   const localize = useSelector((state) => state.localize);
   const { languages, activeLanguage } = useSelector(state => state.language);
   const translate = getTranslate(localize);
   const [materialFile, setMaterialFile] = useState(undefined);
-  const [id, setId] = useState(undefined);
+  const { slug } = useParams();
 
   useEffect(() => {
-    if (location.state) {
-      setId(location.state.id);
+    if (slug) {
+      const language = languages.find((language) => language.code === activeLanguage);
+      dispatch(getEducationMaterialBySlug({ slug: slug }, language && language.id));
     }
-  }, [location.state]);
+  }, [languages, activeLanguage, dispatch, slug]);
 
   useEffect(() => {
-    const language = languages.find((language) => language.code === activeLanguage);
-    if (id) {
-      dispatch(getEducationMaterial(id, language && language.id));
+    if (educationMaterialBySlug.id) {
+      setMaterialFile(educationMaterialBySlug.file);
     }
-  }, [id, languages, activeLanguage, dispatch]);
-
-  useEffect(() => {
-    if (id && educationMaterial.id) {
-      setMaterialFile(educationMaterial.file);
-    }
-  }, [id, educationMaterial]);
+  }, [educationMaterialBySlug]);
 
   // set page title
   useEffect(() => {
-    if (educationMaterial) {
-      document.title = `${educationMaterial.title} - ${process.env.REACT_APP_SITE_TITLE}`;
+    if (educationMaterialBySlug) {
+      document.title = `${educationMaterialBySlug.title} - ${process.env.REACT_APP_SITE_TITLE}`;
     }
-  }, [educationMaterial]);
+  }, [educationMaterialBySlug]);
 
   return (
     <>
-      <h1 className="text-primary font-weight-bold mb-3">{educationMaterial.title}</h1>
+      <h1 className="text-primary font-weight-bold mb-3">{educationMaterialBySlug.title}</h1>
       <Row>
         <Col sm={12} xl={12}>
           { materialFile ? (
@@ -104,7 +99,7 @@ const EducationMaterialDetail = () => {
             <div className="material-detail-file-wrapper">{translate('common.no_file_translate')}</div>
           )}
 
-          {educationMaterial.auto_translated === true && (
+          {educationMaterialBySlug.auto_translated === true && (
             <div className="d-flex justify-content-end">
               <Image src="/images/google-translation.png" alt="text attribution" />
             </div>
@@ -117,7 +112,7 @@ const EducationMaterialDetail = () => {
             <Button
               className="btn-block"
               size="sm"
-              onClick={() => history.push(replaceRoute(ROUTES.EDUCATION_MATERIAL_EDIT_TRANSLATION.replace(':id', educationMaterial.id), activeLanguage))}
+              onClick={() => history.push(replaceRoute(ROUTES.EDUCATION_MATERIAL_EDIT_TRANSLATION.replace(':id', educationMaterialBySlug.id), activeLanguage))}
             >
               {translate('exercise.edit_translation')}
             </Button>

@@ -4,8 +4,10 @@ import { getTranslate } from 'react-localize-redux';
 import PropTypes from 'prop-types';
 import { Accordion, AccordionContext, Button, Card, Form } from 'react-bootstrap';
 import { BsChevronDown, BsChevronRight } from 'react-icons/bs';
-import { useHistory, useLocation } from 'react-router-dom';
-import { getQuestionnaire } from '../../../../store/questionnaire/actions';
+import { useHistory, useParams } from 'react-router-dom';
+import {
+  getQuestionnaireBySlug
+} from '../../../../store/questionnaire/actions';
 import { replaceRoute } from '../../../../utils/route';
 import * as ROUTES from '../../../../variables/routes';
 
@@ -14,46 +16,39 @@ const QuestionnaireDetail = () => {
   const translate = getTranslate(localize);
   const dispatch = useDispatch();
   const history = useHistory();
-  const location = useLocation();
-  const { questionnaire } = useSelector(state => state.questionnaire);
+  const { slug } = useParams();
+  const { questionnaireBySlug } = useSelector(state => state.questionnaire);
   const { languages, activeLanguage } = useSelector((state) => state.language);
-  const [id, setId] = useState(undefined);
   const [questions, setQuestions] = useState([]);
   const [totalQuestion, setTotalQuestion] = useState(0);
 
   useEffect(() => {
-    if (location.state) {
-      setId(location.state.id);
-    }
-  }, [location.state]);
-
-  useEffect(() => {
-    if (id) {
+    if (slug) {
       const lang = languages.find((language) => language.code === activeLanguage);
-      dispatch(getQuestionnaire(id, lang && lang.id));
+      dispatch(getQuestionnaireBySlug({ slug: slug }, lang && lang.id));
     }
-  }, [id, languages, activeLanguage, dispatch]);
+  }, [slug, languages, activeLanguage, dispatch]);
 
   useEffect(() => {
-    if (questionnaire && questionnaire.questions) {
-      setQuestions(questionnaire.questions);
-      setTotalQuestion(questionnaire.questions.length);
+    if (questionnaireBySlug && questionnaireBySlug.questions) {
+      setQuestions(questionnaireBySlug.questions);
+      setTotalQuestion(questionnaireBySlug.questions.length);
     }
-  }, [questionnaire]);
+  }, [questionnaireBySlug]);
 
   // set page title
   useEffect(() => {
-    if (questionnaire) {
-      document.title = `${questionnaire.title} - ${process.env.REACT_APP_SITE_TITLE}`;
+    if (questionnaireBySlug) {
+      document.title = `${questionnaireBySlug.title} - ${process.env.REACT_APP_SITE_TITLE}`;
     }
-  }, [questionnaire]);
+  }, [questionnaireBySlug]);
 
   return (
     <>
-      <h1 className="text-primary font-weight-bold mb-3">{questionnaire && questionnaire.title}</h1>
+      <h1 className="text-primary font-weight-bold mb-3">{questionnaireBySlug && questionnaireBySlug.title}</h1>
       <div className="d-flex flex-column mb-2">
         <span className="font-weight-bold">{translate('questionnaire.description')}</span>
-        <span>{questionnaire && questionnaire.description}</span>
+        <span>{questionnaireBySlug && questionnaireBySlug.description}</span>
       </div>
       <div className="d-flex flex-column mb-3">
         <span className="font-weight-bold">{translate('questionnaire.number_of_question')}</span>
@@ -136,7 +131,7 @@ const QuestionnaireDetail = () => {
         <Button
           className="btn-block"
           size="sm"
-          onClick={() => history.push(replaceRoute(ROUTES.QUESTIONNAIRE_EDIT_TRANSLATION.replace(':id', questionnaire.id), activeLanguage))}
+          onClick={() => history.push(replaceRoute(ROUTES.QUESTIONNAIRE_EDIT_TRANSLATION.replace(':id', questionnaireBySlug.id), activeLanguage))}
         >
           {translate('exercise.edit_translation')}
         </Button>

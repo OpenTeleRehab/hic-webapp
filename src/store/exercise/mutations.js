@@ -167,6 +167,19 @@ const setFilterExercisesRequest = (data) => ({
   data
 });
 
+const getExerciseBySlugRequest = () => ({
+  type: 'GET_EXERCISE_BY_SLUG_REQUEST'
+});
+
+const getExerciseBySlugSuccess = (data) => ({
+  type: 'GET_EXERCISE_BY_SLUG_SUCCESS',
+  data
+});
+
+const getExerciseBySlugFail = () => ({
+  type: 'GET_EXERCISE_BY_SLUG_FAIL'
+});
+
 export const mutation = {
   getExercisesFail,
   getExercisesRequest,
@@ -206,5 +219,8 @@ export const mutation = {
   uploadExercisesRequest,
   uploadExercisesSuccess,
   uploadExercisesFail,
-  setFilterExercisesRequest
+  setFilterExercisesRequest,
+  getExerciseBySlugRequest,
+  getExerciseBySlugFail,
+  getExerciseBySlugSuccess
 };

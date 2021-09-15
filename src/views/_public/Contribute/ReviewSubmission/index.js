@@ -3,7 +3,10 @@ import { Accordion, Button, Card, Col, Form, Modal, Row } from 'react-bootstrap'
 import PropTypes from 'prop-types';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import { useDispatch, useSelector } from 'react-redux';
-import { contributeExercise } from '../../../../store/exercise/actions';
+import {
+  contributeExercise,
+  getExercise
+} from '../../../../store/exercise/actions';
 import {
   contributeSubmission,
   clearContribute,
@@ -12,8 +15,14 @@ import {
   deleteQuestionnaire
 } from '../../../../store/contribute/actions';
 import { showSpinner } from '../../../../store/spinnerOverlay/actions';
-import { contributeEducationMaterial } from '../../../../store/educationMaterial/actions';
-import { contributeQuestionnaire } from '../../../../store/questionnaire/actions';
+import {
+  contributeEducationMaterial,
+  getEducationMaterial
+} from '../../../../store/educationMaterial/actions';
+import {
+  contributeQuestionnaire,
+  getQuestionnaire
+} from '../../../../store/questionnaire/actions';
 import { toHash } from '../../../../utils/hash';
 import moment from 'moment';
 import * as ROUTES from '../../../../variables/routes';
@@ -43,6 +52,9 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [selectedEducationMaterials, setSelectedEducationMaterials] = useState([]);
   const [selectedQuestionnaires, setSelectedQuestionnaires] = useState([]);
+  const { exercise } = useSelector((state) => state.exercise);
+  const { educationMaterial } = useSelector((state) => state.educationMaterial);
+  const { questionnaire } = useSelector((state) => state.questionnaire);
 
   useEffect(() => {
     exercises.forEach((exercise, index) => {
@@ -174,25 +186,16 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
           showReviewModal(false);
 
           if (pathname.includes(LIBRARY_TYPES.EXERCISE)) {
-            const exercise = exercises.find(exercise => exercise.id === id);
-            history.push({
-              pathname: replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL.replace(':id', exercise && exercise.slug), activeLanguage),
-              state: { id: id }
-            });
+            dispatch(getExercise(id));
+            history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL.replace(':slug', exercise && exercise.slug), activeLanguage));
           }
           if (pathname.includes(LIBRARY_TYPES.MATERIAL)) {
-            const material = educationMaterials.find(material => material.id === id);
-            history.push({
-              pathname: replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL.replace(':id', material && material.slug), activeLanguage),
-              state: { id: id }
-            });
+            dispatch(getEducationMaterial(id));
+            history.push(replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL.replace(':slug', educationMaterial && educationMaterial.slug), activeLanguage));
           }
           if (pathname.includes(LIBRARY_TYPES.QUESTIONNAIRE)) {
-            const questionnaire = questionnaires.find(questionnaire => questionnaire.id === id);
-            history.push({
-              pathname: replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL.replace(':id', questionnaire && questionnaire.slug), activeLanguage),
-              state: { id: id }
-            });
+            dispatch(getQuestionnaire(id));
+            history.push(replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL.replace(':slug', questionnaire && questionnaire.slug), activeLanguage));
           }
         } else {
           dispatch(contributeSubmission(formFields)).then(result => {

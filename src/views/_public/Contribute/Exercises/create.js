@@ -386,10 +386,7 @@ const CreateExercise = ({ translate, hash, editItem, setEditItem, showReviewModa
 
   const handleCancel = () => {
     if (id) {
-      history.push({
-        pathname: replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL.replace(':id', exercise.slug), activeLanguage),
-        state: { id: id }
-      });
+      history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL.replace(':slug', exercise.slug), activeLanguage));
     } else {
       setShowCancelModal(true);
     }

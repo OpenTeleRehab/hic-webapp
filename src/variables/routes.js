@@ -2,9 +2,9 @@ export const HOME = '/';
 export const LIBRARY = '/library';
 export const LIBRARY_EDUCATION = LIBRARY + '#education';
 export const LIBRARY_QUESTIONNAIRE = LIBRARY + '#questionnaire';
-export const LIBRARY_EXERCISE_DETAIL = LIBRARY + '/exercise/detail/:id';
-export const LIBRARY_EDUCATION_MATERIAL_DETAIL = LIBRARY + '/education_material/detail/:id';
-export const LIBRARY_QUESTIONNAIRE_DETAIL = LIBRARY + '/questionnaire/detail/:id';
+export const LIBRARY_EXERCISE_DETAIL = LIBRARY + '/exercise/detail/:slug';
+export const LIBRARY_EDUCATION_MATERIAL_DETAIL = LIBRARY + '/education_material/detail/:slug';
+export const LIBRARY_QUESTIONNAIRE_DETAIL = LIBRARY + '/questionnaire/detail/:slug';
 
 export const CONTRIBUTE = '/contribute';
 export const TERM_CONDITION = '/term-condition';
