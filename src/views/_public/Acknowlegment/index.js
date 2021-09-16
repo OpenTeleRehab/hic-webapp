@@ -9,6 +9,7 @@ import _ from 'lodash';
 
 const AcknowledgmentPage = ({ translate }) => {
   const dispatch = useDispatch();
+  const { contributors } = useSelector(state => state.contributor);
   const { staticPage } = useSelector(state => state.staticPage);
   const { languages, activeLanguage } = useSelector(state => state.language);
   const [acknowledgment, setAcknowledgment] = useState({});
@@ -29,10 +30,10 @@ const AcknowledgmentPage = ({ translate }) => {
   }, [staticPage]);
 
   useEffect(() => {
-    if (staticPage.acknowledgmentData) {
-      setHideContributors(staticPage.acknowledgmentData.hide_contributors);
+    if (!_.isEmpty(contributors)) {
+      setHideContributors(contributors.map((item) => { return item.included_in_acknowledgment && item.id; }));
     }
-  }, [staticPage]);
+  }, [contributors]);
 
   return (
     <>

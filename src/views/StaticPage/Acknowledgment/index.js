@@ -18,7 +18,6 @@ import { Editor } from '@tinymce/tinymce-react';
 import { getContributors } from '../../../store/contributor/actions';
 import Multiselect from 'multiselect-react-dropdown';
 import ContributorCard from './contributorCards';
-import { Contributor as contributorService } from 'services/contributor';
 import _ from 'lodash';
 import { File } from '../../../services/file';
 
@@ -79,12 +78,8 @@ const Acknowledgment = ({ type }) => {
   }, [staticPage, type]);
 
   useEffect(() => {
-    if (staticPage && staticPage.acknowledgmentData && staticPage.acknowledgmentData.hide_contributors.length) {
-      setSelectedContributors(_.filter(contributors, (item) => { return staticPage.acknowledgmentData.hide_contributors.indexOf(item.id) > -1; }));
-    } else {
-      setSelectedContributors(_.filter(contributors, (item) => { return item.included_in_acknowledgment === false; }));
-    }
-  }, [contributors, staticPage]);
+    setSelectedContributors(_.filter(contributors, (item) => { return item.included_in_acknowledgment === false; }));
+  }, [contributors]);
 
   useEffect(() => {
     const selectedIds = selectedContributors.map((item) => { return item.id; });
@@ -144,6 +139,7 @@ const Acknowledgment = ({ type }) => {
     const selectedIds = selectedList.map((item) => { return item.id; });
     const contributorIds = contributors.map((item) => { return item.id; });
 
+    setSelectedContributors(selectedList);
     setHideContributors(_.difference(contributorIds, selectedIds));
   };
 
@@ -189,11 +185,6 @@ const Acknowledgment = ({ type }) => {
               }));
             }
           });
-        contributors.forEach(contributor => {
-          if (contributor.included_in_acknowledgment === false && !hideContributorIds.includes(contributor.id)) {
-            contributorService.updateIncludedStatus(contributor.id, { included_in_acknowledgment: true });
-          }
-        });
       } else {
         dispatch(createStaticPage({ ...formFields, content, partnerContent, hideContributors: JSON.stringify(hideContributorIds), lang: language })).then(result => {
           if (result) {
@@ -201,11 +192,6 @@ const Acknowledgment = ({ type }) => {
               'url-segment': type,
               lang: language
             }));
-          }
-        });
-        contributors.forEach(contributor => {
-          if (contributor.included_in_acknowledgment === false && !hideContributorIds.includes(contributor.id)) {
-            contributorService.updateIncludedStatus(contributor.id, { included_in_acknowledgment: true });
           }
         });
       }
