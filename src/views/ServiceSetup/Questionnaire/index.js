@@ -40,6 +40,7 @@ const Questionnaire = ({ translate }) => {
   const { languages } = useSelector(state => state.language);
   const [language, setLanguage] = useState('');
   const { questionnaires } = useSelector(state => state.questionnaire);
+  const filterData = useSelector(state => state.questionnaire.filters);
   const { profile } = useSelector((state) => state.auth);
   const { categoryTreeData } = useSelector((state) => state.category);
   const [pageSize, setPageSize] = useState(60);
@@ -50,12 +51,16 @@ const Questionnaire = ({ translate }) => {
   const [filters, setFilters] = useState([]);
 
   useEffect(() => {
-    if (filters && filters.lang) {
-      setLanguage(filters.lang);
+    setCurrentPage(0);
+  }, [pageSize, filters]);
+
+  useEffect(() => {
+    if (filterData && filterData.lang) {
+      setLanguage(filterData.lang);
     } else if (profile && profile.language_id) {
       setLanguage(profile.language_id);
     }
-  }, [filters, profile]);
+  }, [filterData, profile]);
 
   useEffect(() => {
     dispatch(getCategoryTreeData({ type: LIBRARY_TYPES.QUESTIONNAIRE, lang: language }));
