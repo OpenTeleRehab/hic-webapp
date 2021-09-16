@@ -62,8 +62,8 @@ const ContributorCard = ({ hideContributors, isAdmin }) => {
           };
 
           return (
-            <Col sm={4} md={window.screen.width === 768 && 6}>
-              <div className="mb-2 pr-2 d-flex border border-light contributor-card bg-white w-100" key={index}>
+            <Col sm={4} md={window.screen.width === 768 && 6} key={index}>
+              <div className="mb-2 pr-2 d-flex border border-light contributor-card bg-white w-100">
                 <div className={`${isAdmin ? 'p-2' : 'p-4'} text-white icon-wrapper`} style={style}>
                   {contributor.isModerator ? (
                     <RiShieldUserFill size={ isAdmin ? 45 : 55} />
