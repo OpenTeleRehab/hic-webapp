@@ -403,7 +403,7 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
         <div className="sticky-bottom d-flex justify-content-end">
           {!id &&
             <Button
-              variant="link btn-lg"
+              variant="link"
               onClick={handleAddQuestion}
               className="mr-auto"
             >
