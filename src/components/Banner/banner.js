@@ -51,16 +51,13 @@ const Banner = ({ bannerImagePath, isHome, title, introductionText, isAcknowledg
         <div className="header-banner" style={{ backgroundImage: `url(${bannerImagePath})` }}>
           <Container>
             <div className="header-banner__wrapper mx-auto">
-              <h1 className={!isHome && 'mt-5'}>{title}</h1>
+              <h1 className={isHome ? '' : 'mt-5'}>{title}</h1>
               {(isHome || isAcknowledgment) && (
                 <>
                   <div className="lead" dangerouslySetInnerHTML={{ __html: introductionText }} />
 
                   {isHome && (
-                    <Form
-                      className="search-form"
-                      onSubmit={handleSubmit}
-                    >
+                    <Form className="search-form" onSubmit={handleSubmit}>
                       <Form.Group className="d-flex justify-content-center">
                         {settings.libraryTypes.options.map((type) => (
                           <Form.Check
@@ -109,7 +106,7 @@ const Banner = ({ bannerImagePath, isHome, title, introductionText, isAcknowledg
         <div>
           <Container>
             <div className="header-banner__wrapper mx-auto">
-              <h1 className={!isHome && 'mt-4 text-primary'}>{title}</h1>
+              <h1 className={isHome ? '' : 'mt-4 text-primary'}>{title}</h1>
               {isAcknowledgment && (
                 <div className="lead" dangerouslySetInnerHTML={{ __html: introductionText }} />
               )}
