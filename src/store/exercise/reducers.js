@@ -47,6 +47,11 @@ export const exercise = (state = initialState, action) => {
         }
       });
     }
+    case 'GET_EXERCISE_BY_SLUG_SUCCESS': {
+      return Object.assign({}, state, {
+        exerciseBySlug: action.data
+      });
+    }
     default:
       return state;
   }

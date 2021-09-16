@@ -36,6 +36,11 @@ export const educationMaterial = (state = initialState, action) => {
         }
       });
     }
+    case 'GET_EDUCATION_MATERIAL_BY_SLUG_SUCCESS': {
+      return Object.assign({}, state, {
+        educationMaterialBySlug: action.data
+      });
+    }
     default:
       return state;
   }

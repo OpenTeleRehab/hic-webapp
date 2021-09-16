@@ -102,11 +102,8 @@ const Questionnaire = ({ translate, lang }) => {
     setPageSize(pageSize + 8);
   };
 
-  const handleViewDetail = (id, slug) => {
-    history.push({
-      pathname: replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL, activeLanguage).replace(':id', slug),
-      state: { id: id }
-    });
+  const handleViewDetail = (slug) => {
+    history.push(replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL, activeLanguage).replace(':slug', slug));
   };
 
   return (
@@ -181,7 +178,7 @@ const Questionnaire = ({ translate, lang }) => {
                 <Row>
                   { questionnaires.map(questionnaire => (
                     <Col key={questionnaire.id} md={6} lg={4} xl={window.screen.width >= 2020 && 2} className="card-wrapper">
-                      <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewDetail(questionnaire.id, questionnaire.slug)}>
+                      <Card className="exercise-card shadow-sm mb-4" onClick={() => handleViewDetail(questionnaire.slug)}>
                         <div className="card-img bg-light">
                           <div className="w-100 h-100 px-2 py-4 text-center questionnaire-header">
                             <img src={'/images/questionnaire-icon.svg'} alt="Questionnaire" />

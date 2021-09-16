@@ -271,10 +271,7 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
 
   const handleCancel = () => {
     if (id) {
-      history.push({
-        pathname: replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL.replace(':id', questionnaire.slug), activeLanguage),
-        state: { id: id }
-      });
+      history.push(replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL.replace(':slug', questionnaire.slug), activeLanguage));
     } else {
       setShowCancelModal(true);
     }

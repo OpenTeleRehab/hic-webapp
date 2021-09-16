@@ -139,6 +139,19 @@ const setFilterExercisesRequest = (data) => ({
   data
 });
 
+const getQuestionnaireBySlugRequest = () => ({
+  type: 'GET_QUESTIONNAIRE_BY_SLUG_REQUEST'
+});
+
+const getQuestionnaireBySlugSuccess = (data) => ({
+  type: 'GET_QUESTIONNAIRE_BY_SLUG_SUCCESS',
+  data
+});
+
+const getQuestionnaireBySlugFail = () => ({
+  type: 'GET_QUESTIONNAIRE_BY_SLUG_FAIL'
+});
+
 export const mutation = {
   getQuestionnairesRequest,
   getQuestionnairesSuccess,
@@ -172,5 +185,8 @@ export const mutation = {
   approveEditTranslationRequest,
   approveEditTranslationSuccess,
   approveEditTranslationFail,
-  setFilterExercisesRequest
+  setFilterExercisesRequest,
+  getQuestionnaireBySlugRequest,
+  getQuestionnaireBySlugFail,
+  getQuestionnaireBySlugSuccess
 };

@@ -190,6 +190,19 @@ const rejectEditTranslation = id => {
     });
 };
 
+const getQuestionnaireBySlug = (payload, language) => {
+  const langParam = language ? `?lang=${language}` : '';
+  return axios.get('/questionnaire/list/by-slug' + langParam, { params: payload })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Questionnaire = {
   getQuestionnaire,
   getQuestionnaires,
@@ -201,5 +214,6 @@ export const Questionnaire = {
   cancelEditing,
   rejectQuestionnaire,
   rejectEditTranslation,
-  approveEditTranslation
+  approveEditTranslation,
+  getQuestionnaireBySlug
 };

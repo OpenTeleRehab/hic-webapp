@@ -235,6 +235,19 @@ const uploadExercises = payload => {
     });
 };
 
+const getExerciseBySlug = (payload, language) => {
+  const langParam = language ? `?lang=${language}` : '';
+  return axios.get('/exercise/list/by-slug' + langParam, { params: payload })
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const Exercise = {
   getExercises,
   getExercise,
@@ -249,5 +262,6 @@ export const Exercise = {
   approveEditTranslation,
   deleteExercise,
   downloadExercises,
-  uploadExercises
+  uploadExercises,
+  getExerciseBySlug
 };
