@@ -35,6 +35,11 @@ const Navigation = ({ translate }) => {
       exact: true
     },
     {
+      label: 'about_us',
+      to: replaceRoute(ROUTES.ABOUT_US, activeLanguage),
+      exact: true
+    },
+    {
       label: 'library',
       to: replaceRoute(ROUTES.LIBRARY, activeLanguage),
       exact: false
@@ -42,11 +47,6 @@ const Navigation = ({ translate }) => {
     {
       label: 'contribute',
       to: replaceRoute(ROUTES.CONTRIBUTE, activeLanguage),
-      exact: true
-    },
-    {
-      label: 'about_us',
-      to: replaceRoute(ROUTES.ABOUT_US, activeLanguage),
       exact: true
     },
     {

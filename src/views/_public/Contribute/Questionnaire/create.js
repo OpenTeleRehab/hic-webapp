@@ -403,9 +403,9 @@ const CreateQuestionnaire = ({ translate, hash, editItem, setEditItem, showRevie
         <div className="sticky-bottom d-flex justify-content-end">
           {!id &&
             <Button
-              variant="link"
+              variant="link btn-lg"
               onClick={handleAddQuestion}
-              className="mr-auto"
+              className="mr-auto p-0"
             >
               <BsPlusCircle size={20}/> {translate('questionnaire.new.question')}
             </Button>
