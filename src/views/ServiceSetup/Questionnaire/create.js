@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import { Button, Col, Form, Row, Accordion, Card, Alert } from 'react-bootstrap';
+import {
+  Button,
+  Col,
+  Form,
+  Row,
+  Accordion,
+  Card,
+  Alert
+} from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import * as ROUTES from '../../../variables/routes';
@@ -36,6 +44,7 @@ import FallbackText from '../../../components/Form/FallbackText';
 import SelectLanguage from '../_Partials/SelectLanguage';
 import useInterval from 'hook/useInterval';
 import { Questionnaire } from 'services/questionnaire';
+import settings from '../../../settings';
 
 const CreateQuestionnaire = ({ translate }) => {
   const dispatch = useDispatch();
@@ -69,16 +78,6 @@ const CreateQuestionnaire = ({ translate }) => {
   useEffect(() => {
     dispatch(getCategoryTreeData({ type: LIBRARY_TYPES.QUESTIONNAIRE, lang: language.id }));
   }, [language, dispatch]);
-
-  useEffect(() => {
-    if (categoryTreeData.length) {
-      const rootCategoryStructure = {};
-      categoryTreeData.forEach(category => {
-        rootCategoryStructure[category.value] = [];
-      });
-      setSelectedCategories(rootCategoryStructure);
-    }
-  }, [categoryTreeData]);
 
   useEffect(() => {
     if (id && language) {
@@ -255,6 +254,7 @@ const CreateQuestionnaire = ({ translate }) => {
             .then(result => {
               if (result) {
                 setIsLoading(false);
+                dispatch(getQuestionnaire(id, language.id));
               }
               setIsLoading(false);
             });
@@ -333,6 +333,21 @@ const CreateQuestionnaire = ({ translate }) => {
     if (id && !questionnaire.blocked_editing) {
       return Questionnaire.cancelEditing(id);
     }
+  };
+
+  const enableSave = () => {
+    return questionnaire.status === STATUS.approved && _.isEmpty(editTranslations);
+  };
+
+  const enableReject = () => {
+    if (questionnaire.status === STATUS.pending || questionnaire.status === STATUS.approved) {
+      return !(language.code !== settings.locale && _.isEmpty(editTranslations));
+    }
+    return false;
+  };
+
+  const enableDelete = () => {
+    return questionnaire.status === STATUS.rejected;
   };
 
   return (
@@ -465,10 +480,7 @@ const CreateQuestionnaire = ({ translate }) => {
                 </div>
                 <div className="py-2 questionnaire-save-cancel-wrapper px-3">
                   { !id && (
-                    <Button
-                      onClick={handleSave}
-                      disabled={isLoading || disabledEditing()}
-                    >
+                    <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>
                       {translate('common.save')}
                     </Button>
                   )}
@@ -530,12 +542,12 @@ const CreateQuestionnaire = ({ translate }) => {
 
                   { id && (
                     <>
-                      {questionnaire.status === STATUS.approved && _.isEmpty(editTranslations)
+                      {enableSave()
                         ? <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>{translate('common.save')}</Button>
-                        : <Button onClick={handleSave} disabled={isLoading || disabledEditing}>{translate('common.approve')}</Button>
+                        : <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>{translate('common.approve')}</Button>
                       }
 
-                      {questionnaire.status === STATUS.rejected &&
+                      {enableDelete() &&
                         <Button
                           onClick={() => setShowDeleteDialog(true)}
                           className="ml-2"
@@ -546,7 +558,7 @@ const CreateQuestionnaire = ({ translate }) => {
                         </Button>
                       }
 
-                      {(questionnaire.status === STATUS.pending || questionnaire.status === STATUS.approved) &&
+                      {enableReject() &&
                         <Button
                           onClick={handleReject}
                           className="ml-2"
