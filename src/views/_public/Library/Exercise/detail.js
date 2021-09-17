@@ -8,6 +8,7 @@ import { getExerciseBySlug } from 'store/exercise/actions';
 import { formatFileSize } from '../../../../utils/file';
 import { replaceRoute } from '../../../../utils/route';
 import * as ROUTES from '../../../../variables/routes';
+import _ from 'lodash';
 
 const ExerciseDetail = () => {
   const localize = useSelector((state) => state.localize);
@@ -41,7 +42,7 @@ const ExerciseDetail = () => {
 
   // set page title
   useEffect(() => {
-    if (exerciseBySlug) {
+    if (!_.isEmpty(exerciseBySlug)) {
       document.title = `${exerciseBySlug.title} - ${process.env.REACT_APP_SITE_TITLE}`;
     }
   }, [exerciseBySlug]);
