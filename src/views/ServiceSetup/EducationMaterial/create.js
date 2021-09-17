@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withLocalize } from 'react-localize-redux';
-import { Button, Col, Form, Row, Accordion, Card, Alert } from 'react-bootstrap';
+import {
+  Button,
+  Col,
+  Form,
+  Row,
+  Accordion,
+  Card,
+  Alert
+} from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import * as ROUTES from '../../../variables/routes';
@@ -224,6 +232,7 @@ const CreateEducationMaterial = ({ translate }) => {
           dispatch(approveEditTranslation(id, { ...formFields, categories: serializedSelectedCats, lang: language.id })).then(result => {
             if (result) {
               setIsLoading(false);
+              dispatch(getEducationMaterial(id, language.id));
             }
           });
         } else {
@@ -314,6 +323,21 @@ const CreateEducationMaterial = ({ translate }) => {
     if (id && !educationMaterial.blocked_editing) {
       return EducationMaterial.cancelEditing(id);
     }
+  };
+
+  const enableSave = () => {
+    return educationMaterial.status === STATUS.approved && _.isEmpty(editTranslations);
+  };
+
+  const enableReject = () => {
+    if (educationMaterial.status === STATUS.pending || educationMaterial.status === STATUS.approved) {
+      return !(language.code !== settings.locale && _.isEmpty(editTranslations));
+    }
+    return false;
+  };
+
+  const enableDelete = () => {
+    return educationMaterial.status === STATUS.rejected;
   };
 
   return (
@@ -449,12 +473,12 @@ const CreateEducationMaterial = ({ translate }) => {
 
           { id && (
             <>
-              {educationMaterial.status === STATUS.approved && _.isEmpty(editTranslations)
+              {enableSave()
                 ? <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>{translate('common.save')}</Button>
                 : <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>{translate('common.approve')}</Button>
               }
 
-              {educationMaterial.status === STATUS.rejected &&
+              {enableDelete() &&
                 <Button
                   onClick={() => setShowDeleteDialog(true)}
                   className="ml-2"
@@ -465,7 +489,7 @@ const CreateEducationMaterial = ({ translate }) => {
                 </Button>
               }
 
-              {(educationMaterial.status === STATUS.pending || educationMaterial.status === STATUS.approved) &&
+              {enableReject() &&
                 <Button
                   onClick={handleReject}
                   className="ml-2"

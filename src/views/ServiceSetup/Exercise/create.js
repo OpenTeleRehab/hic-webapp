@@ -9,7 +9,8 @@ import {
   Row,
   Tooltip,
   Card,
-  Accordion, Alert
+  Accordion,
+  Alert
 } from 'react-bootstrap';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,7 +21,8 @@ import {
   BsCaretDownFill,
   BsCaretRightFill,
   BsSquare,
-  BsDashSquare, BsPlusCircle
+  BsDashSquare,
+  BsPlusCircle
 } from 'react-icons/bs';
 import { FaRegCheckSquare } from 'react-icons/fa';
 import CheckboxTree from 'react-checkbox-tree';
@@ -49,6 +51,7 @@ import FallbackText from '../../../components/Form/FallbackText';
 import SelectLanguage from '../_Partials/SelectLanguage';
 import useInterval from 'hook/useInterval';
 import { Exercise } from 'services/exercise';
+import settings from '../../../settings';
 
 const CreateExercise = ({ translate }) => {
   const dispatch = useDispatch();
@@ -123,7 +126,7 @@ const CreateExercise = ({ translate }) => {
   }, [editTranslations, editTranslationIndex]);
 
   useEffect(() => {
-    if ((id && exercise.id && exercise.status === STATUS.approved)) {
+    if (id && exercise.id && exercise.status === STATUS.approved) {
       setIsEditingItem(false);
       setIsEditingTranslation(true);
     }
@@ -318,6 +321,7 @@ const CreateExercise = ({ translate }) => {
           dispatch(approveEditTranslation(id, payload, mediaUploads)).then(result => {
             if (result) {
               setIsLoading(false);
+              dispatch(getExercise(id, language.id));
             }
           });
         } else {
@@ -351,7 +355,7 @@ const CreateExercise = ({ translate }) => {
       setIsLoading(true);
       dispatch(rejectEditTranslation(editTranslation.id)).then(result => {
         if (result) {
-          dispatch(getExercise(id, language));
+          dispatch(getExercise(id, language.id));
         }
         setIsLoading(false);
       });
@@ -419,6 +423,21 @@ const CreateExercise = ({ translate }) => {
     if (id && !exercise.blocked_editing) {
       return Exercise.cancelEditing(id);
     }
+  };
+
+  const enableSave = () => {
+    return exercise.status === STATUS.approved && _.isEmpty(editTranslations);
+  };
+
+  const enableReject = () => {
+    if (exercise.status === STATUS.pending || exercise.status === STATUS.approved) {
+      return !(language.code !== settings.locale && _.isEmpty(editTranslations));
+    }
+    return false;
+  };
+
+  const enableDelete = () => {
+    return exercise.status === STATUS.rejected;
   };
 
   return (
@@ -693,12 +712,12 @@ const CreateExercise = ({ translate }) => {
 
           { id && (
             <>
-              {exercise.status === STATUS.approved && _.isEmpty(editTranslations)
+              {enableSave()
                 ? <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>{translate('common.save')}</Button>
                 : <Button onClick={handleSave} disabled={isLoading || disabledEditing()}>{translate('common.approve')}</Button>
               }
 
-              {exercise.status === STATUS.rejected &&
+              {enableDelete() &&
                 <Button
                   onClick={() => setShowDeleteDialog(true)}
                   className="ml-2"
@@ -709,7 +728,7 @@ const CreateExercise = ({ translate }) => {
                 </Button>
               }
 
-              {(exercise.status === STATUS.pending || exercise.status === STATUS.approved) &&
+              {enableReject() &&
                 <Button
                   onClick={handleReject}
                   className="ml-2"

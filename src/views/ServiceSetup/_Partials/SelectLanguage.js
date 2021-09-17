@@ -1,18 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import _ from 'lodash';
 import scssColors from '../../../scss/custom.scss';
 import settings from '../../../settings';
 import { Button } from 'react-bootstrap';
-import { BsFillCaretLeftFill, BsFillCaretRightFill } from 'react-icons/bs';
+import {
+  BsFillCaretLeftFill,
+  BsFillCaretRightFill
+} from 'react-icons/bs';
+import { FaLanguage } from 'react-icons/fa';
+
+const { Option } = components;
 
 const SelectLanguage = ({ translate, resource, setLanguage, setEditTranslationIndex, setEditTranslations, isDisabled }) => {
   const { languages } = useSelector(state => state.language);
   const [selected, setSelected] = useState({});
   const [editings, setEditings] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(1);
+  const [getLanguages, setGetLanguages] = useState([]);
+
+  useEffect(() => {
+    if (languages && resource) {
+      const languageData = [];
+      _.forEach(languages, (language) => {
+        const translations = !_.isEmpty(resource) && resource.edit_translations.filter(item => {
+          return _.has(item.title, language.code);
+        });
+
+        languageData.push({
+          id: language.id,
+          label: language.name,
+          code: language.code,
+          length: translations.length,
+          icon: <FaLanguage size={20} />
+        });
+      });
+
+      setGetLanguages(languageData);
+    }
+  }, [languages, resource]);
 
   useEffect(() => {
     if (languages.length) {
@@ -71,17 +99,15 @@ const SelectLanguage = ({ translate, resource, setLanguage, setEditTranslationIn
       <Select
         isDisabled={isDisabled}
         classNamePrefix="filter"
-        value={languages.filter(option => option.id === selected.id)}
+        value={getLanguages.filter(option => option.id === selected.id)}
+        components={{ Option: IconOption }}
         getOptionLabel={option => {
-          const translations = !_.isEmpty(resource) && resource.edit_translations.filter(item => {
-            return _.has(item.title, option.code);
-          });
-          if (option.code === settings.locale || _.isEmpty(translations)) {
-            return option.name;
+          if (option.length) {
+            return option.label + ' - ' + option.length;
           }
-          return option.name + ' - ' + translations.length;
+          return option.label;
         }}
-        options={languages}
+        options={getLanguages}
         onChange={(e) => handleSelectLanguage(e)}
         styles={customSelectStyles}
       />
@@ -111,6 +137,19 @@ const SelectLanguage = ({ translate, resource, setLanguage, setEditTranslationIn
         </div>
       }
     </>
+  );
+};
+
+const IconOption = (props) => {
+  const option = props;
+
+  return (
+    <Option {...props}>
+      {option.data.length
+        ? <strong className="text-primary"><span>{option.data.icon}</span> {option.data.label} - {option.data.length}</strong>
+        : <span>{option.data.label}</span>
+      }
+    </Option>
   );
 };
 
