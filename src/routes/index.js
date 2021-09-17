@@ -272,9 +272,6 @@ const routes = [
 ];
 
 const RouteSwitch = () => {
-  // Reset scroll position on change of routes
-  window.scrollTo({ left: 0, top: 0 });
-
   const { activeLanguage } = useSelector((state) => state.language);
 
   const routeComponents = routes.map(({ path, component, exact, type, title, roles, defaultTemplate }, key) => {
