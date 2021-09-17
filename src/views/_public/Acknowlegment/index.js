@@ -31,7 +31,7 @@ const AcknowledgmentPage = ({ translate }) => {
 
   useEffect(() => {
     if (!_.isEmpty(contributors)) {
-      setHideContributors(contributors.map((item) => { return item.included_in_acknowledgment && item.id; }));
+      setHideContributors(contributors.map((item) => { return !item.included_in_acknowledgment && item.id; }));
     }
   }, [contributors]);
 
