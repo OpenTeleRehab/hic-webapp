@@ -29,6 +29,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
   const [filePath, setFilePath] = useState('');
   const [siteTitle, setSiteTitle] = useState('');
   const [homeImagePath, setHomeImagePath] = useState('');
+  const documentTitle = document.title;
 
   useEffect(() => {
     // Reset scroll position on change of routes
@@ -37,12 +38,12 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
 
   // set page title
   useEffect(() => {
-    if (bannerTitle) {
-      setSiteTitle(bannerTitle);
+    if (title.includes('.detail')) {
+      setSiteTitle(documentTitle);
     } else {
       setSiteTitle(translate(title));
     }
-  }, [title, translate, bannerTitle]);
+  }, [title, translate, documentTitle]);
 
   useEffect(() => {
     if (location.pathname === replaceRoute(ROUTES.HOME, activeLanguage) || location.pathname + '/' === replaceRoute(ROUTES.HOME, activeLanguage)) {
