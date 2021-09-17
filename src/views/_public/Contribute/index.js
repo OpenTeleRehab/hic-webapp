@@ -23,6 +23,8 @@ const Contribute = () => {
   const [editItem, setEditItem] = useState(undefined);
   const [isShowReviewModal, setIsShowReviewModal] = useState(false);
   const [isShowConfirmSubmissionModal, setIsShowConfirmSubmissionModal] = useState(false);
+  const [isShowConfirmTranslationSubmissionModal, setIsShowConfirmTranslationSubmissionModal] = useState(false);
+  const [resourceType, setResourceType] = useState('');
   const history = useHistory();
 
   useEffect(() => {
@@ -42,7 +44,14 @@ const Contribute = () => {
 
   const handleCancelConfirmSubmission = () => {
     setIsShowConfirmSubmissionModal(false);
-    history.push(replaceRoute(ROUTES.LIBRARY, activeLanguage));
+    setIsShowConfirmTranslationSubmissionModal(false);
+    if (resourceType === LIBRARY_TYPES.EXERCISE) {
+      history.push(replaceRoute(ROUTES.LIBRARY, activeLanguage));
+    } else if (resourceType === LIBRARY_TYPES.MATERIAL) {
+      history.push(replaceRoute(ROUTES.LIBRARY_EDUCATION, activeLanguage));
+    } else {
+      history.push(replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE, activeLanguage));
+    }
   };
 
   return (
@@ -80,15 +89,16 @@ const Contribute = () => {
         { view === LIBRARY_TYPES.EXERCISE && <CreateExercise translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} /> }
         { view === LIBRARY_TYPES.MATERIAL && <CreateEducationMaterial translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} /> }
         { view === LIBRARY_TYPES.QUESTIONNAIRE && <CreateQuestionnaire translate={translate} hash={hash} editItem={editItem} setEditItem={setEditItem} showReviewModal={setIsShowReviewModal} /> }
-        { isShowReviewModal && <ReviewSubmissionModal translate={translate} editItem={setEditItem} showReviewModal={setIsShowReviewModal} showConfirmSubmissionModal={setIsShowConfirmSubmissionModal} /> }
+        { isShowReviewModal && <ReviewSubmissionModal translate={translate} editItem={setEditItem} showReviewModal={setIsShowReviewModal} showConfirmSubmissionModal={setIsShowConfirmSubmissionModal} showConfirmTranslationSubmissionModal={setIsShowConfirmTranslationSubmissionModal} resourceType={setResourceType} /> }
 
         <Dialog
-          show={isShowConfirmSubmissionModal}
+          show={isShowConfirmSubmissionModal || isShowConfirmTranslationSubmissionModal}
           title={translate('contribute.confirm_submission.title')}
           onCancel={handleCancelConfirmSubmission}
           cancelLabel={translate('common.close')}
         >
-          {translate('contribute.confirm_submission.text')}
+          {isShowConfirmSubmissionModal && translate('contribute.confirm_submission.text')}
+          {isShowConfirmTranslationSubmissionModal && translate('contribute.confirm_translation_submission.text')}
         </Dialog>
       </div>
     </>
