@@ -30,6 +30,11 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
   const [siteTitle, setSiteTitle] = useState('');
   const [homeImagePath, setHomeImagePath] = useState('');
 
+  useEffect(() => {
+    // Reset scroll position on change of routes
+    window.scrollTo({ left: 0, top: 0 });
+  }, []);
+
   // set page title
   useEffect(() => {
     if (bannerTitle) {
