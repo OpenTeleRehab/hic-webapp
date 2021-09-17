@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 import { ContextAwareToggle } from 'components/Accordion/ContextAwareToggle';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  contributeExercise,
-  getExercise
+  contributeExercise
 } from '../../../../store/exercise/actions';
 import {
   contributeSubmission,
@@ -16,12 +15,10 @@ import {
 } from '../../../../store/contribute/actions';
 import { showSpinner } from '../../../../store/spinnerOverlay/actions';
 import {
-  contributeEducationMaterial,
-  getEducationMaterial
+  contributeEducationMaterial
 } from '../../../../store/educationMaterial/actions';
 import {
-  contributeQuestionnaire,
-  getQuestionnaire
+  contributeQuestionnaire
 } from '../../../../store/questionnaire/actions';
 import { toHash } from '../../../../utils/hash';
 import moment from 'moment';
@@ -31,9 +28,9 @@ import { replaceRoute } from 'utils/route';
 import { LIBRARY_TYPES } from '../../../../variables/library';
 import validateEmail from 'utils/validateEmail';
 
-const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfirmSubmissionModal }) => {
+const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfirmSubmissionModal, showConfirmTranslationSubmissionModal, resourceType }) => {
   const dispatch = useDispatch();
-  const { pathname } = useLocation();
+  const { hash, pathname } = useLocation();
   const history = useHistory();
   const { id } = useParams();
   const handleClose = () => showReviewModal(false);
@@ -52,9 +49,6 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [selectedEducationMaterials, setSelectedEducationMaterials] = useState([]);
   const [selectedQuestionnaires, setSelectedQuestionnaires] = useState([]);
-  const { exercise } = useSelector((state) => state.exercise);
-  const { educationMaterial } = useSelector((state) => state.educationMaterial);
-  const { questionnaire } = useSelector((state) => state.questionnaire);
 
   useEffect(() => {
     exercises.forEach((exercise, index) => {
@@ -184,19 +178,7 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
           dispatch(clearContribute());
           dispatch(showSpinner(false));
           showReviewModal(false);
-
-          if (pathname.includes(LIBRARY_TYPES.EXERCISE)) {
-            dispatch(getExercise(id));
-            history.push(replaceRoute(ROUTES.LIBRARY_EXERCISE_DETAIL.replace(':slug', exercise && exercise.slug), activeLanguage));
-          }
-          if (pathname.includes(LIBRARY_TYPES.MATERIAL)) {
-            dispatch(getEducationMaterial(id));
-            history.push(replaceRoute(ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL.replace(':slug', educationMaterial && educationMaterial.slug), activeLanguage));
-          }
-          if (pathname.includes(LIBRARY_TYPES.QUESTIONNAIRE)) {
-            dispatch(getQuestionnaire(id));
-            history.push(replaceRoute(ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL.replace(':slug', questionnaire && questionnaire.slug), activeLanguage));
-          }
+          showConfirmTranslationSubmissionModal(true);
         } else {
           dispatch(contributeSubmission(formFields)).then(result => {
             if (result) {
@@ -207,6 +189,14 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
             }
           });
         }
+      }
+
+      if (hash.includes('#' + LIBRARY_TYPES.MATERIAL) || pathname.includes(LIBRARY_TYPES.MATERIAL)) {
+        resourceType(LIBRARY_TYPES.MATERIAL);
+      } else if (hash.includes('#' + LIBRARY_TYPES.QUESTIONNAIRE) || pathname.includes(LIBRARY_TYPES.QUESTIONNAIRE)) {
+        resourceType(LIBRARY_TYPES.QUESTIONNAIRE);
+      } else {
+        resourceType(LIBRARY_TYPES.EXERCISE);
       }
     }
   };
@@ -426,7 +416,9 @@ ReviewSubmissionModal.propTypes = {
   translate: PropTypes.func,
   editItem: PropTypes.func,
   showReviewModal: PropTypes.func,
-  showConfirmSubmissionModal: PropTypes.func
+  showConfirmSubmissionModal: PropTypes.func,
+  showConfirmTranslationSubmissionModal: PropTypes.func,
+  resourceType: PropTypes.func
 };
 
 export default ReviewSubmissionModal;
