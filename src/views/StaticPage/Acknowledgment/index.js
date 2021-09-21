@@ -339,7 +339,7 @@ const Acknowledgment = ({ type }) => {
           <Form.Label column sm="3">{translate('acknowledgment.hide_contributors')}</Form.Label>
           <Col sm="9">
             <Multiselect
-              displayValue="name"
+              displayValue="name_email"
               selectedValues={selectedContributors}
               onSelect={handleMultipleSelectChange}
               onRemove={handleMultipleRemove}
