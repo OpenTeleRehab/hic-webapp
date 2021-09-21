@@ -127,6 +127,11 @@ const QuestionnaireDetail = () => {
         </Accordion>
       ))
       }
+      {questionnaireBySlug && questionnaireBySlug.auto_translated === true && (
+        <div className="d-flex justify-content-end mb-3">
+          <img src="/images/google-translation.png" alt="text attribution" />
+        </div>
+      )}
       {activeLanguage !== 'en' &&
         <Button
           className="btn-block"
