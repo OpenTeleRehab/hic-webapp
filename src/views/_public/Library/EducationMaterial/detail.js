@@ -4,6 +4,8 @@ import { Button, Col, Form, Image, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux/lib/index';
 import { useHistory, useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+
 import {
   getEducationMaterialBySlug
 } from '../../../../store/educationMaterial/actions';
@@ -19,6 +21,7 @@ const EducationMaterialDetail = () => {
   const translate = getTranslate(localize);
   const [materialFile, setMaterialFile] = useState(undefined);
   const { slug } = useParams();
+  const [filePath, setFilePath] = useState('');
 
   useEffect(() => {
     if (slug) {
@@ -40,8 +43,18 @@ const EducationMaterialDetail = () => {
     }
   }, [educationMaterialBySlug]);
 
+  useEffect(() => {
+    if (materialFile !== undefined) {
+      setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`);
+    }
+  }, [materialFile]);
+
   return (
     <>
+      <Helmet
+      >
+        <meta property="og:image" content={filePath} />
+      </Helmet>
       <h1 className="text-primary font-weight-bold mb-3">{educationMaterialBySlug.title}</h1>
       <Row>
         <Col sm={12} xl={12}>

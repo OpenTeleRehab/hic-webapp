@@ -9,6 +9,7 @@ import { formatFileSize } from '../../../../utils/file';
 import { replaceRoute } from '../../../../utils/route';
 import * as ROUTES from '../../../../variables/routes';
 import _ from 'lodash';
+import { Helmet } from 'react-helmet';
 
 const ExerciseDetail = () => {
   const localize = useSelector((state) => state.localize);
@@ -21,6 +22,7 @@ const ExerciseDetail = () => {
   const [mediaUploads, setMediaUploads] = useState([]);
   const [additionalFields, setAdditionalFields] = useState([]);
   const [index, setIndex] = useState(0);
+  const [filePath, setFilePath] = useState('');
 
   const handleSelect = (selectedIndex, e) => {
     setIndex(selectedIndex);
@@ -47,8 +49,17 @@ const ExerciseDetail = () => {
     }
   }, [exerciseBySlug]);
 
+  useEffect(() => {
+    if (mediaUploads[0] !== undefined) {
+      setFilePath(`${process.env.REACT_APP_API_BASE_URL}/file/${mediaUploads[0].id}`);
+    }
+  }, [mediaUploads]);
+
   return (
     <>
+      <Helmet>
+        <meta property="og:image" content={filePath} />
+      </Helmet>
       <h1 className="text-primary font-weight-bold mb-3">{exerciseBySlug.title}</h1>
       <Row>
         <Col sm={7} md={8}>
