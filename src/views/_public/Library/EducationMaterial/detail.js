@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { withLocalize } from 'react-localize-redux';
-import { Button, Col, Form, Image, Row } from 'react-bootstrap';
+import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux/lib/index';
 import { useHistory, useParams } from 'react-router-dom';
@@ -49,11 +49,18 @@ const EducationMaterialDetail = () => {
     }
   }, [materialFile]);
 
+  const getMeta = (url) => {
+    const img = new Image();
+    img.src = url;
+    return img;
+  };
+
   return (
     <>
-      <Helmet
-      >
+      <Helmet>
         <meta property="og:image" content={filePath} />
+        <meta property="og:image:width" content={getMeta(filePath).width} />
+        <meta property="og:image:height" content={getMeta(filePath).height} />
       </Helmet>
       <h1 className="text-primary font-weight-bold mb-3">{educationMaterialBySlug.title}</h1>
       <Row>
@@ -114,7 +121,7 @@ const EducationMaterialDetail = () => {
 
           {educationMaterialBySlug.auto_translated === true && (
             <div className="d-flex justify-content-end">
-              <Image src="/images/google-translation.png" alt="text attribution" />
+              <img src="/images/google-translation.png" alt="text attribution" />
             </div>
           )}
         </Col>
