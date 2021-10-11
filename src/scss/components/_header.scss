@@ -1,10 +1,16 @@
-.header {
+.header,
+.fe-header {
 	margin: toRem(59) 0 0 0;
 }
+
 
 @include media-breakpoint-up(xl) {
 	.header {
 		margin: toRem(70) 0 0 0;
+	}
+
+	.fe-header {
+		margin: toRem(110) 0 0 0;
 	}
 }
 
