@@ -124,7 +124,7 @@ const Layout = ({ component: Component, title }) => {
         <meta property="og:site_name" content={process.env.REACT_APP_SITE_TITLE} />
       </Helmet>
 
-      <header className="header">
+      <header className="fe-header">
         <Navigation translate={translate} />
         {showBanner && <Banner bannerImagePath={filePath} isHome={isHome} title={bannerTitle} introductionText={introductionText} isAcknowledgment={isAcknowledgment} />}
       </header>
