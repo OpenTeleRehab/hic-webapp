@@ -14,8 +14,8 @@
 @include media-breakpoint-up(lg) {
 	.section {
 		&__wrapper {
-			padding-bottom: toRem(60);
-			padding-top: toRem(60);
+			padding-bottom: toRem(48);
+			padding-top: toRem(48);
 		}
 
 		&__heading {
