@@ -272,7 +272,7 @@ const Dashboard = () => {
       <section className="section__wrapper bg-white">
         <Container>
           <h2 className="text-primary section__heading">{translate('static_page.partner').toUpperCase()}</h2>
-          <div className="p-3 flex-grow-1" dangerouslySetInnerHTML={{ __html: staticPage.partner_content }} />
+          <div className="flex-grow-1" dangerouslySetInnerHTML={{ __html: staticPage.partner_content }} />
         </Container>
       </section>
     </>
