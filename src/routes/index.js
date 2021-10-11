@@ -44,104 +44,91 @@ const publicRoutes = [
     path: ROUTES.HOME,
     component: PublicHomePage,
     exact: true,
-    type: PUBLIC,
-    defaultTemplate: true
+    type: PUBLIC
   },
   {
     title: 'library',
     path: ROUTES.LIBRARY,
     component: LibraryPage,
     exact: true,
-    type: PUBLIC,
-    defaultTemplate: false
+    type: PUBLIC
   },
   {
     title: 'contribute.title',
     path: ROUTES.CONTRIBUTE,
     component: ContributePage,
     exact: true,
-    type: PUBLIC,
-    defaultTemplate: false
+    type: PUBLIC
   },
   {
     title: 'translation.exercise.edit',
     path: ROUTES.EXERCISE_EDIT_TRANSLATION,
     component: ContributePage,
     exact: true,
-    type: PUBLIC,
-    defaultTemplate: false
+    type: PUBLIC
   },
   {
     title: 'translation.education_material.edit',
     path: ROUTES.EDUCATION_MATERIAL_EDIT_TRANSLATION,
     component: ContributePage,
     exact: true,
-    type: PUBLIC,
-    defaultTemplate: false
+    type: PUBLIC
   },
   {
     title: 'translation.questionnaire.edit',
     path: ROUTES.QUESTIONNAIRE_EDIT_TRANSLATION,
     component: ContributePage,
     exact: true,
-    type: PUBLIC,
-    defaultTemplate: false
+    type: PUBLIC
   },
   {
     title: 'confirm.submission',
     path: ROUTES.CONFIRM_SUBMISSION,
     component: ConfirmSubmissionPage,
     exact: true,
-    type: PUBLIC,
-    defaultTemplate: false
+    type: PUBLIC
   },
   {
     title: 'exercise.detail',
     path: ROUTES.LIBRARY_EXERCISE_DETAIL,
     component: ExerciseDetail,
     exact: true,
-    type: PUBLIC,
-    defaultTemplate: false
+    type: PUBLIC
   },
   {
     title: 'education_material.detail',
     path: ROUTES.LIBRARY_EDUCATION_MATERIAL_DETAIL,
     component: EducationMaterialDetail,
     exact: true,
-    type: PUBLIC,
-    defaultTemplate: false
+    type: PUBLIC
   },
   {
     title: 'questionnaire.detail',
     path: ROUTES.LIBRARY_QUESTIONNAIRE_DETAIL,
     component: QuestionnaireDetail,
     exact: true,
-    type: PUBLIC,
-    defaultTemplate: false
+    type: PUBLIC
   },
   {
     title: 'about_us',
     path: ROUTES.ABOUT_US,
     component: AboutUsPage,
     exact: true,
-    type: PUBLIC,
-    defaultTemplate: true
+    type: PUBLIC
   },
   {
     title: 'term_condition',
     path: ROUTES.TERM_CONDITION,
     component: TermConditionPage,
     exact: true,
-    type: PUBLIC,
-    defaultTemplate: true
+    type: PUBLIC
   },
   {
     title: 'acknowledgment',
     path: ROUTES.ACKNOWLEDGMENT,
     component: AcknowledgmentPage,
     exact: true,
-    type: PUBLIC,
-    defaultTemplate: true
+    type: PUBLIC
   }
 ];
 
@@ -274,11 +261,11 @@ const routes = [
 const RouteSwitch = () => {
   const { activeLanguage } = useSelector((state) => state.language);
 
-  const routeComponents = routes.map(({ path, component, exact, type, title, roles, defaultTemplate }, key) => {
+  const routeComponents = routes.map(({ path, component, exact, type, title, roles }, key) => {
     if (type === PUBLIC) {
       return (
         <Route exact={!!exact} path={replaceRoute(path, activeLanguage)} key={key}>
-          <DefaultLayout component={component} title={title} defaultTemplate={defaultTemplate} />
+          <DefaultLayout component={component} title={title} />
         </Route>
       );
     } else {

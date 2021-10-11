@@ -14,7 +14,7 @@ import { Container } from 'react-bootstrap';
 import { replaceRoute } from '../utils/route';
 import { Helmet } from 'react-helmet';
 
-const Layout = ({ component: Component, title, defaultTemplate }) => {
+const Layout = ({ component: Component, title }) => {
   const localize = useSelector((state) => state.localize);
   const { activeLanguage } = useSelector((state) => state.language);
   const { publishTermAndConditionPage, termConditionBanner } = useSelector((state) => state.termAndCondition);
@@ -129,17 +129,11 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
         {showBanner && <Banner bannerImagePath={filePath} isHome={isHome} title={bannerTitle} introductionText={introductionText} isAcknowledgment={isAcknowledgment} />}
       </header>
 
-      {defaultTemplate ? (
-        <main className="main">
+      <main className="main main-public-area pt-4 pb-4 bg-white">
+        <Container>
           <Component translate={translate} />
-        </main>
-      ) : (
-        <main className="main main-public-area pt-4 pb-4 bg-white">
-          <Container>
-            <Component translate={translate} />
-          </Container>
-        </main>
-      )}
+        </Container>
+      </main>
       <Footer fixedBottom={false} />
 
       <ToastNotification />
@@ -150,8 +144,7 @@ const Layout = ({ component: Component, title, defaultTemplate }) => {
 
 Layout.propTypes = {
   component: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
-  title: PropTypes.string,
-  defaultTemplate: PropTypes.bool
+  title: PropTypes.string
 };
 
 export default Layout;
