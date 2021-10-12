@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useKeycloak } from '@react-keycloak/web';
 import { useHistory } from 'react-router-dom';
 import * as ROUTES from 'variables/routes';
 import { Button, Card, Col, Container, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
@@ -13,19 +12,12 @@ import { MATERIAL_TYPE } from '../../variables/activity';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const { keycloak } = useKeycloak();
   const history = useHistory();
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
   const { activeLanguage, languages } = useSelector((state) => state.language);
   const { statistics } = useSelector((state) => state.dashboard);
   const { staticPage } = useSelector(state => state.staticPage);
-
-  useEffect(() => {
-    if (keycloak.authenticated) {
-      history.push(ROUTES.ADMIN_DASHBOARD);
-    }
-  }, [keycloak, history]);
 
   useEffect(() => {
     dispatch(getStatistics());

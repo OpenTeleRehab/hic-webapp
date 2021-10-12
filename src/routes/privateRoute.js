@@ -16,7 +16,6 @@ const PrivateRoute = ({ children, title, roles, ...rest }) => {
           keycloak.login();
           return;
         }
-
         if (roles) {
           const role = roles.find(role => {
             return keycloak.hasRealmRole(role);
@@ -26,7 +25,6 @@ const PrivateRoute = ({ children, title, roles, ...rest }) => {
             return <Redirect to={ROUTES.ADMIN_DASHBOARD} />;
           }
         }
-
         return children;
       }}
     />

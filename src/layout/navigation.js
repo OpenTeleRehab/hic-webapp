@@ -9,8 +9,6 @@ import {
 import { Navbar, Nav, Dropdown } from 'react-bootstrap';
 import * as ROUTES from 'variables/routes';
 import PropTypes from 'prop-types';
-import Dialog from 'components/Dialog';
-import { useKeycloak } from '@react-keycloak/web';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaLanguage } from 'react-icons/fa';
 import { setActiveLanguage } from '../store/language/actions';
@@ -21,9 +19,7 @@ import { replaceRoute } from '../utils/route';
 const Navigation = ({ translate }) => {
   const location = useLocation();
   const history = useHistory();
-  const { keycloak } = useKeycloak();
   const dispatch = useDispatch();
-  const [show, setShow] = useState(false);
   const { profile } = useSelector((state) => state.auth);
   const { languages, activeLanguage } = useSelector((state) => state.language);
   const [languageName, setLanguageName] = useState('English');
@@ -60,14 +56,6 @@ const Navigation = ({ translate }) => {
       exact: true
     }
   ];
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  const handleConfirm = () => {
-    if (keycloak.authenticated) {
-      keycloak.logout();
-    }
-  };
 
   useEffect(() => {
     if (window.location.pathname.split('/')[1].length === 2) {
@@ -109,13 +97,25 @@ const Navigation = ({ translate }) => {
   return (
     <>
       <Navbar variant="dark" expand="xl" className="top-nav fixed-top">
-        <span className="d-flex nav-link">
-          {translate('login_link', {
-            link: <NavLink
-              to={ROUTES.ADMIN}
-            ><strong>{translate('login_here')}</strong></NavLink>
-          })}
-        </span>
+        { profile !== undefined ? (
+          <span className="d-flex nav-link">
+            {translate('common.welcome')} {profile.last_name} {profile.first_name},
+            &nbsp;
+            {translate('back_to_be', {
+              link: <NavLink
+                to={ROUTES.ADMIN}
+              ><strong>{translate('login_here')}</strong></NavLink>
+            })}
+          </span>
+        ) : (
+          <span className="d-flex nav-link">
+            {translate('login_link', {
+              link: <NavLink
+                to={ROUTES.ADMIN}
+              ><strong>{translate('login_here')}</strong></NavLink>
+            })}
+          </span>
+        )}
       </Navbar>
       <Navbar bg="primary" variant="dark" expand="xl" className="main-nav fix-middle">
         <Navbar.Brand>
@@ -129,62 +129,33 @@ const Navigation = ({ translate }) => {
           </Link>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav ml-auto" />
-        <Navbar.Collapse id="basic-navbar-nav-test">
+        <Navbar.Collapse id="basic-navbar">
           <Nav className="ml-auto" variant="pills">
-            {
-              !keycloak.authenticated && publicNavItems.map(({ label, to, exact }, key) => {
-                return (
-                  <NavLink
-                    to={to}
-                    exact={exact}
-                    key={key}
-                    className="d-flex align-items-center nav-link"
-                  >
-                    {translate(label)}
-                  </NavLink>
-                );
-              })
+            { publicNavItems.map(({ label, to, exact }, key) => {
+              return (
+                <NavLink
+                  to={to}
+                  exact={exact}
+                  key={key}
+                  className="d-flex align-items-center nav-link"
+                >
+                  {translate(label)}
+                </NavLink>
+              );
+            })
             }
-
-            { profile !== undefined ? (
-              <Dropdown>
-                <Dropdown.Toggle variant="link" id="dropdown-basic">
-                  {translate('common.welcome')} {profile.last_name} {profile.first_name}
-                  <br/>
-                  {profile.email}
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu alignRight={true}>
-                  <Dropdown.Item as={Link} to={replaceRoute(ROUTES.PROFILE, activeLanguage)}>
-                    {translate('common.profile.update')}
+            <Dropdown className="d-flex align-items-center language-wrapper">
+              <Dropdown.Toggle variant="link" id="dropdown-basic" className="d-flex align-items-center">
+                <FaLanguage size={26} className="mr-1"/><strong className="language-text">{languageName}</strong>
+              </Dropdown.Toggle>
+              <Dropdown.Menu alignRight={true}>
+                {languages.map((language) =>
+                  <Dropdown.Item key={language.id} onClick={() => handleLanguageChange(language.code)}>
+                    {language.name}
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={handleShow}>{translate('common.logout')}</Dropdown.Item>
-                  <Dialog
-                    show={show}
-                    title={translate('logout.confirmation')}
-                    cancelLabel={translate('logout.cancel')}
-                    onCancel={handleClose}
-                    confirmLabel={translate('logout.confirm')}
-                    onConfirm={handleConfirm}
-                  >
-                    <p>{translate('logout.message')}</p>
-                  </Dialog>
-                </Dropdown.Menu>
-              </Dropdown>
-            ) : (
-              <Dropdown className="d-flex align-items-center language-wrapper">
-                <Dropdown.Toggle variant="link" id="dropdown-basic" className="d-flex align-items-center">
-                  <FaLanguage size={26} className="mr-1"/><strong className="language-text">{languageName}</strong>
-                </Dropdown.Toggle>
-                <Dropdown.Menu alignRight={true}>
-                  {languages.map((language) =>
-                    <Dropdown.Item key={language.id} onClick={() => handleLanguageChange(language.code)}>
-                      {language.name}
-                    </Dropdown.Item>
-                  )}
-                </Dropdown.Menu>
-              </Dropdown>
-            )}
+                )}
+              </Dropdown.Menu>
+            </Dropdown>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

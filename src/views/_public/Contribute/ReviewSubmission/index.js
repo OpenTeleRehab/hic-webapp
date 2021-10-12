@@ -49,6 +49,8 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [selectedEducationMaterials, setSelectedEducationMaterials] = useState([]);
   const [selectedQuestionnaires, setSelectedQuestionnaires] = useState([]);
+  const { profile } = useSelector((state) => state.auth);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     exercises.forEach((exercise, index) => {
@@ -57,6 +59,15 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
     setSelectedExercises([...selectedExercises]);
     // eslint-disable-next-line
   }, [exercises]);
+
+  useEffect(() => {
+    if (profile !== undefined) {
+      setFormFields({ ...formFields, first_name: profile.first_name, last_name: profile.last_name, email: profile.email });
+      setIsAdmin(true);
+      setAgreeTermsAndCondition(true);
+    }
+    // eslint-disable-next-line
+  }, [profile])
 
   useEffect(() => {
     educationMaterials.forEach((educationMaterial, index) => {
@@ -342,6 +353,7 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
               value={formFields.first_name}
               isInvalid={firstNameError}
               onChange={handleChange}
+              disabled={isAdmin}
             />
             <Form.Control.Feedback type="invalid">
               {translate('error.first_name')}
@@ -357,6 +369,7 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
               value={formFields.last_name}
               isInvalid={lastNameError}
               onChange={handleChange}
+              disabled={isAdmin}
             />
             <Form.Control.Feedback type="invalid">
               {translate('error.last_name')}
@@ -374,6 +387,7 @@ const ReviewSubmissionModal = ({ translate, editItem, showReviewModal, showConfi
               value={formFields.email}
               isInvalid={emailError}
               onChange={handleChange}
+              disabled={isAdmin}
             />
             <Form.Control.Feedback type="invalid">
               {translate('error.email')}
