@@ -51,7 +51,7 @@ const Navigation = ({ translate }) => {
   return (
     <Navbar bg="primary" variant="dark" expand="xl" className="main-nav fixed-top">
       <Navbar.Brand className="d-flex justify-content-between">
-        <Link to={ROUTES.HOME} className="logo">
+        <Link to={ROUTES.ADMIN} className="logo">
           <img
             src="/images/logo.png"
             className="img-fluid logo-maximize"
