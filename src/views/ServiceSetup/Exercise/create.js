@@ -458,7 +458,7 @@ const CreateExercise = ({ translate }) => {
             <h5 className="text-primary">{translate('common.media')}</h5>
 
             { mediaUploads.map((mediaUpload, index) => (
-              <div key={index} className={`mb-2 position-relative ${isEditingTranslation && mediaUpload.id && 'opacity-50'}`}>
+              <div key={index} className={`mb-2 position-relative ${isEditingTranslation && mediaUpload.id && 'opacity-50 media-container'}`}>
                 <Button
                   variant="link"
                   onClick={() => handleFileRemove(index)}
@@ -471,13 +471,13 @@ const CreateExercise = ({ translate }) => {
                 { mediaUpload.fileType === 'audio/mpeg' &&
                 <div className="img-thumbnail w-100 pt-2 border-danger">
                   <audio controls className="w-100">
-                    <source src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} type="audio/ogg" />
+                    <source src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} type="audio/ogg" className="media-img" />
                   </audio>
                 </div>
                 }
 
                 { (mediaUpload.fileType !== 'audio/mpeg' && mediaUpload.fileType !== 'video/mp4') &&
-                <img src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} alt={mediaUpload.fileName} className="w-100 img-thumbnail border-danger" />
+                <img src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} alt={mediaUpload.fileName} className="w-100 img-thumbnail border-danger media-img" />
                 }
 
                 { mediaUpload.fileType === 'video/mp4' &&
@@ -485,6 +485,11 @@ const CreateExercise = ({ translate }) => {
                   <source src={mediaUpload.url || `${process.env.REACT_APP_API_BASE_URL}/file/${mediaUpload.id}`} type="video/mp4" />
                 </video>
                 }
+                {isEditingTranslation && (
+                  <div className="middle">
+                    <div className="text">{translate('media.hover')}</div>
+                  </div>
+                )}
                 <div>{mediaUpload.fileName} {mediaUpload.fileSize ? formatFileSize(mediaUpload.fileSize) : ''}</div>
               </div>
             ))}

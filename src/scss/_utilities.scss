@@ -20,12 +20,12 @@
 
 .top-nav {
   justify-content: flex-end;
-  background-color: #004f71;
+  background-color: $dark-blue;
   padding: 0;
   color: white;
 
   a {
-    color: #ffffff;
+    color: $white;
     padding: 0 0.5rem;
   }
 }

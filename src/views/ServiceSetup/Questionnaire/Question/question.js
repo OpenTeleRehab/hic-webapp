@@ -29,7 +29,7 @@ const reorderQuestion = (questions, startIndex, endIndex) => {
   return result;
 };
 
-const Question = ({ translate, questionnaire, questions, setQuestions, questionTitleError, answerFieldError, modifiable, showFallbackText }) => {
+const Question = ({ translate, questionnaire, questions, setQuestions, questionTitleError, answerFieldError, modifiable, showFallbackText, isEditingTranslation }) => {
   const handleFileChange = (e, index) => {
     const { name, files } = e.target;
     const values = [...questions];
@@ -197,8 +197,13 @@ const Question = ({ translate, questionnaire, questions, setQuestions, questionT
                                 </Form.Control.Feedback>
                               </Form.Group>
                               { question.file &&
-                                <div className="form-group w-50 position-relative">
-                                  <img src={readImage(question.file)} alt={question.name} className="w-100 img-thumbnail border-danger" />
+                                <div className={`form-group w-50 position-relative ${isEditingTranslation && question.id && 'media-container opacity-50'}`}>
+                                  <img src={readImage(question.file)} alt={question.name} className="w-100 img-thumbnail border-danger media-img" />
+                                  { isEditingTranslation && (
+                                    <div className="middle">
+                                      <div className="text">{translate('media.hover')}</div>
+                                    </div>
+                                  )}
                                   {modifiable &&
                                     <Button
                                       variant="link"
@@ -373,7 +378,8 @@ Question.propTypes = {
   questionTitleError: PropTypes.array,
   answerFieldError: PropTypes.array,
   modifiable: PropTypes.bool,
-  showFallbackText: PropTypes.bool
+  showFallbackText: PropTypes.bool,
+  isEditingTranslation: PropTypes.bool
 };
 
 export default withLocalize(Question);

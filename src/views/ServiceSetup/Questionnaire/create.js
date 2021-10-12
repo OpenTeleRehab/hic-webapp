@@ -465,6 +465,7 @@ const CreateQuestionnaire = ({ translate }) => {
               answerFieldError={answerFieldError}
               modifiable={!isEditingTranslation || disabledEditing()}
               showFallbackText={showFallbackText}
+              isEditingTranslation={isEditingTranslation}
             />
             {!isEditingTranslation &&
               <div className="sticky-bottom d-flex justify-content-between">
