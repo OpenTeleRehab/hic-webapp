@@ -9,7 +9,8 @@ import {
   BsGrid,
   MdGTranslate,
   BiFolder,
-  FiUser
+  FiUser,
+  AiOutlineDashboard
 } from 'react-icons/all';
 import * as ROUTES from '../../variables/routes';
 import keycloak from '../../utils/keycloak';
@@ -19,7 +20,7 @@ const sidebarNavItems = [
   {
     label: 'dashboard',
     to: ROUTES.ADMIN_DASHBOARD,
-    icon: <BsHouse />,
+    icon: <AiOutlineDashboard />,
     exact: true
   },
   {
@@ -56,6 +57,12 @@ const sidebarNavItems = [
     icon: <BiFolder />,
     exact: true,
     roles: [USER_ROLES.MANAGE_STATIC_PAGE]
+  },
+  {
+    label: 'frontend',
+    to: ROUTES.HOME,
+    icon: <BsHouse />,
+    exact: true
   }
 ];
 
