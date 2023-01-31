@@ -18,12 +18,20 @@ const ConfigurationProvider = ({ children }) => {
 
   useEffect(() => {
     if (loading) {
-      dispatch(getProfile());
-      dispatch(getTranslations(keycloak.authenticated ? { portal: 'admin_portal' } : { portal: 'public_portal' })).then(res => {
-        if (res) {
-          setLoading(false);
-        }
-      });
+      if (keycloak.authenticated) {
+        dispatch(getProfile());
+        dispatch(getTranslations({ portal: 'admin_portal' })).then(res => {
+          if (res) {
+            setLoading(false);
+          }
+        });
+      } else {
+        dispatch(getTranslations({ portal: 'public_portal' })).then(res => {
+          if (res) {
+            setLoading(false);
+          }
+        });
+      }
       dispatch(getLanguages());
       dispatch(getHomeBannerImage());
     }
