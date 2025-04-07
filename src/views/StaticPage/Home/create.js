@@ -306,7 +306,7 @@ const CreateHomePage = ({ type, editId }) => {
               )}
               {enableButtons() && (
                 <>
-                  <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden" >
+                  <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden">
                     <BsUpload size={15}/> Upload Image
                     <Form.File.Input
                       name='file'

@@ -1,4 +1,5 @@
+import { SHA256 } from 'crypto-js';
+
 export const toHash = (string) => {
-  const crypto = require('crypto');
-  return crypto.createHash('md5').update(string).digest('hex');
+  return SHA256(string).toString();
 };
