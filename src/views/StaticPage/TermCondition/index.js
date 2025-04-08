@@ -40,7 +40,7 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
   const [formFields, setFormFields] = useState({
     file: undefined
   });
-  const [fileError, setFileError] = useState(false);
+  const [fileMaxSizeError, setFileMaxSizeError] = useState(false);
 
   const columns = [
     { name: 'version', title: translate('term_and_condition.version') },
@@ -139,9 +139,9 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
 
     if (formFields.file !== undefined && toMB(formFields.file.size) > maxFileSize) {
       canSave = false;
-      setFileError(true);
+      setFileMaxSizeError(true);
     } else {
-      setFileError(false);
+      setFileMaxSizeError(false);
     }
     if (canSave) {
       dispatch(createTermConditionBanner({ ...formFields }));
@@ -184,8 +184,13 @@ const TermAndCondition = ({ translate, handleRowEdit }) => {
             )}
             <div className="btn bg-white btn-outline-primary text-primary position-relative overflow-hidden mr-3 mt-2 up-load-button-wrapper" role="button" tabIndex="0" onKeyPress={(event) => event.key === 'Enter' && document.getElementById('file').click()}>
               <BsUpload size={15}/> Upload Image
-              <input type="file" id="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} accept="image/*" isInvalid={fileError} aria-label="Upload" />
+              <input type="file" id="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} accept="image/*" aria-label="Upload" />
             </div>
+            {fileMaxSizeError && (
+              <div className="error-feedback">
+                {translate('term_and_condition.upload_file.max_size', { size: maxFileSize })}
+              </div>
+            )}
             <Button variant="primary" className="mt-2" onClick={handleConfirm} tabIndex="0" disabled={disabled}>
               {translate('common.save')}
             </Button>

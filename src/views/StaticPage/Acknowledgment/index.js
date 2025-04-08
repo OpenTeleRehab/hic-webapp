@@ -30,7 +30,7 @@ const Acknowledgment = ({ type }) => {
   const [errorContent, setErrorContent] = useState(false);
   const [errorTitle, setErrorTitle] = useState(false);
   const [acknowledgmentFile, setAcknowledgmentFile] = useState(undefined);
-  const [fileError, setFileError] = useState(false);
+  const [fileMaxSizeError, setFileMaxSizeError] = useState(false);
   const { languages } = useSelector(state => state.language);
   const { profile } = useSelector((state) => state.auth);
   const { staticPage } = useSelector(state => state.staticPage);
@@ -167,9 +167,9 @@ const Acknowledgment = ({ type }) => {
 
     if (formFields.file !== undefined && toMB(formFields.file.size) > maxFileSize) {
       canSave = false;
-      setFileError(true);
+      setFileMaxSizeError(true);
     } else {
-      setFileError(false);
+      setFileMaxSizeError(false);
     }
 
     if (canSave) {
@@ -254,10 +254,17 @@ const Acknowledgment = ({ type }) => {
                 </div>
               )}
               {enableButtons() && (
-                <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden" >
-                  <BsUpload size={15}/> Upload Image
-                  <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} accept="image/*" isInvalid={fileError} />
-                </div>
+                <>
+                  <div className="btn btn-sm bg-white btn-outline-primary text-primary position-relative overflow-hidden">
+                    <BsUpload size={15}/> Upload Image
+                    <input type="file" name="file" className="position-absolute upload-btn" onChange={handleFileChange} accept="image/*" />
+                  </div>
+                  {fileMaxSizeError && (
+                    <div className="error-feedback">
+                      {translate('acknowledgment.upload_file.max_size', { size: maxFileSize })}
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </Col>
