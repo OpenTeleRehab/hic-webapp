@@ -71,12 +71,7 @@ const ViewEducationMaterial = ({ showView, handleViewClose, id }) => {
 
                 <Form.Text className="text-muted">
                   {translate(materialFile.fileGroupType)}:
-                  <a
-                    href={`${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`}
-                    /* eslint-disable-next-line react/jsx-no-target-blank */
-                    target="_blank"
-                    className="pl-2"
-                  >
+                  <a href={`${process.env.REACT_APP_API_BASE_URL}/file/${materialFile.id}`} target="_blank" rel="noreferrer" className="pl-2">
                     {materialFile.fileName}
                   </a>
                 </Form.Text>

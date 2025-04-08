@@ -3,15 +3,12 @@ import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import { Nav, Navbar } from 'react-bootstrap';
-import {
-  BsHouse,
-  BsLayers,
-  BsGrid,
-  MdGTranslate,
-  BiFolder,
-  FiUser,
-  AiOutlineDashboard
-} from 'react-icons/all';
+import { BsHouse, BsLayers, BsGrid } from 'react-icons/bs';
+import { MdGTranslate } from 'react-icons/md';
+import { BiFolder } from 'react-icons/bi';
+import { FiUser } from 'react-icons/fi';
+import { AiOutlineDashboard } from 'react-icons/ai';
+
 import * as ROUTES from '../../variables/routes';
 import keycloak from '../../utils/keycloak';
 import { USER_ROLES } from '../../variables/user';

@@ -13,7 +13,7 @@ import {
   getContributorStatistics
 } from 'store/contributor/actions';
 import _ from 'lodash';
-import { RiShieldUserFill } from 'react-icons/all';
+import { RiShieldUserFill } from 'react-icons/ri';
 import { getTranslate } from 'react-localize-redux';
 
 const ContributorCard = ({ hideContributors, isAdmin }) => {

@@ -48,7 +48,7 @@
   color: $white;
 
   &:focus {
-	box-shadow: 0 0 0 0.2rem rgb(227, 82, 5 / 50%);
+	box-shadow: 0 0 0 0.2rem rgba(227, 82, 0.5);
 	background-color: $dark-orange;
 	border-color: $dark-orange;
 	text-decoration: none;
