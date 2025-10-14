@@ -40,6 +40,7 @@ export const ADMIN_STATIC_PAGES_TERM_CONDITION = ADMIN_STATIC_PAGES + '#term-con
 export const ADMIN_STATIC_PAGES_ACKNOWLEDGMENT = ADMIN_STATIC_PAGES + '#acknowledgment';
 export const ADMIN_CATEGORY_EDUCATION = ADMIN_CATEGORIES + '#education';
 export const ADMIN_CATEGORY_QUESTIONNAIRE = ADMIN_CATEGORIES + '#questionnaire';
+export const ADMIN_SETTING = '/admin/setting';
 
 export const SERVICE_SETUP = '/admin/resources';
 export const SERVICE_SETUP_EDUCATION = SERVICE_SETUP + '#education';

@@ -22,6 +22,7 @@ import { privacyPolicy } from 'store/privacyPolicy/reducers';
 import { contribute } from 'store/contribute/reducers';
 import { contributor } from 'store/contributor/reducers';
 import { dashboard } from 'store/dashboard/reducers';
+import { mfaSetting } from 'store/mfaSetting/reducers';
 
 export const rootReducer = {
   localize: localizeReducer,
@@ -40,7 +41,8 @@ export const rootReducer = {
   privacyPolicy,
   contribute,
   contributor,
-  dashboard
+  dashboard,
+  mfaSetting
 };
 
 const devTool =

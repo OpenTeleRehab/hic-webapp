@@ -34,6 +34,7 @@ import * as ROUTES from 'variables/routes';
 import { USER_ROLES } from 'variables/user';
 import { useSelector } from 'react-redux';
 import { replaceRoute } from '../utils/route';
+import Setting from 'views/Setting';
 
 const PRIVATE = 'private';
 const PUBLIC = 'public';
@@ -227,6 +228,14 @@ const routes = [
     exact: true,
     type: PRIVATE,
     roles: [USER_ROLES.MANAGE_STATIC_PAGE]
+  },
+  {
+    title: 'setting',
+    path: ROUTES.ADMIN_SETTING,
+    component: Setting,
+    exact: true,
+    type: PRIVATE,
+    roles: [USER_ROLES.MANAGE_SETTING]
   },
   {
     title: 'language',
