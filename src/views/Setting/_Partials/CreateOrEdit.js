@@ -21,7 +21,7 @@ const CreateOrEdit = ({
   const localize = useSelector((state) => state.localize);
   const translate = getTranslate(localize);
 
-  const { control, handleSubmit, reset } = useForm({
+  const { control, handleSubmit, reset, watch } = useForm({
     defaultValues: {
       user_type: 'moderator'
     }
@@ -106,21 +106,33 @@ const CreateOrEdit = ({
           isClearable
           aria-label="user group"
         />
-        <Radio rules={{ required: 'This field is required' }} control={control} name="mfa_enforcement" options={mfaEnforcementOptions} />
-        <Row>
-          <Col md={6}>
-            <Input control={control} type="number" name="mfa_expiration_duration" rules={{ required: 'This field is required' }} label={translate('mfa.expiration.duration')} />
-          </Col>
-          <Col md={6}>
-            <Input
-              control={control}
-              type="number"
-              name="skip_mfa_setup_duration"
-              rules={{ required: 'This field is required' }}
-              label={translate('mfa.skip.setup.duration')}
-            />
-          </Col>
-        </Row>
+        <Radio label={translate('mfa.option')} rules={{ required: 'This field is required' }} control={control} name="mfa_enforcement" options={mfaEnforcementOptions} />
+        {watch('mfa_enforcement') !== MFA_ENFORCEMENT.DISABLE && (
+          <Row>
+            <Col md={6}>
+              <Input
+                control={control}
+                type="number"
+                name="mfa_expiration_duration"
+                rules={{ required: 'This field is required' }}
+                label={translate('mfa.expiration.duration')}
+                placeholder={translate('mfa.expiration.duration.placeholder')}
+                endIcon={translate('common.seconds')}
+              />
+            </Col>
+            <Col md={6}>
+              <Input
+                control={control}
+                type="number"
+                name="skip_mfa_setup_duration"
+                rules={{ required: 'This field is required' }}
+                label={translate('mfa.skip.setup.duration')}
+                placeholder={translate('mfa.skip.setup.duration.placeholder')}
+                endIcon={translate('common.seconds')}
+              />
+            </Col>
+          </Row>
+        )}
       </Form>
     </Dialog>
   );
