@@ -102,7 +102,7 @@ const CreateOrEdit = ({
           rules={{ required: translate('common.user.role.error') }}
           isMulti
           label={translate('common.user.type')}
-          placeholder={translate('setting.placeholder.user.role')}
+          placeholder={translate('mfa.user_type.placeholder')}
           isClearable
           aria-label="user group"
         />
@@ -120,17 +120,19 @@ const CreateOrEdit = ({
                 endIcon={translate('common.seconds')}
               />
             </Col>
-            <Col md={6}>
-              <Input
-                control={control}
-                type="number"
-                name="skip_mfa_setup_duration"
-                rules={{ required: 'This field is required' }}
-                label={translate('mfa.skip.setup.duration')}
-                placeholder={translate('mfa.skip.setup.duration.placeholder')}
-                endIcon={translate('common.seconds')}
-              />
-            </Col>
+            {watch('mfa_enforcement') === MFA_ENFORCEMENT.RECOMMEND && (
+              <Col md={6}>
+                <Input
+                  control={control}
+                  type="number"
+                  name="skip_mfa_setup_duration"
+                  rules={{ required: 'This field is required' }}
+                  label={translate('mfa.skip.setup.duration')}
+                  placeholder={translate('mfa.skip.setup.duration.placeholder')}
+                  endIcon={translate('common.seconds')}
+                />
+              </Col>
+            )}
           </Row>
         )}
       </Form>
