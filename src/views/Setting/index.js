@@ -20,25 +20,21 @@ const Setting = ({ translate }) => {
   const [filters, setFilters] = useState([]);
   const [show, setShow] = useState(false);
   const [existingRecord, setExistingRecord] = useState(null);
-  const [rows, setRows] = useState([]);
   const jobIds = useMemo(() =>
     mfaSettings
       ? mfaSettings.map(mfa => mfa.job_status && mfa.job_status.job_id)
       : [],
-  [mfaSettings]
-  );
+  [mfaSettings]);
 
   const jobStatuses = useJobStatuses(jobIds);
 
-  useEffect(() => {
-    if (mfaSettings && mfaSettings.length) {
-      setRows(mfaSettings.map((mfaSetting) => {
-        return ({
-          ...mfaSetting,
-          progress_status: !mfaSetting.job_status ? 'completed' : jobStatuses[mfaSetting.job_status.job_id] || 'in_progress'
-        });
-      }));
-    }
+  const rows = useMemo(() => {
+    return (mfaSettings || []).map(mfaSetting => ({
+      ...mfaSetting,
+      progress_status: !mfaSetting.job_status
+        ? 'completed'
+        : jobStatuses[mfaSetting.job_status.job_id] || 'in_progress'
+    }));
   }, [mfaSettings, jobStatuses]);
 
   useEffect(() => {
