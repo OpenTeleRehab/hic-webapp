@@ -2,6 +2,7 @@ export const USER_GROUPS = {
   ADMIN: 'admin',
   MODERATOR: 'moderator'
 };
+
 export const USER_ROLES = {
   MANAGE_RESOURCE: 'manage_resource',
   MANAGE_TRANSLATION: 'manage_translation',
@@ -9,7 +10,8 @@ export const USER_ROLES = {
   MANAGE_USER: 'manage_user',
   SETUP_CATEGORY: 'setup_category',
   VIEW_EDIT_OWN_PROFILE: 'view_edit_own_profile',
-  MANAGE_LANGUAGE: 'manage_language'
+  MANAGE_LANGUAGE: 'manage_language',
+  MANAGE_SETTING: 'manage_setting'
 };
 
 export const SETTING_ROLES = [

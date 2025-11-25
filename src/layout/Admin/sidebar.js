@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { getTranslate } from 'react-localize-redux';
 import { Nav, Navbar } from 'react-bootstrap';
 import { BsHouse, BsLayers, BsGrid } from 'react-icons/bs';
+import { IoSettingsOutline } from 'react-icons/io5';
 import { MdGTranslate } from 'react-icons/md';
 import { BiFolder } from 'react-icons/bi';
 import { FiUser } from 'react-icons/fi';
@@ -60,6 +61,13 @@ const sidebarNavItems = [
     to: ROUTES.HOME,
     icon: <BsHouse />,
     exact: true
+  },
+  {
+    label: 'setting',
+    to: ROUTES.ADMIN_SETTING,
+    icon: <IoSettingsOutline />,
+    exact: true,
+    roles: [USER_ROLES.MANAGE_SETTING]
   }
 ];
 

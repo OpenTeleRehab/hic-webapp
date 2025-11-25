@@ -15,6 +15,7 @@ import { Translate } from 'react-localize-redux';
 import Dialog from 'components/Dialog';
 import { USER_GROUPS, USER_ROLES } from 'variables/user';
 import EnabledStatus from 'components/EnabledStatus';
+import { checkFederatedUser } from 'utils/user';
 
 let timer = null;
 const User = ({ translate }) => {
@@ -156,16 +157,18 @@ const User = ({ translate }) => {
           columns={columns}
           columnExtensions={columnExtensions}
           rows={users.map(user => {
+            const isFederatedUser = checkFederatedUser(user.email);
+
             const action = (
-              <>
+              <div className='d-flex justify-content-start'>
                 {user.enabled
                   ? <EnabledAction onClick={() => handleSwitchStatus(user.id, 0)} disabled={parseInt(user.id) === parseInt(profile.id)}/>
                   : <DisabledAction onClick={() => handleSwitchStatus(user.id, 1)} disabled={parseInt(user.id) === parseInt(profile.id)} />
                 }
                 <EditAction onClick={() => handleEdit(user.id)} />
                 <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={parseInt(user.id) === parseInt(profile.id) || user.enabled} />
-                <MailSendAction onClick={() => handleSendMail(user.id)} disabled={user.last_login} />
-              </>
+                {!isFederatedUser && <MailSendAction onClick={() => handleSendMail(user.id)} disabled={user.last_login} />}
+              </div>
             );
 
             return {
