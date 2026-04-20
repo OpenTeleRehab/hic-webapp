@@ -29,7 +29,20 @@ const updateMfaSetting = (id, payload) => {
     });
 };
 
+const resetUserOTP = (id) => {
+  return axios.post(`user/${id}/reset-mfa-otp`)
+    .then(
+      res => {
+        return res.data;
+      }
+    )
+    .catch((e) => {
+      return e.response.data;
+    });
+};
+
 export const MfaSetting = {
   getMfaSettings,
-  updateMfaSetting
+  updateMfaSetting,
+  resetUserOTP
 };

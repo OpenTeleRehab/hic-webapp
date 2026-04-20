@@ -10,12 +10,13 @@ import PropTypes from 'prop-types';
 import { getUsers, deleteUser, updateUserStatus, resendEmail } from 'store/user/actions';
 import CustomTable from 'components/Table';
 import settings from 'settings';
-import { EditAction, DeleteAction, EnabledAction, DisabledAction, MailSendAction } from 'components/ActionIcons';
+import { EditAction, DeleteAction, EnabledAction, DisabledAction, MailSendAction, ResetUserOTPAction } from 'components/ActionIcons';
 import { Translate } from 'react-localize-redux';
 import Dialog from 'components/Dialog';
 import { USER_GROUPS, USER_ROLES } from 'variables/user';
 import EnabledStatus from 'components/EnabledStatus';
 import { checkFederatedUser } from 'utils/user';
+import { resetUserOTP } from 'store/mfaSetting/actions';
 
 let timer = null;
 const User = ({ translate }) => {
@@ -33,6 +34,7 @@ const User = ({ translate }) => {
   const [id, setId] = useState('');
   const [type, setType] = useState(undefined);
   const [showSwitchStatusDialog, setShowSwitchStatusDialog] = useState(false);
+  const [showResetUserOTPDialog, setShowResetUserOTPDialog] = useState(false);
   const [formFields, setFormFields] = useState({
     enabled: 0,
     type: undefined
@@ -52,7 +54,8 @@ const User = ({ translate }) => {
   const columnExtensions = [
     { columnName: 'last_name', wordWrapEnabled: true },
     { columnName: 'first_name', wordWrapEnabled: true },
-    { columnName: 'last_login', wordWrapEnabled: true, width: 250 }
+    { columnName: 'last_login', wordWrapEnabled: true, width: 250 },
+    { columnName: 'action', width: 180 }
   ];
 
   const handleShow = () => setShow(true);
@@ -133,6 +136,24 @@ const User = ({ translate }) => {
     dispatch(resendEmail(id));
   };
 
+  const handleResetUserOTP = (id) => {
+    setId(id);
+    setShowResetUserOTPDialog(true);
+  };
+
+  const handleResetUserOTPDialogClose = () => {
+    setId(null);
+    setShowResetUserOTPDialog(false);
+  };
+
+  const handleResetUserOTPDialogConfirm = () => {
+    dispatch(resetUserOTP(id)).then(result => {
+      if (result) {
+        handleResetUserOTPDialogClose();
+      }
+    });
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
@@ -167,6 +188,9 @@ const User = ({ translate }) => {
                 }
                 <EditAction onClick={() => handleEdit(user.id)} />
                 <DeleteAction className="ml-1" onClick={() => handleDelete(user.id)} disabled={parseInt(user.id) === parseInt(profile.id) || user.enabled} />
+                {(!isFederatedUser && user.type === USER_GROUPS.MODERATOR) && (
+                  <ResetUserOTPAction onClick={() => handleResetUserOTP(user.id)} />
+                )}
                 {!isFederatedUser && <MailSendAction onClick={() => handleSendMail(user.id)} disabled={user.last_login} />}
               </div>
             );
@@ -205,6 +229,18 @@ const User = ({ translate }) => {
       >
         <div>
           <p>{translate('common.switchStatus_confirmation_message')}</p>
+        </div>
+      </Dialog>
+      <Dialog
+        show={showResetUserOTPDialog}
+        title={translate('common.reset_user_otp')}
+        cancelLabel={translate('common.no')}
+        onCancel={handleResetUserOTPDialogClose}
+        confirmLabel={translate('common.yes')}
+        onConfirm={handleResetUserOTPDialogConfirm}
+      >
+        <div>
+          <p>{translate('common.reset_user_otp_confirmation_message')}</p>
         </div>
       </Dialog>
     </>
