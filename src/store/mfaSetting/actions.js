@@ -39,3 +39,17 @@ export const updateMfaSetting = (id, payload) => async (dispatch) => {
     return false;
   }
 };
+
+export const resetUserOTP = (id) => async (dispatch) => {
+  dispatch(showSpinner(true));
+  const res = await MfaSetting.resetUserOTP(id);
+  if (res.success) {
+    dispatch(showSpinner(false));
+    dispatch(showSuccessNotification('toast_title.reset_user_otp', res.message));
+    return true;
+  } else {
+    dispatch(showSpinner(false));
+    dispatch(showErrorNotification('toast_title.reset_user_otp', res.message));
+    return false;
+  }
+};
