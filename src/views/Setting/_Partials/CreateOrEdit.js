@@ -118,6 +118,7 @@ const CreateOrEdit = ({
                 label={translate('mfa.expiration.duration')}
                 placeholder={translate('mfa.expiration.duration.placeholder')}
                 endIcon={translate('common.seconds')}
+                min={0}
               />
             </Col>
             {watch('mfa_enforcement') === MFA_ENFORCEMENT.RECOMMEND && (
@@ -130,6 +131,7 @@ const CreateOrEdit = ({
                   label={translate('mfa.skip.setup.duration')}
                   placeholder={translate('mfa.skip.setup.duration.placeholder')}
                   endIcon={translate('common.seconds')}
+                  min={0}
                 />
               </Col>
             )}
