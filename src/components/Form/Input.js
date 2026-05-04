@@ -26,6 +26,14 @@ const Input = ({ control, name, rules, label, startIcon, endIcon, ...props }) =>
               {...field}
               onChange={(e) => field.onChange(e)}
               isInvalid={!!fieldState.error}
+              onKeyDown={
+                props.type === 'number'
+                  ? (e) => {
+                    if (e.key === 'e') e.preventDefault();
+                    if (e.key === '-' && props.min !== undefined && props.min >= 0) e.preventDefault();
+                  }
+                  : undefined
+              }
             />
             {endIcon && <InputGroup.Text style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderLeft: 0 }}>{endIcon}</InputGroup.Text>}
             {fieldState.error && (
@@ -52,7 +60,9 @@ Input.propTypes = {
   rules: PropTypes.object,
   label: PropTypes.string,
   startIcon: PropTypes.node,
-  endIcon: PropTypes.node
+  endIcon: PropTypes.node,
+  type: PropTypes.string,
+  min: PropTypes.number
 };
 
 export default Input;
